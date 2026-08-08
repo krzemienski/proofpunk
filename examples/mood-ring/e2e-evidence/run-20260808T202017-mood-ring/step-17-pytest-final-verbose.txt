@@ -1,0 +1,42 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /tmp/demo/flaskr
+configfile: pyproject.toml
+plugins: anyio-4.9.0
+collecting ... collected 32 items
+
+tests/test_auth.py::test_register PASSED                                 [  3%]
+tests/test_auth.py::test_register_validate_input[--Username is required.] PASSED [  6%]
+tests/test_auth.py::test_register_validate_input[a--Password is required.] PASSED [  9%]
+tests/test_auth.py::test_register_validate_input[test-test-already registered] PASSED [ 12%]
+tests/test_auth.py::test_login PASSED                                    [ 15%]
+tests/test_auth.py::test_login_validate_input[a-test-Incorrect username.] PASSED [ 18%]
+tests/test_auth.py::test_login_validate_input[test-a-Incorrect password.] PASSED [ 21%]
+tests/test_auth.py::test_logout PASSED                                   [ 25%]
+tests/test_blog.py::test_index PASSED                                    [ 28%]
+tests/test_blog.py::test_login_required[/create] PASSED                  [ 31%]
+tests/test_blog.py::test_login_required[/1/update] PASSED                [ 34%]
+tests/test_blog.py::test_login_required[/1/delete] PASSED                [ 37%]
+tests/test_blog.py::test_author_required PASSED                          [ 40%]
+tests/test_blog.py::test_exists_required[/2/update] PASSED               [ 43%]
+tests/test_blog.py::test_exists_required[/2/delete] PASSED               [ 46%]
+tests/test_blog.py::test_create PASSED                                   [ 50%]
+tests/test_blog.py::test_update PASSED                                   [ 53%]
+tests/test_blog.py::test_create_update_validate[/create] PASSED          [ 56%]
+tests/test_blog.py::test_create_update_validate[/1/update] PASSED        [ 59%]
+tests/test_blog.py::test_delete PASSED                                   [ 62%]
+tests/test_blog.py::test_create_stores_mood PASSED                       [ 65%]
+tests/test_blog.py::test_create_invalid_mood_defaults PASSED             [ 68%]
+tests/test_blog.py::test_update_changes_mood PASSED                      [ 71%]
+tests/test_blog.py::test_missing_mood_defaults PASSED                    [ 75%]
+tests/test_blog.py::test_index_shows_mood PASSED                         [ 78%]
+tests/test_blog.py::test_index_filter_by_mood PASSED                     [ 81%]
+tests/test_blog.py::test_index_invalid_mood_param_ignored PASSED         [ 84%]
+tests/test_blog.py::test_invalid_mood_flash PASSED                       [ 87%]
+tests/test_db.py::test_get_close_db PASSED                               [ 90%]
+tests/test_db.py::test_init_db_command PASSED                            [ 93%]
+tests/test_factory.py::test_config PASSED                                [ 96%]
+tests/test_factory.py::test_hello PASSED                                 [100%]
+
+============================== 32 passed in 1.35s ==============================

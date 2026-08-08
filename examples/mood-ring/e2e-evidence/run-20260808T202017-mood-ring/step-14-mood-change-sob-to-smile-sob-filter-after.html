@@ -1,0 +1,42 @@
+<!doctype html>
+<title>Posts - Flaskr</title>
+<link rel="stylesheet" href="/static/style.css">
+<nav>
+  <h1><a href="/">Flaskr</a></h1>
+  <ul>
+    
+      <li><span>demo</span>
+      <li><a href="/auth/logout">Log Out</a>
+    
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    
+  <h1>Posts</h1>
+  
+    <a class="action" href="/create">New</a>
+  
+
+  </header>
+  
+  
+  <nav class="mood-filter" aria-label="Filter posts by mood">
+    <a href="/">All</a>
+    
+      <a href="/?mood=%F0%9F%98%80">😀</a>
+    
+      <a href="/?mood=%F0%9F%99%82">🙂</a>
+    
+      <a href="/?mood=%F0%9F%98%90">😐</a>
+    
+      <a href="/?mood=%F0%9F%98%A2" class="active">😢</a>
+    
+      <a href="/?mood=%F0%9F%94%A5">🔥</a>
+    
+  </nav>
+  
+    <p class="empty">No posts with this mood yet — write one!</p>
+  
+
+</section>

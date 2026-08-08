@@ -1,0 +1,5 @@
+GET /?mood=grinning -> HTTP 200, articles=1, titles=['Launch day']
+GET /?mood=slight-smile -> HTTP 200, articles=1, titles=['Small win']
+GET /?mood=neutral -> HTTP 200, articles=1, titles=['Status quo']
+GET / -> HTTP 200, articles=5, titles=['Small win', 'Status quo', 'Rough morning', 'On fire', 'Launch day']
+GET /?mood=unicorn-invalid -> HTTP 200, articles=5, titles=['Small win', 'Status quo', 'Rough morning', 'On fire', 'Launch day']

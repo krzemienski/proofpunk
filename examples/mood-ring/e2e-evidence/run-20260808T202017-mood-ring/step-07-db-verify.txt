@@ -1,0 +1,2 @@
+SELECT id, title, mood FROM post;
+(1, 'Launch day', '😢')

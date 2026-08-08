@@ -1,0 +1,32 @@
+{
+  "name": "truth-forge-marketplace",
+  "owner": {
+    "name": "truth-forge maintainers"
+  },
+  "metadata": {
+    "description": "Unified evidence-driven delivery and validation plugin: functional validation, UI/UX audit, validation planning, plan hardening, prompt engineering, brainstorming, and implementation workflows.",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "truth-forge",
+      "source": "./plugins/truth-forge",
+      "description": "Evidence-driven delivery pipeline: brainstorm -> plan -> harden -> implement -> validate -> audit, with fresh-evidence gates, no-mock discipline, and UI/UX review criteria consolidated from a 445-skill archive.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "keywords": [
+        "validation",
+        "evidence",
+        "e2e",
+        "visual-inspection",
+        "ux-audit",
+        "prompt-engineering",
+        "planning",
+        "brainstorm",
+        "implementation"
+      ],
+      "category": "quality"
+    }
+  ]
+}

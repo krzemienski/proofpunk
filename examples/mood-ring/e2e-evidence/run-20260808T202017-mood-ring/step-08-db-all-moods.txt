@@ -1,0 +1,6 @@
+SELECT id, mood, title FROM post ORDER BY id;
+(1, '😀', 'Launch day')
+(2, '🙂', 'Small win')
+(3, '😐', 'Status quo')
+(4, '😢', 'Rough morning')
+(5, '🔥', 'On fire')

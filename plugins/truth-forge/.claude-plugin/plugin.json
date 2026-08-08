@@ -1,0 +1,25 @@
+{
+  "name": "truth-forge",
+  "version": "1.0.0",
+  "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, validate, and audit with fresh-evidence gates and no-mock discipline. Consolidates functional validation, full functional audit, validation planning, plan hardening, prompt engineering and rating, meta-prompt pipelines, visual inspection, UI experience audit, brainstorming, and structured implementation workflows into one coherent plugin.",
+  "author": {
+    "name": "truth-forge maintainers"
+  },
+  "license": "MIT",
+  "keywords": [
+    "validation",
+    "evidence",
+    "no-mocks",
+    "e2e",
+    "visual-inspection",
+    "ux-audit",
+    "wcag",
+    "ios-hig",
+    "prompt-engineering",
+    "prompt-rating",
+    "plan-hardening",
+    "validation-plan",
+    "brainstorm",
+    "implementation"
+  ]
+}

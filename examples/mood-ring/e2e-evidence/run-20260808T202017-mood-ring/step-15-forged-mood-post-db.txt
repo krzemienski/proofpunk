@@ -1,0 +1,2 @@
+(4, '🙂', 'Rough morning')
+(6, '😐', 'Forged')
