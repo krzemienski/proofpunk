@@ -44,6 +44,7 @@ Consolidated from a curated review of a 445-skill archive. See
 | `root-cause-debugging` | Reproduce-first diagnosis, backward tracing, pollution bisection — no symptomatic hacks |
 | `production-readiness` | 8-phase ship-readiness audit, spec-compliance matrix, dependency supply-chain health |
 | `red-team-eval` | 4-lens hostile review, eval-driven development, QA cycling to measured goal attainment |
+| `session-intent` | Reconstruct per-session intent from Claude Code transcripts; intent-vs-implementation matrices |
 
 Shared references (loaded on demand by the skills):
 `references/evidence-contract.md`, `references/end-user-actor.md`,
@@ -74,7 +75,7 @@ tar -xzf truth-forge-marketplace.tar.gz
 /plugin install truth-forge@truth-forge-marketplace
 ```
 
-Verify: `/plugin` should list `truth-forge` with 15 skills.
+Verify: `/plugin` should list `truth-forge` with 16 skills.
 
 ## Representative Usage
 
@@ -156,8 +157,9 @@ brainstorm → validation-plan → plan-hardening → cook
      → mobile-validation-runner (iOS features)
      → ui-experience-audit / visual-inspection
      → evidence-gates verdicts at every phase boundary
-Support lanes: root-cause-debugging (any failure), red-team-eval (hostile
-review + measured quality), production-readiness (release gate)
+Support lanes: session-intent (what was actually asked, from transcripts),
+root-cause-debugging (any failure), red-team-eval (hostile review + measured
+quality), production-readiness (release gate)
 ```
 
 ## Requirements

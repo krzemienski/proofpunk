@@ -1,7 +1,7 @@
 {
   "name": "truth-forge",
-  "version": "1.1.0",
-  "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, validate, and audit with fresh-evidence gates and no-mock discipline. Consolidates functional validation, full functional audit, validation planning, plan hardening, prompt engineering and rating, meta-prompt pipelines, visual inspection, UI experience audit, brainstorming, and structured implementation workflows \u2014 plus per-stack real-system testing (pytest/Go/C++/Django/Spring/FastAPI/Playwright), iOS simulator validation with evidence gates, root-cause debugging, production-readiness audits, and red-team/eval workflows \u2014 into one coherent plugin.",
+  "version": "1.2.0",
+  "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, validate, and audit with fresh-evidence gates and no-mock discipline. Consolidates functional validation, full functional audit, validation planning, plan hardening, prompt engineering and rating, meta-prompt pipelines, visual inspection, UI experience audit, brainstorming, and structured implementation workflows \u2014 plus per-stack real-system testing (pytest/Go/C++/Django/Spring/FastAPI/Playwright), iOS simulator validation with evidence gates, root-cause debugging, production-readiness audits, and red-team/eval workflows \u2014 plus session-intent reconstruction from Claude Code transcripts \u2014 into one coherent plugin.",
   "author": {
     "name": "truth-forge maintainers"
   },
@@ -14,8 +14,10 @@
     "eval",
     "evidence",
     "implementation",
+    "intent-reconstruction",
     "ios-hig",
     "ios-simulator",
+    "jsonl",
     "no-mocks",
     "plan-hardening",
     "playwright",
@@ -25,9 +27,11 @@
     "pytest",
     "red-team",
     "root-cause-debugging",
+    "session-intent",
     "simctl",
     "spec-compliance",
     "stack-testing",
+    "transcript-analysis",
     "ux-audit",
     "validation",
     "validation-plan",

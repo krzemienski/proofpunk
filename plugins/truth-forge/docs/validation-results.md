@@ -237,3 +237,18 @@ Results:
 - **Honesty gap preserved**: Android and accessibility-audit sources exist
   only in the now-inaccessible (403) skills.zip; the mobile skill documents
   the Android gap explicitly instead of improvising content.
+
+## 12. Session-First Reorientation (v1.2.0) — PASS (16/16)
+
+User correction: the plugin must look at the sessions themselves — transcripts
+carry prompt intent; summaries are claims. Added `session-intent` with a real
+stdlib parser (`session_intent.py`) for `~/.claude/projects/**/*.jsonl`.
+
+- **Parser verification**: end-to-end run against a constructed fixture in the
+  real JSONL event shape — 2 sessions parsed; tool_result events excluded from
+  prompts; intent/steering/commit/file extraction asserted correct. Fixture is
+  constructed data, honestly labeled; first live-corpus run remains the real
+  gate (stated in the skill itself).
+- **Format**: 16/16 skills pass official skill-creator validation.
+- **References**: incorporated `claude-code-analyzer` body + 4 scripts
+  (`bash -n` clean); all path citations re-resolved, 0 broken.

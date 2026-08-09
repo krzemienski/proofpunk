@@ -249,3 +249,46 @@ and fresh-evidence discipline, and routes to the right reference.
 | `ck-debug`, `fix`, `ak-debug`, `ship` | Empty stubs (no SKILL.md, empty references/). |
 | `testing-anti-patterns`, `tdd-workflow`, `testing-strategy` | Still excluded (mock-first doctrine conflicts with the Iron Rule). `cpp-testing`/`springboot-tdd`/`django-tdd` were incorporated WITH adaptation notes: mock-framework chapters are for reading existing suites; new tests hit the real system (Testcontainers pattern endorsed). |
 | `playwright-skill/.validation/` PNGs, `.temp-execution-*.js`, `.DS_Store`, `package-lock.json` | Stale evidence, temp files, OS noise, regenerable lockfile. |
+
+# Fourth Source Pass — Session-First Reorientation (v1.2.0, 2026-08-09)
+
+## Trigger
+
+User correction after v1.1.0: the goal was never only the static skill
+archive — the plugin must look at **the sessions themselves**, because the
+transcripts are where the intent behind each prompt lives. This matches the
+companion 30-day audit task's doctrine ("intent reconstruction → code truth →
+frame evidence"; session summaries are claims about a tree that has since
+moved; every commit row cites a session intent source or "intent
+unrecoverable").
+
+## Incorporated (1 source + 1 new capability)
+
+- `claude-code-analyzer` → bundled as `session-intent/references/` (usage
+  analytics lane; its jq-based JSONL extraction mechanics informed the new
+  parser). Its 4 scripts preserved under `references/scripts/`.
+- NEW `session-intent` skill: `scripts/session_intent.py` (Python stdlib)
+  parses `~/.claude/projects/**/*.jsonl` into a per-session intent matrix —
+  first user prompt (stated intent), steering prompts, tool counts, files
+  touched, observed `git commit` invocations, branch, models, time bounds.
+  SKILL.md codifies: transcripts = evidence, summaries = claims; null intent
+  stays null; commit alignment by window+branch+file overlap with per-row
+  disclosure; INTENT-MATCHED / INTENT-PARTIAL / INTENT-UNRECOVERABLE verdicts.
+
+## Considered, not incorporated (with reasons)
+
+| Source | Reason |
+|---|---|
+| `mem-search` | Requires the claude-mem external memory ecosystem; unsupported dependency. Its cross-session search need is served by the parser + grep over extracted JSON. |
+| `optimize-prompt` | Prospective prompt crafting (raw input → good prompt), not retrospective intent reconstruction. |
+| `learner` | Extracts a reusable skill from a conversation — different question than "what was the user trying to get done". |
+| `agenttrace-session-audit`, `evaluate-session.sh` | Only in the 403-inaccessible skills.zip. |
+
+## Validation
+
+Parser verified end-to-end against a constructed fixture in the real Claude
+Code JSONL shape (2 sessions: tool-result events correctly excluded from
+prompts; intent, steering, commit, and file extraction all asserted). The
+fixture is constructed format-conformance data, NOT a captured session — the
+parser has not yet run against the live transcript corpus on the user's
+machine, and the skill says to treat that first live run as the real gate.

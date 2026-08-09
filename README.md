@@ -1,6 +1,6 @@
 # truth-forge
 
-An evidence-gated validation **plugin marketplace for Claude Code**: 15 skills that
+An evidence-gated validation **plugin marketplace for Claude Code**: 16 skills that
 make "done" mean *proven*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
@@ -34,8 +34,9 @@ extract it into your marketplaces directory.
 | `root-cause-debugging` | Reproduce-first diagnosis, backward call-chain tracing, pollution bisection; symptomatic hacks forbidden |
 | `production-readiness` | 8-phase ship-readiness audit + spec-compliance matrix (COVERED/INCOMPLETE/MISSING) + dependency supply-chain health |
 | `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts, eval-driven development, QA cycling until measured goal attainment |
+| `session-intent` | Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts |
 
-The last five were added in v1.1.0 from a second full-universe scan (664 unique skills
+Five were added in v1.1.0 and `session-intent` in v1.2.0 from a second full-universe scan (664 unique skills
 across both source archives, classified by usefulness domain) — see
 `plugins/truth-forge/docs/consolidation-decisions.md`.
 
@@ -65,7 +66,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/truth-forge/              the plugin (15 skills + references + docs)
+plugins/truth-forge/              the plugin (16 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 
