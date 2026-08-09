@@ -252,3 +252,35 @@ stdlib parser (`session_intent.py`) for `~/.claude/projects/**/*.jsonl`.
 - **Format**: 16/16 skills pass official skill-creator validation.
 - **References**: incorporated `claude-code-analyzer` body + 4 scripts
   (`bash -n` clean); all path citations re-resolved, 0 broken.
+
+## 13. Doctrine Clarification — Test Runners Are Never Validation (v1.2.1, 2026-08-10)
+
+User correction: the plugin must state explicitly that pytest (and any test
+runner) is never the validation mechanism — validation is the live system
+driven as the end user; for a JSON/HTTP Flask backend that means real `curl`
+requests to the running server on localhost with assertions on real responses.
+
+Changes:
+
+- `references/end-user-actor.md`: new "Test Runners Are Never Validation"
+  section + actor/spectator table row. Test-runner output may appear only as
+  REGRESSION evidence, clearly labeled. Framework test clients (Flask
+  `test_client`) are regression gates, not end users — they bypass the
+  network stack. When a contract asks for "tests pass" as proof of done, the
+  correct reading is: tests green (regression) AND live end-user drive
+  (validation); either alone is incomplete.
+- `functional-validation` NEVER list: explicit ban on citing test-runner
+  output as validation evidence.
+- `stack-testing` rule 5: test output is sealed as REGRESSION evidence only;
+  feature verdicts come solely from live end-user driving.
+- `examples/mood-ring/.prompts/build-mood-ring/PROMPT.md`: output contract
+  amended — the confusing "`pytest` output (must exit 0)" line is now
+  "REGRESSION gate, labeled, never a validation verdict" plus explicit curl
+  validation requirements; `<validation>` section names curl-to-localhost as
+  the mechanism for HTTP backends.
+
+Compliance of the existing demo run under the amended contract: the sealed
+run already validates via curl captures of the live server (steps 01, 03–09,
+12, 14, 15) and browser drives (steps 10, 11, 13, 18, 19); step-17
+(32 passed) stands as the REGRESSION rail. No re-run required; the prompt
+amendment aligns the contract with what was actually executed.

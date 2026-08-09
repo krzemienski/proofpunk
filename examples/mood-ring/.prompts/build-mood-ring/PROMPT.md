@@ -35,7 +35,14 @@ COLUMN mood TEXT NOT NULL DEFAULT '😐'.
 
 <output_contract>
 - Modified files listed with one-line rationale each
-- `pytest` output (must exit 0)
+- REGRESSION gate: `pytest` output, exit 0 — labeled REGRESSION evidence
+  ("nothing previously working is broken"). A green suite is never a
+  validation verdict; test-runner output is developer tooling, not the
+  end user.
+- VALIDATION evidence: real `curl` requests against the RUNNING server on
+  localhost (this is an HTTP form/JSON backend — the end user is an HTTP
+  client), asserting on actual response bodies and statuses; plus
+  browser-driven UI checks where a human would look at the page.
 - Gate verdicts per phase with cited evidence paths under e2e-evidence/run-*/
 </output_contract>
 
@@ -48,9 +55,13 @@ Expected: 302 redirect to /; GET / then contains an article whose header shows
 </example>
 
 <validation>
-Validate by actually operating the running system as the end user: drive real HTTP
-requests and/or browser clicks (register, log in, create with each mood, click each
-filter, edit a mood, forge an invalid mood). Never report success from code reading,
-from test mocks, or from assumed behavior. Any criterion not actually executed is
-reported UNVERIFIED. No mocks, no stubs, no test-mode bypasses — fix the real system.
+Validate by actually operating the running system as the end user — never pytest
+or any test runner as the validation mechanism. For this HTTP backend the end
+user is an HTTP client: issue real `curl` requests to the running server on
+localhost (register, log in, create with each mood, GET each filter, edit a
+mood, forge an invalid mood) and assert on the actual response bodies and
+status codes; drive the browser for what a human would visually inspect. Never
+report success from code reading, from test mocks, from framework test clients,
+or from assumed behavior. Any criterion not actually executed is reported
+UNVERIFIED. No mocks, no stubs, no test-mode bypasses — fix the real system.
 </validation>

@@ -181,6 +181,11 @@ These thoughts mean you are about to violate the Iron Rule. STOP:
 
 - NEVER write test files as validation — a passing suite with a broken app
   is worse than no tests
+- NEVER cite pytest/JUnit/`go test`/any test-runner output as VALIDATION
+  evidence — test runners are regression tooling; validation is `curl`,
+  browser, or simulator against the live system only. Framework test clients
+  (Flask `test_client` et al.) bypass the network the user experiences —
+  regression gate at most, never the verdict
 - NEVER mock HTTP clients — mocks don't change when the real API changes
 - NEVER use in-memory databases — they accept invalid SQL and skip migrations
 - NEVER render components in isolation as validation — integrated behavior

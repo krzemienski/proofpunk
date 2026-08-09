@@ -27,8 +27,13 @@ evidence for every green claim.
 4. **Flaky = bug.** A test that "sometimes passes" is a defect in the test or
    the system, never a reason to re-run CI until green. Diagnose per stack
    below; escalate to the `root-cause-debugging` skill when the cause is unclear.
-5. **Capture the run as evidence** — pipe final test output to a file and seal
-   it with the `evidence-gates` skill's `fresh_evidence.py` before claiming done.
+5. **Test output is REGRESSION evidence, never VALIDATION evidence.** Pipe the
+   final run to a file and seal it with the `evidence-gates` skill's
+   `fresh_evidence.py` — labeled REGRESSION ("the suite is green"). The
+   feature-level verdict comes only from driving the live system as the end
+   user (`functional-validation`: `curl` for JSON backends, browser for UI,
+   simulator for mobile). A green suite cited as proof a feature works is a
+   doctrine violation — see `../../references/end-user-actor.md`.
 
 ## Reference Routing
 

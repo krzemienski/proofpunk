@@ -33,8 +33,37 @@ evidence review), but it can never answer "does this work when used?".
 | Screenshot the page and say it looks fine | Drive the page with browser MCP tools: click every control, capture before/after evidence |
 | Read the button handler and say it works | Click the button as an end user; observe the outcome |
 | Check the API route code | Call the live endpoint with a real payload |
+| Run pytest (or any test runner) and cite the green suite | Drive the live system as the end user — for a JSON/HTTP backend: `curl` the running server on localhost and assert on the real response body; for a UI: the browser; for mobile: the simulator |
 | Confirm a screenshot file exists | Personally capture it mid-interaction, then READ it |
 | Delegate the clicking to a subagent and trust its summary | Drive the tools yourself; examine raw evidence yourself |
+
+## Test Runners Are Never Validation
+
+**Explicit rule: pytest, JUnit, `go test`, `cargo test`, and every other
+test-runner are developer REGRESSION tooling — they are never validation
+evidence, and a green suite must never be cited as proof a feature works.**
+
+The end user does not run pytest. The end user of:
+
+- **a JSON/HTTP backend** is an HTTP client → validation is `curl` (or
+  equivalent) against the RUNNING server on localhost/its real host, with
+  assertions on the actual response body, headers, and status — not on code,
+  not on a test client, not on a mock
+- **a web UI** is a person in a browser → validation is browser-driven clicks,
+  form submissions, navigation
+- **a mobile app** is a person holding the device → validation is
+  simulator/device-driven taps, swipes, and observation
+- **a CLI** is a person at a terminal → validation is running the binary with
+  real arguments and reading its real output
+
+Test-runner output MAY appear in evidence as a regression gate ("the suite is
+green — nothing previously working is broken"), clearly labeled REGRESSION,
+never VALIDATION. A framework's test client (e.g. Flask's `test_client`) runs
+inside the process and bypasses the network stack the user actually
+experiences — it is a legitimate developer tool and a legitimate regression
+gate, and it is still not the end user. When a prompt or contract asks for
+"tests pass" as proof of done, the correct reading is: tests green
+(regression) AND live end-user drive (validation); either alone is incomplete.
 
 ## Tool Path Priority
 
