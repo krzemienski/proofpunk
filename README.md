@@ -1,6 +1,6 @@
 # truth-forge
 
-An evidence-gated validation **plugin marketplace for Claude Code**: 10 skills that
+An evidence-gated validation **plugin marketplace for Claude Code**: 15 skills that
 make "done" mean *proven*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
@@ -29,6 +29,15 @@ extract it into your marketplaces directory.
 | `visual-inspection` | Screenshot-driven visual QA with severity model (found a real HIGH defect in the demo) |
 | `ui-experience-audit` | 6-phase UX protocol: triage, visual, interactive, content, Nielsen heuristics, synthesis |
 | `full-functional-audit` | App-wide interaction inventory → execute → remediate → verdict |
+| `stack-testing` | Per-stack real-system test discipline: pytest/Go/C++/Django/Spring gotchas, FastAPI SSE testing, Playwright e2e, condition-based waiting (no sleeps, no new mocks) |
+| `mobile-validation-runner` | iOS end-user validation: SETUP→RECORD→ACT→COLLECT→VERIFY, three-facet gates, simctl/XC-MCP/Expo lanes, preflight checks |
+| `root-cause-debugging` | Reproduce-first diagnosis, backward call-chain tracing, pollution bisection; symptomatic hacks forbidden |
+| `production-readiness` | 8-phase ship-readiness audit + spec-compliance matrix (COVERED/INCOMPLETE/MISSING) + dependency supply-chain health |
+| `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts, eval-driven development, QA cycling until measured goal attainment |
+
+The last five were added in v1.1.0 from a second full-universe scan (664 unique skills
+across both source archives, classified by usefulness domain) — see
+`plugins/truth-forge/docs/consolidation-decisions.md`.
 
 Shared doctrine lives in `plugins/truth-forge/references/` — the Iron Rule (fix the real
 system), the End-User Actor Mandate, the evidence contract, severity model, platform
@@ -38,7 +47,7 @@ routing, preflight checks, and CI gate classification.
 
 A complete live walkthrough on the **Flaskr** tutorial app (from `pallets/flask`, BSD-3):
 the **Mood Ring** feature (per-post mood emoji 😀🙂😐😢🔥 + filter bar), built and audited
-end-to-end by the 10 skills in series:
+end-to-end by the original 10 skills in series:
 
 - `.planning/` — brainstorm, BRIEF/ROADMAP, gated phase plans, hardening gap register,
   per-phase SUMMARY+VALIDATION, visual-inspection / UX / full-functional audit reports
@@ -56,7 +65,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/truth-forge/              the plugin (10 skills + references + docs)
+plugins/truth-forge/              the plugin (15 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 

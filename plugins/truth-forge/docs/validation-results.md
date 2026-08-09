@@ -207,3 +207,33 @@ this plugin).
   `validate OK`) → visual-inspection (found + fixed a real HIGH contrast
   defect) → ui-experience-audit → full-functional-audit (PASS). Walkthrough
   report delivered alongside this document.
+
+## 11. Mission-Fit Expansion Pass (v1.1.0) — PASS (15/15)
+
+Triggered by a post-delivery usefulness audit: the original scan had bucketed
+407/445 archive skills as "other" without classification. Full-universe
+re-scan (664 unique skills, 15 usefulness domains) identified 26 readable,
+mission-aligned sources in skills-ref.zip (re-downloaded; SHA-256 matched the
+first pass) and consolidated them into 5 new skills: `stack-testing`,
+`mobile-validation-runner`, `root-cause-debugging`, `production-readiness`,
+`red-team-eval`.
+
+Results:
+
+- **Format**: all 15 skills pass the official skill-creator frontmatter
+  validation (one YAML colon-in-flow-scalar error found in
+  `root-cause-debugging`'s description during authoring; fixed with a block
+  scalar before delivery).
+- **Reference integrity**: 149 path citations across the expanded plugin
+  resolved against the filesystem; 10 broken citations found inside
+  incorporated reference bodies (paths relative to their original skill
+  layouts) — all re-pointed to the bundle layout; final count 0 broken.
+- **Script integrity**: bundled Python (`with_server.py`) compiles; all 6
+  bundled shell scripts pass `bash -n`; the Playwright runner parses under
+  `node --check`.
+- **Policy**: mock-framework sources incorporated only with explicit Iron
+  Rule adaptation notes; mock-first doctrine skills remain excluded (see
+  consolidation-decisions.md, Third Source Pass).
+- **Honesty gap preserved**: Android and accessibility-audit sources exist
+  only in the now-inaccessible (403) skills.zip; the mobile skill documents
+  the Android gap explicitly instead of improvising content.

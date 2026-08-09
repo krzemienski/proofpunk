@@ -1,0 +1,10 @@
+{
+  "skill_name": "red-team",
+  "evals": [
+    {"id": 1, "prompt": "Before I kick off this 14-phase TransDuct rebrand with /ralph, can you red-team the plan? plans/260424-1140-transduct-rebrand/plan.md", "should_trigger": true, "why": "direct phrase 'red-team' + before autonomous multi-phase run"},
+    {"id": 2, "prompt": "give me the 4-lens adversarial pass: security, scope-creep, evidence-rigor, failure-modes. target is the attached campaign manifest for the iOS audit.", "should_trigger": true, "why": "names the exact 4 lenses the skill ships"},
+    {"id": 3, "prompt": "stress test this plan for holes. it's for a prod deploy that's running overnight unattended.", "should_trigger": true, "why": "trigger phrase 'stress test' + unattended autonomous run context"},
+    {"id": 4, "prompt": "Write a unit test for this auth function", "should_trigger": false, "why": "unrelated — routine test work, no red-team signal"},
+    {"id": 5, "prompt": "What's the best way to optimize this SQL query?", "should_trigger": false, "why": "unrelated — DB performance, no adversarial review"}
+  ]
+}

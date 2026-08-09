@@ -1,0 +1,22 @@
+[
+  {
+    "query": "Before I kick off this 14-phase TransDuct rebrand with /ralph, can you red-team the plan? plans/260424-1140-transduct-rebrand/plan.md",
+    "should_trigger": true
+  },
+  {
+    "query": "give me the 4-lens adversarial pass: security, scope-creep, evidence-rigor, failure-modes. target is the attached campaign manifest for the iOS audit.",
+    "should_trigger": true
+  },
+  {
+    "query": "stress test this plan for holes. it's for a prod deploy that's running overnight unattended.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write a unit test for this auth function",
+    "should_trigger": false
+  },
+  {
+    "query": "What's the best way to optimize this SQL query?",
+    "should_trigger": false
+  }
+]

@@ -200,3 +200,52 @@ first archive, and consolidation decisions for everything new.
   Mandate enforced across the whole plugin (see the Cross-Cutting Addition
   section above) — acceptance criteria must be driven actions, and
   unexecuted validation is UNVERIFIED, never PASS.
+
+# Third Source Pass — Mission-Fit Expansion (v1.1.0, 2026-08-09)
+
+## Trigger
+
+Post-delivery review found the original scan classified only ~38 of the
+archive's 445 skills into target categories; the remaining 407 were bucketed
+as "other" without a usefulness determination. The expansion re-scanned the
+FULL universe — 445 archive skills + 334 skills-ref skills = 664 unique after
+dedup (111 present in both) — and classified every skill by usefulness domain
+(validation-qa-testing 101, evidence-planning 121, prompt-llm-agents 151,
+marketing-seo-content 62, web-frontend-design 60, data-analytics 39,
+devops-git-ci 23, mobile-ios-android 22, accessibility 5, security 3, ...).
+
+## Source availability
+
+- `skills.zip` (original 445): URL now returns **403 Forbidden** — sources only
+  available from the earlier inventory; cannot re-read, cannot incorporate.
+- `skills-ref.zip`: re-downloaded and SHA-256 verified identical to the first
+  pass (`fe1209f9bdf1...`). 334 readable skills on disk. All incorporations
+  below come from this set.
+
+## Incorporated (26 sources → 5 new skills)
+
+| New skill | Sources incorporated |
+|---|---|
+| `stack-testing` | `python-testing`, `golang-testing`, `cpp-testing`, `django-tdd`, `springboot-tdd`, `python-fastapi-backend-testing`, `webapp-testing` (+ `with_server.py`, 3 examples), `playwright-skill` (+ runner/helpers/API ref), `condition-based-waiting` (+ example) |
+| `mobile-validation-runner` | `ios-validation-runner` (+ validate.sh), `ios-validation-gate`, `ios-simulator-control` (+ reference.md, 3 scripts), `xc-mcp` (+ 8 workflows, 6 references), `complete-expo-ios-testing-workflow`, `expo-ios-complete-testing-workflow`, `preflight` |
+| `root-cause-debugging` | `diagnose` (+ hitl-loop template), `root-cause-tracing` (+ find-polluter.sh), `debug-like-expert` (+ 5 references), `trace` |
+| `production-readiness` | `production-readiness-audit`, `spec-compliance`, `dependency-health` |
+| `red-team-eval` | `red-team` (+ evals assets), `eval-harness`, `ultraqa`, `eval` |
+
+Incorporation method: source bodies preserved as per-skill `references/`
+(frontmatter stripped; archive-internal `Conflicts`/`Related Skills` sections
+removed; internal paths re-pointed to the new bundle layout), with an authored
+SKILL.md per skill that enforces the Iron Rule, the End-User Actor Mandate,
+and fresh-evidence discipline, and routes to the right reference.
+
+## Exclusions (with reasons)
+
+| Source(s) | Reason |
+|---|---|
+| `accessibility-compliance-accessibility-audit`, `accesslint-audit/scan/diff`, `android_ui_verification`, `android-ui-journey-testing`, `mcp-audit`, `agenttrace-session-audit`, `advanced-evaluation`, `agent-evaluation`, `edge-case-analyzer` | Only in the 403-inaccessible skills.zip; cannot incorporate what cannot be read. Mobile skill explicitly flags the Android gap rather than improvising it. |
+| `python-fastapi-claude-backend-testing` | Dated duplicate of `python-fastapi-backend-testing` (same claude-code-api subject). |
+| `SKILL 2026-*.md` dated copies inside `ios-validation-gate`, `production-readiness-audit`, `playwright-skill` | Older duplicates. |
+| `release` | Hardwired to the oh-my-claudecode repo ecosystem. |
+| `ck-debug`, `fix`, `ak-debug`, `ship` | Empty stubs (no SKILL.md, empty references/). |
+| `testing-anti-patterns`, `tdd-workflow`, `testing-strategy` | Still excluded (mock-first doctrine conflicts with the Iron Rule). `cpp-testing`/`springboot-tdd`/`django-tdd` were incorporated WITH adaptation notes: mock-framework chapters are for reading existing suites; new tests hit the real system (Testcontainers pattern endorsed). |
+| `playwright-skill/.validation/` PNGs, `.temp-execution-*.js`, `.DS_Store`, `package-lock.json` | Stale evidence, temp files, OS noise, regenerable lockfile. |

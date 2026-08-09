@@ -39,6 +39,11 @@ Consolidated from a curated review of a 445-skill archive. See
 | `visual-inspection` | Mandatory visual QA for screenshots (iOS HIG, WCAG 2.2, defect database) |
 | `ui-experience-audit` | Deep per-screen audit: visual + interactive + content + Nielsen heuristics |
 | `prompt-forge` | Author, rate (rubric + test cases), optimize prompts; build meta-prompt pipelines |
+| `stack-testing` | Per-stack real-system testing: pytest/Go/C++/Django/Spring gotchas, FastAPI SSE, Playwright e2e, condition-based waiting |
+| `mobile-validation-runner` | iOS simulator validation: SETUP→RECORD→ACT→COLLECT→VERIFY, three-facet gates, simctl/XC-MCP/Expo |
+| `root-cause-debugging` | Reproduce-first diagnosis, backward tracing, pollution bisection — no symptomatic hacks |
+| `production-readiness` | 8-phase ship-readiness audit, spec-compliance matrix, dependency supply-chain health |
+| `red-team-eval` | 4-lens hostile review, eval-driven development, QA cycling to measured goal attainment |
 
 Shared references (loaded on demand by the skills):
 `references/evidence-contract.md`, `references/end-user-actor.md`,
@@ -69,7 +74,7 @@ tar -xzf truth-forge-marketplace.tar.gz
 /plugin install truth-forge@truth-forge-marketplace
 ```
 
-Verify: `/plugin` should list `truth-forge` with 10 skills.
+Verify: `/plugin` should list `truth-forge` with 15 skills.
 
 ## Representative Usage
 
@@ -146,9 +151,13 @@ python3 skills/evidence-gates/scripts/fresh_evidence.py validate
 
 ```
 brainstorm → validation-plan → plan-hardening → cook
+     → stack-testing (per-stack suites, deflaking)
      → functional-validation / full-functional-audit
+     → mobile-validation-runner (iOS features)
      → ui-experience-audit / visual-inspection
      → evidence-gates verdicts at every phase boundary
+Support lanes: root-cause-debugging (any failure), red-team-eval (hostile
+review + measured quality), production-readiness (release gate)
 ```
 
 ## Requirements
