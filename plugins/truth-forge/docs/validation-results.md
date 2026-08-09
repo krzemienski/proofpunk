@@ -284,3 +284,25 @@ run already validates via curl captures of the live server (steps 01, 03–09,
 12, 14, 15) and browser drives (steps 10, 11, 13, 18, 19); step-17
 (32 passed) stands as the REGRESSION rail. No re-run required; the prompt
 amendment aligns the contract with what was actually executed.
+
+## 14. Installer Script (v1.3.0, 2026-08-10) — PASS (8/8 live tests)
+
+`tools/truth-forge-install.sh` installs the 16 skills as plain skills (not a
+plugin) into a chosen target (claude-code / omp / --dir), with collision
+safety, doctrine injection, and post-install verification. Executed live
+before shipping (no claimed-but-unrun behavior):
+
+1. `--target omp --dry-run` — full plan printed, zero writes.
+2. GitHub-source install into a sandboxed HOME — 16/16 installed + doctrine
+   bundle + verify green. **The verifier caught a real design flaw**: repo
+   layout cites doctrine as `../../references/`, broken in a flat skills dir;
+   fixed by making installed copies self-contained (citations rewritten,
+   cited shared refs bundled inside each skill) — then verify green.
+3. Re-run without `--override` — 16/16 SKIP on collision, nothing clobbered.
+4. `--override` — replaced with timestamped backups (`.bak-YYYYMMDD-HHMMSS`).
+5. `--inject-claude-md` twice — rules block appended once; second run
+   "already present — left unchanged" (idempotent).
+6. `--source-dir` local checkout — installs offline path, verify green.
+7. `--only not-a-skill` — exits 3 (caught a second real bug: the EXIT trap's
+   cleanup returned 1 and clobbered the intended code; fixed, re-verified).
+8. `bash -n` syntax clean; exit codes 0/1/2/3 as documented in tools/INSTALL.md.
