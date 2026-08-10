@@ -306,3 +306,52 @@ before shipping (no claimed-but-unrun behavior):
 7. `--only not-a-skill` — exits 3 (caught a second real bug: the EXIT trap's
    cleanup returned 1 and clobbered the intended code; fixed, re-verified).
 8. `bash -n` syntax clean; exit codes 0/1/2/3 as documented in tools/INSTALL.md.
+
+## 15. prompt-forge Rework (v1.4.0, 2026-08-11) — PASS
+
+Directive: rating remediations must be applied immediately and always land
+in a file (new file by default, the input file only with consent); every
+mode must run sequential thinking, proper XML tags, an authorization
+engine, and explicit todo tracking.
+
+Changes to `skills/prompt-forge/SKILL.md` (quick_validate: PASS):
+
+1. **New Section 0 — Always-On Workflow**, binding on all four modes:
+   - 0.1 Sequential thinking — numbered reasoning steps with explicit
+     revision and branching before any authoring/rating/optimizing.
+   - 0.2 Todo discipline — one action per todo, one in-progress at a time,
+     immediate completion, pending items finished or reported.
+   - 0.3 Authorization engine — decision table: new-file writes need no
+     consent (default action); in-place edits, below-threshold shipping,
+     overwrites, and report-only ratings all require explicit consent.
+   - 0.4 File-output contract — per-mode file matrix
+     (`NAME.prompt.md` / `NAME.rating.md` + `NAME.remediated.md` /
+     `NAME.optimized.md` / `.prompts/` stages); chat-only suggestions are
+     a contract violation.
+   - 0.5 XML tag standard — canonical skeleton (`task`, `context`,
+     `skills_to_activate`, `mcp_tools`, `sequential_thinking`, `todos`,
+     `authorization`, `constraints`, `output_contract`, `validation`,
+     `example`) with a required/optional purpose table; aligned with the
+     mood-ring demo prompt's existing tag usage.
+2. **RATE §2.1 Remediation application (mandatory)** — scorecard alone is
+   unfinished: apply top fixes, write `NAME.remediated.md` (in-place only
+   with consent), re-score against the same test cases, report
+   before/after; below-threshold results route through 0.3.
+3. **OPTIMIZE** — optimized prompt written to `NAME.optimized.md` per 0.4;
+   failure classification lands in the sequential-thinking chain.
+4. **PIPELINE** — every stage prompt follows the 0.5 skeleton; every stage
+   maps to a todo.
+5. **Anti-patterns** — six new rows: scorecard-only rating, chat-only
+   fixes, unconsented in-place edits, below-threshold shipping,
+   jump-to-output, ad-hoc XML tags.
+
+Source-gap note (honest gap): the sequential-thinking stage was specified
+from the established methodology (numbered steps, revision, branching —
+the `ck:sequential-thinking` description fragment in the archive
+inventory). The reference archive's `ak-sequential-thinking` copy contains
+zero files and its `sequential-thinking` copy has no SKILL.md; the primary
+archive's `ck:sequential-thinking` was unreachable this session (HTTP 403).
+No content was copied from a source that could not be read.
+
+Frontmatter description rewritten (1011 chars, under the 1024 limit) to
+advertise the always-on workflow and file-output remediation contract.

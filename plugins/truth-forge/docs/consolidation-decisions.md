@@ -292,3 +292,18 @@ prompts; intent, steering, commit, and file extraction all asserted). The
 fixture is constructed format-conformance data, NOT a captured session — the
 parser has not yet run against the live transcript corpus on the user's
 machine, and the skill says to treat that first live run as the real gate.
+
+## prompt-forge rework (v1.4.0, 2026-08-11)
+
+Decision: rebuilt `prompt-forge` around an always-on workflow (Section 0)
+rather than patching each mode separately — the directive (immediate
+file-applied remediation, sequential thinking, XML tags, authorization,
+todos) binds all four modes identically, so a single binding section plus
+per-mode hooks avoids four divergent copies of the same rules. The XML tag
+standard extends the tag set already proven in the mood-ring demo prompt
+(`task/context/constraints/output_contract/validation/example` +
+`skills_to_activate/mcp_tools`) with `sequential_thinking`, `todos`, and
+`authorization`. Sequential-thinking methodology was specified from
+established practice because both archive copies of the source skill were
+empty (see validation-results.md §15) — no unreadable source was
+paraphrased.
