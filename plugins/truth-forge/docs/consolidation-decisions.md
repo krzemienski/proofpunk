@@ -307,3 +307,17 @@ standard extends the tag set already proven in the mood-ring demo prompt
 established practice because both archive copies of the source skill were
 empty (see validation-results.md §15) — no unreadable source was
 paraphrased.
+
+## implement skill + prompt-forge command surface (v1.5.0, 2026-08-11)
+
+Decision: layered architecture rather than merging — `implement` is the
+orchestrator (mining, parallel scouts, prompt-forged planning, parallel
+lanes, criteria distillation, auto loop) and `cook` stays the execution
+engine it delegates code phases to. Both have auto/parallel vocabulary;
+the division of labor (conductor vs player) is stated in both skills so
+routing is unambiguous. prompt-forge's flags were placed in a Command
+Surface section rather than inline per mode, because every flag is an
+authorization-engine consent and 0.3 is the single table they map to.
+The remediation sample was written as a reference file (not inline) to
+keep SKILL.md within size discipline while still showing a real
+before/after with actual scores.

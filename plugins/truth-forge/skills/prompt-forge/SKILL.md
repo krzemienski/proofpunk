@@ -2,20 +2,21 @@
 name: prompt-forge
 description: >
   Prompt engineering, rating, and pipeline design in one skill: author
-  high-quality prompts (system prompts, task prompts, structured-output
-  prompts) on the canonical XML tag skeleton, RATE any prompt against a
-  quantitative evaluation rubric with test cases and metrics, optimize
-  weak prompts against real failure evidence, and build multi-stage
-  meta-prompt pipelines (.prompts/ directories with dependency-aware
-  Do/Plan/Research/Refine stages, each with a SUMMARY.md). Every mode
-  runs the always-on workflow: sequential thinking, todo tracking, an
+  high-quality prompts on the canonical XML tag skeleton, RATE any
+  prompt against a quantitative evaluation rubric with test cases and
+  metrics, optimize weak prompts against real failure evidence, and
+  build multi-stage meta-prompt pipelines (.prompts/ directories with
+  dependency-aware stages, each with a SUMMARY.md). Every mode runs the
+  always-on workflow: sequential thinking, todo tracking, an
   authorization engine, and a file-output contract — remediations from
   any rating are applied immediately and written to a file (a new file
   by default, the input file only with explicit consent), never left as
-  chat-only suggestions. Use whenever asked to write, review, score,
-  rate, improve, or debug a prompt; design a system prompt; force
-  structured output; manage long context; create prompt pipelines or
-  meta-prompts; or when output is unreliable and the prompt is suspect.
+  chat-only suggestions. CLI-style flags grant the consents: --in-place,
+  --report-only, --ship-below-threshold, --out, --evidence, --depth,
+  --dir; unknown flags are rejected. Use to write, rate, improve, or
+  debug a prompt; design a system prompt; force structured output;
+  manage long context; or when output is unreliable and the prompt is
+  suspect.
 ---
 
 # Prompt Forge
@@ -138,6 +139,37 @@ a stated reason.
 | "Create a multi-stage prompt pipeline" | PIPELINE | Section 4 |
 
 Section 0 runs first in every mode.
+
+## Command Surface (CLI-style arguments)
+
+Invocations take flags. Flags are how the user grants the consents the
+authorization engine (0.3) requires — a flag IS the explicit consent,
+recorded in the report.
+
+```
+prompt-forge author "<goal>" [--out PATH] [--depth core|advanced]
+prompt-forge rate NAME.md [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]
+prompt-forge optimize NAME.md --evidence FILE [--in-place] [--out PATH]
+prompt-forge pipeline "<goal>" [--dir .prompts/NAME]
+```
+
+| Flag | Modes | Effect | Why it exists |
+|------|-------|--------|---------------|
+| `--out PATH` | all | write the deliverable to PATH instead of the 0.4 default name | user controls where artifacts land |
+| `--depth core\|advanced` | author | Core = instruction set only; Advanced = few-shot set, edge cases, fallbacks | intake question 4 as a flag |
+| `--in-place` | rate, optimize | edit the input file itself; no `.remediated`/`.optimized` copy | the 0.3 consent for in-place edits, as a flag |
+| `--report-only` | rate | scorecard only, NO remediated file | the 0.3 consent for skipping file output — invalid without this flag |
+| `--ship-below-threshold` | rate, optimize | finalize even if the result grades `needs-work`/`rewrite` | the 0.3 sign-off for below-threshold shipping |
+| `--evidence FILE` | optimize | path to captured real failure output(s) | Section 3's hard requirement, machine-checkable |
+| `--dir PATH` | pipeline | pipeline root (default `.prompts/<slug>`) | multi-pipeline repos need separate roots |
+
+Unknown flags are rejected with the flag list, never silently ignored.
+Conflicting flags (`--in-place` + `--out`, `--report-only` + `--out`)
+fail fast with the conflict named.
+
+A full worked rating-and-remediation with real before/after content lives
+in `references/remediation-sample.md` — consult it when the user asks what
+a remediation actually looks like.
 
 ## Section 1 — AUTHOR
 

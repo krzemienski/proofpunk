@@ -355,3 +355,59 @@ No content was copied from a source that could not be read.
 
 Frontmatter description rewritten (1011 chars, under the 1024 limit) to
 advertise the always-on workflow and file-output remediation contract.
+
+## 16. prompt-forge Command Surface + implement Skill (v1.5.0, 2026-08-11) — PASS
+
+Two directives: (a) the v1.4.0 prompt-forge rework described remediation
+abstractly but showed no concrete remediation sample and no CLI arguments;
+(b) a new `implement` command should orchestrate the actual implementation
+process using ALL skills, with session mining and parallel/auto modes.
+
+### prompt-forge additions (quick_validate: PASS)
+
+1. **Command Surface section** — CLI-style flags mapped onto the
+   authorization engine (0.3), so a flag IS the recorded consent:
+   `--in-place` (in-place edit consent), `--report-only` (skip file
+   output), `--ship-below-threshold` (below-threshold sign-off), `--out`,
+   `--depth`, `--evidence` (OPTIMIZE's hard requirement), `--dir`.
+   Unknown flags rejected; conflicting flags fail fast.
+2. **`references/remediation-sample.md`** — a full worked RATE pass on a
+   weak prompt: sequential-thinking chain, scorecard (34/100, rewrite),
+   predicted failure modes, four test cases, the remediated file on the
+   canonical XML skeleton, re-score (91/100), and what each flag would
+   have changed.
+
+### implement skill (quick_validate: PASS)
+
+New skill `skills/implement/SKILL.md` — the orchestrator (conductor) to
+cook's execution engine (player), resolving the overlap question
+explicitly in both directions:
+
+- **Command surface**: `implement "<goal>" [--parallel] [--auto] [--mine]
+  [--fast] [--no-test] [--tdd]` and `implement mine [--project] [--since]
+  [--until] [--json]`, each flag with a why-it-exists column.
+- **Phase 0 — TRUE success criteria distillation**: observable, end-user
+  provable, measurable; approval gate when the goal is not clearly laid
+  out or not understood — the one mandatory stop under `--auto`.
+- **Phase 1 — MINE** via session-intent: past implementation sessions as
+  an intent matrix (prompts, tools, files, commits) feeding exploration
+  and forging; `implement mine` alone is a reconnaissance-only pass.
+- **Phase 2 — EXPLORE** with parallel scout agents (structure, patterns,
+  contracts, history); contradictions resolved against the code.
+- **Phase 3 — FORGE** via prompt-forge AUTHOR on the canonical XML
+  skeleton; approved criteria become the prompt's success metrics verbatim.
+- **Phase 4 — PLAN**: validation-plan + plan-hardening; `--parallel` ->
+  prompt-forge PIPELINE with parallel independent stages.
+- **Phase 5 — EXECUTE** under cook's gates; `--parallel` lanes with
+  per-lane todo chains; authorization boundaries (destructive ops,
+  out-of-scope edits, below-threshold shipping) bind even `--auto`.
+- **Phases 6-8**: root-cause-debugging (no retries as fixes), end-user
+  validation (UNVERIFIED = NOT DONE under `--auto`), criteria-by-criteria
+  proof table + todo ledger.
+
+### Propagation
+
+plugin.json 1.5.0 (description + 6 keywords), marketplace.json 1.5.0,
+README skill table + counts (16 -> 17), installer `ALL_SKILLS` +
+INSTALL.md counts/examples updated. Both new/changed skills packaged
+self-contained (shared refs bundled, citations rewritten).

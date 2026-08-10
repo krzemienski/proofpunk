@@ -1,6 +1,6 @@
 # truth-forge
 
-An evidence-gated validation **plugin marketplace for Claude Code**: 16 skills that
+An evidence-gated validation **plugin marketplace for Claude Code**: 17 skills that
 make "done" mean *proven*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
@@ -23,7 +23,8 @@ extract it into your marketplaces directory.
 | `prompt-forge` | Prompt AUTHOR / RATE (7-dimension /100 rubric) / OPTIMIZE / PIPELINE modes with quality gates |
 | `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** gates |
 | `plan-hardening` | Confidence-gap scoring, 4 red-team lenses, dispositioned gap register, gate injection |
-| `cook` | Gated phase-by-phase execution of validation plans |
+| `cook` | Gated phase-by-phase execution of validation plans (the engine `implement` delegates to) |
+| `implement` | Orchestrated front door composing ALL skills: session mining (`--mine`), parallel scout agents, prompt-forged plans, parallel lanes (`--parallel`), no-stop mode with distilled success criteria + approval gate (`--auto`) |
 | `functional-validation` | Drive the real system end-to-end per platform (web/iOS/API/CLI runbooks) |
 | `evidence-gates` | Run-scoped fresh evidence (`fresh_evidence.py`: init-run/next-step/seal/validate), verdict templates |
 | `visual-inspection` | Screenshot-driven visual QA with severity model (found a real HIGH defect in the demo) |
@@ -36,6 +37,7 @@ extract it into your marketplaces directory.
 | `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts, eval-driven development, QA cycling until measured goal attainment |
 | `session-intent` | Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts |
 
+`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, and `implement` arrived in v1.5.0.
 Five were added in v1.1.0 and `session-intent` in v1.2.0 from a second full-universe scan (664 unique skills
 across both source archives, classified by usefulness domain) — see
 `plugins/truth-forge/docs/consolidation-decisions.md`.
@@ -66,7 +68,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/truth-forge/              the plugin (16 skills + references + docs)
+plugins/truth-forge/              the plugin (17 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 
