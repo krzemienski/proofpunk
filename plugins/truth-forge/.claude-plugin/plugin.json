@@ -1,6 +1,6 @@
 {
   "name": "truth-forge",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, validate, and audit with fresh-evidence gates and no-mock discipline. Consolidates functional validation, full functional audit, validation planning, plan hardening, prompt engineering/rating with mandatory file-output remediation, sequential thinking, and authorization gates, meta-prompt pipelines, visual inspection, UI experience audit, brainstorming, and structured implementation workflows — plus per-stack real-system testing (pytest/Go/C++/Django/Spring/FastAPI/Playwright), iOS simulator validation with evidence gates, root-cause debugging, production-readiness audits, and red-team/eval workflows — plus session-intent reconstruction from Claude Code transcripts — plus the implement orchestrator that composes all of them (session mining, parallel scout/plan/execution lanes, distilled success criteria with approval gate, no-stop --auto mode) — into one coherent plugin.",
   "author": {
     "name": "truth-forge maintainers"

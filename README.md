@@ -46,6 +46,556 @@ Shared doctrine lives in `plugins/truth-forge/references/` — the Iron Rule (fi
 system), the End-User Actor Mandate, the evidence contract, severity model, platform
 routing, preflight checks, and CI gate classification.
 
+
+## Command reference — every argument, every permutation, what executes
+
+Conventions: `<angle>` = required positional argument, `[bracket]` = optional,
+`A | B` = alternatives, `--flag=value` takes a value. **Skills executed** names
+the skills that fire beyond the one invoked, in firing order, taken from each
+skill's own Related Skills / delegation contract.
+
+### Dispatch at a glance
+
+| You run | Skill that fires | Then delegates to |
+|---------|------------------|-------------------|
+| `implement "<goal>" [flags]` | `implement` | session-intent, prompt-forge, validation-plan, plan-hardening, cook, root-cause-debugging, functional-validation, evidence-gates, stack-testing |
+| `implement mine [filters]` | `implement` (Phase 1 only) | session-intent |
+| `prompt-forge author\|rate\|optimize\|pipeline ...` | `prompt-forge` | none (leaf); pipeline stages later execute under cook |
+| `cook <goal\|plan-path> [mode] [--tdd]` | `cook` | brainstorm, validation-plan, functional-validation, evidence-gates |
+| `functional-validation --analyze\|--plan\|--execute\|--fix\|--audit\|--report` | `functional-validation` | evidence-gates, full-functional-audit, visual-inspection, ui-experience-audit, validation-plan |
+| `session_intent.py [filters] [outputs]` | `session-intent` | none (leaf tool) |
+| `fresh_evidence.py init-run\|next-step\|seal\|validate` | `evidence-gates` | none (leaf tool) |
+| `with_server.py --server ... --port ... -- <check>` | `stack-testing` | none (leaf tool) |
+| `truth-forge-install.sh [flags]` | installer (tools/, not a skill) | installs all 17 skills + doctrine |
+
+---
+
+### 1. `implement` — orchestrated implementation
+
+```
+implement <goal> [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]
+implement mine [--project DIR] [--since DATE] [--until DATE]
+```
+
+**Positional arguments**
+
+| Argument | Why it exists | What happens |
+|----------|---------------|--------------|
+| `<goal>` | the implementation target, in natural language | fed to Phase 0 and distilled into TRUE success criteria (observable, end-user provable, measurable); unclear goals stop here for your approval |
+| `mine` (subcommand) | reconnaissance-only mode | runs session mining and prints the previous-implementations matrix; zero code touched |
+
+**Flags**
+
+| Flag | Why it exists | What happens |
+|------|---------------|--------------|
+| `--parallel` | multi-module goals where wall-clock matters | parallel scout agents (structure/patterns/contracts/history), plan authored as a `.prompts/` pipeline with parallel independent stages, execution split into parallel lanes by module boundary |
+| `--auto` | unattended runs with a real finish line | no stopping until every success criterion is proven as the end user; the ONLY mandatory stop is Phase 0 approval when criteria aren't clearly laid out; destructive ops, out-of-scope edits, below-threshold shipping still stop for consent |
+| `--mine` | you've implemented similar things before | Phase 1 runs session-intent: past sessions become an intent matrix (prompts, tools, files, commits) that feeds exploration and forging |
+| `--fast` | known territory, known stack | planning's research sub-step skipped (cook fast-mode semantics) |
+| `--no-test` | no runnable suite in this environment | the test gate downgrades to a warning you must explicitly accept; regression rail only |
+| `--tdd` | refactor-heavy goals | tests for current behavior written before the change, re-verified after |
+| `--project DIR` (mine) | scope mining to one project | substring filter on project dir slug / cwd |
+| `--since DATE` / `--until DATE` (mine) | time-box the mining | transcript events outside the window are excluded |
+
+**Permutations — what each combination does and what you end up with**
+
+| Invocation | Why you'd use it | What happens, end to end | Skills executed | You end up with |
+|------------|------------------|--------------------------|-----------------|-----------------|
+| `implement "add billing webhooks"` | standard supervised run | Phase 0 criteria (approval if unclear) → explore → forge prompt → plan → execute with review gates → validate as end user → report | prompt-forge → validation-plan → plan-hardening → cook → functional-validation → evidence-gates → stack-testing | implementation + criteria-by-criteria proof table + todo ledger |
+| `... --mine` | reuse past approaches | Phase 1 mines sessions first; the intent matrix steers scouts (past touchpoints) and the forged prompt (framings that worked) | session-intent → *(as above)* | + previous-implementations matrix |
+| `... --parallel` | multi-module, speed matters | 4 parallel scouts; prompt-forge PIPELINE authors `.prompts/` with parallel stages; cook executes lanes concurrently; contract checks serialize lane merges | *(scouts in parallel)* → prompt-forge (PIPELINE) → cook (lanes) → functional-validation → evidence-gates | + `.prompts/` tree with PROMPT.md + SUMMARY.md per stage |
+| `... --auto` | run unattended | Phase 0 approval gate (if criteria unclear) is the ONLY stop; loops execute → validate → root-cause-fix → re-validate until every criterion passes; UNVERIFIED = NOT DONE | + root-cause-debugging on every failure | proof table with PASS per criterion, or an explicit blocker statement naming the consent needed |
+| `... --parallel --auto` | unattended multi-module | both behaviors combined; authorization boundaries (destructive ops, out-of-scope edits, below-threshold shipping) still stop the run | *(both chains above)* | full pipeline artifacts + proof table, zero human gates except Phase 0 + consent stops |
+| `... --auto --mine` | unattended, informed by history | mining feeds the criteria distillation itself (past intent sharpens what "done" means) | session-intent → full auto chain | + intent matrix cited in the final report |
+| `... --parallel --mine` | supervised but fast and informed | parallel scouts ALSO receive the mined touchpoint list as their History lane assignment | session-intent → parallel scouts → parallel pipeline → supervised cook | combined artifacts, human review gates intact |
+| `... --parallel --auto --mine` | "full send" | every phase maximally delegated; the run stops only for Phase 0 approval (if needed) and authorization-boundary consents | session-intent → parallel scouts → prompt-forge PIPELINE → parallel cook lanes → root-cause-debugging loop → proof layer | everything above; the complete trail from mined intent to sealed evidence |
+| any of the above `+ --fast` | you know the codebase cold | research sub-step skipped everywhere planning happens | same chains, research elided | same artifacts, faster planning |
+| any of the above `+ --no-test` | environment can't run suites | test gate becomes a warning requiring your explicit acceptance; end-user validation still mandatory | same chains | report carries the accepted warning verbatim |
+| any of the above `+ --tdd` | refactoring existing behavior | characterization tests written first per phase, re-verified after | same chains | + characterization test suite |
+| `implement mine` | "show me how we built things" | mining only, prints the matrix to stdout, exits | session-intent | previous-implementations matrix |
+| `implement mine --project shop --since 2026-07-01` | scoped recon | AND-composed filters: only July+ sessions in the shop project | session-intent | filtered matrix |
+
+**Conflicts**: no two flags conflict. Unknown flags are rejected with the flag
+table. `--auto` never overrides the authorization boundaries.
+
+---
+
+### 2. `prompt-forge` — author / rate / optimize / pipeline
+
+```
+prompt-forge author "<goal>" [--out PATH] [--depth core|advanced]
+prompt-forge rate NAME.md [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]
+prompt-forge optimize NAME.md --evidence FILE [--in-place] [--out PATH]
+prompt-forge pipeline "<goal>" [--dir PATH]
+```
+
+**Positional arguments**
+
+| Argument | Why it exists | What happens |
+|----------|---------------|--------------|
+| `"<goal>"` (author, pipeline) | the prompt's purpose in natural language | drives the 5-7 intake questions, then authoring on the canonical XML skeleton |
+| `NAME.md` (rate, optimize) | the prompt file under review | the rating's subject AND the default base name for output files (`NAME.rating.md`, `NAME.remediated.md`, `NAME.optimized.md`) |
+
+**Flags** — each one IS a recorded authorization-engine consent:
+
+| Flag | Modes | Why it exists | What happens |
+|------|-------|---------------|--------------|
+| `--out PATH` | all | you control where artifacts land | deliverable written to PATH instead of the default name |
+| `--depth core\|advanced` | author | intake question 4 as a flag | core = instruction set only; advanced = few-shot set, edge cases, fallbacks |
+| `--in-place` | rate, optimize | consent to edit your input file | the input file itself is replaced; no `.remediated`/`.optimized` copy |
+| `--report-only` | rate | consent to skip file output | scorecard only; without this flag a rating with no remediated file violates the file-output contract |
+| `--ship-below-threshold` | rate, optimize | sign-off for below-threshold shipping | a `needs-work`/`rewrite` result may be finalized; without it the report states what's still missing |
+| `--evidence FILE` | optimize | OPTIMIZE's hard requirement, machine-checkable | real captured failure output drives the fix classification; WITHOUT this flag optimize does not run — it asks for a real bad output first |
+| `--dir PATH` | pipeline | multi-pipeline repos | pipeline rooted at PATH (default `.prompts/<slug>`) |
+
+**Permutations**
+
+| Invocation | What happens | You end up with |
+|------------|--------------|-----------------|
+| `rate prompts/login.md` | rubric scoring against 3-5 built test cases → top fixes APPLIED → remediated version re-scored | `login.rating.md` + `login.remediated.md` + before/after scores |
+| `rate prompts/login.md --in-place` | same, but `login.md` itself is replaced by the remediated version | `login.rating.md` + edited `login.md` |
+| `rate prompts/login.md --report-only` | scorecard and predicted failure modes only | `login.rating.md` |
+| `rate prompts/login.md --ship-below-threshold` | if the re-score still lands at needs-work, it ships anyway — with your sign-off recorded | files + recorded sign-off in the report |
+| `rate prompts/login.md --out review.md` | artifacts at your path | `review.md` (+ `login.remediated.md`) |
+| `optimize prompts/login.md --evidence bad-output.txt` | failures classified (ambiguity / missing context / format drift / reasoning gap / overflow) → targeted fixes → same test cases re-run | `login.optimized.md` + before/after scores |
+| `optimize prompts/login.md` (no --evidence) | **does not run** — demands a real captured bad output first | nothing; a question back to you |
+| `author "a SQL review prompt" --depth advanced` | intake → authored prompt with few-shot set, edge cases, fallbacks | `a-sql-review-prompt.prompt.md` |
+| `pipeline "onboarding revamp" --dir .prompts/onboarding` | dependency-aware Research/Plan/Do stages authored | `.prompts/onboarding/NN-stage/PROMPT.md` tree |
+
+**Conflicts (rejected, fail fast)**: `--in-place` + `--out` (two
+destinations), `--report-only` + `--out` (nothing to write), `--report-only`
++ `--in-place` (no output vs edit). Unknown flags rejected with the table.
+
+A complete worked rating — weak prompt, 34/100 scorecard, remediated file,
+91/100 re-score — lives in `plugins/truth-forge/skills/prompt-forge/references/remediation-sample.md`.
+
+Skills executed: none downstream (leaf). It is executed BY `implement`
+(Phases 3-4) and pairs with `plan-hardening` / `validation-plan`.
+
+---
+
+### 3. `cook` — gated execution engine
+
+```
+cook <goal> [mode] [--tdd]
+cook <plan-path> [mode] [--tdd]
+```
+
+**Positional arguments**
+
+| Argument | Why it exists | What happens |
+|----------|---------------|--------------|
+| `<goal>` | a feature/fix in natural language | full pipeline: scout the codebase → exact requirements → research → plan → review gates → implement → test → end-user verify |
+| `<plan-path>` | a pre-written plan file | the scout gate is skipped — the plan encodes scout output; execution follows the plan's phases |
+
+**Modes** (pick one; interactive is the default)
+
+| Mode | Research | Review gates | Progression | Why you'd use it |
+|------|----------|--------------|-------------|------------------|
+| `interactive` (default) | yes | human approval at each gate | one step at a time | supervised work, unfamiliar territory |
+| `fast` | no | human approval at each gate | one step at a time | known stack, known patterns |
+| `auto` | yes | auto-approve LOW-risk only; high-risk stops | continuous on low-risk | unattended on well-bounded changes |
+| `parallel` | optional | human approval at each gate | batched groups | independent phases executed in batches |
+| `no-test` | yes | human approval at each gate | one step at a time | no runnable suite; test gate becomes a warning you must accept |
+
+**Permutations — mode × `--tdd`**
+
+| Invocation | What happens | You end up with |
+|------------|--------------|-----------------|
+| `cook "add avatar upload"` | full supervised pipeline, 4 review gates | feature + test pass + end-user evidence |
+| `cook "add avatar upload" --tdd` | characterization tests before each phase's change, re-verified after | + safety net for every touched behavior |
+| `cook "add avatar upload" fast` | research skipped; gates unchanged | same, faster ramp-up |
+| `cook "add avatar upload" fast --tdd` | known territory + tests-first | same artifacts, fastest supervised path |
+| `cook "add avatar upload" auto` | low-risk steps auto-approved; any high-risk step (contract change, deletion, migration) stops for you | continuous progress with named stops |
+| `cook "add avatar upload" auto --tdd` | unattended + tests-first; high-risk stops still apply | same, with regression net |
+| `cook "add avatar upload" parallel` | independent phases batched concurrently, gates per batch | batched-phase execution log |
+| `cook "add avatar upload" parallel --tdd` | batches with tests-first inside each phase | same + net |
+| `cook "add avatar upload" no-test` | 100%-pass requirement downgraded to a warning you must explicitly accept; acceptance criteria, regression walk, contract checks still enforced | report carrying the accepted warning |
+| `cook "add avatar upload" no-test --tdd` | warning mode, but characterization tests still written (they just aren't a gate) | tests exist; gate is advisory |
+| `cook .planning/ROADMAP.md` | plan file loaded; scout skipped; gates per plan phase | plan executed end to end |
+| `cook .planning/ROADMAP.md --tdd` | plan-driven + tests-first | same + net |
+
+Skills executed: `brainstorm` (when the approach is undecided upstream),
+`validation-plan` (authors the plans cook executes), `functional-validation`
++ `evidence-gates` (Gate 4 end-user proof). It is executed BY `implement`
+Phase 5.
+
+---
+
+### 4. `functional-validation` — end-user proof protocol
+
+```
+functional-validation [--analyze] [--plan] [--execute] [--fix] [--audit] [--report]
+                      [--platform web|ios|api|cli] [--ci]
+```
+
+No positional arguments. Flags compose into the default flow
+**analyze → plan → execute → (fix) → report**.
+
+| Flag | Why it exists | What happens |
+|------|---------------|--------------|
+| `--analyze` | criteria before execution (confirmation-bias guard) | inventory features + interfaces, define PASS criteria; NO execution |
+| `--plan` | ordered, gated validation | ordered validation plan with gates per feature |
+| `--execute` | the actual driving | run the plan against the real system, capture evidence |
+| `--fix` | remediation inside the loop | fix FAILs against the real system, then re-validate |
+| `--audit` | one feature isn't enough | full pass over EVERY feature (delegates to `full-functional-audit`) |
+| `--report` | one verdict document | synthesize all verdicts into a single report |
+| `--platform <p>` | detection got it wrong | force the platform runbook |
+| `--ci` | automation needs exit codes | machine-readable output, non-zero exit on FAIL |
+
+**Permutations**
+
+| Invocation | What happens |
+|------------|--------------|
+| `functional-validation` (no flags) | full default flow: analyze → plan → execute → fix (if FAILs) → report |
+| `--analyze` alone | feature inventory + PASS criteria only; nothing executed |
+| `--analyze --plan` | criteria + gated plan, still zero execution |
+| `--execute` alone | run an existing plan; refuses if no criteria exist yet |
+| `--execute --fix` | execute and remediate in one loop, re-validating after each fix |
+| `--audit --ci` | full-app pass with machine-readable verdicts and a failing exit code on any FAIL — the CI wiring |
+| `--platform ios --execute` | force the iOS runbook (pairs with `mobile-validation-runner` lanes) |
+
+Skills executed: `evidence-gates` (freshness + citation for every verdict),
+`full-functional-audit` (on `--audit`), `visual-inspection` /
+`ui-experience-audit` (reviewing captured visual evidence), `validation-plan`
+(embedding checks as blocking gates).
+
+---
+
+### 5. `session-intent` — transcript mining
+
+```
+python3 scripts/session_intent.py [--projects-dir DIR] [--project SUBSTR]
+                                  [--since YYYY-MM-DD] [--until YYYY-MM-DD]
+                                  [--json out.json] [--md out.md]
+```
+
+No positional arguments. Exit code 2 when no transcripts match (never a
+silent empty success).
+
+| Argument | Default | Why it exists | What happens |
+|----------|---------|---------------|--------------|
+| `--projects-dir DIR` | `~/.claude/projects` | non-standard transcript locations | scans DIR for `*.jsonl` transcripts |
+| `--project SUBSTR` | all projects | scope to one codebase | substring filter on project dir slug / cwd |
+| `--since` / `--until` | unbounded | time-box the reconstruction | events outside the window excluded |
+| `--json out.json` | stdout matrix | machine consumption by other tools | writes the full per-session records as JSON |
+| `--md out.md` | stdout matrix | attachable evidence artifact | writes the rendered intent matrix as markdown |
+
+**Permutations**
+
+| Invocation | What happens |
+|------------|--------------|
+| no args | mine everything under `~/.claude/projects`, print the matrix |
+| `--project shop --since 2026-07-01` | AND-composed filters: July+ sessions in the shop project only |
+| `--json out.json --md out.md` | both artifacts written; stdout still prints the summary |
+| `--since 2026-08-01 --until 2026-08-07` | one-week window across all projects |
+
+Skills executed: none (leaf tool). Consumed BY `implement --mine` /
+`implement mine`; its matrix pairs with `production-readiness`
+(spec-compliance vs intent-compliance) and `root-cause-debugging`
+(when INTENT-PARTIAL rows reveal unauthorized scope).
+
+---
+
+### 6. `evidence-gates` — the fresh-evidence lifecycle
+
+```
+python3 scripts/fresh_evidence.py init-run <slug>
+python3 scripts/fresh_evidence.py next-step <slug>
+python3 scripts/fresh_evidence.py seal
+python3 scripts/fresh_evidence.py validate
+```
+
+**Positional argument**
+
+| Argument | Why it exists | What happens |
+|----------|---------------|--------------|
+| `<slug>` | run identity — evidence is run-scoped so stale artifacts can't be reused | `init-run` creates `run-<timestamp>-<slug>/` and prints the run_id; `next-step` prints the next `step-NN` prefix inside it |
+
+This is a lifecycle, not a combinatorial flag set — the ordered sequence is
+the only valid composition: **init-run → next-step × N (each evidence
+capture) → seal → validate**. Exit codes: `0` OK; `2` refusal (bad slug,
+no active run, stale/empty artifacts, missing metadata) — `validate` prints
+`STALE:` / `EMPTY:` for every offending artifact so nothing fails silently.
+
+Skills executed: none (leaf tool). It is executed BY cook's Gate 4,
+`functional-validation`, `mobile-validation-runner`, `implement` Phase 7,
+`red-team-eval`, `production-readiness` — every verdict in the plugin seals
+through this lifecycle.
+
+---
+
+### 7. `stack-testing` — real-server test rigs
+
+```
+python3 scripts/with_server.py --server "<start-cmd>" --port N -- <check-cmd>
+cd scripts/playwright && npm install && node run.js --help
+```
+
+| Argument | Why it exists | What happens |
+|----------|---------------|--------------|
+| `--server "<start-cmd>"` | tests need the REAL server, lifecycle-managed | starts the dev server, waits for the port (condition-based, no sleeps) |
+| `--port N` | readiness is proven by the port answering | poll until accepting connections or fail loudly |
+| `-- <check-cmd>` (trailing positional) | the actual check to run against the live server | runs your check (Playwright script, curl probe, pytest e2e), then tears the server down |
+
+Skills executed: none (leaf tool). Consumed BY `cook`, `functional-validation`,
+`root-cause-debugging` (turning a reproducer into a permanent regression test).
+
+---
+
+### 8. `tools/truth-forge-install.sh` — the installer
+
+No positional arguments; everything is flags. Full table with
+why-it-exists lives in `tools/INSTALL.md`; the flags:
+
+| Flag | Why it exists |
+|------|---------------|
+| `--target claude-code\|omp` | which agent's skills dir to install into |
+| `--dir PATH` | explicit skills dir (overrides --target) |
+| `--source github\|local` / `--source-dir PATH` / `--ref REF` | where the skills come from: GitHub at a ref, or a local checkout |
+| `--only a,b,c` | surgical subset instead of all 17 |
+| `--list` | show what would be installed, then exit |
+| `--override` | consent to REPLACE same-name skills (timestamped `.bak` backups) |
+| `--backup` / `--no-backup` | backup control when overriding |
+| `--with-doctrine` / `--no-doctrine` | include the truth-forge-doctrine bundle (Iron Rule, End-User Actor Mandate, remediation definition) |
+| `--inject-claude-md FILE` | append the idempotent BEGIN/END TRUTH-FORGE RULES block to your CLAUDE.md |
+| `--dry-run` | print the full plan, write nothing |
+| `--verify` / `--no-verify` | post-install self-check (structure, citations, doctrine) |
+| `--quiet` | summary only |
+
+**Canonical permutations**
+
+| Invocation | What happens |
+|------------|--------------|
+| `truth-forge-install.sh --target claude-code` | first-time: all 17 skills + doctrine + verify, from GitHub |
+| `--target omp --dry-run` | full plan printed for oh-my-claudecode, zero writes |
+| `--only prompt-forge,implement --override` | surgical refresh of two skills, backups taken |
+| `--source local --source-dir /path/to/repo --no-verify` | offline install from a checkout, self-check skipped |
+| `--inject-claude-md ~/.claude/CLAUDE.md` | rules block appended once; re-running leaves it unchanged (idempotent) |
+
+**Conflicts (fail fast)**: `--target` + `--dir` (two destinations);
+`--dry-run` + `--override` (plan-only vs mutate); `--source github` without
+network. Exit codes: 0 success, 1 environment/usage error, 2 install
+failure, 3 unknown skill in `--only`.
+
+---
+
+### 9. Protocol skills — no flags, what fires when you invoke them
+
+These skills take natural-language input only (no arguments); what matters
+is what they execute downstream:
+
+| You invoke | What happens | Skills executed downstream |
+|------------|--------------|---------------------------|
+| `brainstorm` | scout-first ideation with trade-off analysis; no code before an approved design | validation-plan (plan the design), plan-hardening (red-team it), cook (build it) |
+| `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking cumulative gates | plan-hardening (strengthen drafts), evidence-gates (executes the gate blocks), cook (executes phases) |
+| `plan-hardening` | confidence-gap scoring, 4 red-team lenses, dispositioned gap register | validation-plan (the plans it hardens), prompt-forge (the prompts it gates), brainstorm (upstream) |
+| `visual-inspection` | screenshot QA with severity classification | ui-experience-audit (deeper pass), functional-validation (exercise after visual PASS) |
+| `ui-experience-audit` | 6-phase UX protocol (triage → visual → interactive → content → heuristics → synthesis) | visual-inspection (Phase 1), functional-validation (drives flagged flows), full-functional-audit (app-wide), evidence-gates (citations) |
+| `full-functional-audit` | app-wide interaction inventory → execute → remediate → verdict | functional-validation (per-interaction protocol), evidence-gates (batch verdicts), ui-experience-audit (per-screen), validation-plan (fix list → plan) |
+| `mobile-validation-runner` | iOS end-user validation: SETUP→RECORD→ACT→COLLECT→VERIFY; lanes: simctl (bundled, always available), XC-MCP (a11y-first UI automation), Expo/idb (React Native) | visual-inspection (audit every screenshot), ui-experience-audit (per-screen), evidence-gates (sealing), functional-validation (web/API equivalent) |
+| `root-cause-debugging` | reproduce → minimize → hypothesize → instrument; fixes the ROOT CAUSE, never the symptom | stack-testing (reproducer → regression test), functional-validation (blast-radius re-check), plan-hardening (large fixes), evidence-gates (claims) |
+| `production-readiness` | 8-phase ship-readiness audit + spec-compliance matrix + dependency health | full-functional-audit (drive everything), stack-testing (close gaps), evidence-gates (seal waves), plan-hardening (remediation plan) |
+| `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts + measured QA cycles | plan-hardening (planning-stage lenses), prompt-forge (rubric rating), functional-validation (post-convergence PASS/FAIL), evidence-gates (seal scores) |
+
+---
+
+## System architecture
+
+### 1. Repository layout
+
+```mermaid
+graph TD
+    M["truth-forge-marketplace<br/>.claude-plugin/marketplace.json"]
+    M --> P["plugins/truth-forge<br/>the plugin"]
+    M --> T["tools/<br/>truth-forge-install.sh + INSTALL.md"]
+    M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
+    P --> S["skills/ — 17 skills"]
+    P --> R["references/ — 9 shared doctrine files"]
+    P --> D["docs/ — consolidation + validation records"]
+    R -.->|cited by| S
+```
+
+### 2. The skill stack (layers)
+
+```mermaid
+graph TB
+    subgraph ORCH["Orchestration"]
+        IMP["implement"]
+    end
+    subgraph PROMPT["Prompt and Plan"]
+        PF["prompt-forge"]
+        BS["brainstorm"]
+        VP["validation-plan"]
+        PH["plan-hardening"]
+    end
+    subgraph EXEC["Execution"]
+        CK["cook"]
+        ST["stack-testing"]
+        MVR["mobile-validation-runner"]
+    end
+    subgraph PROOF["Proof"]
+        FV["functional-validation"]
+        EG["evidence-gates"]
+        VI["visual-inspection"]
+        UX["ui-experience-audit"]
+        FFA["full-functional-audit"]
+    end
+    subgraph DEEP["Deep analysis"]
+        RCD["root-cause-debugging"]
+        RTE["red-team-eval"]
+        PR["production-readiness"]
+        SI["session-intent"]
+    end
+    subgraph DOC["Doctrine — plugins/truth-forge/references/"]
+        REF["end-user-actor.md<br/>evidence-contract.md<br/>severity-model.md<br/>platform-routing.md<br/>preflight-checks.md<br/>ci-gates.md<br/>defect-pattern-database.md<br/>web-wcag-checklist.md<br/>ios-hig-checklist.md"]
+    end
+    ORCH --> PROMPT
+    ORCH --> EXEC
+    ORCH --> PROOF
+    ORCH --> DEEP
+    PROMPT --> EXEC
+    EXEC --> PROOF
+    DEEP --> PROOF
+    PROOF -.->|every verdict cites| DOC
+    EXEC -.->|discipline from| DOC
+    PROMPT -.->|gate 8 from| DOC
+```
+
+### 3. Delegation graph (who actually invokes whom)
+
+Edges taken from each skill's own contract — not aspirational.
+
+```mermaid
+graph LR
+    IMP["implement"] --> SI["session-intent"]
+    IMP --> PF["prompt-forge"]
+    IMP --> VP["validation-plan"]
+    IMP --> PH["plan-hardening"]
+    IMP --> CK["cook"]
+    IMP --> RCD["root-cause-debugging"]
+    IMP --> FV["functional-validation"]
+    IMP --> EG["evidence-gates"]
+    IMP --> ST["stack-testing"]
+    IMP --> BS["brainstorm"]
+    CK --> VP
+    CK --> FV
+    CK --> EG
+    CK --> BS
+    BS --> VP
+    BS --> PH
+    BS --> CK
+    VP --> PH
+    VP --> EG
+    VP --> CK
+    PH --> VP
+    PH --> PF
+    PF --> PH
+    PF --> VP
+    FV --> EG
+    FV --> FFA["full-functional-audit"]
+    FV --> VI["visual-inspection"]
+    FV --> UX["ui-experience-audit"]
+    FFA --> FV
+    FFA --> EG
+    FFA --> UX
+    UX --> VI
+    UX --> FV
+    MVR["mobile-validation-runner"] --> VI
+    MVR --> UX
+    MVR --> EG
+    RCD --> ST
+    RCD --> FV
+    RCD --> EG
+    ST --> FV
+    ST --> EG
+    ST --> RCD
+    ST --> CK
+    PR["production-readiness"] --> FFA
+    PR --> ST
+    PR --> EG
+    PR --> PH
+    RTE["red-team-eval"] --> PH
+    RTE --> PF
+    RTE --> FV
+    RTE --> EG
+    SI --> PR
+    SI --> RCD
+    SI --> EG
+    EG --> FV
+    EG --> VI
+    EG --> UX
+```
+
+### 4. One command traced: `implement "add billing webhooks" --parallel --auto --mine`
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant I as implement
+    participant SI as session-intent
+    participant SC as scout agents
+    participant PF as prompt-forge
+    participant PL as validation-plan + plan-hardening
+    participant CK as cook
+    participant RC as root-cause-debugging
+    participant PR as proof layer (functional-validation + evidence-gates + stack-testing)
+    U->>I: implement "add billing webhooks" --parallel --auto --mine
+    I->>SI: Phase 1: mine past implementation sessions
+    SI-->>I: intent matrix (prompts, tools, files, commits)
+    I->>I: Phase 0: distill TRUE success criteria
+    alt criteria not clearly laid out
+        I->>U: present distilled criteria
+        U-->>I: approval (the only mandatory stop)
+    end
+    par Phase 2: parallel exploration
+        I->>SC: structure scout
+        I->>SC: patterns scout
+        I->>SC: contracts scout
+        I->>SC: history scout (fed by mined matrix)
+    end
+    SC-->>I: 3-6 bullet context summary
+    I->>PF: Phase 3: forge implementation prompt (canonical XML skeleton)
+    PF-->>I: prompt with output_contract + validation per criterion
+    I->>PF: Phase 4: --parallel -> PIPELINE mode, .prompts/ stages in parallel
+    PF-->>I: dependency-aware stage tree
+    I->>PL: harden the plan (gates inside, not after)
+    par Phase 5: parallel execution lanes
+        I->>CK: lane A (webhook endpoint)
+        I->>CK: lane B (signature verification)
+        I->>CK: lane C (persistence + retries)
+    end
+    loop --auto: until every criterion is proven
+        CK-->>I: lane result
+        alt failure
+            I->>RC: reproduce, minimize, root-cause fix
+            RC-->>I: fix + blast-radius re-check
+        end
+        I->>PR: validate criterion as the end user
+        PR-->>I: PASS / UNVERIFIED (= NOT DONE, keep going)
+    end
+    I->>U: criteria-by-criteria proof table + todo ledger + sealed evidence
+```
+
+### 5. The evidence lifecycle (every verdict, every skill)
+
+```mermaid
+stateDiagram-v2
+    [*] --> InitRun: fresh_evidence.py init-run <slug>
+    InitRun --> Capture: run-<timestamp>-<slug>/ created
+    Capture --> Capture: next-step <slug> per artifact (step-NN)
+    Capture --> Seal: fresh_evidence.py seal
+    Seal --> Validate: evidence-inventory.txt written
+    Validate --> Passed: exit 0 — fresh + non-empty + cited
+    Validate --> Refused: exit 2 — STALE:/EMPTY: per artifact
+    Refused --> Capture: re-capture the offending artifact
+    Passed --> [*]: verdict may cite this run
+```
+
+Every PASS the plugin ever reports hangs off this lifecycle; anything not
+executed through it is reported **UNVERIFIED**, never PASS.
+
 ## The proof: `examples/mood-ring/`
 
 A complete live walkthrough on the **Flaskr** tutorial app (from `pallets/flask`, BSD-3):

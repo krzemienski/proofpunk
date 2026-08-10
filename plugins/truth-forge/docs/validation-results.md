@@ -411,3 +411,38 @@ plugin.json 1.5.0 (description + 6 keywords), marketplace.json 1.5.0,
 README skill table + counts (16 -> 17), installer `ALL_SKILLS` +
 INSTALL.md counts/examples updated. Both new/changed skills packaged
 self-contained (shared refs bundled, citations rewritten).
+
+## 17. README Command Reference + Architecture Diagrams (v1.5.1, 2026-08-11) — PASS
+
+Directive: the README must lay out every example with every argument —
+including positional arguments inside skill commands — every meaningful
+permutation with why / what happens / what you end up with, which skills
+execute per invocation, and system architecture diagrams.
+
+Delivered in README.md (629 lines, +550):
+
+1. **Dispatch-at-a-glance table** — invocation -> skill fired -> delegation.
+2. **§1-8 command references** for every argumented surface: implement
+   (positionals `<goal>`/`mine`, 8 flags, 14 permutations), prompt-forge
+   (positionals per subcommand, 7 flags, 9 permutations, conflict rules),
+   cook (positionals `<goal>`/`<plan-path>`, 5 modes, full mode × --tdd
+   12-permutation table), functional-validation (8 flags composing
+   analyze->plan->execute->fix->report), session-intent (5 args with
+   defaults, filter/output permutations, exit 2), evidence-gates
+   (positional `<slug>`, lifecycle as the only valid composition, exit
+   codes), stack-testing (`--server`/`--port`/trailing positional),
+   installer (13 flags + canonical permutations + conflicts + exit codes).
+   Every row answers why / what happens / what you end up with, and names
+   the skills executed downstream.
+3. **§9 protocol-skill routing** — the 10 flag-less skills: invocation ->
+   what happens -> downstream skills, all edges from the skills' own
+   Related Skills sections (verified by extraction, not written from
+   memory).
+4. **Five mermaid architecture diagrams** — repo layout, layered skill
+   stack with the doctrine foundation, the full delegation graph (real
+   edges only), a sequence trace of
+   `implement "add billing webhooks" --parallel --auto --mine`, and the
+   evidence lifecycle state diagram.
+
+Mechanical checks: code fences balanced (28/28), 5/5 mermaid blocks
+closed, all 17 skill names referenced.
