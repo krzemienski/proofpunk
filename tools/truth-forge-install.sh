@@ -32,7 +32,7 @@ SKILLS_SUBPATH="plugins/truth-forge/skills"
 REFS_SUBPATH="plugins/truth-forge/references"
 DOCTRINE_DIRNAME="truth-forge-doctrine"
 
-ALL_SKILLS="brainstorm cook evidence-gates full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing ui-experience-audit validation-plan visual-inspection"
+ALL_SKILLS="brainstorm codebase-truth-audit cook evidence-gates full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing ui-experience-audit validation-plan visual-inspection"
 
 # ------------------------------------------------------------------- utils --
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }

@@ -446,3 +446,47 @@ Delivered in README.md (629 lines, +550):
 
 Mechanical checks: code fences balanced (28/28), 5/5 mermaid blocks
 closed, all 17 skill names referenced.
+
+## 18. Related-Skills Closure + Usage Guide (v1.6.0, 2026-08-11) — PASS
+
+Directive: document the plugin and skills properly with `/skill-name
+example --arg` usage in Claude Code; ensure every skill needed by the
+Related Skills graph actually ships; update the installer and docs.
+
+### Integrity audit (mechanical, full closure)
+
+1. **Related Skills edges**: extracted every backtick-quoted reference in
+   all Related Skills sections and resolved each against the skills
+   directory. Found ONE dangling edge: session-intent referenced
+   `codebase-truth-audit`, which was not in the plugin. **Fixed by
+   shipping it**: the skill (SKILL.md + references/output-contract.md +
+   scripts/init_audit_workspace.py) integrated as skill #18, with a new
+   Related Skills section closing the edge both directions. Re-run of the
+   audit: 18/18 skills, zero dangling edges.
+2. **Reference citations**: every `references/X` citation in every skill
+   file (SKILL.md, references, scripts) resolved against the tree —
+   including shared `../../references/` doctrine paths and cross-skill
+   `../skill/scripts/` paths. Zero missing targets.
+3. **Bundled scripts**: every `scripts/X` citation resolved.
+   `init_audit_workspace.py` verified LIVE (not by inspection): ran
+   `--repo /tmp/repo --label truth-forge-v151` end to end — produced a
+   real 8-phase audit workspace with captured git evidence (status,
+   remotes, metadata). Exit 0, artifacts non-empty.
+
+### Usage guide
+
+New `plugins/truth-forge/docs/usage-guide.md`: how invocation works in
+Claude Code (slash command vs natural-language routing vs chaining),
+then per-skill sections for all 18 skills with positional arguments,
+flags, and literal `/skill-name <args>` example invocations, the three
+bundled CLIs (session_intent.py, fresh_evidence.py,
+init_audit_workspace.py, with_server.py) with their real argument lists,
+and seven chaining recipes. INSTALL.md gained an "After install" usage
+section; README links the guide and shows 18 skills.
+
+### Propagation
+
+plugin.json 1.6.0 (description + 3 keywords), marketplace.json 1.6.0,
+README table + counts (17 -> 18), installer ALL_SKILLS +
+INSTALL.md counts. Both quick_validates PASS (codebase-truth-audit,
+session-intent).

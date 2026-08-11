@@ -1,6 +1,6 @@
 # truth-forge
 
-An evidence-gated validation **plugin marketplace for Claude Code**: 17 skills that
+An evidence-gated validation **plugin marketplace for Claude Code**: 18 skills that
 make "done" mean *proven*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
@@ -36,8 +36,11 @@ extract it into your marketplaces directory.
 | `production-readiness` | 8-phase ship-readiness audit + spec-compliance matrix (COVERED/INCOMPLETE/MISSING) + dependency supply-chain health |
 | `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts, eval-driven development, QA cycling until measured goal attainment |
 | `session-intent` | Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts |
+| `codebase-truth-audit` | Evidence-backed repo-wide truth audits: intent-from-history, code/config/doc/runtime verification, approval-gated remediation (the code-truth lane to session-intent's intent lane) |
 
-`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, and `implement` arrived in v1.5.0.
+`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline).
+
+**Hands-on invocation examples for every skill (`/skill-name <positional> --flag`): `plugins/truth-forge/docs/usage-guide.md`.**
 Five were added in v1.1.0 and `session-intent` in v1.2.0 from a second full-universe scan (664 unique skills
 across both source archives, classified by usefulness domain) — see
 `plugins/truth-forge/docs/consolidation-decisions.md`.
@@ -618,7 +621,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/truth-forge/              the plugin (17 skills + references + docs)
+plugins/truth-forge/              the plugin (18 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 

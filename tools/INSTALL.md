@@ -1,6 +1,6 @@
 # truth-forge installer — usage, options, and why they exist
 
-`tools/truth-forge-install.sh` installs the 17 truth-forge skills as **plain
+`tools/truth-forge-install.sh` installs the 18 truth-forge skills as **plain
 skills** (not a plugin, not a marketplace) into the skills directory of your
 choice, injects the ruling doctrine alongside them, and verifies the result.
 Everything below was executed against the real script before shipping — the
@@ -23,7 +23,7 @@ bash truth-forge-install.sh --target claude-code --override
 
 ```
 <target>/
-├── brainstorm/            # 17 skill dirs, each SELF-CONTAINED:
+├── brainstorm/            # 18 skill dirs, each SELF-CONTAINED:
 │   ├── SKILL.md           #    citations rewritten to references/X
 │   └── references/        #    cited doctrine bundled inside the skill
 │   ...
@@ -62,7 +62,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| `--only a,b,c` | Installs just those skills (default: all 17) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
+| `--only a,b,c` | Installs just those skills (default: all 18) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
 | `--list` | Prints skills in the source and exits | Answer "what would I get?" without touching anything |
 
 ## Collision options — same-name skill already exists
@@ -96,12 +96,12 @@ bad upgrade is one `mv` away from undone.
 ## Literal examples, with what happens
 
 ```bash
-# 1) First-time Claude Code install — 17 skills + doctrine, verified:
+# 1) First-time Claude Code install — 18 skills + doctrine, verified:
 bash truth-forge-install.sh --target claude-code
 #   INSTALL brainstorm … INSTALL visual-inspection
 #   doctrine   : ~/.claude/skills/truth-forge-doctrine
 #   verify     : all installed skills pass frontmatter + reference checks
-#   == summary: 17 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+#   == summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
 
 # 2) OMP, look before you leap — nothing is written:
 bash truth-forge-install.sh --target omp --dry-run
@@ -118,7 +118,7 @@ bash truth-forge-install.sh --target claude-code --only session-intent
 # 5) Re-run after a full install — everything collides, everything skips:
 bash truth-forge-install.sh --target claude-code
 #   SKIP brainstorm (already exists; use --override to replace) ×17
-#   == summary: 0 installed, 0 replaced, 17 skipped (collision), 0 missing ==
+#   == summary: 0 installed, 0 replaced, 18 skipped (collision), 0 missing ==
 
 # 6) Offline / dev loop — install your local edits:
 git clone https://github.com/krzemienski/truth-forge && cd truth-forge
@@ -149,3 +149,11 @@ bash truth-forge-install.sh --ref v1.2.1 --quiet || exit 1
 `bash`, plus `curl` and `tar` (only for `--source github` — the default).
 `python3` is optional and used only by `--verify`'s reference-resolution
 check; without it the frontmatter checks still run.
+
+## After install: using the skills
+
+Invoke as `/skill-name <positional> --flag` in Claude Code — e.g.
+`/implement "add billing webhooks" --parallel --auto --mine`,
+`/prompt-forge rate prompts/login.md --in-place`,
+`/codebase-truth-audit /path/to/repo --label q3-audit`.
+Full per-skill usage: `plugins/truth-forge/docs/usage-guide.md`.

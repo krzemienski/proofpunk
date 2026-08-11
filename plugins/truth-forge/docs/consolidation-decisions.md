@@ -321,3 +321,17 @@ authorization-engine consent and 0.3 is the single table they map to.
 The remediation sample was written as a reference file (not inline) to
 keep SKILL.md within size discipline while still showing a real
 before/after with actual scores.
+
+## codebase-truth-audit integration (v1.6.0, 2026-08-11)
+
+Decision: ship the skill inside the plugin rather than rewrite
+session-intent's edge around its absence — the user's standing rule is
+that the Related Skills graph must be closed (every referenced skill
+present), and the intent → code-truth → evidence → deviation pipeline is
+a real two-lane design, not a mention. The skill was already consolidated
+and validated in earlier work, so integration was a copy plus a new
+Related Skills section in both directions, plus a live end-to-end run of
+its workspace script as the incorporation gate. Usage documentation went
+into a dedicated docs/usage-guide.md rather than inflating the README
+further: the README's command reference is the flag/permutation truth,
+the usage guide is the hands-on `/skill-name` path.

@@ -85,8 +85,9 @@ did; first prompts say what the user asked.
 
 ## Related Skills (this plugin)
 
-- `codebase-truth-audit`-style work: this skill IS the intent-reconstruction
-  lane of an intent → code-truth → evidence → deviation pipeline
+- `codebase-truth-audit` — the code-truth lane; this skill is the
+  intent-reconstruction lane of the same intent → code-truth → evidence →
+  deviation pipeline
 - `production-readiness` — spec-compliance matrices; this is intent-compliance
 - `root-cause-debugging` — when INTENT-PARTIAL rows reveal unauthorized scope
 - `evidence-gates` — sealing the matrix as fresh evidence
