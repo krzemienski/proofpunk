@@ -1,5 +1,18 @@
 # Content Quality Audit — Phase 3 Method
 
+## Contents
+
+- [Audit categories](#audit-categories)
+- [Prose](#prose)
+- [Code blocks](#code-blocks)
+- [Diagrams](#diagrams)
+- [Data visualisations](#data-visualisations)
+- [Tables](#tables)
+- [Embedded media](#embedded-media)
+- [Form copy](#form-copy)
+- [Output format](#output-format)
+
+
 Visual layout can be flawless and content can still fail. A perfectly aligned code block whose syntax highlighting drops contrast to 2.1:1 fails. A chart that conveys data only by color fails. A page of text laid out at 95 characters per line fails readability even at perfect contrast. This phase audits content fitness-of-purpose, separately from the layout that holds it.
 
 ## Audit categories

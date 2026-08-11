@@ -2,6 +2,20 @@
 
 # Complete Expo iOS Testing Workflow
 
+## Contents
+
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns](#anti-patterns)
+- [When to Use](#when-to-use)
+- [Prerequisites Verified ✅](#prerequisites-verified-)
+- [Complete Workflow (Actual Execution)](#complete-workflow-actual-execution)
+- [Actual Execution Record](#actual-execution-record)
+- [Troubleshooting (From Actual Issues)](#troubleshooting-from-actual-issues)
+- [Success Criteria](#success-criteria)
+- [Execution Time](#execution-time)
+- [Next Steps After Testing](#next-steps-after-testing)
+
+
 ## When NOT to Use
 
 - Native Swift/SwiftUI apps without Expo (use Axiom iOS skills instead)

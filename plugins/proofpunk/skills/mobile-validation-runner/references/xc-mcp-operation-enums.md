@@ -2,6 +2,18 @@
 
 # Operation Enum Reference
 
+## Contents
+
+- [simctl-device (7 operations)](#simctl-device-7-operations)
+- [simctl-app (4 operations)](#simctl-app-4-operations)
+- [idb-app (4 operations)](#idb-app-4-operations)
+- [cache (4 operations)](#cache-4-operations)
+- [persistence (3 operations)](#persistence-3-operations)
+- [idb-targets (4 operations)](#idb-targets-4-operations)
+- [Migration from V1.x](#migration-from-v1x)
+- [Common Parameter Patterns](#common-parameter-patterns)
+
+
 <overview>
 XC-MCP V2.0+ consolidates related operations into router tools with operation enums. This reduces tool schema overhead while maintaining full functionality.
 

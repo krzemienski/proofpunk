@@ -1,5 +1,18 @@
 # Prompt Patterns
 
+## Contents
+
+- [Pattern Selection Guide](#pattern-selection-guide)
+- [Zero-Shot Prompting](#zero-shot-prompting)
+- [Few-Shot Prompting](#few-shot-prompting)
+- [Chain-of-Thought (CoT) Prompting](#chain-of-thought-cot-prompting)
+- [ReAct Pattern (Reasoning + Acting)](#react-pattern-reasoning--acting)
+- [Tree-of-Thoughts (ToT)](#tree-of-thoughts-tot)
+- [Pattern Comparison Quick Reference](#pattern-comparison-quick-reference)
+- [Combining Patterns](#combining-patterns)
+- [Related Skills](#related-skills)
+
+
 ---
 
 ## Pattern Selection Guide

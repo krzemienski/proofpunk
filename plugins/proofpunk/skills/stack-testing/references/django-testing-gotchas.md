@@ -2,6 +2,16 @@
 
 # Django Testing Gotchas
 
+## Contents
+
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns (NEVER/WHY/Fix)](#anti-patterns-neverwhyfix)
+- [Critical Django Test Behaviors](#critical-django-test-behaviors)
+- [CONFLICT: No-Mock Mandate](#conflict-no-mock-mandate)
+- [APPLICABILITY GUARD](#applicability-guard)
+
+
 Claude knows basic pytest-django and DRF testing. This skill covers what Claude gets WRONG.
 
 ## When to Use

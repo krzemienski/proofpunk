@@ -2,6 +2,16 @@
 
 # Diagnose
 
+## Contents
+
+- [Phase 1 — Build a feedback loop](#phase-1--build-a-feedback-loop)
+- [Phase 2 — Reproduce](#phase-2--reproduce)
+- [Phase 3 — Hypothesise](#phase-3--hypothesise)
+- [Phase 4 — Instrument](#phase-4--instrument)
+- [Phase 5 — Fix + regression test](#phase-5--fix--regression-test)
+- [Phase 6 — Cleanup + post-mortem](#phase-6--cleanup--post-mortem)
+
+
 A discipline for hard bugs. Skip phases only when explicitly justified.
 
 When exploring the codebase, use the project's domain glossary to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.

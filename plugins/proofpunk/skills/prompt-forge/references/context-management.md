@@ -1,5 +1,19 @@
 # Context Management
 
+## Contents
+
+- [When to Use This Reference](#when-to-use-this-reference)
+- [The Context Budget](#the-context-budget)
+- [Context Degradation Patterns](#context-degradation-patterns)
+- [The Four-Bucket Approach](#the-four-bucket-approach)
+- [Optimization Strategies](#optimization-strategies)
+- [Periodic Refocusing](#periodic-refocusing)
+- [Degradation Metrics](#degradation-metrics)
+- [Optimization Checklist](#optimization-checklist)
+- [When Not to Use This Reference](#when-not-to-use-this-reference)
+- [Related Skills](#related-skills)
+
+
 <!-- Content adapted from PR #168 (context-engineer skill) by Genius-apple (https://github.com/Genius-apple). -->
 <!-- Original submission: https://github.com/Jeffallan/claude-skills/pull/168 -->
 

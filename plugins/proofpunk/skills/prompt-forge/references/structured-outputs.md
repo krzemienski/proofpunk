@@ -1,5 +1,19 @@
 # Structured Outputs
 
+## Contents
+
+- [Structured Output Methods](#structured-output-methods)
+- [Prompt-Based Structured Output](#prompt-based-structured-output)
+- [JSON Mode (Claude & OpenAI)](#json-mode-claude--openai)
+- [Function Calling / Tool Use](#function-calling--tool-use)
+- [Schema Design Patterns](#schema-design-patterns)
+- [Validation and Error Handling](#validation-and-error-handling)
+- [Complex Extraction Patterns](#complex-extraction-patterns)
+- [Performance Optimization](#performance-optimization)
+- [Common Pitfalls](#common-pitfalls)
+- [Related Skills](#related-skills)
+
+
 ---
 
 ## Structured Output Methods

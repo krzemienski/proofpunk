@@ -1,15 +1,17 @@
 ---
 name: plan-hardening
 description: >
-  Second-pass plan strengthening: red-team a draft plan through multiple
-  adversarial lenses, score confidence gaps, research weak sections, inject
-  or strengthen proof obligations, and surgically remediate findings while
-  preserving the original intent. Also converts arbitrary prompts or plans
-  into proof-carrying versions using the standard proof block. Use when a
-  plan exists but may be shallow, overconfident, missing failure modes, or
-  lacking proof obligations — "harden this plan", "deepen this plan", "red-team my
-  plan", "stress-test this design", "add proof obligations to this prompt",
-  or before executing any high-stakes multi-phase plan.
+  Second-pass plan strengthening: red-teams a draft plan through multiple
+  adversarial lenses, scores confidence gaps, researches weak sections,
+  injects or strengthens proof obligations, and surgically remediates
+  findings while preserving the original intent. Also converts arbitrary
+  prompts or plans into proof-carrying versions using the standard proof
+  block. Use when a plan exists but may be shallow, overconfident, missing
+  failure modes, or lacking proof obligations — 'harden this plan', 'deepen
+  this plan', 'red-team my plan', 'stress-test this design', 'add proof
+  obligations to this prompt' — or before executing any high-stakes
+  multi-phase plan. Not for authoring a plan from scratch (use
+  validation-plan) or executing one (use cook or implement).
 ---
 
 # Plan Hardening
@@ -142,3 +144,9 @@ prove it with fresh evidence".
 - `validation-plan` — authors the plans this skill hardens
 - `prompt-forge` — authors the prompts this skill proves
 - `brainstorm` — run upstream when the approach itself is still open
+
+## Example
+
+**Input:** User: 'Harden this migration plan before Friday.'
+
+**Output:** The draft is attacked through 4 lenses, 6 confidence gaps scored, 2 weak sections researched, proof obligations injected into phases 2-4 — original intent preserved, plan now has zero unverifiable steps.

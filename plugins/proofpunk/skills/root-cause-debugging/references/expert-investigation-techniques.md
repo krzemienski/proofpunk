@@ -1,6 +1,12 @@
 > Incorporated from the `debug-like-expert` skill (references/investigation-techniques.md).
 
 
+## Contents
+
+- `<overview>`
+- `<decision_tree>`
+- `<combining_techniques>`
+
 <overview>
 These are systematic approaches to narrowing down bugs. Each technique is a tool in your debugging toolkit. The skill is knowing which tool to use when.
 </overview>

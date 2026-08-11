@@ -5,14 +5,25 @@ description: >
   (WCAG 2.2), and cross-platform. Evaluates layout, overflow, spacing,
   typography, contrast, touch targets, dark mode, and visual hierarchy
   against universal and platform-specific checklists, with severity
-  classification and a defect-pattern database. Use before marking ANY
-  screenshot as PASS, when reviewing simulator captures, browser
-  screenshots, or design-implementation evidence. Trigger even when the user
-  just says "check this screenshot", "does this look right", or attaches a
-  UI image.
+  classification and a defect-pattern database. Use when reviewing simulator
+  captures, browser screenshots, or design-implementation evidence, and
+  before marking ANY screenshot as PASS — even when the user just says
+  'check this screenshot', 'does this look right', or attaches a UI image.
+  Not for interactive UX flow audits (use ui-experience-audit) or functional
+  validation of running features (use functional-validation).
 ---
 
 # Visual Inspection Protocol
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Load the universal + platform checklists (HIG / WCAG 2.2)
+- [ ] Examine the actual screenshot (never assume)
+- [ ] Check layout, overflow, spacing, typography, contrast, targets, dark mode, hierarchy
+- [ ] Classify every defect by severity with the defect-pattern database
+- [ ] Verdict: no screenshot is PASS until every check is examined
 
 Every screenshot MUST pass this protocol before being marked PASS.
 
@@ -141,3 +152,9 @@ root causes and fix patterns across iOS, web, and cross-platform projects.
 - `ui-experience-audit` — the deeper sibling: this protocol's Phase 1 plus interaction, content, and UX-heuristic phases
 - `functional-validation` — exercise real features after visual PASS
 - `end-user-testing` — citation standard for screenshot evidence
+
+## Example
+
+**Input:** User attaches a screenshot: 'does this look right?'
+
+**Output:** The capture is examined (never assumed): overflow at 375px, touch target 40px < 44px HIG minimum, heading hierarchy inverted — 3 defects severity-classified; screenshot is NOT marked PASS.

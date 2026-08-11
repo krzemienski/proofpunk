@@ -2,6 +2,17 @@
 
 # XC-MCP Tool Reference
 
+## Contents
+
+- [Build & Test Tools (6)](#build--test-tools-6)
+- [Simulator Tools (6 routers/tools)](#simulator-tools-6-routerstools)
+- [UI Automation Tools (6)](#ui-automation-tools-6)
+- [Workflow Tools (2)](#workflow-tools-2)
+- [Cache & Persistence Tools (2 routers)](#cache--persistence-tools-2-routers)
+- [Other Tools](#other-tools)
+- [IDB Tools (Additional)](#idb-tools-additional)
+
+
 <tool_discovery>
 Use `rtfm` for on-demand documentation:
 

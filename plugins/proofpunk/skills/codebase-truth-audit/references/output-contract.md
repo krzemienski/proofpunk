@@ -1,5 +1,27 @@
 # Output Contract
 
+## Contents
+
+- [Workspace layout](#workspace-layout)
+- [Plan checklist](#plan-checklist)
+- [Repository baseline record](#repository-baseline-record)
+- [Scope and subsystem inventory](#scope-and-subsystem-inventory)
+- [Intent-versus-implementation matrix](#intent-versus-implementation-matrix)
+- [Code-truth map](#code-truth-map)
+- [Configuration and magic-number provenance](#configuration-and-magic-number-provenance)
+- [Contract audit](#contract-audit)
+- [Deviation register](#deviation-register)
+- [Documentation-drift ledger](#documentation-drift-ledger)
+- [Runtime evidence record](#runtime-evidence-record)
+- [Failure-class catalog](#failure-class-catalog)
+- [Findings register](#findings-register)
+- [Cleanup census](#cleanup-census)
+- [Production-readiness scorecard](#production-readiness-scorecard)
+- [Confirmation record](#confirmation-record)
+- [Remediation change log](#remediation-change-log)
+- [Final report structure](#final-report-structure)
+
+
 Use these templates for a consistent, resumable codebase truth audit. Replace every placeholder with repository-specific evidence. Delete rows that are not applicable only after recording the reason in the no-silent-drops register.
 
 ## Workspace layout

@@ -2,6 +2,20 @@
 
 # Python FastAPI Claude Backend Testing
 
+## Contents
+
+- [APPLICABILITY GUARD](#applicability-guard)
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns](#anti-patterns)
+- [Configuration](#configuration)
+- [Architecture](#architecture)
+- [Core Test Patterns](#core-test-patterns)
+- [SSE Format Rules](#sse-format-rules)
+- [SSE Parsing](#sse-parsing)
+- [Verification Checklist](#verification-checklist)
+
+
 ## APPLICABILITY GUARD
 
 This skill is specific to **claude-code-api** Python FastAPI backends exposing OpenAI-compatible HTTP/SSE API. Adapt paths, ports, and schemas before applying to other FastAPI projects.

@@ -2,6 +2,18 @@
 
 # XC-MCP Configuration Reference
 
+## Contents
+
+- [Installation](#installation)
+- [MCP Client Configuration](#mcp-client-configuration)
+- [Environment Variables](#environment-variables)
+- [Prerequisites](#prerequisites)
+- [Working Directory](#working-directory)
+- [Troubleshooting](#troubleshooting)
+- [CLAUDE.md Template](#claudemd-template)
+- [Version Compatibility](#version-compatibility)
+
+
 <installation>
 ## Installation
 

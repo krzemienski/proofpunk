@@ -1,21 +1,31 @@
 ---
 name: end-user-testing
 description: >
-  The proof standard for end-user testing: every completion claim is
-  proven by driving the real system as the end user, with run-scoped
-  fresh evidence (timestamped, sequential, non-empty, never reused
-  across runs), full-path citations that describe what is SEEN,
-  personally examined proof before any task is marked done,
-  cache-clearing before final passes, and refusal to PASS without cited
-  artifacts. Includes the fresh_evidence.py helper enforcing init-run /
-  next-step / seal / validate. Use whenever a verdict is about to be
-  written, when capturing end-user test evidence, when marking tasks
-  complete, or when the user says "end-user test this", "capture
-  evidence", "fresh screenshot", "produce a verdict", or "prove it's
-  done".
+  The proof standard for end-user testing: every completion claim is proven
+  by driving the real system as the end user, with run-scoped fresh evidence
+  (timestamped, sequential, non-empty, never reused across runs), full-path
+  citations describing what is SEEN, personally examined proof before any
+  task is marked done, cache-clearing before final passes, and refusal to
+  PASS without cited artifacts. Includes the fresh_evidence.py helper
+  enforcing init-run / next-step / seal / validate. Use when a verdict is
+  about to be written, when capturing end-user test evidence, when marking
+  tasks complete, or when the user says 'end-user test this', 'capture
+  evidence', 'fresh screenshot', 'produce a verdict', or 'prove it's done'.
+  Not for writing test suites (use stack-testing) or visual/UX review (use
+  visual-inspection or ui-experience-audit).
 ---
 
 # End-User Testing — The Proof Standard
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Read the proof obligation (assertion + artifact)
+- [ ] Clear caches; preflight and start the real system
+- [ ] Drive the system as the end user; capture run-scoped evidence per step
+- [ ] Inventory artifacts; personally examine each proof
+- [ ] Write the verdict with full-path citations — no artifacts, no PASS
 
 The discipline layer between "work finished" and "work proven". End-user
 testing is the only validation: a verdict that cites stale, empty, or
@@ -100,7 +110,7 @@ status with the rule "never upgrade UNVERIFIED to PASS by assumption".
 
 ## Helper Script
 
-`scripts/fresh_evidence.py` enforces the eight fresh-evidence rules. All
+`scripts/fresh_evidence.py` enforces the eight fresh-evidence rules — run it (init-run / next-step / seal / validate), never reimplement it by hand. All
 operations work against `./e2e-evidence/` in the current working
 directory; the active run is the most recent `run-*` subdirectory.
 
@@ -175,3 +185,9 @@ would I show them?" No citations -> NOT complete.
 - `../../references/ci-gates.md` — P0/P1/P2 classification and rollout order
   for wiring these end-user tests into CI; this skill is the runtime
   contract, CI wiring is the automation of that contract
+
+## Example
+
+**Input:** Proof obligation: 'User resets password and lands on dashboard.'
+
+**Output:** init-run -> step-01 screenshot of the reset form -> step-02 video of submit + redirect -> seal -> validate rc=0 -> verdict cites run-2026…/step-02.mp4 by full path.

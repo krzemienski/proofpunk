@@ -2,6 +2,17 @@
 
 # XC-MCP Caching Strategy
 
+## Contents
+
+- [4-Layer Cache Architecture](#4-layer-cache-architecture)
+- [How Caching Helps](#how-caching-helps)
+- [Cache Operations](#cache-operations)
+- [Persistence](#persistence)
+- [Tuning Strategies](#tuning-strategies)
+- [Cache Invalidation](#cache-invalidation)
+- [Best Practices](#best-practices)
+
+
 <cache_architecture>
 ## 4-Layer Cache Architecture
 

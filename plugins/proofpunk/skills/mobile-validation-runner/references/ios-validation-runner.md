@@ -1,5 +1,16 @@
 > Incorporated from the `ios-validation-runner` skill (skills-ref.zip).
 
+
+## Contents
+
+- [APPLICABILITY GUARD](#applicability-guard)
+- [Before You Start](#before-you-start)
+- [The Five-Phase Protocol](#the-five-phase-protocol)
+- [The `../scripts/validate.sh` Script](#the-scriptsvalidatesh-script)
+- [NEVER](#never)
+- [Anti-Patterns](#anti-patterns)
+- [When NOT to Use](#when-not-to-use)
+
 ## APPLICABILITY GUARD
 
 This skill is for **iOS app validation** on macOS simulators using xcrun simctl, idb, and log streaming. Activates when validating iOS features through simulator evidence collection (screenshots, video, logs). Do not apply to Android, web apps, or unit/mock-based testing.

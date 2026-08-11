@@ -2,6 +2,15 @@
 
 # Workflow: App Deployment
 
+## Contents
+
+- [Step 1: Ensure Simulator is Booted](#step-1-ensure-simulator-is-booted)
+- [Step 2: Install the App](#step-2-install-the-app)
+- [Step 3: Launch the App](#step-3-launch-the-app)
+- [Step 4: Terminate the App](#step-4-terminate-the-app)
+- [Step 5: Uninstall the App](#step-5-uninstall-the-app)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/tool-reference.md

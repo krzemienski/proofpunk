@@ -1,5 +1,19 @@
 # Prompt Optimization
 
+## Contents
+
+- [The Optimization Loop](#the-optimization-loop)
+- [Establishing a Baseline](#establishing-a-baseline)
+- [Diagnostic Framework](#diagnostic-framework)
+- [Optimization Techniques](#optimization-techniques)
+- [Token Optimization](#token-optimization)
+- [A/B Testing Framework](#ab-testing-framework)
+- [Version Control for Prompts](#version-control-for-prompts)
+- [Common Optimization Mistakes](#common-optimization-mistakes)
+- [Optimization Decision Tree](#optimization-decision-tree)
+- [Related Skills](#related-skills)
+
+
 ---
 
 ## The Optimization Loop

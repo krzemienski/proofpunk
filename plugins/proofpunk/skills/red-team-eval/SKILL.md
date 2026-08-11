@@ -1,9 +1,30 @@
 ---
 name: red-team-eval
-description: Attack your own plans, prompts, and outputs before reality does — 4-lens hostile review (security, scope-creep, evidence-rigor, failure-modes) against plans/prompts/artifacts, formal eval-driven development (EDD) for scoring agent sessions against rubrics, QA cycling loops (test, verify, fix, repeat until goal met), and agent evaluation with scoring rubrics and benchmarks. Use when a plan or prompt needs adversarial stress beyond a friendly review, when you want measurable quality scores for agent output across runs, when a fix-verify loop must not stop at "looks done", or when regression-testing prompt changes against real failure cases.
+description: >
+  Attack your own plans, prompts, and outputs before reality does — 4-lens
+  hostile review (security, scope-creep, evidence-rigor, failure-modes)
+  against plans/prompts/artifacts, formal eval-driven development (EDD)
+  scoring agent sessions against rubrics, QA cycling loops (test, verify,
+  fix, repeat until goal met), and agent evaluation with scoring rubrics and
+  benchmarks. Use when a plan or prompt needs adversarial stress beyond a
+  friendly review, when you want measurable quality scores for agent output
+  across runs, when a fix-verify loop must not stop at 'looks done', or when
+  regression-testing prompt changes against real failure cases. Not for
+  finding a bug's root cause (use root-cause-debugging) or pre-execution
+  plan strengthening (use plan-hardening).
 ---
 
 # Red Team + Eval
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Select the attack mode (4-lens review / EDD / QA cycle / agent eval)
+- [ ] Run every lens or rubric against the artifact; log findings with severity
+- [ ] Score against the rubric; compare to threshold or baseline
+- [ ] Produce validation-gated fix prompts for every finding
+- [ ] Re-run after fixes until the goal is met
 
 Friendly review finds what you expect to be wrong. This skill is for finding
 what you DON'T expect: hostile lenses against your artifacts, and measured
@@ -53,3 +74,14 @@ scores instead of impressions. Findings carry severities per
   hostile multi-lens attack and measured regression runs
 - `functional-validation` — real-system PASS/FAIL after QA cycles converge
 - `end-user-testing` — seal eval scores and red-team dispositions as evidence
+
+## Bundled resources
+
+- `assets/evals.json` — scoring rubrics and benchmark eval definitions; load when building or running an EDD eval.
+- `assets/trigger-eval.json` — trigger-routing eval cases; load when regression-testing description changes.
+
+## Example
+
+**Input:** User: 'Attack this launch plan.'
+
+**Output:** 4-lens review returns 9 findings (2 security, 3 scope-creep, 4 failure-mode), each with severity and a validation-gated fix prompt; re-run after fixes shows 0 blockers.

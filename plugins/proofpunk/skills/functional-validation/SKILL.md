@@ -2,18 +2,30 @@
 name: functional-validation
 description: >
   Real-system functional validation with the Iron Rule: if the real system
-  doesn't work, FIX THE REAL SYSTEM — never create mocks, stubs, test doubles,
-  fake endpoints, or test-mode bypasses. Detects the platform (iOS, web, API,
-  CLI, Flutter, full-stack, generic), starts the real runtime, exercises
+  doesn't work, FIX THE REAL SYSTEM — never mocks, stubs, test doubles, fake
+  endpoints, or test-mode bypasses. Detects the platform (iOS, web, browser
+  app, API, CLI, Flutter, full-stack), starts the real runtime, exercises
   features through the same interfaces real users experience, captures fresh
   run-scoped evidence, and gates completion on personally reviewed proof.
-  Use whenever asked to validate, verify, test end-to-end, prove a feature
-  works, check that something actually runs, or before marking ANY feature
-  complete. Trigger even for "does this work?", "make sure it runs", "verify
-  the fix", or "QA this flow".
+  Use when asked to validate an app or feature works, verify a fix, test
+  end-to-end in a browser or runtime, prove something runs, or before
+  marking ANY feature complete — 'does this work?', 'make sure it runs',
+  'validate the app functions'. Not for app-wide exhaustive audits (use
+  full-functional-audit), repo audits (use codebase-truth-audit), or
+  test-suite authoring (use stack-testing).
 ---
 
 # Functional Validation
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Detect the platform (iOS / web / API / CLI / Flutter / full-stack)
+- [ ] Start the real runtime (no mocks, stubs, or test-mode bypasses)
+- [ ] Exercise features through the real user interfaces
+- [ ] Capture fresh run-scoped evidence
+- [ ] Personally review the proof; fix the real system if it fails
 
 Validate features against the REAL system through REAL interfaces. No mocks,
 no stubs, no simulated success.
@@ -241,3 +253,9 @@ Modes compose: default flow is analyze -> plan -> execute -> (fix) -> report.
 - `full-functional-audit` — app-wide audit when one feature isn't enough
 - `ui-experience-audit` / `visual-inspection` — review the visual evidence you capture
 - `validation-plan` — embed these checks as blocking gates in a project plan
+
+## Example
+
+**Input:** User: 'Does the new checkout flow actually work?'
+
+**Output:** The real server is started, the flow is driven in a real browser (cart -> payment -> confirmation), each step evidenced; the promo-code FAIL is fixed in the real system and re-proven.

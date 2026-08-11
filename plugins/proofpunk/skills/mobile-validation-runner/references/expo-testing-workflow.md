@@ -1,5 +1,21 @@
 > Incorporated from the `expo-ios-complete-testing-workflow` skill (skills-ref.zip).
 
+
+## Contents
+
+- [APPLICABILITY GUARD](#applicability-guard)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns](#anti-patterns)
+- [When to Use](#when-to-use)
+- [Prerequisites](#prerequisites)
+- [Complete Workflow (Based on Actual Execution 2025-11-14)](#complete-workflow-based-on-actual-execution-2025-11-14)
+- [Key Findings from Actual Execution](#key-findings-from-actual-execution)
+- [Tools Reference](#tools-reference)
+- [Common Issues](#common-issues)
+- [Success Criteria](#success-criteria)
+- [Time Estimates](#time-estimates)
+- [Next Steps After App Working](#next-steps-after-app-working)
+
 ## APPLICABILITY GUARD
 
 This skill is for **Expo React Native apps** being tested on **iOS Simulator**. Requires macOS, Xcode, and EAS CLI. Do not apply to native Swift/Kotlin projects, web apps, or Android-only workflows.

@@ -2,6 +2,16 @@
 
 # Workflow: Debug Build and Test Failures
 
+## Contents
+
+- [Step 1: Identify the Failure Type](#step-1-identify-the-failure-type)
+- [Step 2: Get Error Summary First](#step-2-get-error-summary-first)
+- [Step 3: Get Warnings (If Relevant)](#step-3-get-warnings-if-relevant)
+- [Step 4: Get Full Logs (When Needed)](#step-4-get-full-logs-when-needed)
+- [Step 5: Get Build Command (For Reproduction)](#step-5-get-build-command-for-reproduction)
+- [Step 6: Check Environment](#step-6-check-environment)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/progressive-disclosure.md

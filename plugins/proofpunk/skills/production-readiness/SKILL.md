@@ -1,9 +1,30 @@
 ---
 name: production-readiness
-description: Take a codebase from "works on my machine" to shippable — systematic 8-phase production-readiness audit (risk-based cleanup waves, dead code, documentation drift, zero-regression enforcement), spec-vs-implementation compliance audits that find COVERED/INCOMPLETE/MISSING gaps and generate validation checkpoints, and dependency supply-chain health (CVEs, CVSS, lockfile hygiene, license compliance). Use when preparing a first release, open-sourcing, doing a major version bump, auditing whether a spec was fully implemented, reviewing dependency risk, or after a rapid prototyping phase leaves the repo in unknown shape.
+description: >
+  Take a codebase from 'works on my machine' to shippable — systematic
+  8-phase production-readiness audit (risk-based cleanup waves, dead code,
+  documentation drift, zero-regression enforcement), spec-vs-implementation
+  compliance audits that find COVERED/INCOMPLETE/MISSING gaps, and
+  dependency supply-chain health (CVEs, CVSS, lockfile hygiene, license
+  compliance). Use when preparing a first release, open-sourcing, doing a
+  major version bump, auditing whether a spec was fully implemented,
+  reviewing dependency risk, or after rapid prototyping leaves the repo in
+  unknown shape. Not for runtime feature QA (use functional-validation),
+  screenshot review (use visual-inspection), or intent provenance (use
+  session-intent).
 ---
 
 # Production Readiness
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Run the 8-phase readiness audit (cleanup waves, dead code, doc drift, zero-regression)
+- [ ] Run spec-vs-implementation compliance scan (COVERED / INCOMPLETE / MISSING)
+- [ ] Audit dependency supply chain (CVEs, CVSS, lockfile, licenses)
+- [ ] Generate remediation plan with validation gates
+- [ ] Execute approved remediations; re-verify zero regressions
 
 Ship-readiness is proven, not felt. Three lenses, each with its own reference,
 all reporting through the plugin's evidence discipline
@@ -58,3 +79,9 @@ cites the command output, file, or audit artifact that proves it.
 - `stack-testing` — close coverage gaps the audit finds
 - `end-user-testing` — seal each audit wave's proof
 - `plan-hardening` — harden the remediation plan before executing it
+
+## Example
+
+**Input:** User: 'Get this repo ready for its first release.'
+
+**Output:** 8-phase audit finds 12 risks (3 high), compliance scan shows 31 COVERED / 4 INCOMPLETE / 2 MISSING, 1 CVE flagged with CVSS 7.5 — remediation plan with validation gates delivered.

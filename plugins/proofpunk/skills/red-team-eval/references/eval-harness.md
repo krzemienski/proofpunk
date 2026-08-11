@@ -2,6 +2,20 @@
 
 # Eval Harness Skill
 
+## Contents
+
+- [When to Activate](#when-to-activate)
+- [Philosophy](#philosophy)
+- [Eval Types](#eval-types)
+- [Grader Types](#grader-types)
+- [Metrics](#metrics)
+- [Eval Workflow](#eval-workflow)
+- [Integration Patterns](#integration-patterns)
+- [Eval Storage](#eval-storage)
+- [Best Practices](#best-practices)
+- [Example: Adding Authentication](#example-adding-authentication)
+
+
 A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.
 
 ## When to Activate

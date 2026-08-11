@@ -1,20 +1,30 @@
 ---
 name: full-functional-audit
 description: >
-  App-wide functional audit that inventories EVERY user interaction — every
-  screen, button, form, link, endpoint, and flow — then validates each one
-  against the real running system, remediates failures immediately, and
-  revalidates until clean. Five phases: Explore (interaction inventory),
-  Plan (assign validation work with resource mutexes), Execute (validate
-  every interaction with fresh evidence), Remediate (fix the real system,
-  never defer FAILs), Verdict (final report with coverage statement).
-  Use for "audit the whole app", "test everything", "full QA sweep",
-  "validate every feature", pre-release hardening, or whenever per-feature
-  validation is not enough. Complements functional-validation (per-feature)
-  and ui-experience-audit (per-screen UX).
+  App-wide functional audit of a live site or app that inventories EVERY
+  user interaction — every screen, page, button, form, link, endpoint, and
+  flow — then clicks through everything and validates each one against the
+  real running system, remediates failures immediately, and revalidates
+  until clean. Five phases: Explore (interaction inventory), Plan, Execute
+  (fresh evidence per interaction), Remediate (fix the real system, never
+  defer FAILs), Verdict (coverage statement). Use when asked to 'audit the
+  whole app', 'click through everything', 'find bugs on this site/URL',
+  'test everything', 'full QA sweep', or for pre-release hardening. Not for
+  single-feature checks (use functional-validation), per-screen UX review
+  (use ui-experience-audit), or one known bug (use root-cause-debugging).
 ---
 
 # Full Functional Audit
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Explore: inventory EVERY interaction (screens, buttons, forms, links, endpoints)
+- [ ] Plan: assign validation work with resource mutexes
+- [ ] Execute: validate each interaction against the real system with fresh evidence
+- [ ] Remediate: fix the real system; never defer a FAIL
+- [ ] Verdict: final report with coverage statement
 
 Systematic app-wide audit: every interaction exercised against the real
 system, every FAIL fixed before the verdict. Nothing deferred.
@@ -151,3 +161,9 @@ never assumed PASS.
 - `end-user-testing` — the proof standard every batch verdict must satisfy
 - `ui-experience-audit` — run per screen when functional PASS but UX quality is in question
 - `validation-plan` — turn the audit's fix list into a gated remediation plan
+
+## Example
+
+**Input:** User: 'Audit the whole app at staging.example.com.'
+
+**Output:** An interaction inventory of 63 elements, 63 validations with fresh evidence, 4 FAILs remediated in the real system and revalidated, final verdict with a 100% coverage statement.

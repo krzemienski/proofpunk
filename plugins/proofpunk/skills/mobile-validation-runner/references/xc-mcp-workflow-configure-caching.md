@@ -2,6 +2,15 @@
 
 # Workflow: Configure XC-MCP Caching and Persistence
 
+## Contents
+
+- [Step 1: View Current Cache Statistics](#step-1-view-current-cache-statistics)
+- [Step 2: View Current Configuration](#step-2-view-current-configuration)
+- [Step 3: Configure Cache Timeouts](#step-3-configure-cache-timeouts)
+- [Step 4: Clear Caches](#step-4-clear-caches)
+- [Enabling Persistence](#enabling-persistence)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/caching-strategy.md

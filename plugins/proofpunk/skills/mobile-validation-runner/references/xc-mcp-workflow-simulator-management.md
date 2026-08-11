@@ -2,6 +2,16 @@
 
 # Workflow: Simulator Management
 
+## Contents
+
+- [Step 1: Discover Available Simulators](#step-1-discover-available-simulators)
+- [Step 2: Get Full Details (If Needed)](#step-2-get-full-details-if-needed)
+- [Step 3: Boot a Simulator](#step-3-boot-a-simulator)
+- [Step 4: Shutdown Simulator](#step-4-shutdown-simulator)
+- [Step 5: Create New Simulator](#step-5-create-new-simulator)
+- [Step 6: Other Device Operations](#step-6-other-device-operations)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/tool-reference.md

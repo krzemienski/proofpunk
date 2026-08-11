@@ -1,10 +1,31 @@
 ---
 name: session-intent
-description: >-
-  Reconstruct what was actually ASKED from the sessions themselves — parse Claude Code JSONL transcripts into a per-session intent matrix (first user prompt = stated intent, subsequent prompts = steering, tool calls, files touched, commits made), align sessions to git history, and build intent-vs-implementation matrices where every row cites its session intent source or is marked intent-unrecoverable. Use when auditing what a codebase was supposed to become versus what it became; when session summaries, CLAUDE.md, or commit messages are the only stated rationale and may have drifted from the tree; when building commit-to-intent provenance for a time window; or when asked "why was this change made" and the answer must come from evidence, not memory.
+description: >
+  Reconstruct what was actually ASKED from the sessions themselves — parses
+  Claude Code JSONL transcripts into a per-session intent matrix (first user
+  prompt = stated intent, subsequent prompts = steering, tool calls, files
+  touched, commits made), aligns sessions to git history, and builds
+  intent-vs-implementation matrices where every row cites its session intent
+  source or is marked intent-unrecoverable. Use when auditing what a
+  codebase was supposed to become versus what it became; when session
+  summaries, CLAUDE.md, or commit messages are the only stated rationale;
+  when building commit-to-intent provenance; or when asked 'why was this
+  change made' and the answer must come from evidence, not memory. Not for
+  live repo audits (use codebase-truth-audit) or planning future work (use
+  validation-plan).
 ---
 
 # Session Intent Reconstruction
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Locate and parse session JSONL transcripts
+- [ ] Build the per-session intent matrix (stated intent + steering)
+- [ ] Align sessions to git history (commits, files touched)
+- [ ] Build the intent-vs-implementation matrix
+- [ ] Cite the intent source per row, or mark intent-unrecoverable
 
 The key difference from every other audit lane in this plugin: the input is
 **the sessions themselves**, not summaries of them. A session summary is a
@@ -91,3 +112,18 @@ did; first prompts say what the user asked.
 - `production-readiness` — spec-compliance matrices; this is intent-compliance
 - `root-cause-debugging` — when INTENT-PARTIAL rows reveal unauthorized scope
 - `end-user-testing` — sealing the matrix as fresh evidence
+
+## Bundled resources
+
+Run these discovery scripts (from the skill directory) instead of hand-writing the same crawls:
+
+- `references/scripts/analyze.sh` — primary session-analysis driver; run first.
+- `references/scripts/analyze-claude-md.sh` — extracts stated rationale from CLAUDE.md files.
+- `references/scripts/github-discovery.sh` — run to align sessions to git history via the GitHub API.
+- `references/scripts/fetch-features.sh` — run to fetch feature/issue context for intent rows.
+
+## Example
+
+**Input:** User: 'Why was auth refactored in March? Answer from evidence.'
+
+**Output:** JSONL transcripts parsed: session 2026-03-14's first prompt asked for 'session-intent provenance', 3 steering prompts follow; commit a1b2c3 aligned; the matrix row cites the session file, not memory.

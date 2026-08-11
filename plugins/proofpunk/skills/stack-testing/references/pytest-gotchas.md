@@ -2,6 +2,15 @@
 
 # Pytest Gotchas & Edge Cases
 
+## Contents
+
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [CONFLICT: No-Mock Mandate](#conflict-no-mock-mandate)
+- [Anti-Patterns (NEVER/WHY/Fix)](#anti-patterns-neverwhyfix)
+- [Critical Pytest Behaviors](#critical-pytest-behaviors)
+
+
 Claude knows basic pytest. This skill covers what Claude gets WRONG.
 
 ## When to Use

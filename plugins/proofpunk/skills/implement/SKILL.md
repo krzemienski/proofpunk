@@ -1,21 +1,32 @@
 ---
 name: implement
 description: >
-  Execution-first implementation orchestrator: distill TRUE success
-  criteria, mine past sessions (session-intent), explore with parallel
-  scouts, forge the build prompt (prompt-forge), decompose into a task
-  graph where every task carries a proof obligation, then run the
-  execution loop — execute a task, end-user test it immediately, record
-  the proof — until every criterion is proven. End-user testing is the
-  only validation, always; a task that ran but proved nothing is not
-  done. --parallel fans scouts, plan stages, and build lanes out with
-  executable lane contracts; --auto never stops until every criterion
-  is proven, escalating only decisions a human must make; --mine runs
-  session mining first. Use for "implement X", "build X end to end",
-  or "use all the skills to ship this".
+  Execution-first implementation orchestrator: distills TRUE success
+  criteria, mines past sessions (session-intent), explores with parallel
+  scouts, forges the build prompt (prompt-forge), decomposes into a task
+  graph where every task carries a proof obligation, then runs the execution
+  loop — execute a task, end-user test it immediately, record the proof —
+  until every criterion is proven. End-user testing is the only validation,
+  always. Flags: --parallel (executable lane contracts), --auto (never stops
+  until proven), --mine, --fast, --no-test, --tdd. Use when asked to
+  'implement X', 'build X end to end', 'use all the skills to ship this', or
+  to re-run how past sessions implemented similar goals. Not for scoped
+  single features without orchestration (use cook) or planning without
+  building (use validation-plan).
 ---
 
 # Implement — Execution-First Orchestration
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Distill TRUE success criteria (user approval if unclear)
+- [ ] MINE past sessions and EXPLORE the codebase with scouts
+- [ ] FORGE the build prompt; DECOMPOSE into a task graph with proof obligations
+- [ ] EXECUTE loop: task -> end-user test -> record proof in the ledger
+- [ ] Stuck protocol on any unproven task (attempt, root-cause x3, split, escalate)
+- [ ] REPORT from the execution ledger
 
 One command that runs the whole build: mine, explore, forge, decompose,
 execute, prove — tracked as a live execution ledger from the first task

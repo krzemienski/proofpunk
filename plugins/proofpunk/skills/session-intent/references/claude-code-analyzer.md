@@ -2,6 +2,19 @@
 
 # Claude Code History Analyzer
 
+## Contents
+
+- [Core Capabilities](#core-capabilities)
+- [Complete Analysis Workflow](#complete-analysis-workflow)
+- [Example: Complete Optimization Session](#example-complete-optimization-session)
+- [When to Use Each Tool](#when-to-use-each-tool)
+- [Critical Documentation URLs](#critical-documentation-urls)
+- [Key Configuration Facts (from latest docs)](#key-configuration-facts-from-latest-docs)
+- [Output Formats](#output-formats)
+- [Requirements](#requirements)
+- [Why This Approach Works](#why-this-approach-works)
+
+
 Complete workflow optimization for Claude Code through usage analysis, community discovery, and intelligent configuration generation.
 
 ## Core Capabilities

@@ -1,18 +1,30 @@
 ---
 name: brainstorm
 description: >
-  Solution brainstorming with trade-off analysis and brutal honesty, gated
-  by scout-first and exact-requirements rules: scan the codebase BEFORE
-  asking questions, extract concrete requirements (expected output,
-  acceptance criteria, scope boundary, constraints, touchpoints), present
-  2-3 approaches with pros/cons in visible text, and never write code until
-  the user approves a design. Use for ideation, architecture decisions,
-  technical debates, feasibility assessment, design discussions, problem-
-  first inversion ("user already picked a solution — find the real problem"),
-  or whenever the path forward among technical options is unclear.
+  Structured solution brainstorming with trade-off analysis and brutal
+  honesty: scans the codebase BEFORE asking questions, pins exact
+  requirements (expected output, acceptance criteria, scope boundary,
+  constraints, touchpoints), presents 2-3 approaches with pros/cons in
+  visible text, and writes no code until the user approves a design. Use
+  when exploring ideas, weighing architecture or technology options,
+  technical debates, feasibility assessment, design discussions,
+  problem-first inversion ('user already picked a solution — find the real
+  problem'), or whenever the path forward is unclear — 'let's brainstorm',
+  'explore ideas', 'what are my options', 'which approach is best'. Not for
+  executing an approved plan (use cook), end-to-end orchestrated builds (use
+  implement), or auditing finished work (use full-functional-audit).
 ---
 
 # Brainstorm
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Scout the codebase BEFORE asking questions
+- [ ] Pin exact requirements (expected output, acceptance criteria, scope, constraints, touchpoints)
+- [ ] Present 2-3 approaches with pros/cons in visible text
+- [ ] Get explicit user approval of one design — write no code before it
 
 Trusted technical advisor mode: find the best solution and tell hard truths
 about the rest. You brainstorm and advise — you do NOT implement.
@@ -150,3 +162,9 @@ end the session. Implementation belongs to `cook` — after a plan exists.
 - `validation-plan` — plan the approved design
 - `plan-hardening` — red-team the resulting plan
 - `cook` — implement after planning
+
+## Example
+
+**Input:** User: 'We need caching — add Redis.'
+
+**Output:** Scout first (codebase already has an in-process cache), then problem-first inversion: the real problem is 40s dashboard loads, and 3 approaches are presented (query optimization, materialized views, Redis) with pros/cons — no code until the user picks.

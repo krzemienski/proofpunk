@@ -1,25 +1,32 @@
 ---
 name: prompt-forge
 description: >
-  Prompt engineering, rating, and pipeline design in one skill: author
-  high-quality prompts on the canonical XML tag skeleton, RATE any
-  prompt against a quantitative evaluation rubric with test cases and
-  metrics, optimize weak prompts against real failure evidence, and
-  build multi-stage meta-prompt pipelines (.prompts/ directories with
-  dependency-aware stages, each with a SUMMARY.md). Every mode runs the
-  always-on workflow: sequential thinking, todo tracking, an
-  authorization engine, and a file-output contract — remediations from
-  any rating are applied immediately and written to a file (a new file
-  by default, the input file only with explicit consent), never left as
-  chat-only suggestions. CLI-style flags grant the consents: --in-place,
-  --report-only, --ship-below-threshold, --out, --evidence, --depth,
-  --dir; unknown flags are rejected. Use to write, rate, improve, or
-  debug a prompt; design a system prompt; force structured output;
-  manage long context; or when output is unreliable and the prompt is
-  suspect.
+  Prompt engineering, rating, and pipeline design: authors high-quality
+  prompts on the canonical XML tag skeleton, rates any prompt against a
+  quantitative rubric with test cases and metrics, optimizes weak prompts
+  against real failure evidence, and builds multi-stage meta-prompt
+  pipelines (.prompts/ directories, dependency-aware stages, each with a
+  SUMMARY.md). Always-on workflow: sequential thinking, todo tracking,
+  authorization engine, file-output contract; flags --in-place,
+  --report-only, --ship-below-threshold, --out, --evidence, --depth, --dir;
+  unknown flags rejected. Use when writing, rating, improving, or debugging
+  a prompt; designing a system prompt; forcing structured output; managing
+  long context; or when model output is unreliable and the prompt is the
+  suspect. Not for executing build plans (use cook/implement) or adversarial
+  plan review (use plan-hardening/red-team-eval).
 ---
 
 # Prompt Forge
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Sequential-thinking pass on the request; track todos
+- [ ] Resolve authorizations (file writes, in-place consent) via flags or questions
+- [ ] Author / RATE / optimize / pipeline per mode
+- [ ] Apply remediations to a file per the file-output contract
+- [ ] Verify written output satisfies the rubric thresholds
 
 Design it, rate it, fix it, chain it. Prompt work backed by patterns,
 rubrics, and evidence — not vibes. Every engagement ends with a file on

@@ -1,6 +1,21 @@
 > Incorporated from the `debug-like-expert` skill (references/hypothesis-testing.md).
 
 
+## Contents
+
+- `<overview>`
+- `<how_to_form>`
+- `<experimental_design>`
+- `<framework>`
+- `<evidence_quality>`
+- `<examples>`
+- `<decision_point>`
+- `<recovery>`
+- `<multiple_hypotheses>`
+- `<workflow>`
+- `<pitfalls>`
+- `<excellence>`
+
 <overview>
 Debugging is applied scientific method. You observe a phenomenon (the bug), form hypotheses about its cause, design experiments to test those hypotheses, and revise based on evidence. This isn't metaphorical - it's literal experimental science.
 </overview>

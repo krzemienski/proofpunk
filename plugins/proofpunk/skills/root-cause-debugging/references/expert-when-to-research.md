@@ -1,6 +1,17 @@
 > Incorporated from the `debug-like-expert` skill (references/when-to-research.md).
 
 
+## Contents
+
+- `<overview>`
+- `<research_signals>`
+- `<reasoning_signals>`
+- `<research_how>`
+- `<balance>`
+- `<decision_tree>`
+- `<red_flags>`
+- `<mindset>`
+
 <overview>
 Debugging requires both reasoning about code and researching external knowledge. The skill is knowing when to use each. This guide helps you recognize signals that indicate you need external knowledge vs when you can reason through the problem with the code in front of you.
 </overview>

@@ -1,5 +1,16 @@
 # Responsive Audit — Multi-Viewport & Multi-Device Guidance
 
+## Contents
+
+- [When to invoke](#when-to-invoke)
+- [The viewport matrix (web)](#the-viewport-matrix-web)
+- [Per-viewport checklist](#per-viewport-checklist)
+- [Common responsive defects](#common-responsive-defects)
+- [Dark / light mode parity](#dark--light-mode-parity)
+- [Capture commands](#capture-commands)
+- [Recording in the audit report](#recording-in-the-audit-report)
+
+
 A screen passes the audit at one viewport but fails at another. This is the single most common gap in real-world UI audits. This reference defines the viewport / device matrix to walk through during the audit, plus the failure patterns that appear specifically when responsive layout is wrong.
 
 Use this reference whenever the audit target is web, React Native (web preview), Flutter web, or any UI that adapts to viewport. iOS-only and macOS-only screens follow Apple HIG-specific size classes — see `ios-hig-checklist.md`.

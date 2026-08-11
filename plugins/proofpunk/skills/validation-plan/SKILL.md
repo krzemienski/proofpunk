@@ -2,16 +2,27 @@
 name: validation-plan
 description: >
   Authors multi-phase project plans where every phase carries blocking,
-  cumulative proof obligations — BRIEF → ROADMAP → per-phase PLAN → SUMMARY
-  + VALIDATION with run-scoped evidence. Proofs are cumulative: phase N's
+  cumulative proof obligations — BRIEF, ROADMAP, per-phase PLAN, SUMMARY +
+  VALIDATION with run-scoped evidence. Proofs are cumulative: phase N's
   validation re-verifies phases 1..N-1, so a regression in earlier work
-  blocks advancement. Use whenever asked to plan a multi-phase build, create
-  a validation plan, structure a project roadmap, break a feature into proven
+  blocks advancement. Use when asked to plan a multi-phase build, create a
+  validation plan, structure a project roadmap, break a feature into proven
   phases, write a BRIEF/ROADMAP, or when an autonomous runner needs phases
-  it cannot advance past without proof.
+  it cannot advance past without proof. Not for executing the plan (use cook
+  or implement) or hardening an existing draft (use plan-hardening).
 ---
 
 # Validation Plan
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Write the BRIEF (objective, criteria, constraints)
+- [ ] Write the ROADMAP (phase breakdown)
+- [ ] Write each phase PLAN with blocking proof obligations
+- [ ] Define cumulative VALIDATION per phase (re-verifies all earlier phases)
+- [ ] Confirm every gate has a run-scoped evidence requirement
 
 Plans that cannot be marked done on vibes. Every phase ships with the
 evidence it must produce, and later phases re-prove earlier ones.
@@ -140,3 +151,9 @@ Cumulative re-verification:
 - `end-user-testing` — executes the proof blocks this skill authors
 - `cook` — executes these plans phase by phase
 - `brainstorm` — run before BRIEF when the approach itself is undecided
+
+## Example
+
+**Input:** User: 'Plan the billing rebuild in phases I can't fake.'
+
+**Output:** BRIEF -> ROADMAP (4 phases) -> per-phase PLANs each with blocking proof obligations; phase 3's validation re-proves phases 1-2, so a regression blocks advancement.

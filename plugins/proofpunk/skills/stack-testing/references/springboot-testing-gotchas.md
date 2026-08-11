@@ -2,6 +2,16 @@
 
 # Spring Boot Testing Gotchas
 
+## Contents
+
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns (NEVER/WHY/Fix)](#anti-patterns-neverwhyfix)
+- [Critical Spring Test Behaviors](#critical-spring-test-behaviors)
+- [CONFLICT: No-Mock Mandate](#conflict-no-mock-mandate)
+- [APPLICABILITY GUARD](#applicability-guard)
+
+
 Claude knows basic JUnit5/Mockito/MockMvc. This skill covers what Claude gets WRONG.
 
 ## When to Use

@@ -1,5 +1,18 @@
 > Incorporated from the `debug-like-expert` skill (references/debugging-mindset.md).
 
+## Contents
+
+- `<philosophy>`
+- `<meta_debugging>`
+- `<foundation>`
+- `<cognitive_biases>`
+- `<systematic_investigation>`
+- `<when_to_restart>`
+- `<restart_signals>`
+- `<restart_protocol>`
+- `<humility>`
+- `<craft>`
+
 <philosophy>
 Debugging is applied epistemology. You're investigating a system to discover truth about its behavior. The difference between junior and senior debugging is not knowledge of frameworks - it's the discipline of systematic investigation.
 </philosophy>

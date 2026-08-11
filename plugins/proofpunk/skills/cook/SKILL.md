@@ -1,20 +1,32 @@
 ---
 name: cook
 description: >
-  Structured feature implementation as an execution loop: scout the
-  codebase, pin exact requirements, decompose into tasks each carrying a
-  proof obligation, implement following existing patterns, and complete
+  Structured feature implementation as an execution loop: scouts the
+  codebase, pins exact requirements, decomposes into tasks each carrying a
+  proof obligation, implements following existing patterns, and completes
   every task by proving it — end-user testing of the real feature,
   acceptance criteria asserted, touchpoints walked for regressions, no
-  broken public contracts. Modes: interactive (default, human checkpoint
-  at each step), fast (skip research), auto (auto-approve low-risk only),
-  parallel (batched execution), no-test (downgrades the regression rail
-  to a warning the user must accept), tdd (tests-first per task). Use to
-  implement features, execute plans, or build fixes once scope is known —
-  "implement X", "build X", "execute this plan", "cook this feature".
+  broken public contracts. Modes: interactive (default, human checkpoint at
+  each step), fast, auto, parallel, no-test, tdd. Use when implementing a
+  feature, executing an approved plan, or building a fix once scope is known
+  — 'implement X', 'build X', 'execute this plan', 'cook this feature'. Not
+  for open-ended ideation (use brainstorm), full orchestration with session
+  mining and prompt forging (use implement), or writing plans (use
+  validation-plan).
 ---
 
 # Cook — Structured Implementation
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Scout the codebase and pin exact requirements
+- [ ] Decompose into tasks, each with a written proof obligation
+- [ ] Implement one task following existing patterns
+- [ ] Prove the task via its end-user test (not proven = not done; stuck protocol otherwise)
+- [ ] Finalize: walk touchpoints for regressions, check public contracts
+- [ ] Report from the execution ledger
 
 End-to-end implementation as an execution loop: tasks, not gates.
 **Principles: YAGNI, KISS, DRY.**
@@ -148,3 +160,9 @@ Always enforced (all modes):
 - `validation-plan` — authors the task decompositions this skill executes
 - `functional-validation` — the end-user testing protocol for Contract 4
 - `end-user-testing` — the proof standard for the final verification
+
+## Example
+
+**Input:** User: 'cook this feature: export button on the reports page'
+
+**Output:** Tasks T1-T3 decomposed, each with a proof obligation; T2's end-user test (click Export -> real .xlsx downloads with 42 rows) is captured as evidence before T2 is marked DONE.

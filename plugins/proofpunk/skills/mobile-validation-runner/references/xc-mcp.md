@@ -1,5 +1,12 @@
 > Incorporated from the `xc-mcp` skill (skills-ref.zip).
 
+
+## Contents
+
+- [APPLICABILITY GUARD](#applicability-guard)
+- [Anti-Patterns](#anti-patterns)
+- [When NOT to Use](#when-not-to-use)
+
 <essential_principles>
 This skill provides expertise for iOS development automation via the XC-MCP Model Context Protocol server. XC-MCP wraps `xcodebuild`, `simctl`, and `idb` commands with intelligent caching and progressive disclosure.
 

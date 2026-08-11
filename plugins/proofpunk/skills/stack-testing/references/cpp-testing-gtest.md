@@ -2,6 +2,24 @@
 
 # C++ Testing (Agent Skill)
 
+## Contents
+
+- [Anti-Patterns](#anti-patterns)
+- [When to Use](#when-to-use)
+- [Core Concepts](#core-concepts)
+- [TDD Workflow](#tdd-workflow)
+- [Code Examples](#code-examples)
+- [Running Tests](#running-tests)
+- [Debugging Failures](#debugging-failures)
+- [Coverage](#coverage)
+- [Sanitizers](#sanitizers)
+- [Flaky Tests Guardrails](#flaky-tests-guardrails)
+- [Best Practices](#best-practices)
+- [Optional Appendix: Fuzzing / Property Testing](#optional-appendix-fuzzing--property-testing)
+- [Alternatives to GoogleTest](#alternatives-to-googletest)
+- [APPLICABILITY GUARD](#applicability-guard)
+
+
 Agent-focused testing workflow for modern C++ (C++17/20) using GoogleTest/GoogleMock with CMake/CTest.
 
 ## Anti-Patterns

@@ -1,5 +1,26 @@
 > Incorporated from the `debug-like-expert` skill (skills-ref.zip).
 
+## Contents
+
+- `<objective>`
+- `<context_scan>`
+- `<domain_expertise>`
+- `<scan_domains>`
+- `<inference_rules>`
+- `<no_inference>`
+- `<load_domain>`
+- `<when_to_load>`
+- `<context>`
+- `<core_principle>`
+- `<quick_start>`
+- `<evidence_gathering>`
+- `<root_cause_analysis>`
+- `<solution_development>`
+- `<critical_rules>`
+- `<success_criteria>`
+- `<output_format>`
+- `<advanced_topics>`
+
 <objective>
 Deep analysis debugging mode for complex issues. This skill activates methodical investigation protocols with evidence gathering, hypothesis testing, and rigorous verification when standard troubleshooting has failed.
 

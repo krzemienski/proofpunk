@@ -2,6 +2,12 @@
 
 # Workflow: Fresh Install (Clean State Testing)
 
+## Contents
+
+- [Step 1: Use High-Level Workflow Tool](#step-1-use-high-level-workflow-tool)
+- [Step 2: Manual Steps (Alternative)](#step-2-manual-steps-alternative)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/tool-reference.md

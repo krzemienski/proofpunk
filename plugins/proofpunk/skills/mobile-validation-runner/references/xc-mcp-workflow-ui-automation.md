@@ -2,6 +2,15 @@
 
 # Workflow: UI Automation (Accessibility-First)
 
+## Contents
+
+- [Step 1: Assess Accessibility Quality](#step-1-assess-accessibility-quality)
+- [Step 2: Branch Based on Quality](#step-2-branch-based-on-quality)
+- [Step 3: Text Input](#step-3-text-input)
+- [Step 4: Gestures (Swipe, Pinch, Scroll)](#step-4-gestures-swipe-pinch-scroll)
+- [Step 5: Verify Result (Optional)](#step-5-verify-result-optional)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/accessibility-patterns.md

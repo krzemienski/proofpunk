@@ -1,6 +1,15 @@
 > Incorporated from the `debug-like-expert` skill (references/verification-patterns.md).
 
 
+## Contents
+
+- `<overview>`
+- `<definition>`
+- `<examples>`
+- `<checklist>`
+- `<distrust>`
+- `<mindset>`
+
 <overview>
 The most common debugging mistake: declaring victory too early. A fix isn't complete until it's verified. This document defines what "verified" means and provides systematic approaches to proving your fix works.
 </overview>

@@ -2,6 +2,21 @@
 
 # Root Cause Tracing
 
+## Contents
+
+- [Overview](#overview)
+- [When to Use](#when-to-use)
+- [The Tracing Process](#the-tracing-process)
+- [Adding Stack Traces](#adding-stack-traces)
+- [Finding Which Test Causes Pollution](#finding-which-test-causes-pollution)
+- [Real Example: Empty projectDir](#real-example-empty-projectdir)
+- [Key Principle](#key-principle)
+- [Stack Trace Tips](#stack-trace-tips)
+- [Real-World Impact](#real-world-impact)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns](#anti-patterns)
+
+
 ## Overview
 
 Bugs often manifest deep in the call stack (git init in wrong directory, file created in wrong location, database opened with wrong path). Your instinct is to fix where the error appears, but that's treating a symptom.

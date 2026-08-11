@@ -4,17 +4,28 @@ description: >
   Deep end-to-end audit of any UI screen across four dimensions — visual
   defects, interactive elements, content quality, and UX heuristics — ending
   in one severity-classified report. Inventories every action item (button,
-  link, field, gesture), verifies each is discoverable / reachable, audits
+  link, field, gesture), verifies each is discoverable and reachable, audits
   prose / code-block / diagram / data-viz rendering, and evaluates against
-  Nielsen's 10 heuristics plus affordance theory. Two modes: identify-and-
-  delegate (screenshot only) or drive-interaction (YOU drive the live system
-  as an end user via MCP/automation tools — preferred whenever a tool path
-  exists). Use whenever reviewing a UI screen, page, or flow — "review this
-  screen", "audit this page", "QA this view", "is this UI good" — iOS, web,
-  or cross-platform.
+  Nielsen's 10 heuristics plus affordance theory. Modes:
+  identify-and-delegate (screenshot only) or drive-interaction (drive the
+  live system as an end user — preferred). Use when reviewing a UI screen,
+  page, or flow — 'review this screen', 'audit this page', 'QA this view',
+  'is this UI good' — iOS, web, or cross-platform. Not for pixel-checklist
+  screenshot QA (use visual-inspection) or app-wide functional sweeps (use
+  full-functional-audit).
 ---
 
 # UI Experience Audit
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Choose mode (identify-and-delegate vs drive-interaction — prefer driving)
+- [ ] Inventory every interactive element; verify discoverable/reachable
+- [ ] Audit visual defects, content rendering, data-viz
+- [ ] Evaluate against Nielsen's 10 heuristics + affordances
+- [ ] Emit one severity-classified report
 
 A complete per-screen audit ending in a single severity-classified report.
 Catches what checklist-only inspection misses: buttons that look tappable but
@@ -191,3 +202,9 @@ Hand-offs: wiring doubts -> `functional-validation`; app-wide scope ->
 - `functional-validation` — drives the flows this skill flags
 - `full-functional-audit` — app-wide version
 - `end-user-testing` — citation standard for all captured evidence
+
+## Example
+
+**Input:** User: 'Audit the settings page.'
+
+**Output:** Drive-interaction mode: 14 action items inventoried, 2 unreachable (keyboard), 1 contrast failure (4.1:1 < 4.5:1), heuristic violations H5/H8 — one severity-classified report.

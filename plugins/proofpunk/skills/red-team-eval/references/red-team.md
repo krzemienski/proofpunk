@@ -2,6 +2,19 @@
 
 # Red-Team Adversarial Review
 
+## Contents
+
+- [Scope](#scope)
+- [Security Policy](#security-policy)
+- [When To Invoke](#when-to-invoke)
+- [The Four Lenses](#the-four-lenses)
+- [Workflow](#workflow)
+- [Evidence-Rigor Persona (inline — used when no dedicated agent exists)](#evidence-rigor-persona-inline--used-when-no-dedicated-agent-exists)
+- [Output Format](#output-format)
+- [Anti-Patterns (refuse these)](#anti-patterns-refuse-these)
+- [Handoff](#handoff)
+
+
 Dispatch 4 hostile reviewers against a target artifact. Return a single deduplicated findings register the caller can remediate. Does NOT remediate findings — that is the job of `/harden-plan`. Does NOT handle partial review — all 4 lenses must run.
 
 ## Scope

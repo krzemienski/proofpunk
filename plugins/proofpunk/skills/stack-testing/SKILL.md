@@ -1,9 +1,30 @@
 ---
 name: stack-testing
-description: Real-system test discipline per stack — pytest/Go/C++/Django/Spring Boot gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl, Playwright browser automation with server lifecycle management, and condition-based waiting to kill timing flakes. Use when writing, debugging, or deflaking test suites in Python, Go, C++, Django, Spring Boot, or FastAPI projects; when tests pass locally but fail in CI; when browser e2e needs a dev server managed; or when any test uses sleep()/arbitrary timeouts. Enforces the plugin's Iron Rule — mocks chapters in references are for understanding existing suites only; new tests run against the real system.
+description: >
+  Real-system test discipline per stack — pytest/Go/C++/Django/Spring Boot
+  gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl,
+  Playwright browser automation with server lifecycle management, and
+  condition-based waiting to kill timing flakes. Use when writing,
+  debugging, or deflaking test suites in Python, Go, C++, Django, Spring
+  Boot, or FastAPI projects; when tests pass locally but fail in CI; when
+  browser e2e needs a dev server managed; or when any test uses
+  sleep()/arbitrary timeouts. Iron Rule: mocks chapters in references are
+  for understanding existing suites only; new tests run against the real
+  system. Not for end-user proof of a finished feature (use
+  end-user-testing) or single-bug root causes (use root-cause-debugging).
 ---
 
 # Stack Testing
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Identify the stack and read its chapter in references
+- [ ] Write the test against the REAL system (no new mocks)
+- [ ] Start required services with lifecycle management
+- [ ] Replace sleeps with condition-based waiting
+- [ ] Run repeatedly to confirm no flakes (CI parity)
 
 Test against the REAL system, per stack. This skill bundles the field-tested
 "what goes wrong" knowledge for each major test stack and the browser-e2e
@@ -45,8 +66,8 @@ evidence for every green claim.
 | Django TestCase vs TransactionTestCase, factory_boy, DRF | `references/django-testing-gotchas.md` |
 | Spring Boot Testcontainers, context cache, @Transactional | `references/springboot-testing-gotchas.md` |
 | FastAPI/OpenAI-compatible HTTP + SSE endpoints via curl | `references/fastapi-backend-testing.md` |
-| Local web app e2e with dev-server lifecycle (Python Playwright) | `references/webapp-testing.md` + `scripts/with_server.py` |
-| Full browser automation (multi-viewport, forms, link checks) | `references/playwright-browser-automation.md` + `scripts/playwright/` |
+| Local web app e2e with dev-server lifecycle (Python Playwright) | `references/webapp-testing.md` + run `scripts/with_server.py` |
+| Full browser automation (multi-viewport, forms, link checks) | `references/playwright-browser-automation.md` + import/read `scripts/playwright/` helpers |
 | Any timing flake, race, "works on my machine" | `references/condition-based-waiting.md` |
 
 ## Browser E2E Quickstart
@@ -76,3 +97,15 @@ patterns from the source skills.
 - `end-user-testing` — seal test output as fresh run evidence
 - `root-cause-debugging` — when a test failure's cause is unclear
 - `cook` — implementation loop that these tests gate
+
+## Bundled resources
+
+- `scripts/playwright/lib/helpers.js` — server lifecycle + condition-based waiting helpers; read as reference or import from Playwright specs.
+- `scripts/playwright/package.json` — dependency manifest for the helpers.
+- `references/playwright-api-reference.md` — full Playwright API reference; grep it when a specific API is needed, do not read end-to-end.
+
+## Example
+
+**Input:** User: 'This FastAPI SSE test flakes in CI.'
+
+**Output:** The mock-based test is rewritten to run against the real server with curl, sleep(2) replaced by a condition-based wait on the stream, 20 consecutive CI-parity runs pass.

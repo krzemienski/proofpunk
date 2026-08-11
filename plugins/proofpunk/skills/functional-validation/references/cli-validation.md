@@ -1,5 +1,16 @@
 # CLI Application Validation Reference
 
+## Contents
+
+- [Prerequisites](#prerequisites)
+- [Language Detection](#language-detection)
+- [The Validation Pattern (Compiled Languages)](#the-validation-pattern-compiled-languages)
+- [The Validation Pattern (Python CLI Tools)](#the-validation-pattern-python-cli-tools)
+- [What PASS Looks Like (Not Just "It Ran")](#what-pass-looks-like-not-just-it-ran)
+- [Failure Troubleshooting](#failure-troubleshooting)
+- [Never Do](#never-do)
+
+
 ## Prerequisites
 
 - **Rust**: `cargo --version` (install via `rustup` if missing)

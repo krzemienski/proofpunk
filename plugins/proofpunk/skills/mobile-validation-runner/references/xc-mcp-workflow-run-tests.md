@@ -2,6 +2,15 @@
 
 # Workflow: Run Tests
 
+## Contents
+
+- [Step 1: Discover Test Targets](#step-1-discover-test-targets)
+- [Step 2: Run Tests](#step-2-run-tests)
+- [Step 3: Get Test Details (Progressive Disclosure)](#step-3-get-test-details-progressive-disclosure)
+- [Step 4: Test Without Building (Fast Iteration)](#step-4-test-without-building-fast-iteration)
+- [Step 5: Run Specific Tests](#step-5-run-specific-tests)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/tool-reference.md

@@ -2,6 +2,16 @@
 
 # iOS Simulator Control
 
+## Contents
+
+- [APPLICABILITY GUARD](#applicability-guard)
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns](#anti-patterns)
+- [Command Reference](#command-reference)
+- [Reliable Boot Pattern](#reliable-boot-pattern)
+
+
 ## APPLICABILITY GUARD
 
 **macOS with Xcode only.** Requires `xcrun simctl`. Do not apply to Android emulators, web browsers, or non-Apple platforms.

@@ -1,5 +1,21 @@
 > Incorporated from the `ios-validation-gate` skill (skills-ref.zip).
 
+
+## Contents
+
+- [APPLICABILITY GUARD](#applicability-guard)
+- [Project Configuration](#project-configuration)
+- [When This Skill Applies](#when-this-skill-applies)
+- [The Three Validation Gates](#the-three-validation-gates)
+- [Gate 1: Simulator Validation](#gate-1-simulator-validation)
+- [Gate 2: Backend Validation](#gate-2-backend-validation)
+- [Gate 3: Analysis Validation](#gate-3-analysis-validation)
+- [Evidence Storage](#evidence-storage)
+- [Enforcement Rules](#enforcement-rules)
+- [Quick Reference](#quick-reference)
+- [Anti-Patterns](#anti-patterns)
+- [When NOT to Use](#when-not-to-use)
+
 ## APPLICABILITY GUARD
 
 This skill is for **iOS project task completion validation** using three mandatory gates (Simulator + Backend + Analysis). Activates before marking any iOS implementation task done. Do not apply to web, Android, or non-iOS backend-only tasks.

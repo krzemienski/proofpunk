@@ -1,5 +1,23 @@
 # UX Heuristic Evaluation — Phase 4 Method
 
+## Contents
+
+- [How to apply](#how-to-apply)
+- [Heuristic 1 — Visibility of system status](#heuristic-1--visibility-of-system-status)
+- [Heuristic 2 — Match between system and real world](#heuristic-2--match-between-system-and-real-world)
+- [Heuristic 3 — User control and freedom](#heuristic-3--user-control-and-freedom)
+- [Heuristic 4 — Consistency and standards](#heuristic-4--consistency-and-standards)
+- [Heuristic 5 — Error prevention](#heuristic-5--error-prevention)
+- [Heuristic 6 — Recognition rather than recall](#heuristic-6--recognition-rather-than-recall)
+- [Heuristic 7 — Flexibility and efficiency of use](#heuristic-7--flexibility-and-efficiency-of-use)
+- [Heuristic 8 — Aesthetic and minimalist design](#heuristic-8--aesthetic-and-minimalist-design)
+- [Heuristic 9 — Help users recognize, diagnose, and recover from errors](#heuristic-9--help-users-recognize-diagnose-and-recover-from-errors)
+- [Heuristic 10 — Help and documentation](#heuristic-10--help-and-documentation)
+- [Affordance / signifier alignment](#affordance--signifier-alignment)
+- [Output format](#output-format)
+- [Citation](#citation)
+
+
 A systematic application of Jakob Nielsen's 10 usability heuristics (1994, language refinements 2020), supplemented by Don Norman's affordance / signifier framework. These are the most durable usability principles in the field — derived from factor analysis of 249 usability problems and refined across 30+ years of UI evolution.
 
 Use them as an inspection lens, not a quiz. For each screen, ask: *which of these is being violated, and how?*

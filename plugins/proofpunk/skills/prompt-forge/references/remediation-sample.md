@@ -1,5 +1,15 @@
 # Remediation Sample — a full RATE pass, end to end
 
+## Contents
+
+- [1. The input file (BEFORE)](#1-the-input-file-before)
+- [2. Sequential thinking (0.1), abbreviated](#2-sequential-thinking-01-abbreviated)
+- [3. Rating report (written to `weather-tool.rating.md`)](#3-rating-report-written-to-weather-toolratingmd)
+- [4. The remediated file (written to `weather-tool.remediated.md`)](#4-the-remediated-file-written-to-weather-toolremediatedmd)
+- [5. Re-score (AFTER) — 91/100, production-ready](#5-re-score-after--91100-production-ready)
+- [6. What the flags would have changed here](#6-what-the-flags-would-have-changed-here)
+
+
 This is what §2.1 looks like when executed, not described. Input:
 `weather-tool.md`, invoked as `prompt-forge rate weather-tool.md`
 (no flags — so the default file-output contract applies).

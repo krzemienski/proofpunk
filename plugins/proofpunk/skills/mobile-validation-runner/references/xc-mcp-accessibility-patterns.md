@@ -2,6 +2,20 @@
 
 # Accessibility-First Automation Patterns
 
+## Contents
+
+- [The Accessibility-First Workflow](#the-accessibility-first-workflow)
+- [Quality Level Interpretation](#quality-level-interpretation)
+- [Performance Data](#performance-data)
+- [Effective Element Queries](#effective-element-queries)
+- [Example: Complete Login Flow](#example-complete-login-flow)
+- [Using workflow-tap-element](#using-workflow-tap-element)
+- [Inspecting the Accessibility Tree](#inspecting-the-accessibility-tree)
+- [Accessibility-Compatible Gestures](#accessibility-compatible-gestures)
+- [Troubleshooting Accessibility Issues](#troubleshooting-accessibility-issues)
+- [Best Practices Summary](#best-practices-summary)
+
+
 <philosophy>
 XC-MCP promotes **accessibility-first** automation because:
 

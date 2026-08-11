@@ -1,5 +1,16 @@
 # Interactive Element Audit — Phase 2 Method
 
+## Contents
+
+- [What counts as an interactive element](#what-counts-as-an-interactive-element)
+- [Step 1 — Inventory](#step-1--inventory)
+- [Step 2 — Affordance / signifier check](#step-2--affordance--signifier-check)
+- [Step 3 — Reachability](#step-3--reachability)
+- [Step 4 — Functional verification](#step-4--functional-verification)
+- [Common defects this phase catches](#common-defects-this-phase-catches)
+- [Output format](#output-format)
+
+
 The bulk of UI defects do not live in pixels — they live in the gap between *what looks tappable* and *what actually responds*. This phase closes that gap.
 
 ## What counts as an interactive element

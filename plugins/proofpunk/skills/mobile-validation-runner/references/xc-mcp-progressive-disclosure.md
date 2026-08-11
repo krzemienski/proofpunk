@@ -2,6 +2,16 @@
 
 # Progressive Disclosure Pattern
 
+## Contents
+
+- [The Pattern](#the-pattern)
+- [Tools That Use Progressive Disclosure](#tools-that-use-progressive-disclosure)
+- [Detail Type Reference](#detail-type-reference)
+- [Best Practices](#best-practices)
+- [Cache Lifecycle](#cache-lifecycle)
+- [Token Savings Summary](#token-savings-summary)
+
+
 <overview>
 Progressive disclosure is XC-MCP's core pattern for preventing token overflow while maintaining full functionality.
 

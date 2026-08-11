@@ -1,9 +1,30 @@
 ---
 name: codebase-truth-audit
-description: Conduct an evidence-backed, end-to-end audit and safe remediation of any software repository. Reconstruct change intent from history, verify code, configuration, documentation, runtime behavior, dependencies, and production readiness; identify drift, dead code, stale docs, cleanup risks, and remediation options; pause for explicit approval before behavior or destructive changes; then execute approved remediation with validation. Use when asked to audit a codebase, compare implementation with intent or docs, plan a refactor, clean a repository safely, close documentation drift, or prepare a repo for production.
+description: >
+  Conduct an evidence-backed, end-to-end audit and safe remediation of any
+  software repository. Reconstructs change intent from history, verifies
+  code, configuration, documentation, runtime behavior, dependencies, and
+  production readiness; identifies drift, dead code, stale docs, cleanup
+  risks, and remediation options; pauses for explicit approval before
+  behavior or destructive changes; then executes approved remediation with
+  validation. Use when asked to audit a codebase, compare implementation
+  with intent or docs, plan a refactor, clean a repository safely, close
+  documentation drift, or prepare a repo for production. Not for greenfield
+  planning (use validation-plan), feature builds (use cook or implement), or
+  mining session transcripts (use session-intent).
 ---
 
 # Codebase Truth Audit
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Reconstruct change intent from history
+- [ ] Verify code, configuration, documentation, runtime behavior, dependencies
+- [ ] Identify drift, dead code, stale docs, cleanup risks, remediation options
+- [ ] Pause for explicit approval before any behavior or destructive change
+- [ ] Execute approved remediation with validation
 
 Use this workflow for repository-wide truth audits and safe remediation. It is codebase-agnostic: derive paths, subsystems, commands, windows, baselines, and acceptance criteria from the user's request and the target repository. Do not carry over project-specific paths, dates, thresholds, subsystem names, or prior findings from another audit.
 
@@ -179,7 +200,7 @@ Include commands and exit codes for every gate, changed-file summary, risks that
 
 ## Bundled resources
 
-- `scripts/init_audit_workspace.py` — create a timestamped audit workspace, capture repository metadata, and seed the plan, phase files, evidence directory, and default success criteria.
+- `scripts/init_audit_workspace.py` — run it at audit start: creates a timestamped audit workspace, capture repository metadata, and seed the plan, phase files, evidence directory, and default success criteria.
 - `references/output-contract.md` — detailed templates for the plan, success-criteria matrix, phase reports, confirmation views, remediation register, cleanup census, and final report.
 
 Read `references/output-contract.md` before producing the first audit artifact or the final report.
@@ -189,3 +210,9 @@ Read `references/output-contract.md` before producing the first audit artifact o
 - `production-readiness` — ship-readiness audits; this is the repo-truth sibling
 - `root-cause-debugging` — when audit findings need cause tracing before remediation
 - `end-user-testing` — fresh-evidence discipline for every audit claim
+
+## Example
+
+**Input:** User: 'Audit this repo against its README before we open-source.'
+
+**Output:** An intent-vs-implementation report: 14 documented features (11 COVERED, 2 DRIFTED, 1 MISSING), 3 dead modules, 5 stale doc claims — followed by an approval-paused remediation plan.

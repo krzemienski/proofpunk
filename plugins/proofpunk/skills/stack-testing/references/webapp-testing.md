@@ -2,6 +2,18 @@
 
 # Web Application Testing
 
+## Contents
+
+- [Decision Tree: Choosing Your Approach](#decision-tree-choosing-your-approach)
+- [Example: Using with_server.py](#example-using-withserverpy)
+- [Reconnaissance-Then-Action Pattern](#reconnaissance-then-action-pattern)
+- [Common Pitfall](#common-pitfall)
+- [Best Practices](#best-practices)
+- [Reference Files](#reference-files)
+- [Anti-Patterns](#anti-patterns)
+- [When NOT to Use](#when-not-to-use)
+
+
 To test local web applications, write native Python Playwright scripts.
 
 **Helper Scripts Available**:

@@ -1,10 +1,30 @@
 ---
 name: root-cause-debugging
-description: >-
-  Find and fix the real cause of bugs, never the symptom — disciplined reproduce-minimize-hypothesize-instrument loops for hard bugs and performance regressions, backward call-stack tracing to the original trigger, test-pollution bisection with a find-polluter script, expert investigation protocols (evidence gathering, hypothesis testing, verification patterns), and competing-hypothesis tracing lanes. Use when a bug's cause is unclear, errors surface far from their origin, fixes keep not sticking, tests pollute each other, or you're tempted to patch a symptom or add a retry. The Iron Rule for debugging — no fix without reproduction, no claim without evidence.
+description: >
+  Find and fix the real cause of bugs, never the symptom — disciplined
+  reproduce-minimize-hypothesize-instrument loops for hard bugs and
+  performance regressions, backward call-stack tracing to the original
+  trigger, test-pollution bisection with a find-polluter script, expert
+  investigation protocols, and competing-hypothesis tracing lanes. Use when
+  a bug's cause is unclear, errors surface far from their origin, fixes keep
+  not sticking, tests pollute each other, or you're tempted to patch a
+  symptom or add a retry. Iron Rule: no fix without reproduction, no claim
+  without evidence. Not for full-site bug hunts (use full-functional-audit),
+  flaky-test discipline (use stack-testing), or pre-release audits (use
+  production-readiness).
 ---
 
 # Root-Cause Debugging
+
+## Run checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Reproduce the bug reliably (no fix without reproduction)
+- [ ] Minimize the repro; trace backward to the original trigger
+- [ ] Form competing hypotheses; instrument to discriminate between them
+- [ ] Fix the root cause, never the symptom (no retries-as-fix)
+- [ ] Verify with evidence; check for test pollution
 
 The Iron Rule's other half: fixing the real system requires finding the real
 cause. A patch applied to a symptom — a retry, a `sleep()`, a swallowed
@@ -32,8 +52,8 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 | Situation | Read |
 |---|---|
 | Hard bug or performance regression, no obvious cause | `references/diagnose.md` (+ `scripts/hitl-loop.template.sh`) |
-| Error deep in a call chain / invalid data of unknown origin | `references/root-cause-tracing.md` (+ `scripts/find-polluter.sh` for test pollution bisection) |
-| Full expert investigation protocol | `references/debug-like-expert.md` + `references/expert-*.md` (mindset, techniques, hypothesis testing, verification, when to research) |
+| Error deep in a call chain / invalid data of unknown origin | `references/root-cause-tracing.md` (run `scripts/find-polluter.sh` for test pollution bisection) |
+| Full expert investigation protocol | `references/debug-like-expert.md` + `references/expert-debugging-mindset.md` (mindset), `references/expert-investigation-techniques.md` (techniques), `references/expert-hypothesis-testing.md` (hypothesis testing), `references/expert-verification-patterns.md` (verification), `references/expert-when-to-research.md` (when to research) |
 | Competing explanations, want them raced against each other | `references/trace-competing-hypotheses.md` |
 
 ## Workflow
@@ -60,3 +80,9 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 - `functional-validation` — re-validate the blast radius after the fix
 - `plan-hardening` — adversarial review before large fixes
 - `end-user-testing` — fresh-evidence discipline for every claim
+
+## Example
+
+**Input:** User: 'Tests fail only on Tuesdays — flaky, just retry them.'
+
+**Output:** No retries: reproduce (cron shifts TZ), minimize, hypothesis 'TZ-dependent date math' beats 'random flake' via instrumentation, root cause fixed in the date util, evidence attached.

@@ -2,6 +2,15 @@
 
 # Workflow: Build Xcode Project
 
+## Contents
+
+- [Step 1: Discover Project Configuration](#step-1-discover-project-configuration)
+- [Step 2: Build the Project](#step-2-build-the-project)
+- [Step 3: Handle Build Results](#step-3-handle-build-results)
+- [Step 4: Access Full Logs (If Needed)](#step-4-access-full-logs-if-needed)
+- [Step 5: Clean Build (If Needed)](#step-5-clean-build-if-needed)
+
+
 <required_reading>
 **Read these reference files NOW:**
 1. references/tool-reference.md

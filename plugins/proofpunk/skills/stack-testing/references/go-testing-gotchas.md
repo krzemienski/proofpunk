@@ -2,6 +2,16 @@
 
 # Go Testing Gotchas
 
+## Contents
+
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns (NEVER/WHY/Fix)](#anti-patterns-neverwhyfix)
+- [Critical Go Test Behaviors](#critical-go-test-behaviors)
+- [CONFLICT: No-Mock Mandate](#conflict-no-mock-mandate)
+- [APPLICABILITY GUARD](#applicability-guard)
+
+
 Claude knows basic Go testing (table-driven tests, subtests, benchmarks). This skill covers what Claude gets WRONG.
 
 ## When to Use

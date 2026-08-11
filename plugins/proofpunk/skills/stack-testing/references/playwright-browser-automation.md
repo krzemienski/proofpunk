@@ -1,5 +1,23 @@
 > Incorporated from the `playwright-skill` skill (skills-ref.zip). **Adaptation:** The "API mocking" feature listed below is excluded by this plugin's Iron Rule; use network interception only for observation, never for faking responses.
 
+
+## Contents
+
+- [How It Works](#how-it-works)
+- [Setup (First Time)](#setup-first-time)
+- [Execution Pattern](#execution-pattern)
+- [Common Patterns](#common-patterns)
+- [Inline Execution (Simple Tasks)](#inline-execution-simple-tasks)
+- [Available Helpers](#available-helpers)
+- [Custom HTTP Headers](#custom-http-headers)
+- [Advanced Usage](#advanced-usage)
+- [Tips](#tips)
+- [Troubleshooting](#troubleshooting)
+- [Example Usage](#example-usage)
+- [Notes](#notes)
+- [When NOT to Use](#when-not-to-use)
+- [Anti-Patterns](#anti-patterns)
+
 **IMPORTANT - Path Resolution:**
 This skill can be installed in different locations (plugin system, manual installation, global, or project-specific). Before executing any commands, determine the skill directory based on where you loaded this SKILL.md file, and use that path in all commands below. Replace `$SKILL_DIR` with the actual discovered path.
 
