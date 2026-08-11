@@ -204,15 +204,19 @@ Include commands and exit codes for every gate, changed-file summary, risks that
 - `references/output-contract.md` — detailed templates for the plan, success-criteria matrix, phase reports, confirmation views, remediation register, cleanup census, and final report.
 
 Read `references/output-contract.md` before producing the first audit artifact or the final report.
-## Related Skills (this plugin)
-
-- `session-intent` — the intent-reconstruction lane feeding Phase 2 (intent and history)
-- `production-readiness` — ship-readiness audits; this is the repo-truth sibling
-- `root-cause-debugging` — when audit findings need cause tracing before remediation
-- `end-user-testing` — fresh-evidence discipline for every audit claim
 
 ## Example
 
 **Input:** User: 'Audit this repo against its README before we open-source.'
 
 **Output:** An intent-vs-implementation report: 14 documented features (11 COVERED, 2 DRIFTED, 1 MISSING), 3 dead modules, 5 stale doc claims — followed by an approval-paused remediation plan.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `session-intent` | Stage 2 intent reconstruction | what the repo was asked to become |
+| `end-user-testing` | Stage 5 runtime validation | evidence for runtime behavior claims |
+| `root-cause-debugging` | when verification fails | root cause of drift/failures found |
+
+Called by: `production-readiness`.

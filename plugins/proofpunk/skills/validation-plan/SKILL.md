@@ -143,17 +143,18 @@ Cumulative re-verification:
 | Phase proofs that only test the new work | Cumulative proofs re-proving all previous phases |
 | "We'll validate at the end" | Every phase proofd; final phase is a regression sweep, not the first test |
 | Silent scope changes mid-phase | Amend PLAN.md in writing with the reason |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
-## Related Skills
-
-- `plan-hardening` — red-team and strengthen a draft plan before execution
-- `end-user-testing` — executes the proof blocks this skill authors
-- `cook` — executes these plans phase by phase
-- `brainstorm` — run before BRIEF when the approach itself is undecided
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 
 ## Example
 
 **Input:** User: 'Plan the billing rebuild in phases I can't fake.'
 
 **Output:** BRIEF -> ROADMAP (4 phases) -> per-phase PLANs each with blocking proof obligations; phase 3's validation re-proves phases 1-2, so a regression blocks advancement.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `end-user-testing` | every VALIDATION gate | run-scoped evidence the gates cite |
+
+Called by: `cook`, `implement`, `plan-hardening`.

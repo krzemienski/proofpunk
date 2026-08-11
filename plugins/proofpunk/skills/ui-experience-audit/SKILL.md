@@ -194,17 +194,20 @@ Hand-offs: wiring doubts -> `functional-validation`; app-wide scope ->
 | PASS from a single screenshot | State coverage; cap at LIMITED COVERAGE |
 | Estimating exact contrast from pixels | Rules of thumb; flag for tooled verification |
 | Treating heuristics as opinions | Cite number + name |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
-## Related Skills
-
-- `visual-inspection` — Phase 1 only, lighter
-- `functional-validation` — drives the flows this skill flags
-- `full-functional-audit` — app-wide version
-- `end-user-testing` — citation standard for all captured evidence
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 
 ## Example
 
 **Input:** User: 'Audit the settings page.'
 
 **Output:** Drive-interaction mode: 14 action items inventoried, 2 unreachable (keyboard), 1 contrast failure (4.1:1 < 4.5:1), heuristic violations H5/H8 — one severity-classified report.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `visual-inspection` | Phase 1 visual defects | the checklist protocol for screenshots |
+| `functional-validation` | drive-interaction mode | how to drive the live system |
+| `end-user-testing` | evidence capture | run-scoped evidence rules |
+
+Called by: `full-functional-audit`.

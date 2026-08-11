@@ -1,5 +1,8 @@
 # Proofpunk Usage Guide — Claude Code, oh-my-pi, and OpenCode
 
+> **Read first:** [architecture.md](architecture.md) — how the 18 skills execute as one delegation DAG: method ownership, the full call graph, execution order per command, and the deferral rules that keep methods unduplicated.
+
+
 How to actually invoke all 18 skills once the plugin is installed, with real
 argument syntax and examples. For the full flag/permutation tables see the
 README's Command Reference; this guide is the hands-on "type this" version.

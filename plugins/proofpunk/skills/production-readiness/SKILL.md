@@ -73,15 +73,18 @@ cites the command output, file, or audit artifact that proves it.
   blast radius; pin with justification.
 - A readiness report with no reproducible commands in it.
 
-## Related Skills (this plugin)
-
-- `full-functional-audit` — drive every interaction before calling it ready
-- `stack-testing` — close coverage gaps the audit finds
-- `end-user-testing` — seal each audit wave's proof
-- `plan-hardening` — harden the remediation plan before executing it
 
 ## Example
 
 **Input:** User: 'Get this repo ready for its first release.'
 
 **Output:** 8-phase audit finds 12 risks (3 high), compliance scan shows 31 COVERED / 4 INCOMPLETE / 2 MISSING, 1 CVE flagged with CVSS 7.5 — remediation plan with validation gates delivered.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `codebase-truth-audit` | cleanup waves | the audit engine for dead code + drift |
+| `full-functional-audit` | functional lens | app-wide interaction validation pre-release |
+| `stack-testing` | zero-regression enforcement | regression rail per stack |
+| `end-user-testing` | all evidence | fresh-evidence sealing |

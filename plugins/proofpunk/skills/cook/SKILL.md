@@ -54,6 +54,10 @@ Before creating tasks or asking questions, scan the codebase:
 State a 3-6 bullet context summary before proceeding. Skip only when the
 input is already a plan file (the plan encodes scout output).
 
+The full scout-first rule — when to scout, what to extract, and its
+anti-rationalization — is owned by `brainstorm` (GATE 2). This contract
+applies it; it does not redefine it.
+
 ### Contract 3 — Every task gets a proof obligation
 
 Before a task starts, write down:
@@ -69,6 +73,10 @@ Before a task starts, write down:
 
 A task whose proof obligation cannot be written is not ready — shrink it
 or escalate. Never proceed on vague intent.
+
+The plan-level proof-obligation XML format (`<proof_obligation id="PO-N">`)
+is owned by `validation-plan`; how the proof is executed and evidenced is
+owned by `end-user-testing`. Cook consumes both — it does not redefine them.
 
 ### Contract 4 — Done means proven, with no side effects
 
@@ -151,18 +159,24 @@ Always enforced (all modes):
 | "Let me just start coding" | Undisciplined action wastes tokens |
 | "The user wants speed" | Fastest path = task -> execute -> prove -> next |
 | "I'll plan as I go" | That's hoping, not planning |
-| Marking end-user testing complete without actually driving the system as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 
-## Related Skills
-
-- `brainstorm` — decide the approach before cooking
-- `validation-plan` — authors the task decompositions this skill executes
-- `functional-validation` — the end-user testing protocol for Contract 4
-- `end-user-testing` — the proof standard for the final verification
 
 ## Example
 
 **Input:** User: 'cook this feature: export button on the reports page'
 
 **Output:** Tasks T1-T3 decomposed, each with a proof obligation; T2's end-user test (click Export -> real .xlsx downloads with 42 rows) is captured as evidence before T2 is marked DONE.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `brainstorm` | before any task is created | scout-first (GATE 2) + exact requirements (GATE 3) |
+| `validation-plan` | task decomposition | proof-obligation format (PO-N) |
+| `end-user-testing` | Contract 4 — done means proven | the proof standard + verdict |
+| `functional-validation` | executing the end-user test | how to drive the real runtime per platform |
+| `root-cause-debugging` | stuck protocol | root cause when a task cannot be proven |
+| `stack-testing` | regression rail | stack-specific test discipline |
+
+Called by: `implement`.

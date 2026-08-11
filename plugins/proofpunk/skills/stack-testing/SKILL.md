@@ -91,12 +91,6 @@ patterns from the source skills.
 - Copying fixture patterns between stacks → scoping rules differ per framework;
   read the matching gotchas file FIRST.
 
-## Related Skills (this plugin)
-
-- `functional-validation` — feature-level PASS/FAIL against the real system
-- `end-user-testing` — seal test output as fresh run evidence
-- `root-cause-debugging` — when a test failure's cause is unclear
-- `cook` — implementation loop that these tests gate
 
 ## Bundled resources
 
@@ -109,3 +103,11 @@ patterns from the source skills.
 **Input:** User: 'This FastAPI SSE test flakes in CI.'
 
 **Output:** The mock-based test is rewritten to run against the real server with curl, sleep(2) replaced by a condition-based wait on the stream, 20 consecutive CI-parity runs pass.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `root-cause-debugging` | flakes that survive condition-based waiting | root cause, never a retry |
+
+Called by: `cook`, `implement`, `production-readiness`.

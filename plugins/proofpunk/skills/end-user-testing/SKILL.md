@@ -34,6 +34,23 @@ is not done.
 
 **READ `../../references/evidence-contract.md` — this skill enforces it.**
 
+## The End-User Actor Mandate (canonical — other skills defer here)
+
+This skill owns two rules that every validation-oriented skill in the plugin
+applies verbatim instead of re-stating:
+
+1. **The End-User Actor Mandate** — the AI drives the real system itself, as
+   the end user: invoke the tools, click the UI, curl the server, run the CLI.
+   Marking any validation complete without actually doing this is faking it.
+   Unexecuted = UNVERIFIED, always; never upgraded to PASS by assumption.
+2. **The fresh-evidence rules** — every proof artifact is run-scoped
+   (timestamped run directory), sequential, non-empty, personally examined,
+   and never reused across runs; caches are cleared before final passes;
+   the evidence directory is sealed with `scripts/fresh_evidence.py`.
+
+When another skill says "apply the Actor Mandate" or "fresh evidence per
+`end-user-testing`", it means these two rules and the Six Steps below.
+
 ## When This Applies
 
 - A task's proof obligation is about to be executed
@@ -177,17 +194,15 @@ would I show them?" No citations -> NOT complete.
 | Marking end-user testing complete without actually driving the system as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
 | Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
 
-## Related Skills
-
-- `functional-validation` — the platform protocols that produce this evidence
-- `validation-plan` / `plan-hardening` — author the proof-obligation blocks this skill executes
-- `visual-inspection` / `ui-experience-audit` — review screenshot evidence quality
-- `../../references/ci-gates.md` — P0/P1/P2 classification and rollout order
-  for wiring these end-user tests into CI; this skill is the runtime
-  contract, CI wiring is the automation of that contract
 
 ## Example
 
 **Input:** Proof obligation: 'User resets password and lands on dashboard.'
 
 **Output:** init-run -> step-01 screenshot of the reset form -> step-02 video of submit + redirect -> seal -> validate rc=0 -> verdict cites run-2026…/step-02.mp4 by full path.
+
+## Skill calls
+
+Leaf skill — owns canonical methods; calls nothing.
+
+Called by: `codebase-truth-audit`, `cook`, `full-functional-audit`, `functional-validation`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`, `validation-plan`, `visual-inspection`.

@@ -240,22 +240,24 @@ Modes compose: default flow is analyze -> plan -> execute -> (fix) -> report.
 
 | Pattern | Why wrong | Do this |
 |---------|-----------|---------|
-| Confirming a screenshot exists without reading it | A crash dialog is still a .png | READ it; describe what you SEE |
+| Confirming a screenshot exists without reading it | Screenshot examination is owned by `visual-inspection` | Apply its review protocol — never trust an unread capture |
 | PASS criteria written after viewing evidence | Confirmation bias | Criteria first, always |
 | `build succeeded` cited as functional evidence | Builds prove compilation, not behavior | Exercise the running feature |
 | Reusing last run's screenshot "because nothing changed" | Stale evidence poisons verdicts | Fresh capture every run |
 | Happy-path-only validation | Edge cases carry most defects | Empty, overflow, error, unauthenticated states too |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Unexecuted validation is not validation | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | A skipped check tells you nothing while pretending to | Run them or report them UNVERIFIED — no exceptions |
-## Related Skills
-
-- `end-user-testing` — freshness, citation, and proof discipline for every verdict
-- `full-functional-audit` — app-wide audit when one feature isn't enough
-- `ui-experience-audit` / `visual-inspection` — review the visual evidence you capture
-- `validation-plan` — embed these checks as blocking gates in a project plan
+| Faking or skipping validation | Unexecuted validation is not validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim |
 
 ## Example
 
 **Input:** User: 'Does the new checkout flow actually work?'
 
 **Output:** The real server is started, the flow is driven in a real browser (cart -> payment -> confirmation), each step evidenced; the promo-code FAIL is fixed in the real system and re-proven.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `end-user-testing` | Steps 4-5 evidence | fresh-evidence rules + fresh_evidence.py helper |
+| `visual-inspection` | any screenshot evidence | examination of what the capture actually shows |
+
+Called by: `cook`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`.

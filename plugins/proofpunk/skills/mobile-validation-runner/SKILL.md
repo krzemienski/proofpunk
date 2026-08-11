@@ -79,12 +79,6 @@ Seal the evidence directory with the `end-user-testing` skill's
   failed backend calls hide exactly there.
 - Reusing screenshots from a previous run → violates fresh evidence.
 
-## Related Skills (this plugin)
-
-- `visual-inspection` — audit every captured screenshot before trusting it
-- `ui-experience-audit` — per-screen UX audit once validation passes
-- `end-user-testing` — fresh run-scoped evidence sealing
-- `functional-validation` — the web/API equivalent of this skill
 
 ## Bundled resources
 
@@ -100,3 +94,11 @@ Seal the evidence directory with the `end-user-testing` skill's
 **Input:** User: 'Validate the new onboarding on iPhone 16 simulator.'
 
 **Output:** SETUP boots the simulator and installs the build, RECORD captures video, ACT walks 5 onboarding screens via accessibility queries, COLLECT pulls logs, VERIFY passes all three facets with video evidence.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `end-user-testing` | COLLECT/VERIFY sealing | fresh-evidence sealing of the run directory |
+| `visual-inspection` | every captured screenshot | audit before trusting it |
+| `functional-validation` | backend facet | the web/API equivalent checks |

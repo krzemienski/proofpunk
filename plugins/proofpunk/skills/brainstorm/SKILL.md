@@ -148,8 +148,7 @@ end the session. Implementation belongs to `cook` — after a plan exists.
 | "I already know the solution" | Writing it down takes 30 seconds. Do it |
 | "The user wants action, not talk" | Bad action wastes more than good planning |
 | "I'll just prototype quickly" | Prototypes become production. Design first |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 ## Critical Constraints
 
 - You DO NOT implement — brainstorm, answer, advise only
@@ -157,14 +156,15 @@ end the session. Implementation belongs to `cook` — after a plan exists.
 - Long-term maintainability over short-term convenience
 - Technical excellence AND business pragmatism
 
-## Related Skills
-
-- `validation-plan` — plan the approved design
-- `plan-hardening` — red-team the resulting plan
-- `cook` — implement after planning
 
 ## Example
 
 **Input:** User: 'We need caching — add Redis.'
 
 **Output:** Scout first (codebase already has an in-process cache), then problem-first inversion: the real problem is 40s dashboard loads, and 3 approaches are presented (query optimization, materialized views, Redis) with pros/cons — no code until the user picks.
+
+## Skill calls
+
+Leaf skill — owns canonical methods; calls nothing.
+
+Called by: `cook`, `implement`.

@@ -108,6 +108,10 @@ matrix — reconnaissance, no build.
 Synthesize one 3-6 bullet context summary. Contradictions resolve against
 the actual code, never by vote.
 
+This stage **calls `brainstorm`** — its GATE 2 (scout-first) and GATE 3
+(exact requirements) govern what the scouts extract and when questions may
+be asked. Apply that skill's rules verbatim; they are not repeated here.
+
 ## Stage 3 — FORGE (prompt-forge)
 
 Author the build prompt with prompt-forge AUTHOR mode on the canonical
@@ -120,7 +124,10 @@ success metrics verbatim.
 ## Stage 4 — DECOMPOSE into the task graph
 
 Break the goal into tasks. **Every task is created with a proof
-obligation** — written before the task starts:
+obligation** — written before the task starts. This stage **calls
+`validation-plan`** — the proof-obligation format (PO-N) and the
+cumulative-proof rule are its canonical definitions, applied here
+verbatim:
 
 ```
 task:
@@ -149,6 +156,10 @@ while any task is not DONE:
     else:               enter the stuck protocol
     update the regression rail      # suites protect proven work
 ```
+
+This stage **calls `cook`** (the per-task execution contract) and
+**`end-user-testing`** (the proof executed after every task — Six Steps,
+Actor Mandate, sealed fresh evidence).
 
 The end-user test runs **immediately after each task**, not in a
 validation phase at the end. Integration failures surface while the
@@ -213,17 +224,13 @@ therefore resumable, and the Stage 7 report is a render of this file.
 
 ## The end-user testing proof standard
 
-"Prove something" has a precise meaning here. An end-user test proves a
-task when it:
-
-1. **Drives the real system as the end user** — curl the running server,
-   click the real UI, execute the CLI — per `../../references/end-user-actor.md`
-2. **Asserts an observable against the criterion's stated threshold** —
-   numbers or exact strings, defined in advance. A test that merely ran
-   without error proves nothing; the assertion is the proof
-3. **Emits a durable artifact** — response body, screenshot, exit-code
-   capture — fresh, run-scoped, and sealed per the `end-user-testing`
-   skill's standard
+"Prove something" has a precise meaning here, and it is **owned by the
+`end-user-testing` skill** — its Six Steps, the End-User Actor Mandate,
+and the fresh-evidence rules apply verbatim to every task proof in the
+execution loop. Read its SKILL.md at Stage 5; do not improvise a local
+variant. The assertion itself (observable vs the criterion's stated
+threshold, defined in advance) is written into each task's proof
+obligation at Stage 4, in the `validation-plan` format.
 
 Test runners (pytest, jest, go test) are the regression rail: they run
 after proof to protect it. They are never the validation itself.
@@ -249,12 +256,16 @@ after proof to protect it. They are never the validation itself.
 | Parallel lanes merging on trust | Lane contracts as executable files; conformance is end-user tested |
 | Re-implementing what past sessions built | `--mine` first; read the intent matrix |
 
-## Related Skills
+## Skill calls
 
-- `cook` — the execution engine single-lane builds delegate to
-- `prompt-forge` — forges the build prompt and parallel plan pipelines
-- `session-intent` — the mining engine behind Stage 1 / `implement mine`
-- `brainstorm` — pre-Stage-0 when the approach itself is undecided
-- `validation-plan`, `plan-hardening` — the task-decomposition layer
-- `end-user-testing`, `functional-validation`, `stack-testing` — the proof layer
-- `root-cause-debugging` — rung 2 of the stuck protocol
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `session-intent` | Stage 1 MINE | prior implementations + intent of similar past work |
+| `brainstorm` | Stage 2 EXPLORE | scout-first rule + exact-requirements gates applied to the goal |
+| `prompt-forge` | Stage 3 FORGE | the build prompt on the canonical XML skeleton |
+| `validation-plan` | Stage 4 DECOMPOSE | task-graph + proof-obligation XML format |
+| `cook` | Stage 5 EXECUTE | per-task execution semantics (the loop contract) |
+| `end-user-testing` | Stage 5 proof of every task | Six Steps, Actor Mandate, fresh-evidence sealing |
+| `functional-validation` | Stage 5 driving web/API/CLI runtimes | platform detection + real-runtime driving |
+| `root-cause-debugging` | Stage 6 stuck protocol rung 2 | root cause of any unproven task |
+| `stack-testing` | regression rail after proof | per-stack test discipline protecting proven work |

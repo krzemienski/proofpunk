@@ -104,14 +104,6 @@ did; first prompts say what the user asked.
 - Declaring a window fully covered while transcripts for part of it are
   missing → coverage gap is a finding, not a footnote.
 
-## Related Skills (this plugin)
-
-- `codebase-truth-audit` — the code-truth lane; this skill is the
-  intent-reconstruction lane of the same intent → code-truth → evidence →
-  deviation pipeline
-- `production-readiness` — spec-compliance matrices; this is intent-compliance
-- `root-cause-debugging` — when INTENT-PARTIAL rows reveal unauthorized scope
-- `end-user-testing` — sealing the matrix as fresh evidence
 
 ## Bundled resources
 
@@ -127,3 +119,9 @@ Run these discovery scripts (from the skill directory) instead of hand-writing t
 **Input:** User: 'Why was auth refactored in March? Answer from evidence.'
 
 **Output:** JSONL transcripts parsed: session 2026-03-14's first prompt asked for 'session-intent provenance', 3 steering prompts follow; commit a1b2c3 aligned; the matrix row cites the session file, not memory.
+
+## Skill calls
+
+Leaf skill — owns canonical methods; calls nothing.
+
+Called by: `codebase-truth-audit`, `implement`.

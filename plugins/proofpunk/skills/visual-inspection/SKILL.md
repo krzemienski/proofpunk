@@ -139,22 +139,24 @@ root causes and fix patterns across iOS, web, and cross-platform projects.
 | Skipping the platform-specific checklist | Universal catches ~60% of issues | Walk BOTH checklists |
 | Marking LOW issues "not worth fixing" | Cosmetic debt compounds | Log all severities; fix CRITICAL/HIGH |
 | Reviewing only the happy-path screenshot | Edge cases hold most bugs | Empty, overflow, error, dark-mode states too |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Unexecuted validation is not validation | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | A skipped check tells you nothing while pretending to | Run them or report them UNVERIFIED — no exceptions |
+| Faking or skipping validation | Unexecuted validation is not validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim |
 ## When NOT to Use
 
 - Functional validation — use `functional-validation`
 - Deeper per-screen audit (interaction + content + UX heuristics) — use `ui-experience-audit`
 - Backend API testing or performance profiling
 
-## Related Skills
-
-- `ui-experience-audit` — the deeper sibling: this protocol's Phase 1 plus interaction, content, and UX-heuristic phases
-- `functional-validation` — exercise real features after visual PASS
-- `end-user-testing` — citation standard for screenshot evidence
 
 ## Example
 
 **Input:** User attaches a screenshot: 'does this look right?'
 
 **Output:** The capture is examined (never assumed): overflow at 375px, touch target 40px < 44px HIG minimum, heading hierarchy inverted — 3 defects severity-classified; screenshot is NOT marked PASS.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `end-user-testing` | evidence standard | Actor Mandate applied to screenshot review |
+
+Called by: `functional-validation`, `mobile-validation-runner`, `ui-experience-audit`.

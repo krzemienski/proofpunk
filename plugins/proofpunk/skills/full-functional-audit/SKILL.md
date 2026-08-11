@@ -153,17 +153,21 @@ never assumed PASS.
 | Fixing a FAIL without revalidating blast radius | Re-run the item + everything sharing its contracts |
 | Inventory built from code reading alone | Confirm routes/screens against the running app |
 | "99% pass, ship it" | 100% of inventoried interactions validated, or the verdict says otherwise |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
-## Related Skills
-
-- `functional-validation` — the per-interaction protocol this audit applies at scale
-- `end-user-testing` — the proof standard every batch verdict must satisfy
-- `ui-experience-audit` — run per screen when functional PASS but UX quality is in question
-- `validation-plan` — turn the audit's fix list into a gated remediation plan
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 
 ## Example
 
 **Input:** User: 'Audit the whole app at staging.example.com.'
 
 **Output:** An interaction inventory of 63 elements, 63 validations with fresh evidence, 4 FAILs remediated in the real system and revalidated, final verdict with a 100% coverage statement.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `functional-validation` | Phase 3 EXECUTE — every interaction | the per-feature validation engine + Iron Rule |
+| `end-user-testing` | all phases | Actor Mandate + evidence sealing |
+| `ui-experience-audit` | per-screen UX lens during EXECUTE | heuristic evaluation of flagged screens |
+| `root-cause-debugging` | Phase 4 REMEDIATE | root cause of every FAIL before fixing |
+
+Called by: `production-readiness`.

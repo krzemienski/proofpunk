@@ -66,14 +66,6 @@ scores instead of impressions. Findings carry severities per
 - Stopping a QA cycle because "the remaining issues are minor" → minor is a
   severity verdict with evidence, not a feeling.
 
-## Related Skills (this plugin)
-
-- `plan-hardening` — the planning-stage adversarial pass (4 different lenses);
-  red-team here is the general-purpose version for any artifact
-- `prompt-forge` — rubric-based prompt rating; use red-team-eval for the
-  hostile multi-lens attack and measured regression runs
-- `functional-validation` — real-system PASS/FAIL after QA cycles converge
-- `end-user-testing` — seal eval scores and red-team dispositions as evidence
 
 ## Bundled resources
 
@@ -85,3 +77,12 @@ scores instead of impressions. Findings carry severities per
 **Input:** User: 'Attack this launch plan.'
 
 **Output:** 4-lens review returns 9 findings (2 security, 3 scope-creep, 4 failure-mode), each with severity and a validation-gated fix prompt; re-run after fixes shows 0 blockers.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `end-user-testing` | QA cycling loops | evidence standard for test-verify-fix iterations |
+| `functional-validation` | fix-verify loops | driving the real system each cycle |
+
+Called by: `plan-hardening`.

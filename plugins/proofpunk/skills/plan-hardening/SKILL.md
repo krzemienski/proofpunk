@@ -137,16 +137,18 @@ prove it with fresh evidence".
 | Gates with subjective criteria ("works well") | Observable, measurable criteria only |
 | Full rewrite when the draft is 80% sound | Surgical edits; preserve what works |
 | Finalizing with open CRITICAL findings | Block until cleared or explicitly accepted by the user |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
-## Related Skills
-
-- `validation-plan` — authors the plans this skill hardens
-- `prompt-forge` — authors the prompts this skill proves
-- `brainstorm` — run upstream when the approach itself is still open
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 
 ## Example
 
 **Input:** User: 'Harden this migration plan before Friday.'
 
 **Output:** The draft is attacked through 4 lenses, 6 confidence gaps scored, 2 weak sections researched, proof obligations injected into phases 2-4 — original intent preserved, plan now has zero unverifiable steps.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `red-team-eval` | Stage 4 red-team dispatch | the four adversarial lenses |
+| `validation-plan` | Stage 6 proof-obligation injection | the PO format being injected |
+| `end-user-testing` | injected proofs | the proof standard obligations must satisfy |

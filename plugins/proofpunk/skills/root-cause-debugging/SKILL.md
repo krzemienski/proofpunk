@@ -74,15 +74,18 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 - Testing three hypotheses in one edit → you learn nothing from the result.
 - Fixing where the error is raised instead of where the data went bad.
 
-## Related Skills (this plugin)
-
-- `stack-testing` — turn the reproducer into a permanent regression test
-- `functional-validation` — re-validate the blast radius after the fix
-- `plan-hardening` — adversarial review before large fixes
-- `end-user-testing` — fresh-evidence discipline for every claim
 
 ## Example
 
 **Input:** User: 'Tests fail only on Tuesdays — flaky, just retry them.'
 
 **Output:** No retries: reproduce (cron shifts TZ), minimize, hypothesis 'TZ-dependent date math' beats 'random flake' via instrumentation, root cause fixed in the date util, evidence attached.
+
+## Skill calls
+
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `functional-validation` | verifying the fix | end-to-end proof the root cause is gone |
+| `end-user-testing` | evidence of reproduction + fix | fresh-evidence standard |
+
+Called by: `codebase-truth-audit`, `cook`, `full-functional-audit`, `implement`, `stack-testing`.

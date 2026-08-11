@@ -8,3 +8,27 @@ Activate the `prompt-forge` skill and run its RATE workflow on:
 $ARGUMENTS
 
 Write NAME.rating.md plus the remediated prompt file per the skill's file-output contract. Unexecuted suggestions are UNVERIFIED — remediate, do not merely advise.
+
+## Examples
+
+**1. Minimal — positional file only**
+
+```
+/proofpunk:rate-prompt prompts/support.prompt.md
+```
+Scores against the 100-point rubric, writes support.rating.md, and applies remediations to a NEW file (default consent level).
+
+**2. With flags — consent and output control**
+
+```
+/proofpunk:rate-prompt prompts/support.prompt.md --in-place --report-only
+```
+Rates and reports without rewriting: the rating file lands, the prompt is untouched.
+
+**3. Composed — regression-test a prompt change like code**
+
+```
+/proofpunk:rate-prompt prompts/v2.prompt.md --out prompts/v2.remediated.md
+/proofpunk:verify "run both prompt versions against the 3 failure cases and diff the outputs"
+```
+Rate the revision, then end-user-test the behavioral difference with executed evidence — no vibes-based prompt reviews.

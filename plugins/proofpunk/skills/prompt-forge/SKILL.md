@@ -352,10 +352,10 @@ Build multi-stage prompt pipelines under `.prompts/`:
 | "Make it better" edits with no re-test | Same test cases, before/after scores |
 | Jumping straight to output | Sequential thinking (0.1) — numbered steps first |
 | Inventing ad-hoc XML tags | 0.5 tag table; new tags need a stated reason |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
-| Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
+| Faking or skipping validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim; unexecuted = UNVERIFIED |
 
-## Related Skills
+## Skill calls
 
-- `plan-hardening` — inject validation checkpoints into a finished prompt
-- `validation-plan` — pipeline stages that produce plans should follow its hierarchy
+Leaf skill — owns canonical methods; calls nothing.
+
+Called by: `implement`.
