@@ -155,8 +155,14 @@ if [ "$SOURCE" = "github" ]; then
   if [ "$DRY_RUN" -eq 0 ]; then
     curl -fsSL "$REPO_TARBALL/$REF" -o "$WORK/repo.tar.gz" || die "download failed (check --ref $REF)"
     tar -xzf "$WORK/repo.tar.gz" -C "$WORK"
-    SRC_ROOT="$(find "$WORK" -maxdepth 1 -type d -name 'Proofpunk-*' | head -1)"
-    [ -n "$SRC_ROOT" ] || die "unexpected tarball layout"
+    # GitHub codeload tarballs contain exactly one top-level directory named
+    # <repo>-<ref>: the repo name lowercased, tag refs lose their leading 'v',
+    # branch names keep slashes flattened. Do NOT pattern-match the name —
+    # any repo rename or ref form must keep working. The skills-path check
+    # below is the authoritative layout validation.
+    SRC_ROOT="$(find "$WORK" -maxdepth 1 -mindepth 1 -type d | head -1)"
+    [ -n "$SRC_ROOT" ] || die "unexpected tarball layout (no root dir)"
+    [ "$(find "$WORK" -maxdepth 1 -mindepth 1 -type d | wc -l)" -eq 1 ] || die "unexpected tarball layout (multiple root dirs)"
   else
     say "  [dry-run] would download $REPO_TARBALL/$REF"
     SRC_ROOT="(github:$REF)"
