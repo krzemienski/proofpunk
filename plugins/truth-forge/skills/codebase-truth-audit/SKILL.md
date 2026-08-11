@@ -188,4 +188,4 @@ Read `references/output-contract.md` before producing the first audit artifact o
 - `session-intent` — the intent-reconstruction lane feeding Phase 2 (intent and history)
 - `production-readiness` — ship-readiness audits; this is the repo-truth sibling
 - `root-cause-debugging` — when audit findings need cause tracing before remediation
-- `evidence-gates` — fresh-evidence discipline for every audit claim
+- `end-user-testing` — fresh-evidence discipline for every audit claim

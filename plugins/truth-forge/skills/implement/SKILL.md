@@ -1,33 +1,44 @@
 ---
 name: implement
 description: >
-  Orchestrated implementation front door that composes every truth-forge
-  skill into one run: mine past Claude Code sessions for previous
-  implementations (session-intent), explore the codebase with parallel
-  scout agents, forge the implementation prompt (prompt-forge on the
-  canonical XML skeleton), harden the plan, execute under gate
-  discipline (cook), debug root causes, and prove every success
-  criterion as the end user. Flags: --parallel plans and implements in
-  parallel lanes (planning via prompt-forge pipelines); --auto never
-  stops until the TRUE success criteria are accomplished — criteria are
-  distilled first, and unclear goals get explicit user approval before
-  any code; --mine runs session mining first. Use for "implement X",
-  "build X end to end", "use all the skills to ship this", or to re-run
-  how past sessions implemented similar goals.
+  Execution-first implementation orchestrator: distill TRUE success
+  criteria, mine past sessions (session-intent), explore with parallel
+  scouts, forge the build prompt (prompt-forge), decompose into a task
+  graph where every task carries a proof obligation, then run the
+  execution loop — execute a task, end-user test it immediately, record
+  the proof — until every criterion is proven. End-user testing is the
+  only validation, always; a task that ran but proved nothing is not
+  done. --parallel fans scouts, plan stages, and build lanes out with
+  executable lane contracts; --auto never stops until every criterion
+  is proven, escalating only decisions a human must make; --mine runs
+  session mining first. Use for "implement X", "build X end to end",
+  or "use all the skills to ship this".
 ---
 
-# Implement — Orchestrated Implementation
+# Implement — Execution-First Orchestration
 
-One command that runs the whole pipeline: mine, explore, forge, plan,
-execute, debug, validate — with the execution tracked as todos from the
-first step to the last proof.
+One command that runs the whole build: mine, explore, forge, decompose,
+execute, prove — tracked as a live execution ledger from the first task
+to the last proof.
 
-**Relationship to `cook`**: implement is the orchestrator (the
-conductor); cook is the execution engine (the player) it delegates the
-code-writing phases to. When scope is fully known and the job is a
-single lane, `cook` directly is enough. When the job needs session
-mining, parallel lanes, prompt-forged planning, or multi-skill
-composition, that is implement.
+**Relationship to `cook`**: implement is the orchestrator; cook is the
+execution engine it delegates single-lane builds to. Both share the same
+doctrine: tasks execute to completion, and completion is proven by
+end-user testing.
+
+## The Execution Doctrine — four laws
+
+1. **The unit of progress is the task.** Not the phase, not the gate.
+   A task is DONE only when its end-user test has produced proof.
+2. **End-user testing is the only validation. Always.** Driving the real
+   system as the end user is how anything gets proven. Test suites are
+   the regression rail — they protect proven work, they never prove it.
+3. **The plan is a living task list, not a gate you pass once.** Execution
+   updates it: tasks split when they get stuck, appear when scouts
+   discover work, and complete only with proof attached.
+4. **The loop always knows its next action.** No dead stops. When a task
+   cannot advance, the stuck protocol names the next action — and only a
+   decision a human must make may halt the run.
 
 ## Command Surface
 
@@ -38,145 +49,201 @@ implement mine [--project DIR] [--since DATE] [--until DATE] [--json]
 
 | Flag | Effect | Why it exists |
 |------|--------|---------------|
-| `--parallel` | Plan AND implement in parallel manners: exploration fans out to parallel scout agents; prompt-forge authors the plan as a `.prompts/` pipeline whose independent stages run in parallel; implementation splits into parallel lanes by module boundary, each lane its own todo chain | wall-clock speed on multi-module goals; planning and execution parallelism are one decision, not two |
-| `--auto` | No stopping whatsoever until the TRUE success criteria are accomplished. Criteria are distilled FIRST (Phase 0); if they are not clearly laid out, or the goal is not understood, STOP and get the user's approval of the distilled criteria before any code. In-scope actions need no further human gates; the loop ends only when every criterion is proven as the end user | unattended runs with a real finish line instead of "looks done" |
-| `--mine` | Run session mining first (Phase 1, never skipped with this flag) | reuse how past sessions actually implemented similar goals |
-| `--fast` | Skip the research sub-step inside planning (passed to cook's fast mode) | known territory, known stack |
-| `--no-test` | Downgrade the test gate to a warning the user must accept (cook semantics) | environments with no runnable suite; regression rail only |
-| `--tdd` | Tests-first per phase (cook semantics) | refactor-heavy goals |
+| `--parallel` | Parallel everywhere: scouts fan out, the plan is forged as a `.prompts/` pipeline whose independent stages run in parallel, and the build splits into lanes by module boundary — each lane bound by an executable lane contract | wall-clock speed on multi-module goals |
+| `--auto` | Never stops until every TRUE criterion is proven. Criteria are distilled FIRST; if they are unclear, the run escalates for approval before any code — that escalation is the one mandatory stop. Everything else the stuck protocol handles without stopping | unattended runs with a real finish line |
+| `--mine` | Run session mining first (never skipped with this flag) | reuse how past sessions actually built similar things |
+| `--fast` | Skip the research sub-step (passed to cook's fast mode) | known territory, known stack |
+| `--no-test` | Downgrades the *regression rail* (automated suites) to a warning the user must accept. End-user testing is never downgraded — it is the only proof there is | environments with no runnable suite |
+| `--tdd` | Tests-first per task (rail written before the task's code) | refactor-heavy goals |
 
 Unknown flags are rejected with this table, never silently ignored.
-`--auto` never overrides the authorization boundaries in Phase 5:
-destructive operations, out-of-scope edits, and below-threshold shipping
-still require explicit consent, flags or no flags.
 
-## Phase 0 — Distill the TRUE success criteria (always first)
+## Stage 0 — Distill the TRUE success criteria (always first)
 
-Before mining, exploring, or coding, distill the success criteria from
-the goal. A TRUE criterion is:
+Before mining, exploring, or coding, distill the success criteria. A
+TRUE criterion is:
 
 1. **Observable** — checkable from outside the code (response body,
    screen state, file on disk, exit code), not "the code handles it"
 2. **End-user provable** — provable by driving the real system as the
    end user per `../../references/end-user-actor.md`
-3. **Measurable** — has a pass/fail threshold stated in numbers or
-   exact strings
+3. **Measurable** — a pass/fail threshold in numbers or exact strings
 
-**Approval gate**: if the goal is not clearly laid out, or the
-distillation required assumptions the user never stated, present the
-distilled criteria and get explicit approval BEFORE Phase 2. Under
-`--auto` this is the one mandatory stop — everything after it runs
-without stopping. Record the approved criteria verbatim; the final
-report grades against exactly these, nothing broader, nothing vaguer.
+If the goal is unclear or the distillation required unstated assumptions,
+**escalate**: present the distilled criteria and get explicit approval
+before any code. This is an escalation for a decision only a human can
+make — not a review gate — and under `--auto` it is the one mandatory
+stop. Record the approved criteria verbatim in the execution ledger; the
+final report grades against exactly these.
 
-## Phase 1 — MINE (session-intent)
+## Stage 1 — MINE (session-intent)
 
-With `--mine`, or whenever the goal smells like past work ("again",
-"like the X feature"), mine previous sessions via `session-intent`:
+With `--mine`, or when the goal smells like past work, mine previous
+sessions via `session-intent`: past implementation sessions, the intent
+behind their prompts, files touched, commits. Output: a previous-
+implementations matrix feeding Stage 2 (where past runs touched) and
+Stage 3 (what framing worked). `implement mine` alone prints only the
+matrix — reconnaissance, no build.
 
-- Extract past implementation sessions: first prompt (intent), steering
-  prompts, tool usage, files touched, commits
-- Read the intent behind those sessions' prompts, not just their text —
-  what was the user actually trying to get built
-- Output: a "previous implementations" matrix (session, intent, approach
-  inferred from tools/files, outcome signals) that feeds Phase 2's
-  exploration (where did past runs touch?) and Phase 3's prompt (what
-  framing worked?)
-
-`implement mine` alone (no goal) runs the mining and prints only the
-matrix — a reconnaissance pass, no implementation.
-
-## Phase 2 — EXPLORE (parallel scout agents)
-
-Codebase exploration via scout agents — with `--parallel`, several at
-once, each owning a question:
+## Stage 2 — EXPLORE (parallel scout agents)
 
 | Scout | Question |
 |-------|----------|
 | Structure | project type, modules, entry points |
-| Patterns | conventions of similar features — implementation must match them |
+| Patterns | conventions of similar features — code must match them |
 | Contracts | public APIs, schemas, env vars the goal could touch |
-| History | what Phase 1's matrix flagged as past touchpoints |
+| History | what Stage 1's matrix flagged as past touchpoints |
 
-Synthesize one 3-6 bullet context summary. Contradictions between
-scouts are resolved against the actual code, never by majority vote.
+Synthesize one 3-6 bullet context summary. Contradictions resolve against
+the actual code, never by vote.
 
-## Phase 3 — FORGE (prompt-forge)
+## Stage 3 — FORGE (prompt-forge)
 
-Author the implementation prompt with prompt-forge AUTHOR mode, on the
-canonical 0.5 XML skeleton — including `<sequential_thinking>`,
-`<todos>`, `<authorization>`, `<output_contract>` (with the exact file
-paths the run must produce), and `<validation>` (the end-user proof per
-criterion). The approved Phase 0 criteria become the prompt's success
-metrics verbatim.
+Author the build prompt with prompt-forge AUTHOR mode on the canonical
+XML skeleton — including `<sequential_thinking>`, `<todos>`,
+`<authorization>`, `<output_contract>` (exact file paths the run must
+produce, starting with the execution ledger), and `<validation>` (the
+end-user test per criterion). The Stage 0 criteria become the prompt's
+success metrics verbatim.
 
-## Phase 4 — PLAN (validation-plan + plan-hardening)
+## Stage 4 — DECOMPOSE into the task graph
 
-- Default: one plan following the `validation-plan` hierarchy, hardened
-  per `plan-hardening` (validation gates inside the plan, not after it)
-- With `--parallel`: prompt-forge PIPELINE mode — a `.prompts/` tree
-  whose independent stages (per module/lane) are planned in parallel and
-  declare their dependencies; each stage gets a SUMMARY.md contract
+Break the goal into tasks. **Every task is created with a proof
+obligation** — written before the task starts:
 
-## Phase 5 — EXECUTE (cook's gate discipline)
+```
+task:
+  id: T3
+  scope: cart total includes tax
+  depends_on: [T1]
+  proof_obligation:
+    end_user_test: POST /cart/items with a taxable item, then GET /cart
+    assertion: response.total == response.subtotal + response.tax AND response.tax > 0
+    artifact: execution-ledger entry + response body capture
+```
 
-Execute the plan under cook's gates: no code before the reviewed plan,
-no side effects, 100% test pass as the REGRESSION rail, patterns matched
-to scout findings. With `--parallel`, lanes run concurrently, each
-tracked as its own todo chain; lane merges are serialized through the
-contract checks (no two lanes may widen the same public contract without
-explicit consent).
+A task is **READY** when every task it depends on is PROVEN. A task is
+**DONE** only when its proof obligation is satisfied and the artifact is
+recorded in the ledger. A task without a writable proof obligation is a
+specification bug: shrink it until the obligation is writable.
 
-Authorization boundaries that even `--auto` respects: destructive
-operations (delete/overwrite beyond the plan's touchpoints), edits
-outside the approved scope, and shipping anything graded below the
-approved criteria — all stop for explicit consent.
+## Stage 5 — EXECUTE the loop
 
-## Phase 6 — DEBUG (root-cause-debugging)
+```
+while any task is not DONE:
+    task = highest-priority READY task
+    execute task                    # real code, real system — no mocks
+    run task.proof_obligation       # end-user test, immediately
+    if proof produced:  mark DONE, record artifact in the ledger
+    else:               enter the stuck protocol
+    update the regression rail      # suites protect proven work
+```
 
-Any failure routes here, never to a retry: reproduce, minimize,
-hypothesize, instrument; fix the root cause in the real system (no
-sleeps, no swallowed exceptions, no symptom patches); then re-validate
-the original failure AND its blast radius.
+The end-user test runs **immediately after each task**, not in a
+validation phase at the end. Integration failures surface while the
+context that caused them is still loaded, and the final report is an
+aggregation of per-task proofs — never a fresh round of testing
+reconstructed from memory.
 
-## Phase 7 — VALIDATE (as the end user)
+**With `--parallel`**: lanes run concurrently, each its own todo chain.
+Before lanes start, the orchestrator writes a **lane contract** per
+boundary — a file stating the exact public interface each lane may
+expose and consume. Every lane's end-user tests include conformance
+against that file, so a merge conflict surfaces as a failed end-user
+test with evidence, not a review debate.
 
-Per criterion, proof gathered by driving the real system:
-`functional-validation` protocol, `evidence-gates` standard,
-`stack-testing` for the stack-specific real-system checks. Unexecuted =
-UNVERIFIED — the `--auto` loop treats UNVERIFIED as NOT DONE and keeps
-going (or stops for consent if the blocker needs authorization).
+## Stage 6 — The stuck protocol (replaces retry loops and dead stops)
 
-## Phase 8 — REPORT
+When a task's proof fails, the loop climbs a bounded ladder:
 
-A criteria-by-criteria proof table: criterion (verbatim from Phase 0) |
-proof (tool, action, evidence path) | PASS/FAIL/UNVERIFIED. Plus the
-todo ledger: everything done, everything pending and why.
+1. **Attempt** the obvious fix once.
+2. **Root-cause loop** (max 3 hypotheses) via `root-cause-debugging`:
+   reproduce, minimize, instrument; fix the cause, never the symptom.
+3. **Split** the task into smaller tasks, each with its own writable
+   proof obligation; a task that cannot be proven can almost always be
+   divided into tasks that can.
+4. **Escalate** to the user with a structured blocker report: what was
+   tried (with evidence), the root cause found or ruled out, the exact
+   decision needed. Only decisions a human must make — destructive
+   operations, out-of-scope edits, secrets, ambiguous criteria — reach
+   this rung. Under `--auto`, rungs 1-3 never stop the run.
 
-## Execution discipline (all phases)
+Authorization boundaries (destructive operations, edits outside the
+approved scope, credentials) are escalation triggers, not gates: the
+loop routes to rung 4, it never silently proceeds and never silently
+stops.
 
-- Every phase and every parallel lane is a todo; exactly one in progress
-  per lane; completed immediately when done; the ledger is read back
+## Stage 7 — REPORT from the ledger
+
+The report is generated FROM the execution ledger, not reconstructed:
+
+- **Criteria-proof table**: criterion (verbatim from Stage 0) | end-user
+  test run | artifact | PASS / FAIL / UNVERIFIED
+- **Task ledger**: every task, its proof obligation, its artifact
+- **Todo ledger**: everything done, everything pending and why
+
+## The execution ledger (`.planning/execution-ledger.json`)
+
+The run's single source of truth, updated live as tasks complete:
+
+```json
+{
+  "goal": "…", "criteria": ["…verbatim…"],
+  "tasks": [{"id": "T3", "scope": "…", "depends_on": ["T1"],
+             "proof_obligation": {"end_user_test": "…", "assertion": "…"},
+             "status": "done", "artifact": ".planning/evidence/T3-response.json"}],
+  "escalations": [{"task": "T4", "rung": 4, "decision_needed": "…"}]
+}
+```
+
+An interrupted run resumes from the ledger: DONE tasks with artifacts
+are kept, everything else re-enters the loop. `--auto` long runs are
+therefore resumable, and the Stage 7 report is a render of this file.
+
+## The end-user testing proof standard
+
+"Prove something" has a precise meaning here. An end-user test proves a
+task when it:
+
+1. **Drives the real system as the end user** — curl the running server,
+   click the real UI, execute the CLI — per `../../references/end-user-actor.md`
+2. **Asserts an observable against the criterion's stated threshold** —
+   numbers or exact strings, defined in advance. A test that merely ran
+   without error proves nothing; the assertion is the proof
+3. **Emits a durable artifact** — response body, screenshot, exit-code
+   capture — fresh, run-scoped, and sealed per the `end-user-testing`
+   skill's standard
+
+Test runners (pytest, jest, go test) are the regression rail: they run
+after proof to protect it. They are never the validation itself.
+
+## Execution discipline (all stages)
+
+- Every stage, task, and parallel lane is a todo; exactly one in progress
+  per lane; completed immediately when proven; the ledger is read back
   before the report
-- Sequential thinking per prompt-forge 0.1 at every phase transition:
+- Sequential thinking per prompt-forge 0.1 at every stage transition:
   numbered steps, revisions stated, branches justified
 
 ## Anti-Patterns
 
 | Pattern | Do instead |
 |---------|-----------|
-| Coding before criteria are distilled and (if unclear) approved | Phase 0 always runs; `--auto` stops exactly there |
-| `--auto` as a license to skip validation | The loop ends only on proven criteria; UNVERIFIED = NOT DONE |
-| Sequential scout then sequential plan then sequential code on a multi-module goal | `--parallel`: parallel scouts, parallel pipeline stages, parallel lanes |
-| Re-implementing from zero what past sessions already built | `--mine` first; read the intent matrix |
-| "Implementing" by writing prompts about code | Phase 5 is real execution under cook's gates; prompts are Phase 3 artifacts |
-| Retry loops on failure | Phase 6 root-cause loop; a retry is never a fix |
+| Gate-thinking: "passed review, so we may now code/test" | Execution-thinking: tasks run when READY, complete when PROVEN |
+| Validation as a phase at the end | End-user testing immediately after every task; report = aggregation |
+| Marking a task done because it ran | A task is done when its proof obligation produced an artifact |
+| A test with no assertion as "proof" | Assertions against the criterion's threshold are the proof |
+| Retry loops on failure | The stuck protocol: attempt, root-cause, split, escalate |
+| `--auto` as a license to skip proof | `--auto` ends only when every criterion is proven; UNVERIFIED = NOT DONE |
+| Parallel lanes merging on trust | Lane contracts as executable files; conformance is end-user tested |
+| Re-implementing what past sessions built | `--mine` first; read the intent matrix |
 
 ## Related Skills
 
-- `cook` — the execution engine Phases 5 delegates to
-- `prompt-forge` — forges the implementation prompt and parallel plan pipelines
-- `session-intent` — the mining engine behind Phase 1 / `implement mine`
-- `brainstorm` — pre-Phase-0 when the approach itself is undecided
-- `validation-plan`, `plan-hardening` — the plan layer
-- `root-cause-debugging`, `functional-validation`, `evidence-gates`, `stack-testing` — the proof layer
+- `cook` — the execution engine single-lane builds delegate to
+- `prompt-forge` — forges the build prompt and parallel plan pipelines
+- `session-intent` — the mining engine behind Stage 1 / `implement mine`
+- `brainstorm` — pre-Stage-0 when the approach itself is undecided
+- `validation-plan`, `plan-hardening` — the task-decomposition layer
+- `end-user-testing`, `functional-validation`, `stack-testing` — the proof layer
+- `root-cause-debugging` — rung 2 of the stuck protocol

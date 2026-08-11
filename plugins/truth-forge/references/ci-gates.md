@@ -24,10 +24,10 @@ Analyze the last ~50 CI runs and categorize failures (temp files, deps,
 imports, test infra, code quality, build config, environment) before writing
 any gate. Gates target the failure categories that actually occur.
 
-## Relationship to Evidence Gates
+## Relationship to End-User Testing
 
-CI gates are fast mechanical checks; they complement — never replace — the
-behavioral evidence gates in `evidence-contract.md`. A green pre-commit hook
+CI gates are fast mechanical checks — the regression rail. They complement,
+never replace, the end-user testing proof standard in `evidence-contract.md`. A green pre-commit hook
 proves the build is clean; it does not prove the feature works. Behavioral
 proof still requires the AI driving the real system as the end user per
 `end-user-actor.md`. Conversely, do not put slow end-to-end journeys in

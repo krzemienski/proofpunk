@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
-# truth-forge-install.sh — install the 16 truth-forge skills as PLAIN skills
+# truth-forge-install.sh — install the 18 truth-forge skills as PLAIN skills
 # (not a plugin/marketplace) into a target skills directory of your choice,
 # with collision safety, doctrine injection, and post-install verification.
+# Optionally also installs the 20-theme flat-black cyberpunk pack and the
+# platform plugin glue (oh-my-pi extension, OpenCode plugin/commands/agents).
 #
 # Quick start:
 #   bash truth-forge-install.sh --target claude-code
-#   bash truth-forge-install.sh --target omp --dry-run
+#   bash truth-forge-install.sh --target omp --themes --plugins
+#   bash truth-forge-install.sh --target opencode --themes --plugins --dry-run
 # Full docs with literal examples and per-flag rationale: tools/INSTALL.md
 # in the repo (https://github.com/krzemienski/truth-forge).
 
 set -euo pipefail
 
 # ---------------------------------------------------------------- defaults --
-TARGET="claude-code"            # claude-code | omp
+TARGET="claude-code"            # claude-code | omp | opencode | agents
 DIR=""                          # explicit install dir (wins over --target)
 SOURCE="github"                 # github | local
 SOURCE_DIR=""                   # local truth-forge repo checkout
@@ -26,13 +29,19 @@ INJECT_CLAUDE_MD=""             # file to receive the rules block (opt-in)
 DRY_RUN=0
 VERIFY=1
 QUIET=0
+SKIP_SKILLS=0                   # themes/plugins only
+WITH_THEMES=0                   # install the 20-theme pack into detected TUIs
+WITH_PLUGINS=0                  # install OMP extension + OpenCode plugin glue
 
 REPO_TARBALL="https://codeload.github.com/krzemienski/truth-forge/tar.gz/refs/heads"
 SKILLS_SUBPATH="plugins/truth-forge/skills"
 REFS_SUBPATH="plugins/truth-forge/references"
+THEMES_SUBPATH="plugins/truth-forge/themes"
+OPENCODE_SUBPATH="plugins/truth-forge/opencode"
+EXTENSIONS_SUBPATH="plugins/truth-forge/extensions"
 DOCTRINE_DIRNAME="truth-forge-doctrine"
 
-ALL_SKILLS="brainstorm codebase-truth-audit cook evidence-gates full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing ui-experience-audit validation-plan visual-inspection"
+ALL_SKILLS="brainstorm codebase-truth-audit cook end-user-testing full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing ui-experience-audit validation-plan visual-inspection"
 
 # ------------------------------------------------------------------- utils --
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }
@@ -45,8 +54,14 @@ usage() { sed -n '2,12p' "$0"; cat <<'EOF'
 USAGE: bash truth-forge-install.sh [options]
 
 TARGET (where skills go):
-  --target claude-code   ~/.claude/skills                     (default)
-  --target omp           ${TRUTH_FORGE_OMP_DIR:-~/.config/oh-my-claudecode/skills}
+  --target claude-code   ~/.claude/skills                     (default; also
+                         read by OpenCode and OMP via their Claude-compatible
+                         skill providers)
+  --target omp           ${TRUTH_FORGE_OMP_DIR:-~/.omp/agent/skills}
+                         (oh-my-pi native skill provider)
+  --target opencode      ~/.config/opencode/skills            (OpenCode native)
+  --target agents        ~/.agents/skills                     (shared OMP +
+                         OpenCode agents-compatible location)
   --dir PATH             any explicit directory (beats --target)
 
 SOURCE (where skills come from):
@@ -55,8 +70,19 @@ SOURCE (where skills come from):
   --source-dir PATH      local truth-forge checkout (offline / dev)
 
 SELECTION:
-  --only a,b,c           install just these skills (default: all 16)
+  --only a,b,c           install just these skills (default: all 18)
+  --skip-skills          install no skills (use with --themes/--plugins)
   --list                 print skills available in the source, then exit
+
+THEMES & PLUGINS:
+  --themes               install the 20 flat-black cyberpunk themes into
+                         every detected TUI (oh-my-pi ~/.omp/agent/themes,
+                         OpenCode ~/.config/opencode/themes) and the Hyper
+                         modules into ~/.config/truth-forge/hyper-themes
+  --plugins              install platform glue: OMP doctrine-guard extension
+                         (~/.omp/agent/extensions) and the OpenCode plugin,
+                         commands, and agents (~/.config/opencode); also
+                         prints the Claude Code marketplace install command
 
 COLLISIONS (same-name skill already exists):
   (default)              SKIP it and report — nothing is clobbered silently
@@ -84,7 +110,10 @@ while [ $# -gt 0 ]; do
     --source-dir)        SOURCE="local"; SOURCE_DIR="${2:?--source-dir needs a value}"; shift 2;;
     --ref)               REF="${2:?--ref needs a value}"; shift 2;;
     --only)              ONLY="${2:?--only needs a value}"; shift 2;;
+    --skip-skills)       SKIP_SKILLS=1; shift;;
     --list)              LIST=1; shift;;
+    --themes)            WITH_THEMES=1; shift;;
+    --plugins)           WITH_PLUGINS=1; shift;;
     --override)          OVERRIDE=1; shift;;
     --backup)            BACKUP=1; shift;;
     --no-backup)         BACKUP=0; shift;;
@@ -104,8 +133,10 @@ done
 if [ -z "$DIR" ]; then
   case "$TARGET" in
     claude-code) DIR="$HOME/.claude/skills";;
-    omp)         DIR="${TRUTH_FORGE_OMP_DIR:-$HOME/.config/oh-my-claudecode/skills}";;
-    *) die "--target must be claude-code or omp (got '$TARGET')";;
+    omp)         DIR="${TRUTH_FORGE_OMP_DIR:-$HOME/.omp/agent/skills}";;
+    opencode)    DIR="$HOME/.config/opencode/skills";;
+    agents)      DIR="$HOME/.agents/skills";;
+    *) die "--target must be claude-code, omp, opencode, or agents (got '$TARGET')";;
   esac
 fi
 say "== truth-forge installer =="
@@ -143,7 +174,9 @@ if [ "$DRY_RUN" -eq 0 ]; then
 fi
 
 # ------------------------------------------------------------- selection --
-if [ -n "$ONLY" ]; then
+if [ "$SKIP_SKILLS" -eq 1 ]; then
+  SELECTED=""
+elif [ -n "$ONLY" ]; then
   SELECTED="$(printf '%s' "$ONLY" | tr ',' ' ')"
 else
   SELECTED="$ALL_SKILLS"
@@ -162,10 +195,11 @@ if [ "$LIST" -eq 1 ]; then
 fi
 
 # --------------------------------------------------------------- install --
+INSTALLED=0; SKIPPED=0; REPLACED=0; MISSING=0
+if [ -n "$SELECTED" ]; then
 say "installing : $(printf '%s' "$SELECTED" | wc -w | tr -d ' ') skill(s)"
 run "mkdir -p '$DIR'"
 
-INSTALLED=0; SKIPPED=0; REPLACED=0; MISSING=0
 for skill in $SELECTED; do
   src="$SKILLS_SRC/$skill"
   dst="$DIR/$skill"
@@ -213,9 +247,63 @@ for skill in $SELECTED; do
   fi
   INSTALLED=$((INSTALLED+1))
 done
+else
+  say "installing : no skills (--skip-skills)"
+fi
+
+# ----------------------------------------------------------------- themes --
+if [ "$WITH_THEMES" -eq 1 ]; then
+  THEMES_SRC="$SRC_ROOT/$THEMES_SUBPATH"
+  if [ "$DRY_RUN" -eq 0 ] && [ ! -d "$THEMES_SRC/omp" ]; then
+    die "themes not found at $THEMES_SRC (bad source?)"
+  fi
+  say "themes     : 20 flat-black cyberpunk themes"
+  # oh-my-pi: detected by ~/.omp or an omp binary on PATH
+  if [ -d "$HOME/.omp" ] || command -v omp >/dev/null 2>&1 || [ "$TARGET" = "omp" ]; then
+    run "mkdir -p '$HOME/.omp/agent/themes'"
+    if [ "$DRY_RUN" -eq 0 ]; then cp "$THEMES_SRC/omp/"*.json "$HOME/.omp/agent/themes/"; fi
+    say "  OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml"
+  fi
+  # OpenCode: detected by ~/.config/opencode or an opencode binary on PATH
+  if [ -d "$HOME/.config/opencode" ] || command -v opencode >/dev/null 2>&1 || [ "$TARGET" = "opencode" ]; then
+    run "mkdir -p '$HOME/.config/opencode/themes'"
+    if [ "$DRY_RUN" -eq 0 ]; then cp "$THEMES_SRC/opencode/"*.json "$HOME/.config/opencode/themes/"; fi
+    say "  OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json"
+  fi
+  # Hyper terminal modules: copy + show how to activate (Hyper has no theme dir)
+  run "mkdir -p '$HOME/.config/truth-forge/hyper-themes'"
+  if [ "$DRY_RUN" -eq 0 ]; then cp "$THEMES_SRC/hyper/"*.js "$HOME/.config/truth-forge/hyper-themes/"; fi
+  say "  Hyper    -> ~/.config/truth-forge/hyper-themes (20 .js modules)"
+  say "           activate: require one from a local plugin, or merge its COLORS into ~/.hyper.js"
+fi
+
+# ---------------------------------------------------------------- plugins --
+if [ "$WITH_PLUGINS" -eq 1 ]; then
+  say "plugins    : platform glue"
+  # OMP doctrine-guard extension (native auto-discovery at ~/.omp/agent/extensions)
+  if [ -d "$HOME/.omp" ] || command -v omp >/dev/null 2>&1 || [ "$TARGET" = "omp" ]; then
+    run "mkdir -p '$HOME/.omp/agent/extensions'"
+    if [ "$DRY_RUN" -eq 0 ]; then cp "$SRC_ROOT/$EXTENSIONS_SUBPATH/truth-forge.ts" "$HOME/.omp/agent/extensions/"; fi
+    say "  OMP extension      -> ~/.omp/agent/extensions/truth-forge.ts"
+    say "  OMP full plugin    : omp plugin marketplace add krzemienski/truth-forge && omp plugin install truth-forge@truth-forge"
+  fi
+  # OpenCode plugin + commands + agents
+  if [ -d "$HOME/.config/opencode" ] || command -v opencode >/dev/null 2>&1 || [ "$TARGET" = "opencode" ]; then
+    run "mkdir -p '$HOME/.config/opencode/plugin' '$HOME/.config/opencode/commands' '$HOME/.config/opencode/agents'"
+    if [ "$DRY_RUN" -eq 0 ]; then
+      cp "$SRC_ROOT/$OPENCODE_SUBPATH/plugin/truth-forge.ts" "$HOME/.config/opencode/plugin/"
+      cp "$SRC_ROOT/$OPENCODE_SUBPATH/commands/"*.md "$HOME/.config/opencode/commands/"
+      cp "$SRC_ROOT/$OPENCODE_SUBPATH/agents/"*.md "$HOME/.config/opencode/agents/"
+    fi
+    say "  OpenCode plugin    -> ~/.config/opencode/plugin/truth-forge.ts (+6 commands, 1 agent)"
+    say "  OpenCode skills    : shared from ~/.claude/skills — re-run with --target claude-code if missing"
+  fi
+  # Claude Code full plugin = marketplace install (skills alone are plain)
+  say "  Claude Code plugin : /plugin marketplace add krzemienski/truth-forge && /plugin install truth-forge@truth-forge"
+fi
 
 # --------------------------------------------------------------- doctrine --
-if [ "$WITH_DOCTRINE" -eq 1 ]; then
+if [ "$WITH_DOCTRINE" -eq 1 ] && [ "$SKIP_SKILLS" -eq 0 ]; then
   DD="$DIR/$DOCTRINE_DIRNAME"
   say "doctrine   : $DD (the ruling rules every skill defers to)"
   run "mkdir -p '$DD'"

@@ -327,7 +327,7 @@ Build multi-stage prompt pipelines under `.prompts/`:
   because later stages parse earlier outputs
 - **Every stage maps to a todo** (0.2) — pipeline execution is the
   canonical multi-todo workflow
-- Stages that produce system-touching work carry validation gates per
+- Stages that produce system-touching work carry validation checkpoints per
   `../../references/evidence-contract.md`
 
 ## Anti-Patterns
@@ -350,5 +350,5 @@ Build multi-stage prompt pipelines under `.prompts/`:
 
 ## Related Skills
 
-- `plan-hardening` — inject validation gates into a finished prompt
+- `plan-hardening` — inject validation checkpoints into a finished prompt
 - `validation-plan` — pipeline stages that produce plans should follow its hierarchy

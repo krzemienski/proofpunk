@@ -1,6 +1,6 @@
 ---
 name: mobile-validation-runner
-description: Drive and validate iOS apps end-to-end on real simulators — five-phase SETUP, RECORD, ACT, COLLECT, VERIFY protocol with video recording, log streaming, and screenshot evidence; three-facet validation gates (simulator + backend + log analysis); xcrun simctl device control; XC-MCP accessibility-first UI automation; Expo/React Native simulator workflows; preflight environment checks. Use when validating an iOS or Expo feature, marking any mobile task complete, booting/controlling simulators, capturing mobile UI evidence, or debugging Metro/simulator issues. Unexecuted mobile validation is UNVERIFIED, never done.
+description: Drive and validate iOS apps end-to-end on real simulators — five-phase SETUP, RECORD, ACT, COLLECT, VERIFY protocol with video recording, log streaming, and screenshot evidence; three-facet validation checkpoints (simulator + backend + log analysis); xcrun simctl device control; XC-MCP accessibility-first UI automation; Expo/React Native simulator workflows; preflight environment checks. Use when validating an iOS or Expo feature, marking any mobile task complete, booting/controlling simulators, capturing mobile UI evidence, or debugging Metro/simulator issues. Unexecuted mobile validation is UNVERIFIED, never done.
 ---
 
 # Mobile Validation Runner
@@ -25,7 +25,7 @@ Five phases, from `references/ios-validation-runner.md`:
    simulator evidence + backend health/endpoint proof + log correlation.
    All three must agree before any completion claim.
 
-Seal the evidence directory with the `evidence-gates` skill's
+Seal the evidence directory with the `end-user-testing` skill's
 `fresh_evidence.py` (init-run → capture → seal → validate).
 
 ## Reference Routing
@@ -62,5 +62,5 @@ Seal the evidence directory with the `evidence-gates` skill's
 
 - `visual-inspection` — audit every captured screenshot before trusting it
 - `ui-experience-audit` — per-screen UX audit once validation passes
-- `evidence-gates` — fresh run-scoped evidence sealing
+- `end-user-testing` — fresh run-scoped evidence sealing
 - `functional-validation` — the web/API equivalent of this skill

@@ -3,28 +3,28 @@ name: plan-hardening
 description: >
   Second-pass plan strengthening: red-team a draft plan through multiple
   adversarial lenses, score confidence gaps, research weak sections, inject
-  or strengthen validation gates, and surgically remediate findings while
+  or strengthen proof obligations, and surgically remediate findings while
   preserving the original intent. Also converts arbitrary prompts or plans
-  into validation-gated versions using the standard gate block. Use when a
+  into proof-carrying versions using the standard proof block. Use when a
   plan exists but may be shallow, overconfident, missing failure modes, or
-  lacking gates — "harden this plan", "deepen this plan", "red-team my
-  plan", "stress-test this design", "add validation gates to this prompt",
+  lacking proof obligations — "harden this plan", "deepen this plan", "red-team my
+  plan", "stress-test this design", "add proof obligations to this prompt",
   or before executing any high-stakes multi-phase plan.
 ---
 
 # Plan Hardening
 
 A plan that survives contact with reality. Takes a draft plan (or prompt)
-and returns a stronger, gate-carrying version with the original intent intact.
+and returns a stronger, proof-carrying version with the original intent intact.
 
-**READ `../../references/evidence-contract.md` — injected gates follow its pattern.**
+**READ `../../references/evidence-contract.md` — injected proofs follow its pattern.**
 
 ## Stage 1 — Load and classify
 
 Read the plan/prompt fully. Classify:
 
 - **Type**: implementation plan, migration, refactor, prompt, research plan
-- **Maturity**: sketch (no structure), draft (phases, no gates), gated
+- **Maturity**: sketch (no structure), draft (phases, no proofs), proven
 - **Blast radius**: which contracts, data, and users it touches
 - **Original intent**: write it down in one paragraph — every later edit is
   checked against this. Hardening strengthens; it never re-scopes silently.
@@ -50,7 +50,7 @@ gap_score = trigger_count + risk_bonus + critical_section_bonus
 - **critical_section_bonus**: section is on the plan's critical path
 
 Rank sections by gap_score. High scorers get research and rewriting; low
-scorers get gate checks only.
+scorers get proof checks only.
 
 ## Stage 4 — Red-team dispatch (four lenses)
 
@@ -79,12 +79,12 @@ For each finding, patch the smallest unit that resolves it:
 Preserve the plan's structure and voice where sound — this is surgery, not a
 rewrite from scratch.
 
-## Stage 6 — Validation-gate injection
+## Stage 6 — Proof-obligation injection
 
-Every phase without a gate gets one; weak gates get strengthened:
+Every phase without a proof obligation gets one; weak ones get strengthened:
 
 ```xml
-<validation_gate id="VG-{N}" blocking="true">
+<proof_obligation id="PO-{N}" blocking="true">
 Actor: the AI agent drives these actions as an end user via MCP/automation
 tools — no passive checks, no delegated clicking
 Prerequisites: [dependencies started + healthy]
@@ -94,14 +94,14 @@ Pass criteria: [specific, observable, measurable]
 Review: [READ evidence and describe what is seen]
 Verdict: PASS → next task | FAIL → fix real system → re-run | UNVERIFIED → not executed
 Mock guard: IF tempted to mock → STOP → fix real system
-</validation_gate>
+</proof_obligation>
 ```
 
-Gate semantics follow `../../references/end-user-actor.md`: a gate whose
+Proof semantics follow `../../references/end-user-actor.md`: a proof whose
 actions were not actually executed by the AI resolves to UNVERIFIED, never
 to PASS.
 
-Make gates cumulative where the plan is phased (phase N re-proves 1..N-1).
+Make proofs cumulative where the plan is phased (phase N re-proves 1..N-1).
 
 ## Stage 7 — Consensus validation and final output
 
@@ -109,9 +109,9 @@ Re-read the hardened plan end to end:
 
 - [ ] Original intent preserved (check against Stage 1 paragraph)
 - [ ] Every CRITICAL/HIGH finding resolved or explicitly accepted with reason
-- [ ] Every phase carries a blocking gate with observable criteria
+- [ ] Every phase carries a blocking proof obligation with observable criteria
 - [ ] Every behavioral criterion is paired with an end-user action the AI
-      will actually execute via MCP/automation tools — no gate that can be
+      will actually execute via MCP/automation tools — no proof that can be
       "verified" by inspection, assumption, or delegation alone
 - [ ] No new hedging language introduced
 - [ ] Gap register included as an appendix with disposition per finding
@@ -122,7 +122,7 @@ critical findings remain open.
 ## Prompt Transformation Mode
 
 For an arbitrary prompt (not a plan), run the same pipeline but rewrite the
-prompt itself: add explicit context, observable success criteria, the gate
+prompt itself: add explicit context, observable success criteria, the proof
 block above, and anti-mock instructions — converting "do X" into "do X and
 prove it with fresh evidence".
 
@@ -140,5 +140,5 @@ prove it with fresh evidence".
 ## Related Skills
 
 - `validation-plan` — authors the plans this skill hardens
-- `prompt-forge` — authors the prompts this skill gates
+- `prompt-forge` — authors the prompts this skill proves
 - `brainstorm` — run upstream when the approach itself is still open

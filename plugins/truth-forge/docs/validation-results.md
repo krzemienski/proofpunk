@@ -23,7 +23,7 @@ budgets):
 |---|---|
 | brainstorm | 153 |
 | cook | 145 |
-| evidence-gates | 172 |
+| end-user-testing | 172 |
 | full-functional-audit | 154 |
 | functional-validation | 239 |
 | plan-hardening | 145 |
@@ -42,7 +42,7 @@ Every `references/`, `assets/`, and `scripts/` path cited from any plugin
 markdown file was resolved against the filesystem: 99 citations checked, 0
 broken. This includes the cross-skill relative paths used inside skills —
 e.g. `skills/functional-validation/SKILL.md` reaches the helper at
-`../skills/evidence-gates/scripts/fresh_evidence.py` (expressed there as a
+`../skills/end-user-testing/scripts/fresh_evidence.py` (expressed there as a
 dot-dot path) and every skill reaches the shared contract at
 `../references/evidence-contract.md` (expressed there as `../../`).
 
@@ -116,7 +116,7 @@ Changes applied and re-verified:
 | `../references/end-user-actor.md` | Non-negotiable statement at the head of The Rule |
 | `../references/severity-model.md` | Added UNVERIFIED verdict; PASS for behavior now requires executed, tool-driven, end-user checks |
 | All 10 skills | Two anti-pattern rows added to every anti-pattern table (verified placed inside tables with matching column counts) |
-| `functional-validation`, `evidence-gates`, `full-functional-audit` | Verdict templates now record "Driven by: AI as end user via <tools> — <actions performed>" and offer UNVERIFIED for unexecuted criteria |
+| `functional-validation`, `end-user-testing`, `full-functional-audit` | Verdict templates now record "Driven by: AI as end user via <tools> — <actions performed>" and offer UNVERIFIED for unexecuted criteria |
 | `validation-plan` | VALIDATION.md handoff requires an explicit record of executed end-user actions |
 | `plan-hardening` | Consensus checklist requires every behavioral criterion to pair with a driven end-user action; gate block verdict adds UNVERIFIED |
 | `cook` | End-user verification gate: never skipped/faked; no tool path -> report says UNVERIFIED with reason; finalize cites driven evidence per criterion |
@@ -147,9 +147,9 @@ Changes applied in this pass:
 |---|---|
 | `../skills/functional-validation/references/{ios,web,api,cli}-validation.md` | 4 platform runbooks carried verbatim from the ref `functional-validation` (85/88/75/120 lines) |
 | `../skills/functional-validation/SKILL.md` | Step 1 runbook-loading table; Failure Diagnosis Table; Multi-Platform Order; Evidence Quality Standards; Mock Detection Red Flags; NEVER list (158 -> 239 lines) |
-| `../references/preflight-checks.md` | NEW shared reference from ref `preflight` (61 lines); linked from `evidence-gates` Step 3 and `platform-routing.md` |
-| `../references/ci-gates.md` | NEW shared reference from ref `build-quality-gates` (34 lines); linked from `evidence-gates` Related Skills |
-| `../skills/evidence-gates/assets/verdict-template.md` | NEW asset adapted from ref `e2e-validate/templates/verdict.md` with Driven-by / Actions-executed / UNVERIFIED (40 lines) |
+| `../references/preflight-checks.md` | NEW shared reference from ref `preflight` (61 lines); linked from `end-user-testing` Step 3 and `platform-routing.md` |
+| `../references/ci-gates.md` | NEW shared reference from ref `build-quality-gates` (34 lines); linked from `end-user-testing` Related Skills |
+| `../skills/end-user-testing/assets/verdict-template.md` | NEW asset adapted from ref `e2e-validate/templates/verdict.md` with Driven-by / Actions-executed / UNVERIFIED (40 lines) |
 | `../skills/validation-plan/references/task-file-format.md` | NEW from ref `code-task-generator` with End-User Actor policy applied (60 lines); linked from `validation-plan` Step 3 |
 | `../skills/full-functional-audit/SKILL.md` | Per-platform team templates (iOS / Web-Full / API-only) with EXCLUSIVE/PARALLEL mutex annotations (134 -> 154 lines) |
 | `../skills/prompt-forge/SKILL.md` | Input-type handling table, capability-inventory injection, model tone guidance (136 -> 171 lines) |
@@ -157,7 +157,7 @@ Changes applied in this pass:
 Post-change verification (all real runs against the packaged source):
 
 - **Structural validator: 0 errors**, 99/99 reference paths resolve (up from
-  77 — every new citation from `evidence-gates`, `validation-plan`,
+  77 — every new citation from `end-user-testing`, `validation-plan`,
   `platform-routing.md`, and these docs to the new references/assets
   resolves). 4 warnings, all manually confirmed as the
   placeholder-DETECTION rules themselves.
@@ -203,7 +203,7 @@ this plugin).
   the GitHub MCP cloud plugin) implementing a real feature ("Mood Ring"):
   brainstorm → prompt-forge (91/100 rated prompt) → validation-plan →
   plan-hardening (5 findings dispositioned) → cook (32/32 pytest green) →
-  functional-validation + evidence-gates (19-file sealed evidence run,
+  functional-validation + end-user-testing (19-file sealed evidence run,
   `validate OK`) → visual-inspection (found + fixed a real HIGH contrast
   defect) → ui-experience-audit → full-functional-audit (PASS). Walkthrough
   report delivered alongside this document.
@@ -428,7 +428,7 @@ Delivered in README.md (629 lines, +550):
    cook (positionals `<goal>`/`<plan-path>`, 5 modes, full mode × --tdd
    12-permutation table), functional-validation (8 flags composing
    analyze->plan->execute->fix->report), session-intent (5 args with
-   defaults, filter/output permutations, exit 2), evidence-gates
+   defaults, filter/output permutations, exit 2), end-user-testing
    (positional `<slug>`, lifecycle as the only valid composition, exit
    codes), stack-testing (`--server`/`--port`/trailing positional),
    installer (13 flags + canonical permutations + conflicts + exit codes).

@@ -45,7 +45,7 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
    was born, not where it exploded.
 5. **Fix the origin**, delete any symptomatic hacks the bug had attracted.
 6. **Prove it** — original repro now passes, full suite re-run, evidence
-   sealed via the `evidence-gates` skill.
+   sealed via the `end-user-testing` skill.
 
 ## Anti-Patterns
 
@@ -59,4 +59,4 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 - `stack-testing` — turn the reproducer into a permanent regression test
 - `functional-validation` — re-validate the blast radius after the fix
 - `plan-hardening` — adversarial review before large fixes
-- `evidence-gates` — fresh-evidence discipline for every claim
+- `end-user-testing` — fresh-evidence discipline for every claim

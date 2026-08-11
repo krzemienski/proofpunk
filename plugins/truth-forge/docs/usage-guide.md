@@ -1,8 +1,33 @@
-# truth-forge Usage Guide — Claude Code
+# truth-forge Usage Guide — Claude Code, oh-my-pi, and OpenCode
 
 How to actually invoke all 18 skills once the plugin is installed, with real
 argument syntax and examples. For the full flag/permutation tables see the
 README's Command Reference; this guide is the hands-on "type this" version.
+
+## How invocation works per platform
+
+**Claude Code** — plugin commands are namespaced: `/truth-forge:implement`,
+`/truth-forge:cook`, `/truth-forge:verify`, `/truth-forge:truth-audit`,
+`/truth-forge:rate-prompt`, `/truth-forge:forge-prompt`. Skills also fire
+directly (`/implement`, `/cook`, …) or from natural language. A SessionStart
+hook injects the doctrine once per session.
+
+**oh-my-pi (OMP)** — after `omp plugin install truth-forge@truth-forge`, the
+same command names work (`/truth-forge:implement`). Skills are discovered from
+the plugin's `skills/` directory and load on demand; `/skill:<name>` opens one
+interactively. The doctrine-guard extension (`extensions/truth-forge.ts`,
+declared in `package.json` `omp.extensions`) blocks destructive commands and
+secret-file reads in every session. Plain installs via
+`truth-forge-install.sh --target omp` land in `~/.omp/agent/skills` (native
+provider, highest precedence).
+
+**OpenCode** — the installer drops `plugin/truth-forge.ts` (doctrine guard),
+six commands (`/truth-forge-implement`, `/truth-forge-cook`,
+`/truth-forge-verify`, `/truth-forge-truth-audit`, `/truth-forge-rate-prompt`,
+`/truth-forge-forge-prompt`), and the `truth-forge` primary agent into
+`~/.config/opencode/`. Skills load through OpenCode's native `skill` tool —
+and because OpenCode reads `~/.claude/skills` too, one
+`--target claude-code` install serves both platforms.
 
 ## How invocation works in Claude Code
 
@@ -21,7 +46,7 @@ README's Command Reference; this guide is the hands-on "type this" version.
 
 ## Orchestration
 
-### `/implement` — the front door
+### `/implement` — the front door (execution loop)
 
 ```
 /implement <goal> [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]
@@ -36,12 +61,15 @@ README's Command Reference; this guide is the hands-on "type this" version.
 /implement mine --project my-shop --since 2026-07-01
 ```
 
-What happens: Phase 0 distills TRUE success criteria (stops for your
+What happens: Stage 0 distills TRUE success criteria (escalates for your
 approval if the goal isn't clearly laid out — the only mandatory stop
 under `--auto`) → optional session mining → parallel codebase scouts →
-prompt-forge forges the implementation prompt → hardened plan → cook
-executes under gates → root-cause debugging on failures → end-user
-validation → criteria-by-criteria proof table.
+prompt-forge forges the build prompt → decomposition into a task graph
+where every task carries a written proof obligation → the execution loop:
+execute a task, end-user test it immediately, record the proof in the
+live execution ledger → the stuck protocol on failures (attempt →
+root-cause → split → escalate) → the report rendered from the ledger:
+criteria-by-criteria proof table.
 
 ## Prompt and plan layer
 
@@ -72,7 +100,7 @@ pass `--report-only` or `--in-place`. Optimize refuses to run without
 No flags. Output: trade-off analysis with brutal honesty, then a design
 you approve before any planning begins.
 
-### `/validation-plan` — gated plans
+### `/validation-plan` — proof-carrying plans
 
 ```
 /validation-plan "the mood-ring feature"
@@ -80,7 +108,7 @@ you approve before any planning begins.
 ```
 
 No flags. Produces BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION
-with blocking cumulative gates.
+with blocking cumulative proof obligations.
 
 ### `/plan-hardening` — red-team a plan or prompt
 
@@ -91,11 +119,11 @@ with blocking cumulative gates.
 
 No flags. Positional: the plan or prompt file to harden. Output:
 confidence-gap scoring, 4-lens red-team, dispositioned gap register,
-gates injected into the document.
+proof obligations injected into the document.
 
 ## Execution layer
 
-### `/cook` — gated execution engine
+### `/cook` — the execution engine
 
 ```
 /cook "add avatar upload"
@@ -138,7 +166,7 @@ answering (condition-based, no sleeps), the trailing positional after
 No flags. Lanes (simctl / XC-MCP / Expo-idb) are routed by your
 environment and request, not by arguments — say "simctl only" in the
 request if you want the bundled lane. Protocol:
-SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet gates.
+SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet checks.
 
 ## Proof layer
 
@@ -155,19 +183,19 @@ SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet gates.
 No positionals. Flags compose into analyze → plan → execute → (fix) →
 report; `--ci` gives machine-readable output and a non-zero exit on FAIL.
 
-### `/evidence-gates` — fresh evidence lifecycle
+### `/end-user-testing` — fresh evidence lifecycle
 
 ```
-/evidence-gates "seal the mood-ring run"
+/end-user-testing "seal the mood-ring run"
 ```
 
 Natural-language routing; the enforcing CLI (invoked by every verdict):
 
 ```bash
-python3 plugins/truth-forge/skills/evidence-gates/scripts/fresh_evidence.py init-run mood-ring
-python3 plugins/truth-forge/skills/evidence-gates/scripts/fresh_evidence.py next-step mood-ring
-python3 plugins/truth-forge/skills/evidence-gates/scripts/fresh_evidence.py seal
-python3 plugins/truth-forge/skills/evidence-gates/scripts/fresh_evidence.py validate
+python3 plugins/truth-forge/skills/end-user-testing/scripts/fresh_evidence.py init-run mood-ring
+python3 plugins/truth-forge/skills/end-user-testing/scripts/fresh_evidence.py next-step mood-ring
+python3 plugins/truth-forge/skills/end-user-testing/scripts/fresh_evidence.py seal
+python3 plugins/truth-forge/skills/end-user-testing/scripts/fresh_evidence.py validate
 ```
 
 Positional `<slug>` names the run. Exit 2 = refusal with STALE:/EMPTY:
@@ -201,7 +229,7 @@ heuristics → synthesis.
 ```
 
 No flags. Inventory every interaction → execute each → remediate →
-verdict, batched through evidence gates.
+verdict, batched through end-user testing.
 
 ## Deep-analysis layer
 
@@ -280,13 +308,16 @@ destructive change.
 | Fix a flaky flow | `/root-cause-debugging "..."` → `/stack-testing` (reproducer → regression test) → `/functional-validation --execute --fix` |
 | Harden a plan before building | `/validation-plan "..."` → `/plan-hardening .planning/...` → `/cook .planning/ROADMAP.md` |
 | Perfect a prompt | `/prompt-forge author "..."` → `/red-team-eval prompts/x.md` → `/prompt-forge optimize prompts/x.md --evidence ...` |
-| Release gate | `/functional-validation --audit --ci` → `/production-readiness` |
+| Release check | `/functional-validation --audit --ci` → `/production-readiness` |
 
 ## After installing with the script
 
 `tools/truth-forge-install.sh` installs the skills as **plain skills**
-(not a plugin) into Claude Code's or OMP's skills dir. Post-install
-invocation is identical to the above; verify with:
+(not a plugin) into the skills dir of your platform — Claude Code
+(`~/.claude/skills`), oh-my-pi (`~/.omp/agent/skills`), OpenCode
+(`~/.config/opencode/skills`), or the shared agents location
+(`~/.agents/skills`). Post-install invocation is identical to the above;
+verify with:
 
 ```bash
 tools/truth-forge-install.sh --target claude-code --dry-run   # see the full plan

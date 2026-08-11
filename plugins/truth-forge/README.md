@@ -1,7 +1,7 @@
 # truth-forge
 
 Evidence-driven delivery pipeline for Claude Code: brainstorm, plan, harden,
-implement, validate, and audit — with fresh-evidence gates, no-mock
+implement, end-user test, and audit — with executed proof, no-mock
 discipline, and an end-user actor mandate baked into every skill.
 
 Consolidated from a curated review of a 445-skill archive. See
@@ -30,12 +30,12 @@ Consolidated from a curated review of a 445-skill archive. See
 | Skill | Use it to |
 |-------|-----------|
 | `brainstorm` | Decide the approach: scout-first ideation, trade-off analysis, brutal honesty, approved design before any code |
-| `validation-plan` | Author BRIEF -> ROADMAP -> per-phase plans with blocking cumulative validation gates |
-| `plan-hardening` | Red-team a draft plan (4 lenses), score confidence gaps, inject validation gates, strengthen prompts |
+| `validation-plan` | Author BRIEF -> ROADMAP -> per-phase plans with blocking cumulative proof obligations |
+| `plan-hardening` | Red-team a draft plan (4 lenses), score confidence gaps, inject proof obligations, strengthen prompts |
 | `cook` | Implement features/plans with review gates, side-effect-proofing, and end-user verification |
 | `functional-validation` | Validate a feature against the REAL system through REAL interfaces — no mocks |
 | `full-functional-audit` | Audit EVERY interaction in an app: Explore -> Plan -> Execute -> Remediate -> Verdict |
-| `evidence-gates` | Fresh run-scoped evidence, cache clearing, citation discipline, phase verdicts |
+| `end-user-testing` | Fresh run-scoped evidence, cache clearing, citation discipline, phase verdicts |
 | `visual-inspection` | Mandatory visual QA for screenshots (iOS HIG, WCAG 2.2, defect database) |
 | `ui-experience-audit` | Deep per-screen audit: visual + interactive + content + Nielsen heuristics |
 | `prompt-forge` | Author, rate (rubric + test cases), optimize prompts; build meta-prompt pipelines |
@@ -53,9 +53,9 @@ Shared references (loaded on demand by the skills):
 `references/ios-hig-checklist.md`, `references/web-wcag-checklist.md`,
 `references/defect-pattern-database.md`.
 
-Helper script: `skills/evidence-gates/scripts/fresh_evidence.py`
+Helper script: `skills/end-user-testing/scripts/fresh_evidence.py`
 (`init-run` / `next-step` / `seal` / `validate`; Python 3.8+, stdlib only).
-Verdict report template: `skills/evidence-gates/assets/verdict-template.md`.
+Verdict report template: `skills/end-user-testing/assets/verdict-template.md`.
 
 ## Installation
 
@@ -119,7 +119,7 @@ Create a validation plan for the notifications feature.
 ```
 Harden .planning/phases/02-sync/02-01-PLAN.md before we execute it.
 → plan-hardening: red-teams through adversary/operator/integrator/skeptic
-  lenses, remediates the gap register, injects blocking validation gates.
+  lenses, remediates the gap register, injects blocking proof obligations.
 ```
 
 **Implement after approval**
@@ -141,11 +141,11 @@ Rate this system prompt and fix what's weak: <prompt>
 **Capture gated evidence manually**
 
 ```bash
-python3 skills/evidence-gates/scripts/fresh_evidence.py init-run phase-03
-python3 skills/evidence-gates/scripts/fresh_evidence.py next-step submit-form
+python3 skills/end-user-testing/scripts/fresh_evidence.py init-run phase-03
+python3 skills/end-user-testing/scripts/fresh_evidence.py next-step submit-form
 # ... capture artifacts into the printed path prefix ...
-python3 skills/evidence-gates/scripts/fresh_evidence.py seal
-python3 skills/evidence-gates/scripts/fresh_evidence.py validate
+python3 skills/end-user-testing/scripts/fresh_evidence.py seal
+python3 skills/end-user-testing/scripts/fresh_evidence.py validate
 ```
 
 ## Typical Pipeline
@@ -156,7 +156,7 @@ brainstorm → validation-plan → plan-hardening → cook
      → functional-validation / full-functional-audit
      → mobile-validation-runner (iOS features)
      → ui-experience-audit / visual-inspection
-     → evidence-gates verdicts at every phase boundary
+     → end-user-testing verdicts at every phase boundary
 Support lanes: session-intent (what was actually asked, from transcripts),
 root-cause-debugging (any failure), red-team-eval (hostile review + measured
 quality), production-readiness (release gate)

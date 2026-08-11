@@ -1,42 +1,45 @@
 ---
-name: evidence-gates
+name: end-user-testing
 description: >
-  Evidence and gate discipline for every completion claim: run-scoped fresh
-  evidence (timestamped, sequential, non-empty, never reused across runs),
-  full-path citations that describe what is SEEN, personally examined proof
-  before marking any gate/task/checkpoint complete, cache-clearing before
-  final validation passes, and refusal to PASS without cited artifacts.
-  Includes the fresh_evidence.py helper enforcing init-run / next-step /
-  seal / validate. Use whenever a verdict is about to be written, when
-  capturing validation evidence, when marking gates or phases complete, when
-  the user says "capture evidence", "fresh screenshot", "phase gate",
-  "produce a verdict", "before advancing", or "prove it's done".
+  The proof standard for end-user testing: every completion claim is
+  proven by driving the real system as the end user, with run-scoped
+  fresh evidence (timestamped, sequential, non-empty, never reused
+  across runs), full-path citations that describe what is SEEN,
+  personally examined proof before any task is marked done,
+  cache-clearing before final passes, and refusal to PASS without cited
+  artifacts. Includes the fresh_evidence.py helper enforcing init-run /
+  next-step / seal / validate. Use whenever a verdict is about to be
+  written, when capturing end-user test evidence, when marking tasks
+  complete, or when the user says "end-user test this", "capture
+  evidence", "fresh screenshot", "produce a verdict", or "prove it's
+  done".
 ---
 
-# Evidence Gates
+# End-User Testing — The Proof Standard
 
-The discipline layer between "work finished" and "work proven". A verdict
-that cites stale, empty, or unexamined evidence is invalid.
+The discipline layer between "work finished" and "work proven". End-user
+testing is the only validation: a verdict that cites stale, empty, or
+unexamined evidence is invalid, and a task that ran but proved nothing
+is not done.
 
 **READ `../../references/evidence-contract.md` — this skill enforces it.**
 
 ## When This Applies
 
-- A phase or task is complete and about to advance
-- A commit is about to happen with no verdict for the current work
+- A task's proof obligation is about to be executed
 - A PASS/FAIL is about to be written anywhere
-- Prior phases may have contaminated build caches
+- A commit is about to happen with no verdict for the current work
+- Prior work may have contaminated build caches
 
-## The Six-Step Phase Gate
+## The Six Steps of an End-User Test
 
-For gating a work phase (plan gate, pre-commit gate, pre-advance gate):
+### Step 1 — Read the proof obligation
 
-### Step 1 — Read the gate criteria
-
-Extract the phase's `evidence.assertion`, `evidence.type`,
-`evidence.path_template`, `evidence.min_size_bytes` from the plan. If any are
-missing, BLOCK — the phase is not gated. (The `validation-plan` and
-`plan-hardening` skills author these blocks.)
+Extract the task's `evidence.assertion`, `evidence.type`,
+`evidence.path_template`, `evidence.min_size_bytes` from the plan. If any
+are missing, the task is not provable as specified — shrink or re-specify
+it before proceeding. (The `validation-plan` and `plan-hardening` skills
+author these blocks.)
 
 ### Step 2 — Clear stale build caches
 
@@ -46,35 +49,36 @@ Clear caches that can mask regressions — `.next`, `.turbo`, `dist`,
 root (`git rev-parse --show-toplevel`). Log the clear operation as
 `step-01-cache-clear.log`. Refuse to touch anything outside the project root.
 
-Why: a cached bundle once served correct UI while source on disk was broken.
-Never trust a final pass over warm caches.
+Why: a cached bundle once served correct UI while source on disk was
+broken. Never trust a final pass over warm caches.
 
 ### Step 3 — Preflight, then start / verify the runtime target
 
 Run the preflight pass from `../../references/preflight-checks.md` FIRST
 (project-type detection, environment/toolchain checks, per-platform
-sanity checks) so gate failures are attributed to the work, not to a
-broken environment. Then follow `../../references/platform-routing.md`
-to start the target. If the target fails to start, BLOCK and report —
-do not simulate.
+sanity checks) so failures are attributed to the work, not to a broken
+environment. Then follow `../../references/platform-routing.md` to start
+the target. If the target fails to start, report the blockage — do not
+simulate.
 
 ### Step 4 — Drive the real system yourself, capturing fresh evidence
 
 Per `../../references/end-user-actor.md`: YOU operate the MCP/automation
-tools as the end user — click, tap, type, submit — never a passive 2D check
-when a tool path exists. Capture into the run-scoped directory with
+tools as the end user — click, tap, type, submit — never a passive 2D
+check when a tool path exists. Capture into the run-scoped directory with
 sequential step names. Enforce min_size_bytes — smaller files are INVALID
-evidence; discard and re-capture.
+evidence; discard and re-capture. The assertion from the proof obligation
+is the proof: a test that merely ran without error proves nothing.
 
 ### Step 5 — Write the evidence inventory
 
-`evidence-inventory.txt`: every file with byte count, plus a seal line with
-timestamp, file count, and total bytes.
+`evidence-inventory.txt`: every file with byte count, plus a seal line
+with timestamp, file count, and total bytes.
 
 ### Step 6 — Emit the verdict
 
 ```markdown
-# Phase Verdict — <phase_id>
+# End-User Test Verdict — <task_id>
 **Verdict:** PASS | FAIL | BLOCKED | UNVERIFIED (steps not executed)
 **Run ID:** <run_id>
 **Driven by:** AI as end user via <tools actually used> — <actions actually performed>
@@ -86,8 +90,8 @@ timestamp, file count, and total bytes.
 <deviations, risks, follow-ups>
 ```
 
-A verdict written for steps the AI did not actually execute as the end user
-is invalid: mark those criteria UNVERIFIED, never PASS.
+A verdict written for steps the AI did not actually execute as the end
+user is invalid: mark those criteria UNVERIFIED, never PASS.
 
 A fuller, copy-ready verdict document lives at
 `assets/verdict-template.md` — use it for the VALIDATION.md deliverable;
@@ -97,8 +101,8 @@ status with the rule "never upgrade UNVERIFIED to PASS by assumption".
 ## Helper Script
 
 `scripts/fresh_evidence.py` enforces the eight fresh-evidence rules. All
-operations work against `./e2e-evidence/` in the current working directory;
-the active run is the most recent `run-*` subdirectory.
+operations work against `./e2e-evidence/` in the current working
+directory; the active run is the most recent `run-*` subdirectory.
 
 ```bash
 python3 scripts/fresh_evidence.py init-run <slug>     # create run dir, print run_id
@@ -111,19 +115,19 @@ Exit codes: 0 OK, 2 on refusal (bad slug, no active run, stale/empty
 artifacts, missing run metadata). `validate` prints `STALE:` / `EMPTY:`
 lines for every offending artifact.
 
-## The Verification Loop (every gate, every time)
+## The Verification Loop (every task, every time)
 
 ```
 1. Worker completes work
 2. Worker provides evidence LOCATION
 3. YOU personally examine evidence CONTENT
-4. YOU match evidence to pre-defined criteria
+4. YOU match evidence to the pre-defined assertion
 5. YOU cite specific proof (full paths, exact output, what is SEEN)
-6. ONLY THEN mark complete
+6. ONLY THEN mark the task done
 ```
 
-Even with parallel workers: workers provide LOCATIONS, you verify CONTENT.
-Never trust "X passed" without examining X.
+Even with parallel workers: workers provide LOCATIONS, you verify
+CONTENT. Never trust "X passed" without examining X.
 
 ## Refusal Rules
 
@@ -133,21 +137,21 @@ Never trust "X passed" without examining X.
 - Refuse "see evidence directory" citations — demand full paths.
 - Refuse "see file" screenshot descriptions — demand what is SEEN.
 - Refuse to commit evidence containing tokens, cookies, or secrets.
-- Refuse to validate an unreachable target — surface the blockage.
+- Refuse to test an unreachable target — surface the blockage.
 - Refuse to delete a prior run's evidence without explicit confirmation.
 
 ## Failure Recovery
 
 If you marked something complete prematurely:
 1. Acknowledge the error immediately.
-2. Re-open the task/gate.
-3. Perform proper verification.
+2. Re-open the task.
+3. Perform the end-user test properly.
 4. Document what evidence was actually missing.
 
 ## Completion Challenge
 
-"If someone challenged this completion claim, what specific evidence would I
-show them?" No citations -> NOT complete.
+"If someone challenged this completion claim, what specific evidence
+would I show them?" No citations -> NOT complete.
 
 ## Anti-Patterns
 
@@ -155,17 +159,19 @@ show them?" No citations -> NOT complete.
 |---------|-----------|
 | "Agent reported 10/10 pass" | Read the actual outputs |
 | "Screenshot was captured" | View it; describe what you SEE |
-| Reusing a prior phase's screenshot | Fresh capture every run |
+| Reusing a prior task's screenshot | Fresh capture every run |
 | Committing a zero-byte PNG | Enforce min size; re-capture |
 | Redacting an API body to "{...}" | The body IS the evidence; redact only secrets |
-| Final validation over warm caches | Clear caches first, then validate |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
+| Final pass over warm caches | Clear caches first, then test |
+| A test with no assertion as "proof" | The assertion against the pre-defined threshold IS the proof |
+| Marking end-user testing complete without actually driving the system as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
 | Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
+
 ## Related Skills
 
-- `functional-validation` — produces the evidence this skill gates on
-- `validation-plan` / `plan-hardening` — author the gate blocks this skill executes
+- `functional-validation` — the platform protocols that produce this evidence
+- `validation-plan` / `plan-hardening` — author the proof-obligation blocks this skill executes
 - `visual-inspection` / `ui-experience-audit` — review screenshot evidence quality
 - `../../references/ci-gates.md` — P0/P1/P2 classification and rollout order
-  for wiring these gates into CI; evidence gates are the runtime contract,
-  CI gates are the automation of that contract
+  for wiring these end-user tests into CI; this skill is the runtime
+  contract, CI wiring is the automation of that contract

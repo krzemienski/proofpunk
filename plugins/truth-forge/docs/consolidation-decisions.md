@@ -29,7 +29,7 @@ port whose behavior was re-implemented and tested from scratch.
 
 ## Capability Matrix
 
-### Functional validation family → `functional-validation`, `full-functional-audit`, `evidence-gates`
+### Functional validation family → `functional-validation`, `full-functional-audit`, `end-user-testing`
 
 | Source skill | Content incorporated | Destination |
 |---|---|---|
@@ -38,10 +38,10 @@ port whose behavior was re-implemented and tested from scratch.
 | `e2e-validate/SKILL.md` | Mode flags (`--analyze/--plan/--execute/--fix/--audit/--report/--ci/--platform/--scope`) | `functional-validation` Modes table |
 | `full-functional-audit/SKILL.md` | Explore→Plan→Execute→Remediate→Verdict; interaction inventory; resource mutexes; no deferred FAILs | `full-functional-audit` |
 | `full-ui-experience-audit/SKILL.md` | App-wide UX loop folded into the audit verdict + per-screen hand-off | `full-functional-audit` + `ui-experience-audit` |
-| `gate-validation-discipline/SKILL.md` | Verification loop; workers give locations, you verify content; completion challenge | `../references/evidence-contract.md` + `evidence-gates` |
+| `gate-validation-discipline/SKILL.md` | Verification loop; workers give locations, you verify content; completion challenge | `../references/evidence-contract.md` + `end-user-testing` |
 | `verification-before-completion/SKILL.md` | Lightweight pre-claim behavioral check | `../references/evidence-contract.md` (Completion Challenge) |
-| `validate-phase/SKILL.md` | Six-step phase gate; cache-clearing before final passes; verdict.md format; BLOCK on ungated phase | `evidence-gates` (Six-Step Phase Gate) |
-| `fresh-evidence/SKILL.md` + its `fresh-evidence.sh` script | Eight fresh-evidence rules; init-run/next-step/seal/validate operations | `../references/evidence-contract.md` + `../skills/evidence-gates/scripts/fresh_evidence.py` (clean-room Python port, stdlib-only) |
+| `validate-phase/SKILL.md` | Six-step phase gate; cache-clearing before final passes; verdict.md format; BLOCK on ungated phase | `end-user-testing` (Six-Step Phase Gate) |
+| `fresh-evidence/SKILL.md` + its `fresh-evidence.sh` script | Eight fresh-evidence rules; init-run/next-step/seal/validate operations | `../references/evidence-contract.md` + `../skills/end-user-testing/scripts/fresh_evidence.py` (clean-room Python port, stdlib-only) |
 | `transform-validation-prompt/SKILL.md` | `<validation_gate>` XML block pattern | `../references/evidence-contract.md` + `plan-hardening` Stage 6 |
 | `ios-validation-runner/SKILL.md` | SETUP→RECORD→ACT→COLLECT→VERIFY; simctl traps (SIGINT video stop, `--info --debug` log flags, status bar override, settle timing) | `../references/platform-routing.md` (iOS-Specific Traps) |
 | `ios-validation-gate/`, `evidence-gate/`, `android_ui_verification/`, `llm-gate/` | Reviewed; their substance duplicates the gate/evidence rules above | folded into shared references (no separate skill) |
@@ -173,9 +173,9 @@ first archive, and consolidation decisions for everything new.
 | Source skill (skills-ref.zip) | Content incorporated | Destination |
 |---|---|---|
 | `functional-validation/SKILL.md` + `references/{ios,web,api,cli}-validation.md` | Richer version of the skill: per-platform validation runbooks, Failure Diagnosis Table, Multi-Platform Order (Database → Backend API → Frontend/CLI/Mobile), Evidence Quality Standards, Mock Detection Red Flags, NEVER list | `../skills/functional-validation/SKILL.md` (Step 1 runbook-loading table + new sections) + 4 runbooks carried verbatim into `../skills/functional-validation/references/` |
-| `preflight/SKILL.md` | Environment/toolchain preflight pass: project-type detection, universal checks, per-platform checks, summarize step | `../references/preflight-checks.md` (NEW shared reference; SessionForge-specific tooling removed); linked from `evidence-gates` Step 3 and `platform-routing.md` |
-| `build-quality-gates/SKILL.md` | P0/P1/P2 CI gate classification, rollout order, baseline-first adoption | `../references/ci-gates.md` (NEW shared reference); linked from `evidence-gates` Related Skills |
-| `e2e-validate/templates/verdict.md` | Full copy-ready verdict document | `../skills/evidence-gates/assets/verdict-template.md` (NEW asset), adapted with Driven-by / Actions-executed fields and the UNVERIFIED status rule |
+| `preflight/SKILL.md` | Environment/toolchain preflight pass: project-type detection, universal checks, per-platform checks, summarize step | `../references/preflight-checks.md` (NEW shared reference; SessionForge-specific tooling removed); linked from `end-user-testing` Step 3 and `platform-routing.md` |
+| `build-quality-gates/SKILL.md` | P0/P1/P2 CI gate classification, rollout order, baseline-first adoption | `../references/ci-gates.md` (NEW shared reference); linked from `end-user-testing` Related Skills |
+| `e2e-validate/templates/verdict.md` | Full copy-ready verdict document | `../skills/end-user-testing/assets/verdict-template.md` (NEW asset), adapted with Driven-by / Actions-executed fields and the UNVERIFIED status rule |
 | `full-functional-audit/SKILL.md` (ref version) | Per-platform team structure: iOS / Web-Full / API-only worker templates with EXCLUSIVE/PARALLEL resource mutex annotations; "workers provide evidence LOCATIONS, the lead examines CONTENT" | `../skills/full-functional-audit/SKILL.md` Phase 2 |
 | `prompt-enhancer/SKILL.md` + `optimize-prompt/SKILL.md` | Input-type handling table (voice transcript / file path / partial idea / single word / multi-part); capability-inventory injection (`<skills_to_activate>`, `<mcp_tools>`); model-specific tone guidance | `../skills/prompt-forge/SKILL.md` Section 1 (AUTHOR) |
 | `code-task-generator/SKILL.md` | `.code-task.md` standalone task-file format — the ONLY "task generator" present in either archive | `../skills/validation-plan/references/task-file-format.md` (NEW), with the End-User Actor policy applied: acceptance criteria are executable end-user actions with an explicit "When is a driven action" clause; anti-pattern "marking criteria done without executing them = validation theater; unexecuted = UNVERIFIED". Linked from `validation-plan` Step 3. |

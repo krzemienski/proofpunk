@@ -56,12 +56,12 @@ The end user does not run pytest. The end user of:
 - **a CLI** is a person at a terminal → validation is running the binary with
   real arguments and reading its real output
 
-Test-runner output MAY appear in evidence as a regression gate ("the suite is
+Test-runner output MAY appear in evidence as the regression rail ("the suite is
 green — nothing previously working is broken"), clearly labeled REGRESSION,
 never VALIDATION. A framework's test client (e.g. Flask's `test_client`) runs
 inside the process and bypasses the network stack the user actually
 experiences — it is a legitimate developer tool and a legitimate regression
-gate, and it is still not the end user. When a prompt or contract asks for
+rail, and it is still not the end user. When a prompt or contract asks for
 "tests pass" as proof of done, the correct reading is: tests green
 (regression) AND live end-user drive (validation); either alone is incomplete.
 
@@ -98,7 +98,7 @@ This mandate applies across ALL truth-forge skills:
 
 - `functional-validation` / `full-functional-audit` — every interaction in
   the inventory is driven, not inspected
-- `evidence-gates` — gate evidence must come from an AI-driven session
+- `end-user-testing` — gate evidence must come from an AI-driven session
 - `visual-inspection` / `ui-experience-audit` — screenshots are captured
   from driven sessions; unresolved "is it wired up?" findings escalate to
   drive mode when tools exist

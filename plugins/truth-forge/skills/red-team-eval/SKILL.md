@@ -52,4 +52,4 @@ scores instead of impressions. Findings carry severities per
 - `prompt-forge` — rubric-based prompt rating; use red-team-eval for the
   hostile multi-lens attack and measured regression runs
 - `functional-validation` — real-system PASS/FAIL after QA cycles converge
-- `evidence-gates` — seal eval scores and red-team dispositions as evidence
+- `end-user-testing` — seal eval scores and red-team dispositions as evidence

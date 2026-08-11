@@ -2,11 +2,11 @@
 name: validation-plan
 description: >
   Authors multi-phase project plans where every phase carries blocking,
-  cumulative validation gates — BRIEF → ROADMAP → per-phase PLAN → SUMMARY
-  + VALIDATION with run-scoped evidence. Gates are cumulative: phase N's
+  cumulative proof obligations — BRIEF → ROADMAP → per-phase PLAN → SUMMARY
+  + VALIDATION with run-scoped evidence. Proofs are cumulative: phase N's
   validation re-verifies phases 1..N-1, so a regression in earlier work
   blocks advancement. Use whenever asked to plan a multi-phase build, create
-  a validation plan, structure a project roadmap, break a feature into gated
+  a validation plan, structure a project roadmap, break a feature into proven
   phases, write a BRIEF/ROADMAP, or when an autonomous runner needs phases
   it cannot advance past without proof.
 ---
@@ -16,17 +16,17 @@ description: >
 Plans that cannot be marked done on vibes. Every phase ships with the
 evidence it must produce, and later phases re-prove earlier ones.
 
-**READ `../../references/evidence-contract.md` — gates follow it.**
+**READ `../../references/evidence-contract.md` — proofs follow it.**
 
 ## Planning Hierarchy
 
 ```
 .planning/
 ├── BRIEF.md                 # problem, constraints, success criteria
-├── ROADMAP.md               # phase list with dependencies and gate summary
+├── ROADMAP.md               # phase list with dependencies and proof summary
 └── phases/
     └── NN-<slug>/
-        ├── NN-MM-PLAN.md        # the work: tasks, contracts, gate block
+        ├── NN-MM-PLAN.md        # the work: tasks, contracts, proof block
         ├── NN-MM-SUMMARY.md     # what was actually done (written after)
         ├── NN-MM-VALIDATION.md  # the verdict with cited evidence
         └── evidence/            # run-scoped artifacts (or link to e2e-evidence/)
@@ -54,10 +54,10 @@ Decompose into phases where each phase:
 
 - Delivers a verifiable increment (not "work on X" but "X works end-to-end")
 - Declares its dependencies (which phases must be green first)
-- Declares its gate (what evidence proves it done)
-- Is small enough that its gate runs in minutes, not hours
+- Declares its proof obligation (what end-user test proves it done)
+- Is small enough that its end-user test runs in minutes, not hours
 
-Order phases so foundations are gated before dependents start. Parallel
+Order phases so foundations are proven before dependents start. Parallel
 phases must not share mutable resources (see full-functional-audit mutex
 table).
 
@@ -68,7 +68,7 @@ Each PLAN.md contains:
 1. **Objective** — one sentence, verifiable
 2. **Tasks** — ordered, each with an owner surface (file/module)
 3. **Contracts** — signatures, schemas, API shapes this phase must keep or change (changes called out explicitly)
-4. **Validation gate block**:
+4. **Validation proof block**:
 
 ```yaml
 evidence:
@@ -76,11 +76,11 @@ evidence:
   type: screenshot | api-response | cli-output | log | test-run
   path_template: "e2e-evidence/run-<id>/step-NN-<action>.<ext>"
   min_size_bytes: 1024
-  covers_phases: [all previous phase ids]   # cumulative gate
+  covers_phases: [all previous phase ids]   # cumulative proof
   actor: ai-end-user                        # the AI drives the actions via MCP/automation tools
 ```
 
-Gate criteria must specify DRIVEN end-user actions ("agent clicks X,
+Proof obligations must specify DRIVEN end-user actions ("agent clicks X,
 observes Y"), never passive checks ("screenshot exists"). See
 `../../references/end-user-actor.md`.
 
@@ -89,7 +89,7 @@ in the `references/task-file-format.md` format: acceptance criteria written
 as executable end-user actions with an explicit "When is a driven action"
 clause, so the runner cannot close the task with unexecuted validation.
 
-A phase without a complete gate block is not gated — `evidence-gates`
+A phase without a complete proof block is not provable — `end-user-testing`
 refuses to validate it.
 
 ## Step 4 — Execution handoff
@@ -97,7 +97,7 @@ refuses to validate it.
 The runner (human, `cook`, or an autonomous loop) works the PLAN, then writes:
 
 - **SUMMARY.md**: what was actually done, deviations from PLAN and why
-- **VALIDATION.md**: the verdict from `evidence-gates` — PASS criteria cited
+- **VALIDATION.md**: the verdict from `end-user-testing` — PASS criteria cited
   to fresh run-scoped evidence paths, cumulative re-verification included,
   and an explicit record of the end-user actions the AI actually executed
   (tools used + actions performed). Criteria whose validation was not
@@ -105,21 +105,21 @@ The runner (human, `cook`, or an autonomous loop) works the PLAN, then writes:
 
 ## The Cumulative Rule
 
-Phase N's VALIDATION must re-run the gates of phases 1..N-1 against the
+Phase N's VALIDATION must re-run the proofs of phases 1..N-1 against the
 current system. A green phase 3 that broke phase 1's behavior is a REGRESSION
 and blocks advancement. Record regression re-runs explicitly:
 
 ```
 Cumulative re-verification:
-- [x] phase-01 gate — evidence: <new run path> — still PASS
-- [x] phase-02 gate — evidence: <new run path> — still PASS
+- [x] phase-01 proof — evidence: <new run path> — still PASS
+- [x] phase-02 proof — evidence: <new run path> — still PASS
 ```
 
 ## Gate Discipline
 
 - Gates are **blocking**: no advancement on FAIL or BLOCKED.
 - Remediation happens in the current phase — never "fix it in a later phase".
-- After any fix, re-run the phase gate AND the cumulative set.
+- After any fix, re-run the phase proof AND the cumulative set.
 - A plan amended mid-flight gets the amendment written into PLAN.md with the
   reason — no silent scope drift.
 
@@ -129,14 +129,14 @@ Cumulative re-verification:
 |---------|-----------|
 | Phases defined as effort ("work on auth") | Phases defined as verifiable increments ("login flow works end-to-end") |
 | Gates added after the work is done | Gate blocks authored with the PLAN, criteria defined before evidence |
-| Phase gates that only test the new work | Cumulative gates re-proving all previous phases |
-| "We'll validate at the end" | Every phase gated; final phase is a regression sweep, not the first test |
+| Phase proofs that only test the new work | Cumulative proofs re-proving all previous phases |
+| "We'll validate at the end" | Every phase proofd; final phase is a regression sweep, not the first test |
 | Silent scope changes mid-phase | Amend PLAN.md in writing with the reason |
 | Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
 | Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
 ## Related Skills
 
 - `plan-hardening` — red-team and strengthen a draft plan before execution
-- `evidence-gates` — executes the gate blocks this skill authors
+- `end-user-testing` — executes the proof blocks this skill authors
 - `cook` — executes these plans phase by phase
 - `brainstorm` — run before BRIEF when the approach itself is undecided

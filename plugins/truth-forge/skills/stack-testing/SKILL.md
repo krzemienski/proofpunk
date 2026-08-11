@@ -28,7 +28,7 @@ evidence for every green claim.
    the system, never a reason to re-run CI until green. Diagnose per stack
    below; escalate to the `root-cause-debugging` skill when the cause is unclear.
 5. **Test output is REGRESSION evidence, never VALIDATION evidence.** Pipe the
-   final run to a file and seal it with the `evidence-gates` skill's
+   final run to a file and seal it with the `end-user-testing` skill's
    `fresh_evidence.py` — labeled REGRESSION ("the suite is green"). The
    feature-level verdict comes only from driving the live system as the end
    user (`functional-validation`: `curl` for JSON backends, browser for UI,
@@ -73,6 +73,6 @@ patterns from the source skills.
 ## Related Skills (this plugin)
 
 - `functional-validation` — feature-level PASS/FAIL against the real system
-- `evidence-gates` — seal test output as fresh run evidence
+- `end-user-testing` — seal test output as fresh run evidence
 - `root-cause-debugging` — when a test failure's cause is unclear
 - `cook` — implementation loop that these tests gate

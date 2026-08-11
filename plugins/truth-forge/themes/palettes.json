@@ -1,0 +1,325 @@
+{
+  "$comment": "Single source of truth for the 20 flat-black cyberpunk themes. Render via tools/generate-themes.py.",
+  "themes": {
+    "neon-tokyo": {
+      "description": "Shibuya crossing at midnight \u2014 hot pink signage over cyan rain",
+      "colors": {
+        "accent": "#FF2D95",
+        "accent2": "#00E5FF",
+        "info": "#00BFFF",
+        "success": "#39FF88",
+        "error": "#FF3B5C",
+        "warning": "#FFD600",
+        "text": "#EDEDF2",
+        "muted": "#8A8FA3",
+        "dim": "#4A4660",
+        "panel": "#0B0B14",
+        "panel2": "#12121E"
+      }
+    },
+    "acid-rain": {
+      "description": "Toxic drizzle on chrome \u2014 acid lime with bioluminescent mint",
+      "colors": {
+        "accent": "#B6FF00",
+        "accent2": "#00FFB3",
+        "info": "#00E5A0",
+        "success": "#7CFF00",
+        "error": "#FF4D6D",
+        "warning": "#EEFF00",
+        "text": "#F0F5E8",
+        "muted": "#87917F",
+        "dim": "#46503F",
+        "panel": "#0A0F08",
+        "panel2": "#111A0D"
+      }
+    },
+    "vapor-grid": {
+      "description": "Synthwave sunset grid \u2014 violet horizon, teal scanlines",
+      "colors": {
+        "accent": "#B967FF",
+        "accent2": "#01CDFE",
+        "info": "#05FFA1",
+        "success": "#01CD8E",
+        "error": "#FF71CE",
+        "warning": "#FFFB96",
+        "text": "#EFEAF7",
+        "muted": "#8E86A3",
+        "dim": "#4E4468",
+        "panel": "#0D0A14",
+        "panel2": "#15101F"
+      }
+    },
+    "ion-storm": {
+      "description": "Lightning over the data district \u2014 electric blue, violet strikes",
+      "colors": {
+        "accent": "#4D7CFE",
+        "accent2": "#B24BF3",
+        "info": "#38BDF8",
+        "success": "#34D399",
+        "error": "#F87171",
+        "warning": "#FBBF24",
+        "text": "#E8ECF5",
+        "muted": "#7E8AA3",
+        "dim": "#3E4A68",
+        "panel": "#080A12",
+        "panel2": "#0E1220"
+      }
+    },
+    "red-line": {
+      "description": "Akira tail-light streak \u2014 arterial red, ember orange",
+      "colors": {
+        "accent": "#FF2A2A",
+        "accent2": "#FF7A18",
+        "info": "#FFB454",
+        "success": "#8AFF6A",
+        "error": "#FF3B3B",
+        "warning": "#FFC400",
+        "text": "#F5ECEC",
+        "muted": "#A38B8B",
+        "dim": "#5C4040",
+        "panel": "#120808",
+        "panel2": "#1C0D0D"
+      }
+    },
+    "ghost-shell": {
+      "description": "Ghost in the Shell \u2014 pale thermoptic cyan, gunmetal blue",
+      "colors": {
+        "accent": "#9BE8E8",
+        "accent2": "#5B7C99",
+        "info": "#7FD4FF",
+        "success": "#7FE8C0",
+        "error": "#E86A92",
+        "warning": "#D9C77A",
+        "text": "#EAF2F2",
+        "muted": "#7A8B92",
+        "dim": "#3E4A52",
+        "panel": "#0A0E10",
+        "panel2": "#10161A"
+      }
+    },
+    "amber-phosphor": {
+      "description": "Retro phosphor terminal \u2014 warm amber glow, honey highlights",
+      "colors": {
+        "accent": "#FFB000",
+        "accent2": "#FF8A00",
+        "info": "#FFCF5C",
+        "success": "#CFFF5C",
+        "error": "#FF5252",
+        "warning": "#FFD73D",
+        "text": "#FFF3D6",
+        "muted": "#A3906A",
+        "dim": "#5C4F33",
+        "panel": "#100C06",
+        "panel2": "#1A1409"
+      }
+    },
+    "ultraviolet": {
+      "description": "Blacklight district \u2014 deep violet, UV magenta flare",
+      "colors": {
+        "accent": "#9D4EDD",
+        "accent2": "#FF4DFF",
+        "info": "#7B8CFF",
+        "success": "#4DFFB8",
+        "error": "#FF4D6D",
+        "warning": "#FFD24D",
+        "text": "#F0EAF7",
+        "muted": "#9186A3",
+        "dim": "#4E4260",
+        "panel": "#0D0814",
+        "panel2": "#160F21"
+      }
+    },
+    "laser-lime": {
+      "description": "Laser tag arena \u2014 high-beam lemon, lime grid",
+      "colors": {
+        "accent": "#E8FF47",
+        "accent2": "#47FFA0",
+        "info": "#9DFF57",
+        "success": "#6AFF5C",
+        "error": "#FF5C7A",
+        "warning": "#FFF047",
+        "text": "#F7FCE8",
+        "muted": "#97A07F",
+        "dim": "#525C3E",
+        "panel": "#0C0F06",
+        "panel2": "#141A0B"
+      }
+    },
+    "miami-vice": {
+      "description": "Ocean Drive neon \u2014 flamingo pink, pool-water cyan",
+      "colors": {
+        "accent": "#FF6EC7",
+        "accent2": "#42E2E8",
+        "info": "#F9C6FF",
+        "success": "#5CF2B8",
+        "error": "#FF5C8A",
+        "warning": "#FFE28A",
+        "text": "#FCEFF7",
+        "muted": "#A38FA0",
+        "dim": "#5C4657",
+        "panel": "#120A10",
+        "panel2": "#1C1119"
+      }
+    },
+    "code-fall": {
+      "description": "The Matrix has you \u2014 phosphor green fall on void black",
+      "colors": {
+        "accent": "#00FF41",
+        "accent2": "#008F11",
+        "info": "#4DFFA6",
+        "success": "#00FF41",
+        "error": "#FF4060",
+        "warning": "#BFFF00",
+        "text": "#D6FFDC",
+        "muted": "#5C8A66",
+        "dim": "#2E4A36",
+        "panel": "#040D06",
+        "panel2": "#08160B"
+      }
+    },
+    "chrome-rose": {
+      "description": "Rose-gold chrome \u2014 brushed metal, neon blush",
+      "colors": {
+        "accent": "#F27D9D",
+        "accent2": "#C0C6D6",
+        "info": "#9FB8E8",
+        "success": "#7FD9A8",
+        "error": "#FF6B81",
+        "warning": "#E8C87F",
+        "text": "#F2EEF0",
+        "muted": "#968B93",
+        "dim": "#544A51",
+        "panel": "#110C0E",
+        "panel2": "#1A1316"
+      }
+    },
+    "bio-lumen": {
+      "description": "Abyssal bioluminescence \u2014 anglerfish teal, deep-current cyan",
+      "colors": {
+        "accent": "#00E5A0",
+        "accent2": "#00B8D4",
+        "info": "#57F2FF",
+        "success": "#3DFF9E",
+        "error": "#FF5C7A",
+        "warning": "#C4FF57",
+        "text": "#E6F7F2",
+        "muted": "#73918A",
+        "dim": "#39524C",
+        "panel": "#060F0D",
+        "panel2": "#0B1A17"
+      }
+    },
+    "solar-flare": {
+      "description": "Coronal mass ejection \u2014 molten orange, flare red",
+      "colors": {
+        "accent": "#FF9500",
+        "accent2": "#FF3D00",
+        "info": "#FFBF47",
+        "success": "#A6FF4D",
+        "error": "#FF4757",
+        "warning": "#FFD24D",
+        "text": "#FFF0E3",
+        "muted": "#A38D7A",
+        "dim": "#5C4A3E",
+        "panel": "#120A06",
+        "panel2": "#1E1009"
+      }
+    },
+    "cold-fusion": {
+      "description": "Reactor core ice \u2014 frost blue, reactor white",
+      "colors": {
+        "accent": "#7FDBFF",
+        "accent2": "#E8F4FF",
+        "info": "#A8E6FF",
+        "success": "#7FFFD4",
+        "error": "#FF7A9E",
+        "warning": "#FFE8A8",
+        "text": "#F0F7FF",
+        "muted": "#8AA3B8",
+        "dim": "#47586B",
+        "panel": "#090D12",
+        "panel2": "#0F151D"
+      }
+    },
+    "psy-wave": {
+      "description": "Psychedelic static \u2014 psychic magenta, deep-space purple",
+      "colors": {
+        "accent": "#E040FB",
+        "accent2": "#7C4DFF",
+        "info": "#40C4FF",
+        "success": "#64FFDA",
+        "error": "#FF5252",
+        "warning": "#FFD740",
+        "text": "#F3EAFB",
+        "muted": "#9786AB",
+        "dim": "#51436B",
+        "panel": "#0E0816",
+        "panel2": "#170F24"
+      }
+    },
+    "night-drive": {
+      "description": "Midnight expressway \u2014 dusk indigo, tail-light red",
+      "colors": {
+        "accent": "#5C6BC0",
+        "accent2": "#FF5252",
+        "info": "#7986CB",
+        "success": "#69F0AE",
+        "error": "#FF5252",
+        "warning": "#FFC107",
+        "text": "#E8EAF6",
+        "muted": "#7E84A3",
+        "dim": "#3E4468",
+        "panel": "#0A0C14",
+        "panel2": "#11142A"
+      }
+    },
+    "overdrive": {
+      "description": "Redline RPM \u2014 turbo cyan, tachometer green",
+      "colors": {
+        "accent": "#00FFCC",
+        "accent2": "#A0FF00",
+        "info": "#47E8FF",
+        "success": "#64FF47",
+        "error": "#FF4757",
+        "warning": "#E8FF47",
+        "text": "#E8FCF5",
+        "muted": "#6B9E8F",
+        "dim": "#2E574C",
+        "panel": "#061210",
+        "panel2": "#0A1E1A"
+      }
+    },
+    "void-orchid": {
+      "description": "Orchid blooming in the void \u2014 soft violet, moonlit blue",
+      "colors": {
+        "accent": "#C792EA",
+        "accent2": "#82AAFF",
+        "info": "#89DDFF",
+        "success": "#C3E88D",
+        "error": "#FF5370",
+        "warning": "#FFCB6B",
+        "text": "#EAE4F2",
+        "muted": "#8A80A0",
+        "dim": "#4A4258",
+        "panel": "#0C0912",
+        "panel2": "#14101D"
+      }
+    },
+    "static-noir": {
+      "description": "Film-noir CRT \u2014 monochrome static, one red wire",
+      "colors": {
+        "accent": "#E8E8E8",
+        "accent2": "#FF2D55",
+        "info": "#A0A0B0",
+        "success": "#C8C8C8",
+        "error": "#FF2D55",
+        "warning": "#B8B8B8",
+        "text": "#F0F0F0",
+        "muted": "#8A8A8A",
+        "dim": "#4A4A4A",
+        "panel": "#0B0B0C",
+        "panel2": "#141416"
+      }
+    }
+  }
+}

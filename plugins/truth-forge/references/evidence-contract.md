@@ -1,7 +1,7 @@
 # Evidence Contract (shared)
 
 Canonical evidence standard for every truth-forge skill. Consolidated from
-`fresh-evidence`, `gate-validation-discipline`, `no-mocking-validation-gates`,
+`fresh-evidence`, `end-user-testing-discipline`, `no-mocking-validation`,
 `verification-before-completion`, and `transform-validation-prompt`.
 
 **Companion mandate: `end-user-actor.md` — the AI personally drives the real
@@ -79,15 +79,15 @@ Bad: "Dashboard looks right"
 8. **Gitignored** — `e2e-evidence/` is gitignored by default; at most commit
    `verdict.md` / `report.md`, never binary artifacts with secrets.
 
-Helper: `../skills/evidence-gates/scripts/fresh_evidence.py` implements
+Helper: `../skills/end-user-testing/scripts/fresh_evidence.py` implements
 init-run / next-step / seal / validate with these rules enforced.
 
 ## Validation Gate Pattern
 
-Embed gates in plans and prompts with this structure:
+Embed proof obligations in plans and prompts with this structure:
 
 ```xml
-<validation_gate id="VG-{N}" blocking="true">
+<proof_obligation id="PO-{N}" blocking="true">
 Actor: AI drives these actions as an end user via MCP/automation tools
 Prerequisites: [dependencies started + healthy]
 Execute: [real system interaction — driven, not observed]
@@ -96,7 +96,7 @@ Pass criteria: [specific, observable, measurable — defined in advance]
 Review: [READ the evidence and describe what is seen]
 Verdict: PASS → next task | FAIL → fix real system → re-run
 Mock guard: IF tempted to mock → STOP → fix real system
-</validation_gate>
+</proof_obligation>
 ```
 
 ## Stale Cache Warning

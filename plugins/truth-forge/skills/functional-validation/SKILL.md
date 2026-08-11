@@ -97,12 +97,12 @@ Use the run-scoped convention from the evidence contract:
 e2e-evidence/run-<ISO-compact>-<slug>/step-NN-<action>-<result>.<ext>
 ```
 
-The helper `../evidence-gates/scripts/fresh_evidence.py` enforces naming,
+The helper `../end-user-testing/scripts/fresh_evidence.py` enforces naming,
 freshness, and non-emptiness:
 
 ```bash
-python3 ../evidence-gates/scripts/fresh_evidence.py init-run login-flow
-python3 ../evidence-gates/scripts/fresh_evidence.py next-step submit-credentials
+python3 ../end-user-testing/scripts/fresh_evidence.py init-run login-flow
+python3 ../end-user-testing/scripts/fresh_evidence.py next-step submit-credentials
 ```
 
 ### Step 5 — Review the evidence personally
@@ -237,7 +237,7 @@ Modes compose: default flow is analyze -> plan -> execute -> (fix) -> report.
 | Skipping or faking QA/verification steps under any circumstance | A skipped check tells you nothing while pretending to | Run them or report them UNVERIFIED — no exceptions |
 ## Related Skills
 
-- `evidence-gates` — freshness, citation, and gate discipline for every verdict
+- `end-user-testing` — freshness, citation, and proof discipline for every verdict
 - `full-functional-audit` — app-wide audit when one feature isn't enough
 - `ui-experience-audit` / `visual-inspection` — review the visual evidence you capture
 - `validation-plan` — embed these checks as blocking gates in a project plan

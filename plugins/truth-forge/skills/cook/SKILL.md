@@ -1,36 +1,37 @@
 ---
 name: cook
 description: >
-  Structured feature implementation with mandatory planning and verification
-  gates: scout the codebase first, pin exact requirements, plan before code,
-  implement following existing patterns, then PROVE the result — code review
-  against acceptance criteria, full test pass, no regressions in touchpoints,
-  no broken public contracts, and an end-user drive of the finished feature
-  via MCP/automation tools. Modes: interactive (default, human approval at
-  each gate), fast (skip research), auto (auto-approve low-risk only),
-  parallel (batched execution), no-test (downgrades testing to a warning the
-  user must accept), tdd (tests-first per phase). Use to implement features,
-  execute plans, or build fixes once scope is known — "implement X", "build
-  X", "execute this plan", "cook this feature".
+  Structured feature implementation as an execution loop: scout the
+  codebase, pin exact requirements, decompose into tasks each carrying a
+  proof obligation, implement following existing patterns, and complete
+  every task by proving it — end-user testing of the real feature,
+  acceptance criteria asserted, touchpoints walked for regressions, no
+  broken public contracts. Modes: interactive (default, human checkpoint
+  at each step), fast (skip research), auto (auto-approve low-risk only),
+  parallel (batched execution), no-test (downgrades the regression rail
+  to a warning the user must accept), tdd (tests-first per task). Use to
+  implement features, execute plans, or build fixes once scope is known —
+  "implement X", "build X", "execute this plan", "cook this feature".
 ---
 
 # Cook — Structured Implementation
 
-End-to-end implementation with gates that catch unexamined assumptions and
-silent regressions. **Principles: YAGNI, KISS, DRY.**
+End-to-end implementation as an execution loop: tasks, not gates.
+**Principles: YAGNI, KISS, DRY.**
 
-## HARD GATES
+## THE EXECUTION CONTRACT
 
-### GATE 1 — No code before a reviewed plan
+### Contract 1 — Tasks, not phases
 
-Do NOT write implementation code until a plan exists and has been reviewed.
-"Simple" tasks hide the most unexamined complexity. Exception: the user
-explicitly says "just code it" / "skip planning" — respect that, and note
-the skipped gate in the final report.
+Decompose the work into a task list before writing code. "Simple" tasks
+hide the most unexamined complexity; the list is what exposes it. If the
+user explicitly says "just code it" / "skip planning" — respect that: the
+plan is a single task, and the final report notes the skipped
+decomposition.
 
-### GATE 2 — Scout first
+### Contract 2 — Scout first (readiness)
 
-Before planning or asking questions, scan the codebase:
+Before creating tasks or asking questions, scan the codebase:
 
 1. Project type, language(s), framework(s)
 2. Existing modules relevant to the task
@@ -41,83 +42,87 @@ Before planning or asking questions, scan the codebase:
 State a 3-6 bullet context summary before proceeding. Skip only when the
 input is already a plan file (the plan encodes scout output).
 
-### GATE 3 — Exact requirements
+### Contract 3 — Every task gets a proof obligation
 
-Before producing the plan, answer in one concrete sentence each:
+Before a task starts, write down:
 
 1. **Expected output** — concrete artifact(s): files, behaviors, screens,
    endpoint + payload, CLI + flags
 2. **Acceptance criteria** — specific behaviors / inputs -> outputs / edge
    cases that MUST work
-3. **Scope boundary** — explicitly OUT this round
-4. **Non-negotiable constraints** — stack, locations, naming, compatibility
+3. **The end-user test** — how the finished task will be driven as the end
+   user, and the assertion that proves it
+4. **Scope boundary** — explicitly OUT this round
 5. **Touchpoints** — files/modules modified; contracts that must stay stable
 
-Ground every question in scout findings. Never proceed on vague intent.
+A task whose proof obligation cannot be written is not ready — shrink it
+or escalate. Never proceed on vague intent.
 
-### GATE 4 — No side effects
+### Contract 4 — Done means proven, with no side effects
 
-Implementation is NOT done until proven side-effect-free:
+A task completes only when:
 
-1. New behavior matches EVERY acceptance criterion
-2. All tests pass — including modules sharing files/contracts with the change
+1. Its end-user test drove the real feature and the assertion passed —
+   fresh evidence captured per `../../references/evidence-contract.md`,
+   per the actor protocol in `../../references/end-user-actor.md`
+2. The regression rail passes — including modules sharing files/contracts
+   with the change (with `--no-test`, this becomes a warning the user
+   must explicitly accept; the end-user test is never downgraded)
 3. No regression: walk each touchpoint and every caller of changed functions
 4. No new lint/type/build errors anywhere in the repo
 5. Public contracts unchanged (signatures, types, API responses, schemas,
    env vars, config keys) unless intentional and called out
 
-If review reveals a side effect: STOP. Present what broke, the 1-line cause,
-and 2-4 concrete options (revert and re-plan / update dependents / add a
-compatibility shim / accept the regression with reason). The user decides —
-never silently patch around regressions.
-
-With `--no-test`, item 2 becomes a warning the user must explicitly accept;
-items 1, 3, 4, 5 remain enforceable.
+If proof reveals a side effect: present what broke, the 1-line cause, and
+2-4 concrete options (revert and re-plan / update dependents / add a
+compatibility shim / accept the regression with reason). The user
+decides — never silently patch around regressions.
 
 ## Modes
 
-| Mode | Research | Testing | Review gates | Progression |
-|------|----------|---------|--------------|-------------|
-| interactive (default) | yes | yes | human approval each step | one at a time |
-| fast | no | yes | human approval each step | one at a time |
-| auto | yes | yes | auto only for low-risk; high-risk stops | continuous low-risk |
-| parallel | optional | yes | human approval each step | batched groups |
-| no-test | yes | skipped (warning) | human approval each step | one at a time |
-| plan-path input | no | yes | human approval each step | per plan |
+| Mode | Research | Regression rail | Checkpoints | Progression |
+|------|----------|-----------------|-------------|-------------|
+| interactive (default) | yes | yes | human confirmation each step | one task at a time |
+| fast | no | yes | human confirmation each step | one task at a time |
+| auto | yes | yes | auto-approve low-risk only | continuous |
+| parallel | yes | yes | batch per wave | concurrent lanes |
+| no-test | yes | warning | human confirmation each step | one task at a time |
+| tdd | yes | rail first | human confirmation each step | one task at a time |
 
-`--tdd` composes with any mode: write tests for current behavior before
-refactoring, verify they still pass after.
-
-## Workflow (authoritative)
+## The loop
 
 ```
-Intent detection -> [plan path? load it] -> Scout -> Summarize
-  -> [exact requirements? no -> loop] -> Research -> Plan
-  -> REVIEW GATE -> Implement -> [simplify signal? simplify]
-  -> REVIEW GATE -> Test -> REVIEW GATE -> Finalize -> Report
+Scout -> [requirements unclear? pin them -> loop] -> Research -> Decompose
+-> per task: Implement -> [simplify signal? simplify] -> End-user test
+-> [proven? next task : stuck protocol] -> Finalize -> Report
 ```
 
-Blocking gates in non-auto modes: post-research, post-plan,
-post-implementation, post-testing (100% pass + approval before finalize).
+Human checkpoints in non-auto modes: post-research, post-decomposition,
+post-implementation, post-testing (rail green + end-user proof before
+finalize).
 
 Always enforced (all modes):
 
-- **Testing**: 100% pass unless no-test mode
+- **Regression rail**: 100% pass unless no-test mode
 - **Code review**: check (a) every acceptance criterion met, (b) no
   regression in touchpoints/blast radius, (c) no breaking contract changes
   unless called out, (d) follows scout-found patterns, (e) no new
   lint/type/build errors
-- **End-user verification**: per `../../references/end-user-actor.md`, drive
+- **End-user testing**: per `../../references/end-user-actor.md`, drive
   the finished feature as an end user via MCP/automation tools — click,
   submit, navigate — capturing fresh evidence per
-  `../../references/evidence-contract.md`. "The code looks right" and "tests
-  pass" are not proof the feature works for a user. This step is never
-  skipped, faked, or marked done without actual execution — if no tool path
-  exists, the finalize report says UNVERIFIED with the reason.
+  `../../references/evidence-contract.md`. "The code looks right" and
+  "tests pass" are not proof the feature works for a user. This step is
+  never skipped, faked, or marked done without actual execution — if no
+  tool path exists, the finalize report says UNVERIFIED with the reason.
+- **Stuck protocol on failure**: attempt the fix once; root-cause loop
+  (max 3 hypotheses) via `root-cause-debugging`; split the task into
+  smaller provable tasks; then escalate with a structured blocker report.
+  A retry is never a fix.
 - **Finalize**: update plan status across ALL phase files, update docs if
-  warranted, offer to commit, write the report — citing the driven end-user
-  evidence (tools used, actions performed, evidence paths) for every
-  acceptance criterion
+  warranted, offer to commit, write the report — citing the driven
+  end-user evidence (tools used, actions performed, evidence paths) for
+  every acceptance criterion
 
 ## Step Output Format
 
@@ -129,16 +134,17 @@ Always enforced (all modes):
 
 | Thought | Reality |
 |---------|---------|
-| "Too simple to plan" | Simple tasks hide complexity. Plan takes 30 seconds |
-| "I already know how" | Knowing != planning. Write it down |
+| "Too simple to plan" | Simple tasks hide complexity. Decomposing takes 30 seconds |
+| "I already know how" | Knowing != planning. Write the proof obligation down |
 | "Let me just start coding" | Undisciplined action wastes tokens |
-| "The user wants speed" | Fastest path = plan -> implement -> done |
+| "The user wants speed" | Fastest path = task -> execute -> prove -> next |
 | "I'll plan as I go" | That's hoping, not planning |
-| Marking validation complete without the AI actually invoking MCP/automation tools and acting as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
+| Marking end-user testing complete without actually driving the system as the end user | Execute the tools yourself; unexecuted = UNVERIFIED |
 | Skipping or faking QA/verification steps under any circumstance | Run them or report them UNVERIFIED — no exceptions |
+
 ## Related Skills
 
 - `brainstorm` — decide the approach before cooking
-- `validation-plan` — authors the plans this skill executes
-- `functional-validation` — the end-user verification protocol for Gate 4
-- `evidence-gates` — evidence standard for the final verification
+- `validation-plan` — authors the task decompositions this skill executes
+- `functional-validation` — the end-user testing protocol for Contract 4
+- `end-user-testing` — the proof standard for the final verification

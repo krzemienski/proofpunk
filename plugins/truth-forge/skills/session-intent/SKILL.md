@@ -61,7 +61,7 @@ this skill treats transcripts as evidence and everything downstream
    the diff), INTENT-PARTIAL (session found, diff exceeds stated intent —
    list the excess files), INTENT-UNRECOVERABLE (no session evidence).
 5. **Seal** — the parser output and the matrix are evidence; seal them with
-   the `evidence-gates` skill before any downstream ruling cites them.
+   the `end-user-testing` skill before any downstream ruling cites them.
 
 ## Companion Reference
 
@@ -90,4 +90,4 @@ did; first prompts say what the user asked.
   deviation pipeline
 - `production-readiness` — spec-compliance matrices; this is intent-compliance
 - `root-cause-debugging` — when INTENT-PARTIAL rows reveal unauthorized scope
-- `evidence-gates` — sealing the matrix as fresh evidence
+- `end-user-testing` — sealing the matrix as fresh evidence

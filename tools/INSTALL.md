@@ -12,8 +12,14 @@ outputs shown are the actual behaviors, not aspirations.
 # Claude Code user, latest GitHub main, everything included:
 bash truth-forge-install.sh --target claude-code
 
-# OMP user, see the plan before changing anything:
-bash truth-forge-install.sh --target omp --dry-run
+# oh-my-pi user — skills, 20 themes, and the doctrine-guard extension:
+bash truth-forge-install.sh --target omp --themes --plugins
+
+# OpenCode user — skills, 20 themes, plugin + commands + agent:
+bash truth-forge-install.sh --target opencode --themes --plugins
+
+# Themes only, no skills:
+bash truth-forge-install.sh --skip-skills --themes
 
 # Installed already and want the new versions, keeping backups:
 bash truth-forge-install.sh --target claude-code --override
@@ -47,7 +53,9 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 | Option | Effect | Why it exists |
 |---|---|---|
 | `--target claude-code` | Installs to `~/.claude/skills` (default) | The standard Claude Code personal-skills location; zero config |
-| `--target omp` | Installs to `${TRUTH_FORGE_OMP_DIR:-~/.config/oh-my-claudecode/skills}` | oh-my-claudecode (OMC) setups; the default is a documented convention — if your OMC install keeps skills elsewhere, set `TRUTH_FORGE_OMP_DIR` or use `--dir` |
+| `--target omp` | Installs to `${TRUTH_FORGE_OMP_DIR:-~/.omp/agent/skills}` | oh-my-pi's native skill provider (priority 100 — beats Claude-compat copies); set `TRUTH_FORGE_OMP_DIR` or use `--dir` for profile installs |
+| `--target opencode` | Installs to `~/.config/opencode/skills` | OpenCode's native skill location; note OpenCode also reads `~/.claude/skills`, so one `--target claude-code` install can serve both |
+| `--target agents` | Installs to `~/.agents/skills` | The shared agents-compatible location both oh-my-pi and OpenCode discover |
 | `--dir PATH` | Installs to exactly `PATH`, beats `--target` | Any other host: project-level skills, a different agent's directory, a sandboxed test (the installer's own test suite uses this) |
 
 ## Source options — WHERE skills come from
@@ -64,6 +72,14 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 |---|---|---|
 | `--only a,b,c` | Installs just those skills (default: all 18) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
 | `--list` | Prints skills in the source and exits | Answer "what would I get?" without touching anything |
+| `--skip-skills` | Installs no skills (doctrine is skipped too) | Themes-only or plugins-only runs — `--skip-skills --themes` touches nothing but theme directories |
+
+## Theme and plugin options
+
+| Option | Effect | Why it exists |
+|---|---|---|
+| `--themes` | Copies the 20 flat-black cyberpunk themes into every detected platform: `~/.omp/agent/themes/` (oh-my-pi), `~/.config/opencode/themes/` (OpenCode), and the Hyper modules into `~/.config/truth-forge/hyper-themes/` | One command themes every TUI you run; detection = the platform's config dir exists, its binary is on PATH, or it is the `--target` |
+| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/truth-forge.ts`; OpenCode plugin + 6 commands + 1 agent into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/truth-forge/extensions/`, `plugins/truth-forge/opencode/`); this copies them to the auto-discovery locations |
 
 ## Collision options — same-name skill already exists
 
@@ -103,10 +119,11 @@ bash truth-forge-install.sh --target claude-code
 #   verify     : all installed skills pass frontmatter + reference checks
 #   == summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
 
-# 2) OMP, look before you leap — nothing is written:
-bash truth-forge-install.sh --target omp --dry-run
-#   target dir : ~/.config/oh-my-claudecode/skills  (omp)
+# 2) oh-my-pi, look before you leap — nothing is written:
+bash truth-forge-install.sh --target omp --themes --plugins --dry-run
+#   target dir : ~/.omp/agent/skills  (omp)
 #   [dry-run] would download …/main … INSTALL … for each skill
+#   [dry-run] mkdir -p '$HOME/.omp/agent/themes' … extension …
 
 # 3) Routine upgrade, backups kept — existing same-name skills replaced:
 bash truth-forge-install.sh --target claude-code --override
@@ -132,7 +149,19 @@ bash truth-forge-install.sh --inject-claude-md ~/.claude/CLAUDE.md   # second ru
 #   already present — left unchanged
 
 # 8) CI pin — exact ref, minimal output, non-zero exit on any gap:
-bash truth-forge-install.sh --ref v1.2.1 --quiet || exit 1
+bash truth-forge-install.sh --ref v1.7.0 --quiet || exit 1
+
+# 9) Themes only, into whatever TUIs exist on this machine:
+bash truth-forge-install.sh --skip-skills --themes
+#   themes     : 20 flat-black cyberpunk themes
+#     OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml
+#     OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json
+#     Hyper    -> ~/.config/truth-forge/hyper-themes (20 .js modules)
+
+# 10) Full OpenCode setup from a local checkout:
+bash tools/truth-forge-install.sh --source-dir . --target opencode --themes --plugins
+#   skills + doctrine into ~/.config/opencode/skills, 20 themes,
+#   plugin/truth-forge.ts + 6 commands + 1 agent into ~/.config/opencode/
 ```
 
 ## Exit codes

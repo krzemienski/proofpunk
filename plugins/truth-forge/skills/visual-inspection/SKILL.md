@@ -140,4 +140,4 @@ root causes and fix patterns across iOS, web, and cross-platform projects.
 
 - `ui-experience-audit` — the deeper sibling: this protocol's Phase 1 plus interaction, content, and UX-heuristic phases
 - `functional-validation` — exercise real features after visual PASS
-- `evidence-gates` — citation standard for screenshot evidence
+- `end-user-testing` — citation standard for screenshot evidence

@@ -148,6 +148,6 @@ never assumed PASS.
 ## Related Skills
 
 - `functional-validation` — the per-interaction protocol this audit applies at scale
-- `evidence-gates` — the gate discipline every batch verdict must satisfy
+- `end-user-testing` — the proof standard every batch verdict must satisfy
 - `ui-experience-audit` — run per screen when functional PASS but UX quality is in question
 - `validation-plan` — turn the audit's fix list into a gated remediation plan

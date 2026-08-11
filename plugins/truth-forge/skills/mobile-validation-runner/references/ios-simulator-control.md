@@ -10,7 +10,7 @@
 
 - Booting iOS simulators for testing workflows
 - Installing and launching apps on simulator
-- Capturing screenshot evidence for validation gates
+- Capturing screenshot evidence for validation checkpoints
 - Retrieving simulator logs for debugging
 - Automating iOS testing lifecycle (boot → install → launch → capture → shutdown)
 

@@ -190,4 +190,4 @@ Hand-offs: wiring doubts -> `functional-validation`; app-wide scope ->
 - `visual-inspection` — Phase 1 only, lighter
 - `functional-validation` — drives the flows this skill flags
 - `full-functional-audit` — app-wide version
-- `evidence-gates` — citation standard for all captured evidence
+- `end-user-testing` — citation standard for all captured evidence
