@@ -1,4 +1,4 @@
-# truth-forge
+# Proofpunk
 
 An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCode**:
 18 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
@@ -10,16 +10,16 @@ is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasse
 **Claude Code** (plugin — skills, commands, SessionStart doctrine hook):
 
 ```
-/plugin marketplace add krzemienski/truth-forge
-/plugin install truth-forge@truth-forge-marketplace
+/plugin marketplace add krzemienski/proofpunk
+/plugin install proofpunk@proofpunk-marketplace
 ```
 
 **oh-my-pi / OMP** (plugin — skills, commands, doctrine-guard extension; catalog at
 `.omp-plugin/marketplace.json`, Claude-compatible `.claude-plugin/` fallback):
 
 ```
-omp plugin marketplace add krzemienski/truth-forge
-omp plugin install truth-forge@truth-forge
+omp plugin marketplace add krzemienski/proofpunk
+omp plugin install proofpunk@proofpunk
 ```
 
 **OpenCode** — the installer drops the plugin, commands, agent, and skills into
@@ -27,18 +27,18 @@ omp plugin install truth-forge@truth-forge
 **Any agent** — plain skills into any directory:
 
 ```
-bash tools/truth-forge-install.sh --target claude-code            # ~/.claude/skills (also read by OpenCode + OMP)
-bash tools/truth-forge-install.sh --target omp --themes --plugins # oh-my-pi skills + themes + extension
-bash tools/truth-forge-install.sh --target opencode --themes --plugins
-bash tools/truth-forge-install.sh --target agents                 # ~/.agents/skills (shared)
+bash tools/proofpunk-install.sh --target claude-code            # ~/.claude/skills (also read by OpenCode + OMP)
+bash tools/proofpunk-install.sh --target omp --themes --plugins # oh-my-pi skills + themes + extension
+bash tools/proofpunk-install.sh --target opencode --themes --plugins
+bash tools/proofpunk-install.sh --target agents                 # ~/.agents/skills (shared)
 ```
 
-Or download `truth-forge-marketplace.tar.gz` from this repo's release artifacts and
+Or download `proofpunk-marketplace.tar.gz` from this repo's release artifacts and
 extract it into your marketplaces directory.
 
 ## Themes — 20 flat-black cyberpunk variations
 
-`plugins/truth-forge/themes/` ships 20 themes (neon-tokyo, acid-rain, vapor-grid,
+`plugins/proofpunk/themes/` ships 20 themes (neon-tokyo, acid-rain, vapor-grid,
 code-fall, static-noir, …) inspired by the Hyper terminal's theme contract: pure
 `#000000` canvas, two-neon accent systems, tuned status colors. One canonical
 palette source (`themes/palettes.json`) renders to three formats via
@@ -50,7 +50,7 @@ palette source (`themes/palettes.json`) renders to three formats via
 | OpenCode theme JSON | `themes/opencode/*.json` | `~/.config/opencode/themes/` |
 | Hyper module | `themes/hyper/*.js` | merge into `~/.hyper.js` (decorateConfig contract) |
 
-`truth-forge-install.sh --themes` copies them into every detected platform.
+`proofpunk-install.sh --themes` copies them into every detected platform.
 Claude Code has no custom-palette API, so the Claude plugin ships the themes
 for the other surfaces you run beside it.
 
@@ -77,14 +77,14 @@ for the other surfaces you run beside it.
 | `session-intent` | Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts |
 | `codebase-truth-audit` | Evidence-backed repo-wide truth audits: intent-from-history, code/config/doc/runtime verification, approval-gated remediation (the code-truth lane to session-intent's intent lane) |
 
-`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline). **v1.7.0**: the doctrine moved from gate-logic to execution-logic — tasks carry proof obligations, validation is end-user testing always, `evidence-gates` became `end-user-testing` — plus the 20-theme flat-black cyberpunk pack and OMP/OpenCode platform support.
+`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline). **v1.7.0**: the doctrine moved from gate-logic to execution-logic — tasks carry proof obligations, validation is end-user testing always, `evidence-gates` became `end-user-testing` — plus the 20-theme flat-black cyberpunk pack and OMP/OpenCode platform support. **v1.8.0**: the project is renamed **Proofpunk** — repo, marketplace, plugin, commands (`/proofpunk:*`), installer (`proofpunk-install.sh`), and doctrine (`proofpunk-doctrine`) all carry the new brand; install commands are `… marketplace add krzemienski/proofpunk`.
 
-**Hands-on invocation examples for every skill (`/skill-name <positional> --flag`): `plugins/truth-forge/docs/usage-guide.md`.**
+**Hands-on invocation examples for every skill (`/skill-name <positional> --flag`): `plugins/proofpunk/docs/usage-guide.md`.**
 Five were added in v1.1.0 and `session-intent` in v1.2.0 from a second full-universe scan (664 unique skills
 across both source archives, classified by usefulness domain) — see
-`plugins/truth-forge/docs/consolidation-decisions.md`.
+`plugins/proofpunk/docs/consolidation-decisions.md`.
 
-Shared doctrine lives in `plugins/truth-forge/references/` — the Iron Rule (fix the real
+Shared doctrine lives in `plugins/proofpunk/references/` — the Iron Rule (fix the real
 system), the End-User Actor Mandate, the evidence contract, severity model, platform
 routing, preflight checks, and CI gate classification.
 
@@ -108,7 +108,7 @@ skill's own Related Skills / delegation contract.
 | `session_intent.py [filters] [outputs]` | `session-intent` | none (leaf tool) |
 | `fresh_evidence.py init-run\|next-step\|seal\|validate` | `end-user-testing` | none (leaf tool) |
 | `with_server.py --server ... --port ... -- <check>` | `stack-testing` | none (leaf tool) |
-| `truth-forge-install.sh [flags]` | installer (tools/, not a skill) | installs all 17 skills + doctrine |
+| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 17 skills + doctrine |
 
 ---
 
@@ -209,7 +209,7 @@ destinations), `--report-only` + `--out` (nothing to write), `--report-only`
 + `--in-place` (no output vs edit). Unknown flags rejected with the table.
 
 A complete worked rating — weak prompt, 34/100 scorecard, remediated file,
-91/100 re-score — lives in `plugins/truth-forge/skills/prompt-forge/references/remediation-sample.md`.
+91/100 re-score — lives in `plugins/proofpunk/skills/prompt-forge/references/remediation-sample.md`.
 
 Skills executed: none downstream (leaf). It is executed BY `implement`
 (Phases 3-4) and pairs with `plan-hardening` / `validation-plan`.
@@ -385,7 +385,7 @@ Skills executed: none (leaf tool). Consumed BY `cook`, `functional-validation`,
 
 ---
 
-### 8. `tools/truth-forge-install.sh` — the installer
+### 8. `tools/proofpunk-install.sh` — the installer
 
 No positional arguments; everything is flags. Full table with
 why-it-exists lives in `tools/INSTALL.md`; the flags:
@@ -399,8 +399,8 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 | `--list` | show what would be installed, then exit |
 | `--override` | consent to REPLACE same-name skills (timestamped `.bak` backups) |
 | `--backup` / `--no-backup` | backup control when overriding |
-| `--with-doctrine` / `--no-doctrine` | include the truth-forge-doctrine bundle (Iron Rule, End-User Actor Mandate, remediation definition) |
-| `--inject-claude-md FILE` | append the idempotent BEGIN/END TRUTH-FORGE RULES block to your CLAUDE.md |
+| `--with-doctrine` / `--no-doctrine` | include the proofpunk-doctrine bundle (Iron Rule, End-User Actor Mandate, remediation definition) |
+| `--inject-claude-md FILE` | append the idempotent BEGIN/END PROOFPUNK RULES block to your CLAUDE.md |
 | `--dry-run` | print the full plan, write nothing |
 | `--verify` / `--no-verify` | post-install self-check (structure, citations, doctrine) |
 | `--quiet` | summary only |
@@ -409,7 +409,7 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 
 | Invocation | What happens |
 |------------|--------------|
-| `truth-forge-install.sh --target claude-code` | first-time: all 18 skills + doctrine + verify, from GitHub |
+| `proofpunk-install.sh --target claude-code` | first-time: all 18 skills + doctrine + verify, from GitHub |
 | `--target omp --themes --plugins` | 18 skills + 20 themes + doctrine-guard extension for oh-my-pi |
 | `--only prompt-forge,implement --override` | surgical refresh of two skills, backups taken |
 | `--source local --source-dir /path/to/repo --no-verify` | offline install from a checkout, self-check skipped |
@@ -448,9 +448,9 @@ is what they execute downstream:
 
 ```mermaid
 graph TD
-    M["truth-forge-marketplace<br/>.claude-plugin/marketplace.json"]
-    M --> P["plugins/truth-forge<br/>the plugin"]
-    M --> T["tools/<br/>truth-forge-install.sh + INSTALL.md"]
+    M["proofpunk-marketplace<br/>.claude-plugin/marketplace.json"]
+    M --> P["plugins/proofpunk<br/>the plugin"]
+    M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
     P --> S["skills/ — 17 skills"]
     P --> R["references/ — 9 shared doctrine files"]
@@ -489,7 +489,7 @@ graph TB
         PR["production-readiness"]
         SI["session-intent"]
     end
-    subgraph DOC["Doctrine — plugins/truth-forge/references/"]
+    subgraph DOC["Doctrine — plugins/proofpunk/references/"]
         REF["end-user-actor.md<br/>evidence-contract.md<br/>severity-model.md<br/>platform-routing.md<br/>preflight-checks.md<br/>ci-gates.md<br/>defect-pattern-database.md<br/>web-wcag-checklist.md<br/>ios-hig-checklist.md"]
     end
     ORCH --> PROMPT
@@ -660,12 +660,12 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/truth-forge/              the plugin (18 skills + references + docs)
+plugins/proofpunk/              the plugin (18 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 
 ## License
 
-MIT for the truth-forge plugin and documentation (see `LICENSE`). The Flaskr example
+MIT for the Proofpunk plugin and documentation (see `LICENSE`). The Flaskr example
 under `examples/mood-ring/` is derived from the Flask tutorial and remains BSD-3-Clause
 (see `examples/mood-ring/LICENSE.txt`).

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Render the truth-forge theme pack from the canonical palette source.
+"""Render the Proofpunk theme pack from the canonical palette source.
 
-Reads  plugins/truth-forge/themes/palettes.json
-Writes plugins/truth-forge/themes/omp/*.json        (oh-my-pi custom themes)
-       plugins/truth-forge/themes/opencode/*.json   (OpenCode custom themes)
-       plugins/truth-forge/themes/hyper/*.js        (Hyper terminal modules)
+Reads  plugins/proofpunk/themes/palettes.json
+Writes plugins/proofpunk/themes/omp/*.json        (oh-my-pi custom themes)
+       plugins/proofpunk/themes/opencode/*.json   (OpenCode custom themes)
+       plugins/proofpunk/themes/hyper/*.js        (Hyper terminal modules)
 
 Deterministic: same palettes.json -> byte-identical output. Hand-edits to
 rendered files are overwritten. Stdlib only.
@@ -16,7 +16,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, ".."))
-THEMES = os.path.join(ROOT, "plugins", "truth-forge", "themes")
+THEMES = os.path.join(ROOT, "plugins", "proofpunk", "themes")
 
 
 def hx(h):
@@ -141,7 +141,7 @@ def hyper_module(name, p, desc):
     }
     cr, cg, cb = hx(a)
     sel = "rgba(%d,%d,%d,0.35)" % (round(cr * 255), round(cg * 255), round(cb * 255))
-    return f"""// truth-forge themes — {name} (flat-black cyberpunk, Hyper terminal)
+    return f"""// Proofpunk themes — {name} (flat-black cyberpunk, Hyper terminal)
 // Install: copy into your Hyper plugins, or merge the colors below into ~/.hyper.js config.
 // {desc}
 const COLORS = {json.dumps(colors, indent=2)};

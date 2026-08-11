@@ -1,0 +1,12 @@
+{
+  "name": "proofpunk",
+  "version": "1.8.0",
+  "private": true,
+  "description": "Proofpunk OMP plugin — skills, commands, themes, and the doctrine-guard extension.",
+  "license": "MIT",
+  "omp": {
+    "extensions": [
+      "./extensions/proofpunk.ts"
+    ]
+  }
+}

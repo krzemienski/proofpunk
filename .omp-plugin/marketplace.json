@@ -1,20 +1,20 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "truth-forge",
+  "name": "proofpunk",
   "owner": {
-    "name": "truth-forge maintainers"
+    "name": "Proofpunk maintainers"
   },
   "metadata": {
     "description": "Evidence-driven delivery pipeline: 18 skills, 20 flat-black cyberpunk themes, and execution-first implement orchestration.",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "pluginRoot": "plugins"
   },
   "plugins": [
     {
-      "name": "truth-forge",
-      "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, end-user-test, and audit \u2014 plus 20 flat-black cyberpunk themes for OMP and OpenCode.",
-      "source": "./truth-forge",
-      "version": "1.7.0",
+      "name": "proofpunk",
+      "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, end-user-test, and audit — plus 20 flat-black cyberpunk themes for OMP and OpenCode.",
+      "source": "./proofpunk",
+      "version": "1.8.0",
       "category": "development",
       "license": "MIT",
       "keywords": [

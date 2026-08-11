@@ -1,6 +1,6 @@
-# truth-forge installer — usage, options, and why they exist
+# Proofpunk installer — usage, options, and why they exist
 
-`tools/truth-forge-install.sh` installs the 18 truth-forge skills as **plain
+`tools/proofpunk-install.sh` installs the 18 Proofpunk skills as **plain
 skills** (not a plugin, not a marketplace) into the skills directory of your
 choice, injects the ruling doctrine alongside them, and verifies the result.
 Everything below was executed against the real script before shipping — the
@@ -10,19 +10,19 @@ outputs shown are the actual behaviors, not aspirations.
 
 ```bash
 # Claude Code user, latest GitHub main, everything included:
-bash truth-forge-install.sh --target claude-code
+bash proofpunk-install.sh --target claude-code
 
 # oh-my-pi user — skills, 20 themes, and the doctrine-guard extension:
-bash truth-forge-install.sh --target omp --themes --plugins
+bash proofpunk-install.sh --target omp --themes --plugins
 
 # OpenCode user — skills, 20 themes, plugin + commands + agent:
-bash truth-forge-install.sh --target opencode --themes --plugins
+bash proofpunk-install.sh --target opencode --themes --plugins
 
 # Themes only, no skills:
-bash truth-forge-install.sh --skip-skills --themes
+bash proofpunk-install.sh --skip-skills --themes
 
 # Installed already and want the new versions, keeping backups:
-bash truth-forge-install.sh --target claude-code --override
+bash proofpunk-install.sh --target claude-code --override
 ```
 
 ## What an install actually produces
@@ -34,7 +34,7 @@ bash truth-forge-install.sh --target claude-code --override
 │   └── references/        #    cited doctrine bundled inside the skill
 │   ...
 ├── visual-inspection/
-└── truth-forge-doctrine/  # the ruling rules, shared by all skills
+└── proofpunk-doctrine/  # the ruling rules, shared by all skills
     ├── README.md          #   Iron Rule / End-User Actor / remediation / evidence
     ├── end-user-actor.md  #   incl. "test runners are never validation"
     ├── evidence-contract.md
@@ -53,7 +53,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 | Option | Effect | Why it exists |
 |---|---|---|
 | `--target claude-code` | Installs to `~/.claude/skills` (default) | The standard Claude Code personal-skills location; zero config |
-| `--target omp` | Installs to `${TRUTH_FORGE_OMP_DIR:-~/.omp/agent/skills}` | oh-my-pi's native skill provider (priority 100 — beats Claude-compat copies); set `TRUTH_FORGE_OMP_DIR` or use `--dir` for profile installs |
+| `--target omp` | Installs to `${PROOFPUNK_OMP_DIR:-~/.omp/agent/skills}` | oh-my-pi's native skill provider (priority 100 — beats Claude-compat copies); set `PROOFPUNK_OMP_DIR` or use `--dir` for profile installs |
 | `--target opencode` | Installs to `~/.config/opencode/skills` | OpenCode's native skill location; note OpenCode also reads `~/.claude/skills`, so one `--target claude-code` install can serve both |
 | `--target agents` | Installs to `~/.agents/skills` | The shared agents-compatible location both oh-my-pi and OpenCode discover |
 | `--dir PATH` | Installs to exactly `PATH`, beats `--target` | Any other host: project-level skills, a different agent's directory, a sandboxed test (the installer's own test suite uses this) |
@@ -64,7 +64,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 |---|---|---|
 | `--source github` | Downloads `main` tarball from the public repo (default) | No clone needed; always current |
 | `--ref REF` | Pins the github source to a branch/tag/sha | Reproducible installs; test a PR before adopting it |
-| `--source-dir PATH` | Uses a local truth-forge checkout | Offline work; installing your own edits before pushing them |
+| `--source-dir PATH` | Uses a local Proofpunk checkout | Offline work; installing your own edits before pushing them |
 
 ## Selection options
 
@@ -78,8 +78,8 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| `--themes` | Copies the 20 flat-black cyberpunk themes into every detected platform: `~/.omp/agent/themes/` (oh-my-pi), `~/.config/opencode/themes/` (OpenCode), and the Hyper modules into `~/.config/truth-forge/hyper-themes/` | One command themes every TUI you run; detection = the platform's config dir exists, its binary is on PATH, or it is the `--target` |
-| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/truth-forge.ts`; OpenCode plugin + 6 commands + 1 agent into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/truth-forge/extensions/`, `plugins/truth-forge/opencode/`); this copies them to the auto-discovery locations |
+| `--themes` | Copies the 20 flat-black cyberpunk themes into every detected platform: `~/.omp/agent/themes/` (oh-my-pi), `~/.config/opencode/themes/` (OpenCode), and the Hyper modules into `~/.config/proofpunk/hyper-themes/` | One command themes every TUI you run; detection = the platform's config dir exists, its binary is on PATH, or it is the `--target` |
+| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/proofpunk.ts`; OpenCode plugin + 6 commands + 1 agent into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/proofpunk/extensions/`, `plugins/proofpunk/opencode/`); this copies them to the auto-discovery locations |
 
 ## Collision options — same-name skill already exists
 
@@ -96,9 +96,9 @@ bad upgrade is one `mv` away from undone.
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| *(default: on)* | Installs/refreshes `<target>/truth-forge-doctrine/` | The skills defer to these rulings — the Iron Rule (fix the real system, never mocks), the End-User Actor Mandate (validation is driven: `curl` the running server for JSON backends, browser for UI, simulator for mobile; test runners are regression tooling, NEVER validation), what **remediation** means (reproduce → fix the root cause, never the symptom → re-validate the failure AND its blast radius with fresh evidence), the evidence contract, and the severity model |
+| *(default: on)* | Installs/refreshes `<target>/proofpunk-doctrine/` | The skills defer to these rulings — the Iron Rule (fix the real system, never mocks), the End-User Actor Mandate (validation is driven: `curl` the running server for JSON backends, browser for UI, simulator for mobile; test runners are regression tooling, NEVER validation), what **remediation** means (reproduce → fix the root cause, never the symptom → re-validate the failure AND its blast radius with fresh evidence), the evidence contract, and the severity model |
 | `--no-doctrine` | Skips the doctrine bundle | Only for updates where doctrine is unchanged and you want minimal churn |
-| `--inject-claude-md FILE` | Appends the rules block to `FILE` (e.g. `~/.claude/CLAUDE.md`) | Puts the rulings directly in the agent's standing instructions. **Opt-in** because it modifies your file; the block is marked `BEGIN/END TRUTH-FORGE RULES` and re-running never duplicates it (verified idempotent) |
+| `--inject-claude-md FILE` | Appends the rules block to `FILE` (e.g. `~/.claude/CLAUDE.md`) | Puts the rulings directly in the agent's standing instructions. **Opt-in** because it modifies your file; the block is marked `BEGIN/END PROOFPUNK RULES` and re-running never duplicates it (verified idempotent) |
 
 ## Inspection options
 
@@ -113,55 +113,55 @@ bad upgrade is one `mv` away from undone.
 
 ```bash
 # 1) First-time Claude Code install — 18 skills + doctrine, verified:
-bash truth-forge-install.sh --target claude-code
+bash proofpunk-install.sh --target claude-code
 #   INSTALL brainstorm … INSTALL visual-inspection
-#   doctrine   : ~/.claude/skills/truth-forge-doctrine
+#   doctrine   : ~/.claude/skills/proofpunk-doctrine
 #   verify     : all installed skills pass frontmatter + reference checks
 #   == summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
 
 # 2) oh-my-pi, look before you leap — nothing is written:
-bash truth-forge-install.sh --target omp --themes --plugins --dry-run
+bash proofpunk-install.sh --target omp --themes --plugins --dry-run
 #   target dir : ~/.omp/agent/skills  (omp)
 #   [dry-run] would download …/main … INSTALL … for each skill
 #   [dry-run] mkdir -p '$HOME/.omp/agent/themes' … extension …
 
 # 3) Routine upgrade, backups kept — existing same-name skills replaced:
-bash truth-forge-install.sh --target claude-code --override
+bash proofpunk-install.sh --target claude-code --override
 #   REPLACE session-intent (old copy -> ~/.claude/skills/.session-intent.bak-20260810-034014)
 
 # 4) Just the new skill from v1.2.0, nothing else touched:
-bash truth-forge-install.sh --target claude-code --only session-intent
+bash proofpunk-install.sh --target claude-code --only session-intent
 
 # 5) Re-run after a full install — everything collides, everything skips:
-bash truth-forge-install.sh --target claude-code
+bash proofpunk-install.sh --target claude-code
 #   SKIP brainstorm (already exists; use --override to replace) ×17
 #   == summary: 0 installed, 0 replaced, 18 skipped (collision), 0 missing ==
 
 # 6) Offline / dev loop — install your local edits:
-git clone https://github.com/krzemienski/truth-forge && cd truth-forge
+git clone https://github.com/krzemienski/proofpunk && cd Proofpunk
 #   …edit a skill…
-bash tools/truth-forge-install.sh --source-dir . --dir /tmp/test-skills
+bash tools/proofpunk-install.sh --source-dir . --dir /tmp/test-skills
 #   verify     : all installed skills pass … (fails loudly if you broke a link)
 
 # 7) Put the rules in the agent's standing instructions (opt-in, idempotent):
-bash truth-forge-install.sh --inject-claude-md ~/.claude/CLAUDE.md
-bash truth-forge-install.sh --inject-claude-md ~/.claude/CLAUDE.md   # second run:
+bash proofpunk-install.sh --inject-claude-md ~/.claude/CLAUDE.md
+bash proofpunk-install.sh --inject-claude-md ~/.claude/CLAUDE.md   # second run:
 #   already present — left unchanged
 
 # 8) CI pin — exact ref, minimal output, non-zero exit on any gap:
-bash truth-forge-install.sh --ref v1.7.0 --quiet || exit 1
+bash proofpunk-install.sh --ref v1.8.0 --quiet || exit 1
 
 # 9) Themes only, into whatever TUIs exist on this machine:
-bash truth-forge-install.sh --skip-skills --themes
+bash proofpunk-install.sh --skip-skills --themes
 #   themes     : 20 flat-black cyberpunk themes
 #     OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml
 #     OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json
-#     Hyper    -> ~/.config/truth-forge/hyper-themes (20 .js modules)
+#     Hyper    -> ~/.config/proofpunk/hyper-themes (20 .js modules)
 
 # 10) Full OpenCode setup from a local checkout:
-bash tools/truth-forge-install.sh --source-dir . --target opencode --themes --plugins
+bash tools/proofpunk-install.sh --source-dir . --target opencode --themes --plugins
 #   skills + doctrine into ~/.config/opencode/skills, 20 themes,
-#   plugin/truth-forge.ts + 6 commands + 1 agent into ~/.config/opencode/
+#   plugin/proofpunk.ts + 6 commands + 1 agent into ~/.config/opencode/
 ```
 
 ## Exit codes
@@ -185,4 +185,4 @@ Invoke as `/skill-name <positional> --flag` in Claude Code — e.g.
 `/implement "add billing webhooks" --parallel --auto --mine`,
 `/prompt-forge rate prompts/login.md --in-place`,
 `/codebase-truth-audit /path/to/repo --label q3-audit`.
-Full per-skill usage: `plugins/truth-forge/docs/usage-guide.md`.
+Full per-skill usage: `plugins/proofpunk/docs/usage-guide.md`.
