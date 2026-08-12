@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Visual Inspection — WCAG 2.2 &amp; Responsive Checklist — proofpunk doctrine</title>
+<meta name="description" content="Platform-specific checks supplementing the universal checklist in SKILL.md.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / WEB-WCAG-CHECKLIST</div>
+  <div class="doc">
+<h1 id="web-visual-inspection--wcag-22--responsive-checklist">Web Visual Inspection — WCAG 2.2 &amp; Responsive Checklist</h1>
+<p>Platform-specific checks supplementing the universal checklist in SKILL.md.</p>
+<h2 id="color-contrast-wcag-22-aa">Color Contrast (WCAG 2.2 AA)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Normal text</td>
+<td>4.5:1 contrast ratio (text &lt;18pt or &lt;14pt bold)</td>
+<td>WebAIM Contrast Checker</td>
+</tr>
+<tr class="even">
+<td>Large text</td>
+<td>3:1 contrast ratio (text ≥18pt or ≥14pt bold)</td>
+<td>DevTools color picker</td>
+</tr>
+<tr class="odd">
+<td>UI components</td>
+<td>3:1 for borders, icons, form controls against background</td>
+<td>Manual inspection</td>
+</tr>
+<tr class="even">
+<td>Focus indicators</td>
+<td>3:1 contrast for focus ring against adjacent colors</td>
+<td>Tab through elements</td>
+</tr>
+<tr class="odd">
+<td>Disabled elements</td>
+<td>No contrast requirement, but must look intentionally disabled</td>
+<td>Visual inspection</td>
+</tr>
+<tr class="even">
+<td>Placeholder text</td>
+<td>4.5:1 — placeholders are NOT exempt from contrast rules</td>
+<td>Common violation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apca--the-modern-lightness-aware-metric">APCA — the modern lightness-aware metric</h3>
+<p>WCAG 2.x ratios collapse to 1 number that ignores the eye's non-linear response to lightness. APCA (used in WCAG 3 draft) returns a signed <code>Lc</code> value tuned to perceptual contrast. For body text, <strong><code>|Lc| ≥ 60</code></strong> is the working minimum; UI components use 45-60 depending on size.</p>
+<p>Worked example (drawn from iter-16 finding F-1D):</p>
+<pre><code>Foreground: #777   (caption-muted)
+Background: #222   (dark mode body)
+APCA Lc:    ~32    (FAIL — needs ≥ 60 for body text)
+WCAG 2 ratio: ~3.9 (would pass AA-Large, but the APCA signal is correct)</code></pre>
+<p>Recipe to compute live:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capture computed colors via agent-browser</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">agent-browser</span> open <span class="op">&lt;</span>url<span class="op">&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">agent-browser</span> eval <span class="st">&quot;getComputedStyle(document.querySelector(&#39;&lt;sel&gt;&#39;)).color + &#39; on &#39; + getComputedStyle(document.body).backgroundColor&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Output: &quot;rgb(119, 119, 119) on rgb(34, 34, 34)&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Pipe through any APCA implementation (apca-w3 npm pkg, or python-apca-rs)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm |Lc| ≥ 60 for body text, ≥ 45 for ≥18pt UI text</span></span></code></pre></div>
+<p>When the WCAG 2 ratio passes but APCA fails (or vice versa), prefer APCA's verdict — it correlates better with user-reported readability complaints.</p>
+<h2 id="touchclick-targets-wcag-258">Touch/Click Targets (WCAG 2.5.8)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Minimum size</td>
+<td>24x24 CSS px target size (WCAG 2.2 AA)</td>
+<td>Tiny icon buttons at 16x16</td>
+</tr>
+<tr class="even">
+<td>Recommended size</td>
+<td>44x44 CSS px (Apple HIG / best practice)</td>
+<td>Links with no padding</td>
+</tr>
+<tr class="odd">
+<td>Target spacing</td>
+<td>8px min between adjacent targets</td>
+<td>Navigation links touching</td>
+</tr>
+<tr class="even">
+<td>Inline exceptions</td>
+<td>Inline text links exempt from size requirement</td>
+<td>N/A</td>
+</tr>
+<tr class="odd">
+<td>Padding expansion</td>
+<td>Use <code>padding</code> to expand clickable area beyond visual size</td>
+<td>Icon-only buttons with no padding</td>
+</tr>
+</tbody>
+</table>
+<h2 id="responsive-layout">Responsive Layout</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Viewport</th>
+<th>Width</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mobile S</td>
+<td>320px</td>
+<td>No horizontal scroll, all content reachable</td>
+</tr>
+<tr class="even">
+<td>Mobile M</td>
+<td>375px</td>
+<td>Standard iPhone — primary mobile test</td>
+</tr>
+<tr class="odd">
+<td>Tablet</td>
+<td>768px</td>
+<td>Layout adapts (single → multi column)</td>
+</tr>
+<tr class="even">
+<td>Desktop</td>
+<td>1024px</td>
+<td>Full layout with sidebars/panels</td>
+</tr>
+<tr class="odd">
+<td>Wide</td>
+<td>1440px</td>
+<td>Content doesn't stretch beyond readable width</td>
+</tr>
+</tbody>
+</table>
+<h3 id="per-viewport-checks">Per-Viewport Checks</h3>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+No horizontal scrollbar at any viewport</li>
+<li><input type="checkbox" disabled="" />
+Text readable without zooming (16px min body)</li>
+<li><input type="checkbox" disabled="" />
+Navigation accessible (hamburger menu on mobile works)</li>
+<li><input type="checkbox" disabled="" />
+Images scale without overflow</li>
+<li><input type="checkbox" disabled="" />
+Tables scroll horizontally OR reflow to cards</li>
+<li><input type="checkbox" disabled="" />
+Modals/dialogs fit within viewport</li>
+<li><input type="checkbox" disabled="" />
+Fixed/sticky elements don't cover content</li>
+</ul>
+<h2 id="typography">Typography</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Body text</td>
+<td>Min 16px (1rem) on mobile</td>
+<td>12px or 14px body text</td>
+</tr>
+<tr class="even">
+<td>Line height</td>
+<td>1.5-1.75 for body text</td>
+<td>Line height 1.0 or 1.2</td>
+</tr>
+<tr class="odd">
+<td>Line length</td>
+<td>65-75 characters max per line</td>
+<td>Full-width text at 1440px</td>
+</tr>
+<tr class="even">
+<td>Heading hierarchy</td>
+<td>h1 → h2 → h3 (no skipping levels)</td>
+<td>h1 → h3 (missing h2)</td>
+</tr>
+<tr class="odd">
+<td>Font loading</td>
+<td>Text visible during web font load (FOUT over FOIT)</td>
+<td>Blank text until font loads</td>
+</tr>
+<tr class="even">
+<td>Tabular numbers</td>
+<td>Use <code>font-variant-numeric: tabular-nums</code> for data</td>
+<td>Numbers misaligning in tables</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interactive-states">Interactive States</h2>
+<table>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Required Visual Change</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hover</td>
+<td>Color/opacity/shadow change</td>
+<td>No hover indication</td>
+</tr>
+<tr class="even">
+<td>Focus</td>
+<td>Visible focus ring (2px+ outline, 3:1 contrast)</td>
+<td><code>outline: none</code> with no replacement</td>
+</tr>
+<tr class="odd">
+<td>Active/Pressed</td>
+<td>Visual depression or color shift</td>
+<td>No active state</td>
+</tr>
+<tr class="even">
+<td>Disabled</td>
+<td>Reduced opacity + <code>cursor: not-allowed</code></td>
+<td>Looks enabled but doesn't work</td>
+</tr>
+<tr class="odd">
+<td>Loading</td>
+<td>Spinner/skeleton + disabled interaction</td>
+<td>Frozen UI, multiple clicks queue</td>
+</tr>
+<tr class="even">
+<td>Error</td>
+<td>Red border + icon + text message near field</td>
+<td>Only color change (inaccessible)</td>
+</tr>
+<tr class="odd">
+<td>Selected</td>
+<td>Background change + checkmark or bold</td>
+<td>Only color difference</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dark-mode">Dark Mode</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CSS variables</td>
+<td>Use semantic tokens (<code>--foreground</code>, <code>--background</code>)</td>
+<td>Hardcoded hex values</td>
+</tr>
+<tr class="even">
+<td>Glass cards light mode</td>
+<td><code>bg-white/80</code> or higher opacity</td>
+<td><code>bg-white/10</code> (invisible)</td>
+</tr>
+<tr class="odd">
+<td>Text contrast light</td>
+<td><code>slate-900</code> (#0F172A) for body text</td>
+<td><code>slate-400</code> (#94A3B8) too light</td>
+</tr>
+<tr class="even">
+<td>Muted text light</td>
+<td><code>slate-600</code> (#475569) minimum</td>
+<td><code>gray-400</code> or lighter</td>
+</tr>
+<tr class="odd">
+<td>Border visibility</td>
+<td><code>border-gray-200</code> light / <code>border-gray-700</code> dark</td>
+<td><code>border-white/10</code> (invisible in light)</td>
+</tr>
+<tr class="even">
+<td>Both modes tested</td>
+<td>Screenshot evidence in BOTH light and dark</td>
+<td>Only tested in one mode</td>
+</tr>
+</tbody>
+</table>
+<h2 id="forms">Forms</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Labels</td>
+<td>Every input has visible <code>&lt;label&gt;</code> with <code>for</code> attribute</td>
+<td>Placeholder-only labels</td>
+</tr>
+<tr class="even">
+<td>Error messages</td>
+<td>Inline, near the field, not just toast</td>
+<td>Toast disappears before user reads it</td>
+</tr>
+<tr class="odd">
+<td>Required fields</td>
+<td>Marked with asterisk AND <code>aria-required</code></td>
+<td>Only visual asterisk</td>
+</tr>
+<tr class="even">
+<td>Autocomplete</td>
+<td><code>autocomplete</code> attribute on name/email/address fields</td>
+<td>No autocomplete hints</td>
+</tr>
+<tr class="odd">
+<td>Validation timing</td>
+<td>On blur or submit, not on every keystroke</td>
+<td>Errors while still typing</td>
+</tr>
+</tbody>
+</table>
+<h2 id="navigation--structure">Navigation &amp; Structure</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Skip link</td>
+<td>"Skip to content" link as first focusable element</td>
+<td>No skip navigation</td>
+</tr>
+<tr class="even">
+<td>Landmark roles</td>
+<td><code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code> present</td>
+<td>All <code>&lt;div&gt;</code> structure</td>
+</tr>
+<tr class="odd">
+<td>Heading structure</td>
+<td>Single <code>&lt;h1&gt;</code>, logical h2-h6 hierarchy</td>
+<td>Multiple h1s, skipped levels</td>
+</tr>
+<tr class="even">
+<td>Tab order</td>
+<td>Matches visual reading order (no positive <code>tabindex</code>)</td>
+<td><code>tabindex="5"</code> creating chaos</td>
+</tr>
+<tr class="odd">
+<td>Keyboard navigation</td>
+<td>All features accessible via keyboard alone</td>
+<td>Mouse-only interactions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="images--media">Images &amp; Media</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Rule</th>
+<th>Common Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alt text</td>
+<td>Meaningful alt for content images, <code>alt=""</code> for decorative</td>
+<td>Missing alt, generic "image"</td>
+</tr>
+<tr class="even">
+<td>SVG accessibility</td>
+<td><code>role="img"</code> + <code>aria-label</code> on meaningful SVGs</td>
+<td>Unlabeled SVG icons</td>
+</tr>
+<tr class="odd">
+<td>Lazy loading</td>
+<td><code>loading="lazy"</code> on below-fold images</td>
+<td>All images eager-loaded</td>
+</tr>
+<tr class="even">
+<td>Aspect ratio</td>
+<td><code>aspect-ratio</code> or <code>width</code>/<code>height</code> to prevent CLS</td>
+<td>Layout shift on image load</td>
+</tr>
+<tr class="odd">
+<td>Video captions</td>
+<td>Captions/subtitles for video content</td>
+<td>No captions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="performance-visual-impact">Performance Visual Impact</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>What to Look For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cumulative Layout Shift</td>
+<td>Elements jumping as page loads (images, ads, fonts)</td>
+</tr>
+<tr class="even">
+<td>Content flash</td>
+<td>White flash before dark mode applies</td>
+</tr>
+<tr class="odd">
+<td>Skeleton screens</td>
+<td>Loading state shows content shape, not blank space</td>
+</tr>
+<tr class="even">
+<td>Progressive loading</td>
+<td>Above-fold content renders first</td>
+</tr>
+<tr class="odd">
+<td>Font flash</td>
+<td>Text invisible then suddenly appears (FOIT)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="evidence-capture">Evidence Capture</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Playwright screenshot at multiple viewports</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> viewports <span class="op">=</span> [</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;mobile&#39;</span><span class="op">,</span> <span class="dt">width</span><span class="op">:</span> <span class="dv">375</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">667</span> }<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;tablet&#39;</span><span class="op">,</span> <span class="dt">width</span><span class="op">:</span> <span class="dv">768</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">1024</span> }<span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;desktop&#39;</span><span class="op">,</span> <span class="dt">width</span><span class="op">:</span> <span class="dv">1440</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">900</span> }<span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> vp <span class="kw">of</span> viewports) {</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">setViewportSize</span>(vp)<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">path</span><span class="op">:</span> <span class="vs">`evidence/</span><span class="sc">${</span>vp<span class="op">.</span><span class="at">name</span><span class="sc">}</span><span class="vs">.png`</span><span class="op">,</span> <span class="dt">fullPage</span><span class="op">:</span> <span class="kw">true</span> })<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Dark mode screenshot</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">emulateMedia</span>({ <span class="dt">colorScheme</span><span class="op">:</span> <span class="st">&#39;dark&#39;</span> })<span class="op">;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">path</span><span class="op">:</span> <span class="st">&#39;evidence/dark-mode.png&#39;</span><span class="op">,</span> <span class="dt">fullPage</span><span class="op">:</span> <span class="kw">true</span> })<span class="op">;</span></span></code></pre></div>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/web-wcag-checklist.md">source → plugins/proofpunk/references/web-wcag-checklist.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:WEB-WCAG-CHECKLIST</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

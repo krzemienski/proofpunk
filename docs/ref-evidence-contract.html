@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidence Contract (shared) — proofpunk doctrine</title>
+<meta name="description" content="Canonical evidence standard for every Proofpunk skill. Consolidated from">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / EVIDENCE-CONTRACT</div>
+  <div class="doc">
+<h1 id="evidence-contract-shared">Evidence Contract (shared)</h1>
+<p>Canonical evidence standard for every Proofpunk skill. Consolidated from <code>fresh-evidence</code>, <code>end-user-testing-discipline</code>, <code>no-mocking-validation</code>, <code>verification-before-completion</code>, and <code>transform-validation-prompt</code>.</p>
+<p><strong>Companion mandate: <code>end-user-actor.md</code> — the AI personally drives the real system as an end user via MCP/automation tools. Evidence that does not come from an AI-driven end-user session (when a tool path exists) is insufficient for a full PASS.</strong></p>
+<h2 id="the-iron-rule">The Iron Rule</h2>
+<pre><code>IF the real system doesn&#39;t work, FIX THE REAL SYSTEM.
+NEVER create mocks, stubs, test doubles, fake endpoints, or test-mode bypasses.
+ALWAYS validate through the same interfaces real users experience.</code></pre>
+<h2 id="the-non-negotiable-validation-rule">The Non-Negotiable Validation Rule</h2>
+<pre><code>Validation must NEVER be faked, skipped, stubbed, or assumed complete.
+For every skill/feature the plugin touches, the AI must actually execute
+the relevant MCP/automation tool(s) and perform the actions as a real end
+user would — not delegated, not skipped, not marked complete without
+actual execution. A validation step that was not executed is a validation
+step that DID NOT HAPPEN: report it as UNVERIFIED, never as done.</code></pre>
+<p>This is the enforcement arm of the Iron Rule: "real validation only" means the AI directly operates the tools, acting as the end user across all affected surfaces. Unit tests, code reading, file-existence checks, and delegated summaries are supporting signals — they are never a substitute for the AI having personally performed the end-user action.</p>
+<p>When an integration fails, the only valid sequence is: Diagnose -&gt; Fix -&gt; Verify. Prohibited: mock fallbacks, fake endpoints, conditional test-mode responses, simulated data presented as real output, fabricated expected values.</p>
+<h2 id="the-verification-loop">The Verification Loop</h2>
+<pre><code>1. Worker completes work
+2. Worker provides evidence LOCATION
+3. You personally examine evidence CONTENT
+4. You match evidence to pre-defined PASS criteria
+5. You cite specific proof (file paths, line numbers, exact output)
+6. ONLY THEN mark complete</code></pre>
+<p>"Agent reported 10/10 pass" is not evidence. Read the actual outputs. View the screenshot and describe what you SEE. Quote the actual success line.</p>
+<h2 id="pre-defined-pass-criteria">Pre-Defined PASS Criteria</h2>
+<p>Define specific, observable, measurable PASS criteria BEFORE capturing any evidence. Defining criteria after viewing evidence is confirmation bias.</p>
+<p>Good: "Dashboard shows 4 chart cards with MRR, ARR, Churn, NRR values populated" Bad: "Dashboard looks right"</p>
+<h2 id="fresh-evidence-rules">Fresh-Evidence Rules</h2>
+<ol type="1">
+<li><strong>Run-scoped directory</strong> — all artifacts for one run live under <code>e2e-evidence/run-&lt;ISO-compact&gt;-&lt;slug&gt;/</code>, never in <code>e2e-evidence/</code> root.</li>
+<li><strong>Sequential naming</strong> — <code>step-NN-&lt;action&gt;-&lt;result&gt;.&lt;ext&gt;</code>, zero-padded, globally sequential within the run.</li>
+<li><strong>Non-empty</strong> — every artifact &gt; min_size_bytes (default 1024). Zero-byte or tiny files are INVALID; discard and re-capture.</li>
+<li><strong>Fresh</strong> — artifact mtime must be &gt;= run start. Reusing a prior run's artifact in a verdict is FORBIDDEN.</li>
+<li><strong>Cited by full path</strong> — verdicts cite exact files, not "see evidence dir".</li>
+<li><strong>Describes what is SEEN</strong> — captions describe content ("Dashboard rendered with 4 chart cards (MRR $12,450 ...)"), not existence ("screenshot taken"). For API responses quote actual body AND headers.</li>
+<li><strong>Inventory</strong> — every run dir contains <code>evidence-inventory.txt</code> listing every file with byte count.</li>
+<li><strong>Gitignored</strong> — <code>e2e-evidence/</code> is gitignored by default; at most commit <code>verdict.md</code> / <code>report.md</code>, never binary artifacts with secrets.</li>
+</ol>
+<p>Helper: <code>../skills/end-user-testing/scripts/fresh_evidence.py</code> implements init-run / next-step / seal / validate with these rules enforced.</p>
+<h2 id="validation-gate-pattern">Validation Gate Pattern</h2>
+<p>Embed proof obligations in plans and prompts with this structure:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">proof_obligation</span><span class="ot"> id=</span><span class="st">&quot;PO-{N}&quot;</span><span class="ot"> blocking=</span><span class="st">&quot;true&quot;</span>&gt;</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Actor: AI drives these actions as an end user via MCP/automation tools</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Prerequisites: [dependencies started + healthy]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Execute: [real system interaction — driven, not observed]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Capture: [save output to evidence/]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>Pass criteria: [specific, observable, measurable — defined in advance]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>Review: [READ the evidence and describe what is seen]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>Verdict: PASS → next task | FAIL → fix real system → re-run</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>Mock guard: IF tempted to mock → STOP → fix real system</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">proof_obligation</span>&gt;</span></code></pre></div>
+<h2 id="stale-cache-warning">Stale Cache Warning</h2>
+<p>Build caches (<code>.next</code>, <code>.turbo</code>, <code>DerivedData</code>, <code>node_modules/.cache</code>, <code>dist</code>, <code>__pycache__</code>) can mask regressions — a cached bundle can serve correct UI while source on disk is broken. Clear relevant caches BEFORE final validation passes, and never clear anything outside the project root.</p>
+<h2 id="secret-hygiene">Secret Hygiene</h2>
+<p>Redact API tokens, auth headers, and session cookies from captured evidence. Capture <code>Authorization: [REDACTED]</code>. Never commit evidence containing secrets.</p>
+<h2 id="refusal-rules">Refusal Rules</h2>
+<ul>
+<li>Refuse to mark PASS without cited evidence paths.</li>
+<li>Refuse to cite an artifact older than the current run.</li>
+<li>Refuse to emit a verdict with an empty evidence inventory.</li>
+<li>Refuse to validate when the runtime target is unreachable — surface the blockage instead of simulating success.</li>
+<li>Refuse "see file" descriptions — demand a description of what is SEEN.</li>
+<li>Refuse to mark validation complete without the AI having actually invoked the MCP/automation tools and acted as the end user.</li>
+<li>Refuse to skip or fake QA/verification steps under any circumstance — time pressure, "it obviously works", and "tests pass" are not exceptions.</li>
+</ul>
+<h2 id="completion-challenge">Completion Challenge</h2>
+<p>Before any completion claim ask: "If someone challenged this claim, what specific evidence would I show them?" If you cannot answer with citations, the work is NOT complete.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/evidence-contract.md">source → plugins/proofpunk/references/evidence-contract.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:EVIDENCE-CONTRACT</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

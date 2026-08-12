@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platform Routing (shared) — proofpunk doctrine</title>
+<meta name="description" content="Canonical platform detection and validation routing for Proofpunk skills.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / PLATFORM-ROUTING</div>
+  <div class="doc">
+<h1 id="platform-routing-shared">Platform Routing (shared)</h1>
+<p>Canonical platform detection and validation routing for Proofpunk skills. Consolidated from <code>functional-validation</code>, <code>e2e-validate</code>, <code>ios-validation-runner</code>, and <code>validate-phase</code>.</p>
+<p><strong>Preflight first:</strong> before routing to any validation path below, run the environment/toolchain pass in <code>preflight-checks.md</code> — a missing simulator runtime, an absent <code>node_modules</code>, or a wrong JDK turns every downstream verdict into an environment failure, not a product verdict.</p>
+<h2 id="detection">Detection</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Indicator</th>
+<th>Platform</th>
+<th>Validation path</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.xcodeproj</code>, <code>Package.swift</code>, SwiftUI, <code>simctl</code></td>
+<td>iOS/macOS</td>
+<td>Simulator automation + screenshot evidence</td>
+</tr>
+<tr class="even">
+<td><code>package.json</code> with next/react/vite, HTML/CSS, Playwright</td>
+<td>Web</td>
+<td>Browser automation + screenshots + API checks</td>
+</tr>
+<tr class="odd">
+<td><code>pubspec.yaml</code>, Flutter</td>
+<td>Flutter</td>
+<td><code>flutter run</code> + device screenshots</td>
+</tr>
+<tr class="even">
+<td>React Native, Expo</td>
+<td>Cross-platform mobile</td>
+<td>BOTH iOS and Web checklists apply</td>
+</tr>
+<tr class="odd">
+<td><code>Dockerfile</code>, <code>docker-compose.yml</code>, OpenAPI spec, <code>/health</code> route</td>
+<td>API / backend</td>
+<td><code>curl -i</code> against live endpoints</td>
+</tr>
+<tr class="even">
+<td>CLI entry point, <code>argparse</code>/<code>commander</code>/Click</td>
+<td>CLI</td>
+<td>Run the real binary, capture stdout/stderr/exit code</td>
+</tr>
+<tr class="odd">
+<td>Mixed web + API + mobile</td>
+<td>Full-stack</td>
+<td>Validate each surface AND the integrations between them</td>
+</tr>
+<tr class="even">
+<td>None of the above</td>
+<td>Generic</td>
+<td>Identify the real user interface (command, page, endpoint) and exercise it</td>
+</tr>
+</tbody>
+</table>
+<h2 id="runtime-startup">Runtime Startup</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Start</th>
+<th>Health check</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Next.js / web dev server</td>
+<td><code>pnpm dev</code> / <code>npm run dev</code> in background</td>
+<td>wait for <code>Ready in</code> / poll the URL</td>
+</tr>
+<tr class="even">
+<td>iOS</td>
+<td><code>xcrun simctl boot &lt;UDID&gt;</code>, build, install</td>
+<td>app launches without crash</td>
+</tr>
+<tr class="odd">
+<td>API</td>
+<td><code>npm start</code> / <code>python app.py</code> in background</td>
+<td><code>curl -sf http://localhost:$PORT/health</code></td>
+</tr>
+<tr class="even">
+<td>CLI</td>
+<td>none — runs synchronously</td>
+<td><code>--help</code> or <code>--version</code> exits 0</td>
+</tr>
+<tr class="odd">
+<td>Flutter</td>
+<td><code>flutter run -d &lt;device&gt;</code></td>
+<td>first frame rendered</td>
+</tr>
+</tbody>
+</table>
+<p>If the target fails to start: BLOCK. Report the startup error. Do not proceed and do not simulate the run.</p>
+<h2 id="evidence-capture-per-platform">Evidence Capture per Platform</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Execute</th>
+<th>Capture</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Web</td>
+<td>Playwright / browser DevTools: navigate, click, fill</td>
+<td>screenshot per state, console log, network responses</td>
+</tr>
+<tr class="even">
+<td>iOS</td>
+<td><code>xcrun simctl</code> + <code>idb</code>: launch, tap, type, deep-link</td>
+<td>sequential screenshots, <code>log stream</code> output, video</td>
+</tr>
+<tr class="odd">
+<td>API</td>
+<td><code>curl -i</code> (headers + body)</td>
+<td>full response files</td>
+</tr>
+<tr class="even">
+<td>CLI</td>
+<td><code>command &gt;stdout.txt 2&gt;stderr.txt; echo $?</code></td>
+<td>stdout, stderr, exit code</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ios-specific-traps-from-ios-validation-runner">iOS-Specific Traps (from ios-validation-runner)</h2>
+<ul>
+<li>Boot the simulator FIRST — screenshots during boot are black.</li>
+<li>Override the status bar (<code>simctl status_bar ... override --time "9:41"</code>) BEFORE screenshots for reproducible captures.</li>
+<li>Stop video with <code>kill -SIGINT</code> then <code>wait</code> — <code>kill -9</code> produces a corrupt MOV with no container footer.</li>
+<li><code>log stream</code> needs <code>--info --debug</code> or Info/Debug messages are silently dropped; run <code>log show --last 120s</code> afterwards as belt-and-suspenders.</li>
+<li>Deep-link UUIDs must be lowercase; app must be foregrounded.</li>
+<li>Allow &gt;= 3s settle time after launch and after navigation actions.</li>
+<li>Check <code>~/Library/Logs/DiagnosticReports/*.ips</code> for crash reports.</li>
+</ul>
+<h2 id="web-specific-traps">Web-Specific Traps</h2>
+<ul>
+<li>Clear build caches before the final pass (see evidence-contract).</li>
+<li>Capture empty / loading / populated / error states, not only happy path.</li>
+<li>Capture light AND dark mode; mobile AND desktop viewports.</li>
+<li>A <code>200</code> from a cached service worker is not evidence of a healthy backend.</li>
+</ul>
+<h2 id="full-stack-rule">Full-Stack Rule</h2>
+<p>Validating each surface separately is necessary but not sufficient: exercise at least one journey that crosses every boundary (UI -&gt; API -&gt; DB -&gt; UI).</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/platform-routing.md">source → plugins/proofpunk/references/platform-routing.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:PLATFORM-ROUTING</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

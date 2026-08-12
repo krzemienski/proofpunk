@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Severity Model (shared) — proofpunk doctrine</title>
+<meta name="description" content="Canonical severity classification and verdict rules for all Proofpunk">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / SEVERITY-MODEL</div>
+  <div class="doc">
+<h1 id="severity-model-shared">Severity Model (shared)</h1>
+<p>Canonical severity classification and verdict rules for all Proofpunk review and audit skills. Consolidated from <code>visual-inspection</code>, <code>ui-experience-audit</code>, and <code>full-functional-audit</code>.</p>
+<h2 id="severity-levels">Severity Levels</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Severity</th>
+<th>Definition</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CRITICAL</td>
+<td>Content unreadable or missing, overlapping text, crash state, broken interaction (false affordance), unrecoverable error, accessibility blocker, lorem ipsum / placeholder in production-looking UI</td>
+<td>Fix immediately, blocks completion</td>
+</tr>
+<tr class="even">
+<td>HIGH</td>
+<td>Broken layout, misaligned elements, illegible content (e.g. failing code-block contrast), heuristic violation causing user confusion, undersized or overlapping touch targets</td>
+<td>Fix before commit</td>
+</tr>
+<tr class="odd">
+<td>MEDIUM</td>
+<td>Inconsistent spacing, weak signifier, redundant content, minor heuristic drift, suspect contrast</td>
+<td>Fix in same session</td>
+</tr>
+<tr class="even">
+<td>LOW</td>
+<td>Cosmetic polish, subtle alignment drift, edge-case rendering</td>
+<td>Log for future pass</td>
+</tr>
+</tbody>
+</table>
+<p>Do not mark LOW issues "not worth fixing" — accumulated cosmetic debt compounds into perceived low quality. Log ALL severities; fix CRITICAL/HIGH immediately, track MEDIUM/LOW.</p>
+<h2 id="verdict-rules">Verdict Rules</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Verdict</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FAIL</td>
+<td>Any CRITICAL finding in any phase</td>
+</tr>
+<tr class="even">
+<td>PASS WITH ISSUES</td>
+<td>Zero CRITICAL, but &gt;= 1 HIGH or accumulated MEDIUM; shippable only if HIGH issues are tracked and remediation scheduled</td>
+</tr>
+<tr class="odd">
+<td>PASS (LIMITED COVERAGE)</td>
+<td>Zero CRITICAL and zero HIGH, but coverage is single-axis (only light mode, only desktop, only happy path); the audited slice passes but a global PASS is not earned</td>
+</tr>
+<tr class="even">
+<td>BLOCKED</td>
+<td>Runtime target unreachable or evidence capture impossible — never convert a BLOCKED into a PASS by simulating</td>
+</tr>
+<tr class="odd">
+<td>UNVERIFIED</td>
+<td>Validation steps were not actually executed by the AI as the end user — never report unexecuted validation as done</td>
+</tr>
+<tr class="even">
+<td>PASS</td>
+<td>Zero CRITICAL, zero HIGH, full coverage represented, AND every behavioral criterion was verified by the AI driving the real system as the end user (see <code>end-user-actor.md</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>A PASS for behavior requires executed, tool-driven, end-user-perspective checks. Inspection-only evidence (screenshots, code reading, unit tests, delegated summaries) caps behavioral verdicts at PASS WITH ISSUES (verification pending) or UNVERIFIED — never a full behavioral PASS.</p>
+<h2 id="coverage-axes">Coverage Axes</h2>
+<p>A verdict must state which axes were covered:</p>
+<ul>
+<li>Light mode AND dark mode</li>
+<li>Multiple viewports (mobile, tablet, desktop) for web</li>
+<li>Empty / loading / populated / error states</li>
+<li>Long-content / overflow states</li>
+</ul>
+<p>Any single-axis coverage is itself a finding ("dark mode not audited").</p>
+<h2 id="finding-record-format">Finding Record Format</h2>
+<pre><code>[SEVERITY] [CHECKLIST_ITEM or ELEMENT] — &lt;what you SEE, concretely&gt; — &lt;suggested fix&gt;</code></pre>
+<p>Every finding names: the failed criterion, the observable defect, the owning view/file (when identifiable), severity, and a suggested fix.</p>
+<h2 id="suspicion-rule">Suspicion Rule</h2>
+<p>A 0-finding audit of a real screen is suspicious. Even good screens typically have &gt;= 3 LOW-or-above findings. Zero findings usually means a phase was skipped — re-run before reporting.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/severity-model.md">source → plugins/proofpunk/references/severity-model.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:SEVERITY-MODEL</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

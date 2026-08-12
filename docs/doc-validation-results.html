@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation Results — Proofpunk v1.0.0 — proofpunk docs</title>
+<meta name="description" content="All validation was run against the real plugin source. No mocks, no stubs,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOC / VALIDATION-RESULTS</div>
+  <div class="doc">
+<h1 id="validation-results--proofpunk-v100">Validation Results — Proofpunk v1.0.0</h1>
+<p>All validation was run against the real plugin source. No mocks, no stubs, no simulated results. Dates of runs: 2026-08-08 (initial pass + policy enforcement pass), 2026-08-09 (skills-ref.zip second-source pass).</p>
+<h2 id="1-manifest-validation--pass">1. Manifest Validation — PASS</h2>
+<ul>
+<li><code>marketplace.json</code> and <code>plugin.json</code> parse as valid JSON.</li>
+<li>Required fields present: marketplace <code>name</code>/<code>owner</code>/<code>plugins</code>; plugin <code>name</code>/<code>version</code>/<code>description</code>.</li>
+<li>Names are kebab-case and not on the reserved-name list.</li>
+<li>Marketplace <code>source: ./plugins/proofpunk</code> resolves to an existing directory with a matching plugin manifest.</li>
+</ul>
+<h2 id="2-skill-frontmatter-validation--pass-1010">2. Skill Frontmatter Validation — PASS (10/10)</h2>
+<p>Every <code>skills/&lt;name&gt;/SKILL.md</code> has YAML frontmatter with <code>name</code> matching its directory and a <code>description</code>. Line counts (all within progressive-disclosure budgets):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Skill</th>
+<th>Lines</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>brainstorm</td>
+<td>153</td>
+</tr>
+<tr class="even">
+<td>cook</td>
+<td>145</td>
+</tr>
+<tr class="odd">
+<td>end-user-testing</td>
+<td>172</td>
+</tr>
+<tr class="even">
+<td>full-functional-audit</td>
+<td>154</td>
+</tr>
+<tr class="odd">
+<td>functional-validation</td>
+<td>239</td>
+</tr>
+<tr class="even">
+<td>plan-hardening</td>
+<td>145</td>
+</tr>
+<tr class="odd">
+<td>prompt-forge</td>
+<td>171</td>
+</tr>
+<tr class="even">
+<td>ui-experience-audit</td>
+<td>194</td>
+</tr>
+<tr class="odd">
+<td>validation-plan</td>
+<td>143</td>
+</tr>
+<tr class="even">
+<td>visual-inspection</td>
+<td>144</td>
+</tr>
+</tbody>
+</table>
+<p>(Line counts reflect the final state after the skills-ref.zip incorporation; all remain within progressive-disclosure budgets, with heavier detail pushed into per-skill <code>references/</code>.)</p>
+<h2 id="3-internal-reference-integrity--pass-9999">3. Internal Reference Integrity — PASS (99/99)</h2>
+<p>Every <code>references/</code>, <code>assets/</code>, and <code>scripts/</code> path cited from any plugin markdown file was resolved against the filesystem: 99 citations checked, 0 broken. This includes the cross-skill relative paths used inside skills — e.g. <code>skills/functional-validation/SKILL.md</code> reaches the helper at <code>../skills/end-user-testing/scripts/fresh_evidence.py</code> (expressed there as a dot-dot path) and every skill reaches the shared contract at <code>../references/evidence-contract.md</code> (expressed there as <code>../../</code>).</p>
+<h2 id="4-placeholder--dependency-scan--pass">4. Placeholder / Dependency Scan — PASS</h2>
+<ul>
+<li>No placeholder tokens (<code>[TODO]</code>, <code>[INSERT ...]</code>, <code>[PLACEHOLDER]</code>, <code>{???}</code>, <code>FIXME</code>) in any shipped file. Four scanner hits were manually reviewed and confirmed to be the placeholder-DETECTION rules themselves (the defect-database row describing lorem-ipsum detection, prompt-forge's no-placeholders quality gate, and this document's own description of the scan) — legitimate content.</li>
+<li>The bundled script imports only Python stdlib (<code>re</code>, <code>sys</code>, <code>pathlib</code>, <code>datetime</code>, <code>__future__</code>). No external or unsupported dependencies anywhere in the plugin.</li>
+<li>No macOS metadata (<code>._*</code>, <code>.DS_Store</code>) and no <code>__pycache__</code> in the tree.</li>
+<li><code>python3 -m py_compile</code> on <code>fresh_evidence.py</code>: OK.</li>
+</ul>
+<h2 id="5-functional-tests--fresh_evidencepy-1212-pass">5. Functional Tests — <code>fresh_evidence.py</code> (12/12 PASS)</h2>
+<p>Real invocations against a scratch directory (<code>/tmp/fe-test</code>):</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Test</th>
+<th>Expected</th>
+<th>Actual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>init-run login-flow</code></td>
+<td>exit 0, prints <code>run-&lt;ISO&gt;-login-flow</code>, creates dir + <code>.run-meta</code> + empty inventory</td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>init-run "bad slug!"</code></td>
+<td>exit 2, <code>slug must be kebab-case alnum/dash/underscore</code></td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>next-step home-loaded</code></td>
+<td>exit 0, prints <code>.../step-01-home-loaded</code></td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>capture two artifacts (&gt;1KB each)</td>
+<td>files land at printed prefixes; step numbers sequential</td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><code>seal</code></td>
+<td>writes inventory with per-file byte counts + <code>sealed=... count=2 total_bytes=3041</code></td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><code>validate</code> (clean run)</td>
+<td>exit 0, <code>validate OK: e2e-evidence/run-...</code></td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><code>validate</code> with a zero-byte artifact</td>
+<td>exit 2, <code>EMPTY: ... (zero bytes)</code> + <code>validate FAIL: 1 issues</code></td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><code>validate</code> with a 2020-mtime artifact</td>
+<td>exit 2, <code>STALE: ... (mtime 1577808000 &lt; run-start ...)</code></td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><code>next-step</code>/<code>seal</code>/<code>validate</code> with no run</td>
+<td>all exit 2, <code>no active run</code></td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>unknown command <code>frobnicate</code></td>
+<td>exit 2 + usage</td>
+<td>PASS</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><code>init-run</code> with no slug</td>
+<td>exit 2, <code>init-run requires a slug</code></td>
+<td>PASS</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td><code>validate</code> after removing bad artifacts</td>
+<td>exit 0 (recovery path works)</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+<p>Malformed and incomplete inputs fail clearly and safely (exit 2 + a specific stderr message); no tracebacks, no partial writes on refusal paths.</p>
+<h2 id="6-capability-smoke-review--pass">6. Capability Smoke Review — PASS</h2>
+<p>Each of the 10 skills was re-read after authoring to verify its incorporated source capabilities are present and internally consistent (gate patterns match <code>evidence-contract.md</code>, severities match <code>severity-model.md</code>, platform traps match <code>platform-routing.md</code>, end-user mandate cited where actions occur). See <code>consolidation-decisions.md</code> for the full source-to-skill map.</p>
+<h2 id="7-blocked-item-environment-limitation">7. Blocked Item (environment limitation)</h2>
+<p><code>claude plugin validate .</code> and a live <code>/plugin install</code> smoke test could not be run: the <code>claude</code> CLI is not available in this environment. Mitigation: the structural checks in sections 1–3 implement the documented manifest and layout contract from the archive's own <code>skill-creator</code> and <code>working-with-cc</code> plugin references (required fields, kebab-case names, reserved-name check, <code>skills/&lt;name&gt;/SKILL.md</code> layout, marketplace source resolution). Installing from the packaged archive (README section "Installation") performs the final in-product verification.</p>
+<h2 id="8-end-user-validation-policy-enforcement-audit--pass">8. End-User Validation Policy Enforcement Audit — PASS</h2>
+<p>Full-plugin audit and rewrite pass enforcing the policy: <strong>validation is never faked, skipped, stubbed, or assumed complete — the AI actually executes MCP/automation tools and acts as the end user, for every skill/feature, or reports the outcome UNVERIFIED.</strong></p>
+<p>Changes applied and re-verified:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Location</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>../references/evidence-contract.md</code></td>
+<td>Added "The Non-Negotiable Validation Rule" after the Iron Rule; added two refusal rules (no completing validation without the AI invoking tools as the end user; no skipping/faking QA steps under any circumstance)</td>
+</tr>
+<tr class="even">
+<td><code>../references/end-user-actor.md</code></td>
+<td>Non-negotiable statement at the head of The Rule</td>
+</tr>
+<tr class="odd">
+<td><code>../references/severity-model.md</code></td>
+<td>Added UNVERIFIED verdict; PASS for behavior now requires executed, tool-driven, end-user checks</td>
+</tr>
+<tr class="even">
+<td>All 10 skills</td>
+<td>Two anti-pattern rows added to every anti-pattern table (verified placed inside tables with matching column counts)</td>
+</tr>
+<tr class="odd">
+<td><code>functional-validation</code>, <code>end-user-testing</code>, <code>full-functional-audit</code></td>
+<td>Verdict templates now record "Driven by: AI as end user via &lt;tools&gt; — &lt;actions performed&gt;" and offer UNVERIFIED for unexecuted criteria</td>
+</tr>
+<tr class="even">
+<td><code>validation-plan</code></td>
+<td>VALIDATION.md handoff requires an explicit record of executed end-user actions</td>
+</tr>
+<tr class="odd">
+<td><code>plan-hardening</code></td>
+<td>Consensus checklist requires every behavioral criterion to pair with a driven end-user action; gate block verdict adds UNVERIFIED</td>
+</tr>
+<tr class="even">
+<td><code>cook</code></td>
+<td>End-user verification gate: never skipped/faked; no tool path -&gt; report says UNVERIFIED with reason; finalize cites driven evidence per criterion</td>
+</tr>
+<tr class="odd">
+<td><code>brainstorm</code></td>
+<td>Success metrics/validation criteria must be phrased as end-user-executable checks</td>
+</tr>
+<tr class="even">
+<td><code>prompt-forge</code></td>
+<td>Quality gate 8: end-user validation clause for any system-touching prompt</td>
+</tr>
+<tr class="odd">
+<td><code>visual-inspection</code></td>
+<td>PASS certifies visual quality only; behavioral claims route to driven validation</td>
+</tr>
+<tr class="even">
+<td><code>ui-experience-audit</code> + report template</td>
+<td>UNVERIFIED verdict added; template header records tools + actions actually executed</td>
+</tr>
+<tr class="odd">
+<td><code>README.md</code></td>
+<td>Operating Principle 2 restated with the non-negotiable language</td>
+</tr>
+</tbody>
+</table>
+<p>Post-change verification: structural validator 0 errors (77 reference paths checked — all new <code>end-user-actor.md</code> citations resolve); every anti-pattern table pipe-count verified; policy-language coverage confirmed in 10/10 skills with 9/10 linking the shared mandate directly and <code>brainstorm</code> linking it from its report criteria; <code>fresh_evidence.py</code> recompiles clean (the script itself was not modified in this pass).</p>
+<h2 id="9-second-source-pass--skills-refzip-incorporation--pass">9. Second-Source Pass — skills-ref.zip Incorporation — PASS</h2>
+<p>Date of runs: 2026-08-09. Source: <code>skills-ref.zip</code>, SHA-256 <code>fe1209f9bdf10fc2249552dbcd8b4b48b9f59a69aeef9fe0db7d60bc5e009d7d</code> (26,223,521 bytes; 549 top-level entries, 334 with <code>SKILL.md</code>). Full source-to-destination map in <code>consolidation-decisions.md</code> ("Second Source Set").</p>
+<p>Changes applied in this pass:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Location</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>../skills/functional-validation/references/{ios,web,api,cli}-validation.md</code></td>
+<td>4 platform runbooks carried verbatim from the ref <code>functional-validation</code> (85/88/75/120 lines)</td>
+</tr>
+<tr class="even">
+<td><code>../skills/functional-validation/SKILL.md</code></td>
+<td>Step 1 runbook-loading table; Failure Diagnosis Table; Multi-Platform Order; Evidence Quality Standards; Mock Detection Red Flags; NEVER list (158 -&gt; 239 lines)</td>
+</tr>
+<tr class="odd">
+<td><code>../references/preflight-checks.md</code></td>
+<td>NEW shared reference from ref <code>preflight</code> (61 lines); linked from <code>end-user-testing</code> Step 3 and <code>platform-routing.md</code></td>
+</tr>
+<tr class="even">
+<td><code>../references/ci-gates.md</code></td>
+<td>NEW shared reference from ref <code>build-quality-gates</code> (34 lines); linked from <code>end-user-testing</code> Related Skills</td>
+</tr>
+<tr class="odd">
+<td><code>../skills/end-user-testing/assets/verdict-template.md</code></td>
+<td>NEW asset adapted from ref <code>e2e-validate/templates/verdict.md</code> with Driven-by / Actions-executed / UNVERIFIED (40 lines)</td>
+</tr>
+<tr class="even">
+<td><code>../skills/validation-plan/references/task-file-format.md</code></td>
+<td>NEW from ref <code>code-task-generator</code> with End-User Actor policy applied (60 lines); linked from <code>validation-plan</code> Step 3</td>
+</tr>
+<tr class="odd">
+<td><code>../skills/full-functional-audit/SKILL.md</code></td>
+<td>Per-platform team templates (iOS / Web-Full / API-only) with EXCLUSIVE/PARALLEL mutex annotations (134 -&gt; 154 lines)</td>
+</tr>
+<tr class="even">
+<td><code>../skills/prompt-forge/SKILL.md</code></td>
+<td>Input-type handling table, capability-inventory injection, model tone guidance (136 -&gt; 171 lines)</td>
+</tr>
+</tbody>
+</table>
+<p>Post-change verification (all real runs against the packaged source):</p>
+<ul>
+<li><strong>Structural validator: 0 errors</strong>, 99/99 reference paths resolve (up from 77 — every new citation from <code>end-user-testing</code>, <code>validation-plan</code>, <code>platform-routing.md</code>, and these docs to the new references/assets resolves). 4 warnings, all manually confirmed as the placeholder-DETECTION rules themselves.</li>
+<li><strong>New-file spot checks</strong>: all 8 new carried/authored files non-trivial (1,204–6,680 bytes); policy language (<code>UNVERIFIED</code>, end-user/driven-action clauses) confirmed present in both new policy-bearing files (<code>task-file-format.md</code>, <code>verdict-template.md</code>).</li>
+<li><strong><code>fresh_evidence.py</code> functional re-run: 12/12 PASS</strong> against a fresh scratch directory (init-run, bad-slug refusal, next-step sequencing, artifact capture, seal with <code>count=2 total_bytes=3548</code> in the inventory, clean validate, empty-artifact refusal, stale-artifact refusal, no-run refusals, unknown-command refusal, missing-slug refusal, recovery validate). The script was not modified in this pass; the re-run confirms no collateral damage.</li>
+<li><strong>Exclusions honored</strong>: <code>testing-anti-patterns</code> / <code>tdd-workflow</code> / <code>testing-strategy</code> (mock-first TDD conflicts with the Iron Rule), <code>website-bug-hunt</code> (duplicates <code>bug-hunnter</code> + <code>full-functional-audit</code>), <code>worktree-merge-validate</code> (Auto-Claude ecosystem dependency), and the empty <code>ak-brainstorm</code> / <code>ak-cook</code> stubs were NOT incorporated — verified absent from the plugin tree.</li>
+</ul>
+<h2 id="10-official-skill-creator-format--packaging-pass--pass-1010">10. Official skill-creator Format + Packaging Pass — PASS (10/10)</h2>
+<p>Date of run: 2026-08-09. Tooling: the environment's own <code>skill-creator</code> skill (its <code>quick_validate.py</code> and <code>package_skill.py</code> scripts, external to this plugin).</p>
+<ul>
+<li><strong>First run found one real violation</strong>: <code>validation-plan</code>'s description used <code>-&gt;</code> arrows; the official contract forbids <code>&lt;</code>/<code>&gt;</code> in descriptions (max 1024 chars, kebab-case name ≤64, frontmatter keys restricted to name/description/license/allowed-tools/metadata/compatibility). <strong>Fixed</strong> (<code>-&gt;</code> → <code>→</code>) and re-validated.</li>
+<li><strong>Final: 10/10 skills "Skill is valid!"</strong> under the official validator.</li>
+<li><strong>Packaging: 10/10 <code>.skill</code> files produced</strong> by <code>package_skill.py</code> (zip format, <code>&lt;skill-name&gt;/SKILL.md</code> at archive root, integrity-checked). Distribution note: the 10 skills share plugin-root <code>references/</code> by design (<code>../../references/...</code> links), so the installable unit for the set is the marketplace layout (<code>proofpunk-marketplace.tar.gz</code>) per the plugin marketplace schema; the <code>.skill</code> files prove per-skill format adherence and package correctly, but standalone installs lack the shared references.</li>
+<li><strong>End-to-end dogfood</strong>: the full 10-skill series was executed against a real repository (pallets/flask tutorial app, fetched and byte-verified via the GitHub MCP cloud plugin) implementing a real feature ("Mood Ring"): brainstorm → prompt-forge (91/100 rated prompt) → validation-plan → plan-hardening (5 findings dispositioned) → cook (32/32 pytest green) → functional-validation + end-user-testing (19-file sealed evidence run, <code>validate OK</code>) → visual-inspection (found + fixed a real HIGH contrast defect) → ui-experience-audit → full-functional-audit (PASS). Walkthrough report delivered alongside this document.</li>
+</ul>
+<h2 id="11-mission-fit-expansion-pass-v110--pass-1515">11. Mission-Fit Expansion Pass (v1.1.0) — PASS (15/15)</h2>
+<p>Triggered by a post-delivery usefulness audit: the original scan had bucketed 407/445 archive skills as "other" without classification. Full-universe re-scan (664 unique skills, 15 usefulness domains) identified 26 readable, mission-aligned sources in skills-ref.zip (re-downloaded; SHA-256 matched the first pass) and consolidated them into 5 new skills: <code>stack-testing</code>, <code>mobile-validation-runner</code>, <code>root-cause-debugging</code>, <code>production-readiness</code>, <code>red-team-eval</code>.</p>
+<p>Results:</p>
+<ul>
+<li><strong>Format</strong>: all 15 skills pass the official skill-creator frontmatter validation (one YAML colon-in-flow-scalar error found in <code>root-cause-debugging</code>'s description during authoring; fixed with a block scalar before delivery).</li>
+<li><strong>Reference integrity</strong>: 149 path citations across the expanded plugin resolved against the filesystem; 10 broken citations found inside incorporated reference bodies (paths relative to their original skill layouts) — all re-pointed to the bundle layout; final count 0 broken.</li>
+<li><strong>Script integrity</strong>: bundled Python (<code>with_server.py</code>) compiles; all 6 bundled shell scripts pass <code>bash -n</code>; the Playwright runner parses under <code>node --check</code>.</li>
+<li><strong>Policy</strong>: mock-framework sources incorporated only with explicit Iron Rule adaptation notes; mock-first doctrine skills remain excluded (see consolidation-decisions.md, Third Source Pass).</li>
+<li><strong>Honesty gap preserved</strong>: Android and accessibility-audit sources exist only in the now-inaccessible (403) skills.zip; the mobile skill documents the Android gap explicitly instead of improvising content.</li>
+</ul>
+<h2 id="12-session-first-reorientation-v120--pass-1616">12. Session-First Reorientation (v1.2.0) — PASS (16/16)</h2>
+<p>User correction: the plugin must look at the sessions themselves — transcripts carry prompt intent; summaries are claims. Added <code>session-intent</code> with a real stdlib parser (<code>session_intent.py</code>) for <code>~/.claude/projects/**/*.jsonl</code>.</p>
+<ul>
+<li><strong>Parser verification</strong>: end-to-end run against a constructed fixture in the real JSONL event shape — 2 sessions parsed; tool_result events excluded from prompts; intent/steering/commit/file extraction asserted correct. Fixture is constructed data, honestly labeled; first live-corpus run remains the real gate (stated in the skill itself).</li>
+<li><strong>Format</strong>: 16/16 skills pass official skill-creator validation.</li>
+<li><strong>References</strong>: incorporated <code>claude-code-analyzer</code> body + 4 scripts (<code>bash -n</code> clean); all path citations re-resolved, 0 broken.</li>
+</ul>
+<h2 id="13-doctrine-clarification--test-runners-are-never-validation-v121-2026-08-10">13. Doctrine Clarification — Test Runners Are Never Validation (v1.2.1, 2026-08-10)</h2>
+<p>User correction: the plugin must state explicitly that pytest (and any test runner) is never the validation mechanism — validation is the live system driven as the end user; for a JSON/HTTP Flask backend that means real <code>curl</code> requests to the running server on localhost with assertions on real responses.</p>
+<p>Changes:</p>
+<ul>
+<li><code>references/end-user-actor.md</code>: new "Test Runners Are Never Validation" section + actor/spectator table row. Test-runner output may appear only as REGRESSION evidence, clearly labeled. Framework test clients (Flask <code>test_client</code>) are regression gates, not end users — they bypass the network stack. When a contract asks for "tests pass" as proof of done, the correct reading is: tests green (regression) AND live end-user drive (validation); either alone is incomplete.</li>
+<li><code>functional-validation</code> NEVER list: explicit ban on citing test-runner output as validation evidence.</li>
+<li><code>stack-testing</code> rule 5: test output is sealed as REGRESSION evidence only; feature verdicts come solely from live end-user driving.</li>
+<li><code>examples/mood-ring/.prompts/build-mood-ring/PROMPT.md</code>: output contract amended — the confusing "<code>pytest</code> output (must exit 0)" line is now "REGRESSION gate, labeled, never a validation verdict" plus explicit curl validation requirements; <code>&lt;validation&gt;</code> section names curl-to-localhost as the mechanism for HTTP backends.</li>
+</ul>
+<p>Compliance of the existing demo run under the amended contract: the sealed run already validates via curl captures of the live server (steps 01, 03–09, 12, 14, 15) and browser drives (steps 10, 11, 13, 18, 19); step-17 (32 passed) stands as the REGRESSION rail. No re-run required; the prompt amendment aligns the contract with what was actually executed.</p>
+<h2 id="14-installer-script-v130-2026-08-10--pass-88-live-tests">14. Installer Script (v1.3.0, 2026-08-10) — PASS (8/8 live tests)</h2>
+<p><code>tools/proofpunk-install.sh</code> installs the 16 skills as plain skills (not a plugin) into a chosen target (claude-code / omp / --dir), with collision safety, doctrine injection, and post-install verification. Executed live before shipping (no claimed-but-unrun behavior):</p>
+<ol type="1">
+<li><code>--target omp --dry-run</code> — full plan printed, zero writes.</li>
+<li>GitHub-source install into a sandboxed HOME — 16/16 installed + doctrine bundle + verify green. <strong>The verifier caught a real design flaw</strong>: repo layout cites doctrine as <code>../../references/</code>, broken in a flat skills dir; fixed by making installed copies self-contained (citations rewritten, cited shared refs bundled inside each skill) — then verify green.</li>
+<li>Re-run without <code>--override</code> — 16/16 SKIP on collision, nothing clobbered.</li>
+<li><code>--override</code> — replaced with timestamped backups (<code>.bak-YYYYMMDD-HHMMSS</code>).</li>
+<li><code>--inject-claude-md</code> twice — rules block appended once; second run "already present — left unchanged" (idempotent).</li>
+<li><code>--source-dir</code> local checkout — installs offline path, verify green.</li>
+<li><code>--only not-a-skill</code> — exits 3 (caught a second real bug: the EXIT trap's cleanup returned 1 and clobbered the intended code; fixed, re-verified).</li>
+<li><code>bash -n</code> syntax clean; exit codes 0/1/2/3 as documented in tools/INSTALL.md.</li>
+</ol>
+<h2 id="15-prompt-forge-rework-v140-2026-08-11--pass">15. prompt-forge Rework (v1.4.0, 2026-08-11) — PASS</h2>
+<p>Directive: rating remediations must be applied immediately and always land in a file (new file by default, the input file only with consent); every mode must run sequential thinking, proper XML tags, an authorization engine, and explicit todo tracking.</p>
+<p>Changes to <code>skills/prompt-forge/SKILL.md</code> (quick_validate: PASS):</p>
+<ol type="1">
+<li><strong>New Section 0 — Always-On Workflow</strong>, binding on all four modes:
+<ul>
+<li>0.1 Sequential thinking — numbered reasoning steps with explicit revision and branching before any authoring/rating/optimizing.</li>
+<li>0.2 Todo discipline — one action per todo, one in-progress at a time, immediate completion, pending items finished or reported.</li>
+<li>0.3 Authorization engine — decision table: new-file writes need no consent (default action); in-place edits, below-threshold shipping, overwrites, and report-only ratings all require explicit consent.</li>
+<li>0.4 File-output contract — per-mode file matrix (<code>NAME.prompt.md</code> / <code>NAME.rating.md</code> + <code>NAME.remediated.md</code> / <code>NAME.optimized.md</code> / <code>.prompts/</code> stages); chat-only suggestions are a contract violation.</li>
+<li>0.5 XML tag standard — canonical skeleton (<code>task</code>, <code>context</code>, <code>skills_to_activate</code>, <code>mcp_tools</code>, <code>sequential_thinking</code>, <code>todos</code>, <code>authorization</code>, <code>constraints</code>, <code>output_contract</code>, <code>validation</code>, <code>example</code>) with a required/optional purpose table; aligned with the mood-ring demo prompt's existing tag usage.</li>
+</ul></li>
+<li><strong>RATE §2.1 Remediation application (mandatory)</strong> — scorecard alone is unfinished: apply top fixes, write <code>NAME.remediated.md</code> (in-place only with consent), re-score against the same test cases, report before/after; below-threshold results route through 0.3.</li>
+<li><strong>OPTIMIZE</strong> — optimized prompt written to <code>NAME.optimized.md</code> per 0.4; failure classification lands in the sequential-thinking chain.</li>
+<li><strong>PIPELINE</strong> — every stage prompt follows the 0.5 skeleton; every stage maps to a todo.</li>
+<li><strong>Anti-patterns</strong> — six new rows: scorecard-only rating, chat-only fixes, unconsented in-place edits, below-threshold shipping, jump-to-output, ad-hoc XML tags.</li>
+</ol>
+<p>Source-gap note (honest gap): the sequential-thinking stage was specified from the established methodology (numbered steps, revision, branching — the <code>ck:sequential-thinking</code> description fragment in the archive inventory). The reference archive's <code>ak-sequential-thinking</code> copy contains zero files and its <code>sequential-thinking</code> copy has no SKILL.md; the primary archive's <code>ck:sequential-thinking</code> was unreachable this session (HTTP 403). No content was copied from a source that could not be read.</p>
+<p>Frontmatter description rewritten (1011 chars, under the 1024 limit) to advertise the always-on workflow and file-output remediation contract.</p>
+<h2 id="16-prompt-forge-command-surface--implement-skill-v150-2026-08-11--pass">16. prompt-forge Command Surface + implement Skill (v1.5.0, 2026-08-11) — PASS</h2>
+<p>Two directives: (a) the v1.4.0 prompt-forge rework described remediation abstractly but showed no concrete remediation sample and no CLI arguments; (b) a new <code>implement</code> command should orchestrate the actual implementation process using ALL skills, with session mining and parallel/auto modes.</p>
+<h3 id="prompt-forge-additions-quick_validate-pass">prompt-forge additions (quick_validate: PASS)</h3>
+<ol type="1">
+<li><strong>Command Surface section</strong> — CLI-style flags mapped onto the authorization engine (0.3), so a flag IS the recorded consent: <code>--in-place</code> (in-place edit consent), <code>--report-only</code> (skip file output), <code>--ship-below-threshold</code> (below-threshold sign-off), <code>--out</code>, <code>--depth</code>, <code>--evidence</code> (OPTIMIZE's hard requirement), <code>--dir</code>. Unknown flags rejected; conflicting flags fail fast.</li>
+<li><strong><code>references/remediation-sample.md</code></strong> — a full worked RATE pass on a weak prompt: sequential-thinking chain, scorecard (34/100, rewrite), predicted failure modes, four test cases, the remediated file on the canonical XML skeleton, re-score (91/100), and what each flag would have changed.</li>
+</ol>
+<h3 id="implement-skill-quick_validate-pass">implement skill (quick_validate: PASS)</h3>
+<p>New skill <code>skills/implement/SKILL.md</code> — the orchestrator (conductor) to cook's execution engine (player), resolving the overlap question explicitly in both directions:</p>
+<ul>
+<li><strong>Command surface</strong>: <code>implement "&lt;goal&gt;" [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]</code> and <code>implement mine [--project] [--since] [--until] [--json]</code>, each flag with a why-it-exists column.</li>
+<li><strong>Phase 0 — TRUE success criteria distillation</strong>: observable, end-user provable, measurable; approval gate when the goal is not clearly laid out or not understood — the one mandatory stop under <code>--auto</code>.</li>
+<li><strong>Phase 1 — MINE</strong> via session-intent: past implementation sessions as an intent matrix (prompts, tools, files, commits) feeding exploration and forging; <code>implement mine</code> alone is a reconnaissance-only pass.</li>
+<li><strong>Phase 2 — EXPLORE</strong> with parallel scout agents (structure, patterns, contracts, history); contradictions resolved against the code.</li>
+<li><strong>Phase 3 — FORGE</strong> via prompt-forge AUTHOR on the canonical XML skeleton; approved criteria become the prompt's success metrics verbatim.</li>
+<li><strong>Phase 4 — PLAN</strong>: validation-plan + plan-hardening; <code>--parallel</code> -&gt; prompt-forge PIPELINE with parallel independent stages.</li>
+<li><strong>Phase 5 — EXECUTE</strong> under cook's gates; <code>--parallel</code> lanes with per-lane todo chains; authorization boundaries (destructive ops, out-of-scope edits, below-threshold shipping) bind even <code>--auto</code>.</li>
+<li><strong>Phases 6-8</strong>: root-cause-debugging (no retries as fixes), end-user validation (UNVERIFIED = NOT DONE under <code>--auto</code>), criteria-by-criteria proof table + todo ledger.</li>
+</ul>
+<h3 id="propagation">Propagation</h3>
+<p>plugin.json 1.5.0 (description + 6 keywords), marketplace.json 1.5.0, README skill table + counts (16 -&gt; 17), installer <code>ALL_SKILLS</code> + INSTALL.md counts/examples updated. Both new/changed skills packaged self-contained (shared refs bundled, citations rewritten).</p>
+<h2 id="17-readme-command-reference--architecture-diagrams-v151-2026-08-11--pass">17. README Command Reference + Architecture Diagrams (v1.5.1, 2026-08-11) — PASS</h2>
+<p>Directive: the README must lay out every example with every argument — including positional arguments inside skill commands — every meaningful permutation with why / what happens / what you end up with, which skills execute per invocation, and system architecture diagrams.</p>
+<p>Delivered in README.md (629 lines, +550):</p>
+<ol type="1">
+<li><strong>Dispatch-at-a-glance table</strong> — invocation -&gt; skill fired -&gt; delegation.</li>
+<li><strong>§1-8 command references</strong> for every argumented surface: implement (positionals <code>&lt;goal&gt;</code>/<code>mine</code>, 8 flags, 14 permutations), prompt-forge (positionals per subcommand, 7 flags, 9 permutations, conflict rules), cook (positionals <code>&lt;goal&gt;</code>/<code>&lt;plan-path&gt;</code>, 5 modes, full mode × --tdd 12-permutation table), functional-validation (8 flags composing analyze-&gt;plan-&gt;execute-&gt;fix-&gt;report), session-intent (5 args with defaults, filter/output permutations, exit 2), end-user-testing (positional <code>&lt;slug&gt;</code>, lifecycle as the only valid composition, exit codes), stack-testing (<code>--server</code>/<code>--port</code>/trailing positional), installer (13 flags + canonical permutations + conflicts + exit codes). Every row answers why / what happens / what you end up with, and names the skills executed downstream.</li>
+<li><strong>§9 protocol-skill routing</strong> — the 10 flag-less skills: invocation -&gt; what happens -&gt; downstream skills, all edges from the skills' own Related Skills sections (verified by extraction, not written from memory).</li>
+<li><strong>Five mermaid architecture diagrams</strong> — repo layout, layered skill stack with the doctrine foundation, the full delegation graph (real edges only), a sequence trace of <code>implement "add billing webhooks" --parallel --auto --mine</code>, and the evidence lifecycle state diagram.</li>
+</ol>
+<p>Mechanical checks: code fences balanced (28/28), 5/5 mermaid blocks closed, all 17 skill names referenced.</p>
+<h2 id="18-related-skills-closure--usage-guide-v160-2026-08-11--pass">18. Related-Skills Closure + Usage Guide (v1.6.0, 2026-08-11) — PASS</h2>
+<p>Directive: document the plugin and skills properly with <code>/skill-name example --arg</code> usage in Claude Code; ensure every skill needed by the Related Skills graph actually ships; update the installer and docs.</p>
+<h3 id="integrity-audit-mechanical-full-closure">Integrity audit (mechanical, full closure)</h3>
+<ol type="1">
+<li><strong>Related Skills edges</strong>: extracted every backtick-quoted reference in all Related Skills sections and resolved each against the skills directory. Found ONE dangling edge: session-intent referenced <code>codebase-truth-audit</code>, which was not in the plugin. <strong>Fixed by shipping it</strong>: the skill (SKILL.md + references/output-contract.md + scripts/init_audit_workspace.py) integrated as skill #18, with a new Related Skills section closing the edge both directions. Re-run of the audit: 18/18 skills, zero dangling edges.</li>
+<li><strong>Reference citations</strong>: every <code>references/X</code> citation in every skill file (SKILL.md, references, scripts) resolved against the tree — including shared <code>../../references/</code> doctrine paths and cross-skill <code>../skill/scripts/</code> paths. Zero missing targets.</li>
+<li><strong>Bundled scripts</strong>: every <code>scripts/X</code> citation resolved. <code>init_audit_workspace.py</code> verified LIVE (not by inspection): ran <code>--repo /tmp/repo --label Proofpunk-v151</code> end to end — produced a real 8-phase audit workspace with captured git evidence (status, remotes, metadata). Exit 0, artifacts non-empty.</li>
+</ol>
+<h3 id="usage-guide">Usage guide</h3>
+<p>New <code>plugins/proofpunk/docs/usage-guide.md</code>: how invocation works in Claude Code (slash command vs natural-language routing vs chaining), then per-skill sections for all 18 skills with positional arguments, flags, and literal <code>/skill-name &lt;args&gt;</code> example invocations, the three bundled CLIs (session_intent.py, fresh_evidence.py, init_audit_workspace.py, with_server.py) with their real argument lists, and seven chaining recipes. INSTALL.md gained an "After install" usage section; README links the guide and shows 18 skills.</p>
+<h3 id="propagation-1">Propagation</h3>
+<p>plugin.json 1.6.0 (description + 3 keywords), marketplace.json 1.6.0, README table + counts (17 -&gt; 18), installer ALL_SKILLS + INSTALL.md counts. Both quick_validates PASS (codebase-truth-audit, session-intent).</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/validation-results.md">source → plugins/proofpunk/docs/validation-results.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOC:VALIDATION-RESULTS</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

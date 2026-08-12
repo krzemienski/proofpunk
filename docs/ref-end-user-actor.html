@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>End-User Actor Mandate (shared) — proofpunk doctrine</title>
+<meta name="description" content="The cross-cutting operating principle for every Proofpunk skill:">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / END-USER-ACTOR</div>
+  <div class="doc">
+<h1 id="end-user-actor-mandate-shared">End-User Actor Mandate (shared)</h1>
+<p>The cross-cutting operating principle for every Proofpunk skill: <strong>the AI is the actor, not the spectator.</strong></p>
+<h2 id="the-rule">The Rule</h2>
+<p><strong>NON-NEGOTIABLE: validation is never faked, skipped, stubbed, or assumed complete. The AI executes the tools and performs the actions — every time, for every skill/feature — or the outcome is reported as UNVERIFIED.</strong></p>
+<p>When verifying, validating, auditing, or testing any system, the AI agent MUST personally drive the real system as an end user — through MCP tools and automation interfaces — performing the same actions a human user would:</p>
+<ul>
+<li>Navigate, click, tap, type, scroll, submit, swipe</li>
+<li>Fill forms with real inputs and submit them</li>
+<li>Follow links, open modals, dismiss dialogs, go back</li>
+<li>Trigger errors deliberately and observe recovery</li>
+</ul>
+<p>The agent acts <strong>always as an end user</strong>: through the UI, the public API, the CLI — never through internal backdoors, database writes, or code inspection presented as behavioral proof.</p>
+<h2 id="2d-verification-is-not-verification">2D Verification Is Not Verification</h2>
+<p>"2D verification" — looking at a flat screenshot, reading code, or confirming a file exists — is INSPECTION, not VERIFICATION. It has its place (visual QA, evidence review), but it can never answer "does this work when used?".</p>
+<table>
+<thead>
+<tr class="header">
+<th>Spectator behavior (insufficient)</th>
+<th>Actor behavior (required)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Screenshot the page and say it looks fine</td>
+<td>Drive the page with browser MCP tools: click every control, capture before/after evidence</td>
+</tr>
+<tr class="even">
+<td>Read the button handler and say it works</td>
+<td>Click the button as an end user; observe the outcome</td>
+</tr>
+<tr class="odd">
+<td>Check the API route code</td>
+<td>Call the live endpoint with a real payload</td>
+</tr>
+<tr class="even">
+<td>Run pytest (or any test runner) and cite the green suite</td>
+<td>Drive the live system as the end user — for a JSON/HTTP backend: <code>curl</code> the running server on localhost and assert on the real response body; for a UI: the browser; for mobile: the simulator</td>
+</tr>
+<tr class="odd">
+<td>Confirm a screenshot file exists</td>
+<td>Personally capture it mid-interaction, then READ it</td>
+</tr>
+<tr class="even">
+<td>Delegate the clicking to a subagent and trust its summary</td>
+<td>Drive the tools yourself; examine raw evidence yourself</td>
+</tr>
+</tbody>
+</table>
+<h2 id="test-runners-are-never-validation">Test Runners Are Never Validation</h2>
+<p><strong>Explicit rule: pytest, JUnit, <code>go test</code>, <code>cargo test</code>, and every other test-runner are developer REGRESSION tooling — they are never validation evidence, and a green suite must never be cited as proof a feature works.</strong></p>
+<p>The end user does not run pytest. The end user of:</p>
+<ul>
+<li><strong>a JSON/HTTP backend</strong> is an HTTP client → validation is <code>curl</code> (or equivalent) against the RUNNING server on localhost/its real host, with assertions on the actual response body, headers, and status — not on code, not on a test client, not on a mock</li>
+<li><strong>a web UI</strong> is a person in a browser → validation is browser-driven clicks, form submissions, navigation</li>
+<li><strong>a mobile app</strong> is a person holding the device → validation is simulator/device-driven taps, swipes, and observation</li>
+<li><strong>a CLI</strong> is a person at a terminal → validation is running the binary with real arguments and reading its real output</li>
+</ul>
+<p>Test-runner output MAY appear in evidence as the regression rail ("the suite is green — nothing previously working is broken"), clearly labeled REGRESSION, never VALIDATION. A framework's test client (e.g. Flask's <code>test_client</code>) runs inside the process and bypasses the network stack the user actually experiences — it is a legitimate developer tool and a legitimate regression rail, and it is still not the end user. When a prompt or contract asks for "tests pass" as proof of done, the correct reading is: tests green (regression) AND live end-user drive (validation); either alone is incomplete.</p>
+<h2 id="tool-path-priority">Tool Path Priority</h2>
+<p>Use whichever real tool path is available, in this order of preference:</p>
+<ol type="1">
+<li><strong>MCP/automation tools</strong> (browser automation, Playwright, Chrome DevTools, simulator control, <code>idb</code>) — drive the live system directly</li>
+<li><strong>CLI invocation</strong> (<code>xcrun simctl</code>, <code>curl</code>, the product's own binary) — drive the live system through its real interfaces</li>
+<li><strong>Static inspection only</strong> — acceptable ONLY when no tool path exists, and the verdict must be downgraded accordingly (PASS WITH ISSUES / verification-pending, never a full PASS)</li>
+</ol>
+<p>If a finding "needs interaction to resolve" and a tool path exists, escalate to driving. Do not fabricate a verdict from a screenshot alone.</p>
+<h2 id="responsibility-boundaries">Responsibility Boundaries</h2>
+<ul>
+<li>The AI owns the ACTIONS: every click, tap, keystroke, and API call in a validation flow is performed by the agent, on purpose, in order.</li>
+<li>The AI owns the EVIDENCE: artifacts are captured by the agent during its own session, run-scoped and fresh (see <code>evidence-contract.md</code>).</li>
+<li>The AI owns the VERDICT: PASS is claimed only for behavior the agent personally drove and personally reviewed.</li>
+<li>Destructive or irreversible end-user actions (delete, pay, send) require explicit user approval BEFORE the agent performs them — being the actor never means acting without consent.</li>
+</ul>
+<h2 id="scope">Scope</h2>
+<p>This mandate applies across ALL Proofpunk skills:</p>
+<ul>
+<li><code>functional-validation</code> / <code>full-functional-audit</code> — every interaction in the inventory is driven, not inspected</li>
+<li><code>end-user-testing</code> — gate evidence must come from an AI-driven session</li>
+<li><code>visual-inspection</code> / <code>ui-experience-audit</code> — screenshots are captured from driven sessions; unresolved "is it wired up?" findings escalate to drive mode when tools exist</li>
+<li><code>validation-plan</code> / <code>plan-hardening</code> — gate blocks must specify driven end-user actions, not passive checks</li>
+<li><code>cook</code> — implementation is verified by driving the finished feature as an end user before finalize</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/end-user-actor.md">source → plugins/proofpunk/references/end-user-actor.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:END-USER-ACTOR</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

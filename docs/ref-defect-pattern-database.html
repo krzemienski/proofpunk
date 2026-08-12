@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI Defect Pattern Database — proofpunk doctrine</title>
+<meta name="description" content="Common defects across iOS, web, and cross-platform with root causes and fix patterns. Organized by audit phase: triage (Phase 0), visual (Phase 1), interactive ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / DEFECT-PATTERN-DATABASE</div>
+  <div class="doc">
+<h1 id="ui-defect-pattern-database">UI Defect Pattern Database</h1>
+<p>Common defects across iOS, web, and cross-platform with root causes and fix patterns. Organized by audit phase: triage (Phase 0), visual (Phase 1), interactive (Phase 2), content (Phase 3), and UX heuristic (Phase 4).</p>
+<h2 id="phase-0--triage-defects-critical-by-default">Phase 0 — Triage Defects (CRITICAL by default)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Defect</th>
+<th>Visual Symptom</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Missing chart content</td>
+<td>Chart container present but bars / lines / points absent</td>
+<td>Data not loaded, render bug, CSS height percent without parent height</td>
+<td>Verify data flow, fix render logic</td>
+</tr>
+<tr class="even">
+<td>Broken <code>&lt;img&gt;</code></td>
+<td>Alt text or browser-default broken-image icon</td>
+<td>Bad URL, CORS failure, missing asset</td>
+<td>Fix path, add error fallback</td>
+</tr>
+<tr class="odd">
+<td>Lorem ipsum visible</td>
+<td>"Lorem ipsum dolor sit amet" or "[TODO]" rendered</td>
+<td>Placeholder copy not replaced before ship</td>
+<td>Replace with real copy</td>
+</tr>
+<tr class="even">
+<td>Hardcoded test data</td>
+<td>"John Doe", "<a href="mailto:test@test.com">test@test.com</a>", "555-555-5555" in production-looking UI</td>
+<td>Test fixtures leaked to production build</td>
+<td>Replace with real / dynamic data</td>
+</tr>
+<tr class="odd">
+<td>Raw error in UI</td>
+<td>Stack trace, "TypeError: undefined", "500 Internal Server Error"</td>
+<td>Unhandled exception surfaced to user</td>
+<td>Add error boundary + user-friendly message</td>
+</tr>
+<tr class="even">
+<td><code>undefined</code> / <code>null</code> / <code>NaN</code> text</td>
+<td>Literal "undefined" rendered as content</td>
+<td>Missing fallback in template (<code>${user.name ?? 'Guest'}</code>)</td>
+<td>Add nullish-coalesce or default</td>
+</tr>
+<tr class="odd">
+<td>Blank where content should be</td>
+<td>Empty bordered container, list with no rows or empty state</td>
+<td>Missing empty-state UI, data fetch failure</td>
+<td>Add explicit empty state with message</td>
+</tr>
+<tr class="even">
+<td>Unstyled content flash captured</td>
+<td>Default browser button styling, default font on custom design</td>
+<td>FOUC — CSS not loaded before screenshot</td>
+<td>Capture after <code>networkidle</code> / load fonts before render</td>
+</tr>
+<tr class="odd">
+<td>Console errors / warnings in-page</td>
+<td>DevTools error count visible, in-page warning banners from dev tooling</td>
+<td>Dev mode left enabled in evidence</td>
+<td>Re-capture in production-like build</td>
+</tr>
+</tbody>
+</table>
+<h2 id="phase-1--visual-defects">Phase 1 — Visual Defects</h2>
+<h3 id="ios--swiftui">iOS / SwiftUI</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Defect</th>
+<th>Visual Symptom</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>VStack overflow</td>
+<td>Content clipped at bottom, no scroll</td>
+<td><code>VStack</code> in constrained height without <code>ScrollView</code></td>
+<td>Wrap in <code>ScrollView(.vertical)</code></td>
+</tr>
+<tr class="even">
+<td>Fixed frame too small</td>
+<td>Content overlapping card boundaries</td>
+<td><code>.frame(height: N)</code> too small for dynamic content</td>
+<td><code>.frame(minHeight: N)</code> + <code>.clipped()</code></td>
+</tr>
+<tr class="odd">
+<td>Environment crash</td>
+<td>Blank screen or crash on navigation</td>
+<td><code>@Observable</code> not injected on sibling <code>NavigationDestination</code></td>
+<td><code>.environment()</code> on ALL destination branches</td>
+</tr>
+<tr class="even">
+<td>LazyVGrid misalign</td>
+<td>Grid items offset from each other</td>
+<td>Missing <code>.alignment</code> on <code>GridItem</code></td>
+<td>Set explicit alignment on GridItem</td>
+</tr>
+<tr class="odd">
+<td>GeometryReader zero</td>
+<td>Blank view on first render</td>
+<td>GeometryReader reports 0,0 before layout pass</td>
+<td>Default size fallback</td>
+</tr>
+<tr class="even">
+<td>Sheet wrong color scheme</td>
+<td>Sheet content in light mode when app is dark</td>
+<td>Missing <code>.preferredColorScheme(.dark)</code> on sheet</td>
+<td>Add color scheme to sheet content</td>
+</tr>
+<tr class="odd">
+<td>@AppStorage stale</td>
+<td>Feature flags don't update after reinstall</td>
+<td>UserDefaults cached from previous install</td>
+<td><code>simctl uninstall</code> before <code>install</code></td>
+</tr>
+<tr class="even">
+<td>Safe area violation</td>
+<td>Text under status bar or home indicator</td>
+<td>Content outside <code>safeAreaInset</code></td>
+<td>Respect safe area insets</td>
+</tr>
+<tr class="odd">
+<td>Tab bar occlusion</td>
+<td>Last list item hidden behind tab bar</td>
+<td>Missing content inset on ScrollView</td>
+<td>Add <code>.safeAreaInset(edge: .bottom)</code> or proper padding</td>
+</tr>
+<tr class="even">
+<td>Nav bar overlap</td>
+<td>Custom nav overlapping status bar</td>
+<td>Incorrect navigation bar height</td>
+<td>Use system <code>NavigationStack</code> / <code>navigationTitle</code></td>
+</tr>
+<tr class="odd">
+<td>Sidebar clipping</td>
+<td>Nav items below fold invisible (no scroll)</td>
+<td>Plain VStack with 20+ items, no ScrollView</td>
+<td>Wrap sidebar nav in <code>ScrollView(.vertical)</code></td>
+</tr>
+<tr class="even">
+<td>Badge overflow</td>
+<td>Badge "17" clips outside icon bounds</td>
+<td>Badge not constrained to parent</td>
+<td><code>.clipShape()</code> or constrain badge frame</td>
+</tr>
+<tr class="odd">
+<td>Shimmer flash</td>
+<td>White flash before shimmer gradient starts</td>
+<td>No initial fill color on shimmer layer</td>
+<td>Set <code>.fill(theme.glassBackground)</code> as base</td>
+</tr>
+<tr class="even">
+<td>Text size violation</td>
+<td>Hardcoded <code>size: 10</code> or <code>size: 12</code></td>
+<td>Not using Dynamic Type / theme tokens</td>
+<td>Use <code>.font(.system(...))</code> or theme font tokens</td>
+</tr>
+<tr class="odd">
+<td>Monospaced digit shift</td>
+<td>Numbers shift layout when values change</td>
+<td>Proportional digit widths</td>
+<td><code>.monospacedDigit()</code> on counters/badges</td>
+</tr>
+</tbody>
+</table>
+<h3 id="web--css">Web / CSS</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Defect</th>
+<th>Visual Symptom</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Horizontal scroll</td>
+<td>Scrollbar at narrow viewports</td>
+<td>Element exceeds viewport width</td>
+<td><code>max-width: 100%</code>, <code>overflow-x: hidden</code> on container</td>
+</tr>
+<tr class="even">
+<td>Text overflow</td>
+<td>Long words break layout</td>
+<td>No word-break strategy</td>
+<td><code>overflow-wrap: break-word</code> or <code>word-break: break-word</code></td>
+</tr>
+<tr class="odd">
+<td>Invisible focus ring</td>
+<td>No visible focus indicator on tab</td>
+<td><code>outline: none</code> with no replacement</td>
+<td><code>outline: 2px solid</code> with 3:1 contrast</td>
+</tr>
+<tr class="even">
+<td>Placeholder contrast fail</td>
+<td>Light gray placeholder text</td>
+<td>Placeholder not meeting 4.5:1 ratio</td>
+<td>Darken placeholder color or use floating label</td>
+</tr>
+<tr class="odd">
+<td>CLS layout shift</td>
+<td>Elements jump during page load</td>
+<td>Images without dimensions, late-loading fonts</td>
+<td><code>aspect-ratio</code> or <code>width</code>/<code>height</code> on images</td>
+</tr>
+<tr class="even">
+<td>FOIT text flash</td>
+<td>Text invisible then suddenly appears</td>
+<td>Web font blocking render</td>
+<td><code>font-display: swap</code> or preload critical fonts</td>
+</tr>
+<tr class="odd">
+<td>Stacking context break</td>
+<td>Modal behind content, z-index war</td>
+<td>Unmanaged z-index values</td>
+<td>Establish z-index scale, use CSS layers</td>
+</tr>
+<tr class="even">
+<td>Touch target too small</td>
+<td>Tiny icon buttons (16x16)</td>
+<td>No padding expansion</td>
+<td><code>padding</code> to expand clickable area to 44x44</td>
+</tr>
+<tr class="odd">
+<td>Dark mode border invisible</td>
+<td>Borders vanish in dark mode</td>
+<td>Hardcoded <code>border-gray-200</code></td>
+<td>Semantic tokens: <code>border-gray-200</code> light / <code>border-gray-700</code> dark</td>
+</tr>
+<tr class="even">
+<td>Glass card invisible (light)</td>
+<td>Card background transparent in light mode</td>
+<td><code>bg-white/10</code> opacity too low</td>
+<td><code>bg-white/80</code> or higher for light mode</td>
+</tr>
+<tr class="odd">
+<td>Muted text too light</td>
+<td>Secondary text unreadable</td>
+<td><code>gray-400</code> on white background</td>
+<td><code>slate-600</code> (#475569) minimum for muted text</td>
+</tr>
+<tr class="even">
+<td>Sticky covers content</td>
+<td>Fixed/sticky header hides scrolled content</td>
+<td>No scroll-margin or padding offset</td>
+<td><code>scroll-margin-top</code> matching header height</td>
+</tr>
+<tr class="odd">
+<td>Form label missing</td>
+<td>Input has no visible label</td>
+<td>Placeholder-only pattern</td>
+<td>Add visible <code>&lt;label&gt;</code> with <code>for</code> attribute</td>
+</tr>
+<tr class="even">
+<td>Skip link absent</td>
+<td>No keyboard shortcut to skip nav</td>
+<td>Missing skip-to-content link</td>
+<td>Add as first focusable element</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-platform--general">Cross-Platform / General</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Defect</th>
+<th>Visual Symptom</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Color-only status</td>
+<td>Status conveyed only by color</td>
+<td>No icon or text supplement</td>
+<td>Add icon + text alongside color indicator</td>
+</tr>
+<tr class="even">
+<td>Empty state blank</td>
+<td>White/blank space where content should be</td>
+<td>No empty state handler</td>
+<td>Add meaningful empty state message + icon</td>
+</tr>
+<tr class="odd">
+<td>Loading frozen</td>
+<td>UI appears frozen during data fetch</td>
+<td>No loading indicator</td>
+<td>Show skeleton/shimmer/spinner during load</td>
+</tr>
+<tr class="even">
+<td>Truncation without ellipsis</td>
+<td>Text cut off abruptly</td>
+<td><code>overflow: hidden</code> without <code>text-overflow: ellipsis</code></td>
+<td>Add <code>text-overflow: ellipsis</code> + <code>white-space: nowrap</code></td>
+</tr>
+<tr class="odd">
+<td>Double spacing</td>
+<td>Extra vertical gap between sections</td>
+<td>Two margins stacking (CSS) or double padding (SwiftUI)</td>
+<td>Collapse margins or audit spacing modifiers</td>
+</tr>
+<tr class="even">
+<td>Icon-text misalign</td>
+<td>Icon vertically offset from adjacent text</td>
+<td>Different alignment defaults</td>
+<td>Explicit vertical centering (<code>.alignmentGuide</code> / <code>align-items: center</code>)</td>
+</tr>
+<tr class="odd">
+<td>Modal viewport overflow</td>
+<td>Dialog taller than screen</td>
+<td>Fixed height modal on small viewport</td>
+<td><code>max-height: 90vh</code> + scroll internal content</td>
+</tr>
+<tr class="even">
+<td>Error state swallowed</td>
+<td>No error feedback to user</td>
+<td><code>catch</code> block with no UI update</td>
+<td>Show inline error message near the failure point</td>
+</tr>
+<tr class="odd">
+<td>Badge zero shown</td>
+<td>"0" badge displayed when it shouldn't be</td>
+<td>No zero-check before rendering badge</td>
+<td><code>if count &gt; 0 { Badge(count) }</code></td>
+</tr>
+<tr class="even">
+<td>White flash on transition</td>
+<td>Brief white screen between views</td>
+<td>Background color not set on destination view</td>
+<td>Set background color on all views in navigation stack</td>
+</tr>
+<tr class="odd">
+<td>Shared-token cascade</td>
+<td>Fixing one element's color/spacing breaks another semantically-different element</td>
+<td>One design token reused across multiple selectors with different visual roles (e.g. <code>--color-muted</code> for caption AND badge text)</td>
+<td>Audit token reuse: <code>grep "var(--color-X)"</code> to find all consumers; if consumers belong to different visual roles, split into separate tokens BEFORE changing the value. iter-16 findings F-1B-cascade and F-2D-latent are canonical — fixing dark-mode caption contrast unmasked badge contrast because both used <code>--color-text-muted</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="phase-2--interactive-element-defects">Phase 2 — Interactive Element Defects</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Defect</th>
+<th>Visual Symptom</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>False affordance — colored text</td>
+<td>Bold colored inline text that isn't a link</td>
+<td>Color-only emphasis with no anchor</td>
+<td>Either make it a real link or remove the link-like styling</td>
+</tr>
+<tr class="even">
+<td>False affordance — card</td>
+<td>Card-styled element that doesn't respond to tap</td>
+<td>Card visual treatment with no <code>onTapGesture</code> / <code>onClick</code></td>
+<td>Wire up handler, or remove card chrome</td>
+</tr>
+<tr class="odd">
+<td>False affordance — disabled-looking</td>
+<td>Button that looks disabled but is enabled</td>
+<td>Insufficient contrast for active state</td>
+<td>Increase active-state saturation / contrast</td>
+</tr>
+<tr class="even">
+<td>Hidden affordance — swipe-only</td>
+<td>Feature exists, no signifier</td>
+<td>Swipe gesture without icon, hint, or onboarding</td>
+<td>Add visual cue (drag handle, animation, first-use tooltip)</td>
+</tr>
+<tr class="odd">
+<td>Hidden affordance — long-press</td>
+<td>Long-press menu with no signal</td>
+<td>iOS context menu with no <code>…</code> button alternative</td>
+<td>Provide both gesture and visible button</td>
+</tr>
+<tr class="even">
+<td>Hidden affordance — hover menu</td>
+<td>Submenu only on hover</td>
+<td>CSS <code>:hover</code> with no touch fallback</td>
+<td>Add tap-to-toggle for touch devices</td>
+</tr>
+<tr class="odd">
+<td>Sub-minimum target</td>
+<td>Icon button too small to tap reliably</td>
+<td>16×16 icon with no padding</td>
+<td>Expand to 44×44pt iOS / 24×24px WCAG via padding</td>
+</tr>
+<tr class="even">
+<td>Target overlap</td>
+<td>Mis-tap between adjacent buttons</td>
+<td>&lt; 8 pt gap between targets</td>
+<td>Add gap, or merge / restructure</td>
+</tr>
+<tr class="odd">
+<td>Focus trap</td>
+<td>Tab key cycles forever inside modal</td>
+<td>Missing focus-trap exit logic</td>
+<td>Wire Esc + boundary cycling</td>
+</tr>
+<tr class="even">
+<td>Invisible focus</td>
+<td>No outline on Tab</td>
+<td><code>outline: none</code> with no replacement</td>
+<td>2 px outline with 3:1 contrast</td>
+</tr>
+<tr class="odd">
+<td>Wrong tab order</td>
+<td>Tab jumps unexpectedly</td>
+<td>Positive <code>tabindex</code> values (<code>tabindex="3"</code>)</td>
+<td>Remove positive tabindex; use DOM order</td>
+</tr>
+<tr class="even">
+<td>Occluded target</td>
+<td>Bottom row hidden behind sticky / tab bar</td>
+<td>No content inset</td>
+<td>Add <code>safeAreaInset(.bottom)</code> (iOS) or <code>padding-bottom</code> (web)</td>
+</tr>
+<tr class="odd">
+<td>Disabled button no cursor</td>
+<td>Disabled button looks identical to enabled</td>
+<td>Missing <code>cursor: not-allowed</code> + opacity</td>
+<td>Add disabled styling + ARIA <code>aria-disabled</code></td>
+</tr>
+<tr class="even">
+<td>Form field no label</td>
+<td>Input has placeholder but no label</td>
+<td>Placeholder-only pattern</td>
+<td>Add visible <code>&lt;label&gt;</code> with <code>for</code> attr</td>
+</tr>
+<tr class="odd">
+<td>Missing accessibility name</td>
+<td>Icon button has no screen-reader label</td>
+<td>Missing <code>aria-label</code> / <code>accessibilityLabel</code></td>
+<td>Add descriptive label</td>
+</tr>
+</tbody>
+</table>
+<h2 id="phase-3--content-quality-defects">Phase 3 — Content Quality Defects</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Defect</th>
+<th>Visual Symptom</th>
+<th>Root Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Code block low contrast</td>
+<td>Comment color vs code bg below 4.5:1</td>
+<td>Default theme syntax-highlight palette</td>
+<td>Use accessible theme (e.g. GitHub Dark Default, Solarized) and verify each token</td>
+</tr>
+<tr class="even">
+<td>Code block silent truncation</td>
+<td>Long line clipped at right edge, no scroll</td>
+<td><code>overflow: hidden</code> without <code>overflow-x: auto</code></td>
+<td>Enable horizontal scroll with visible scrollbar, or wrap with <code>white-space: pre-wrap</code></td>
+</tr>
+<tr class="odd">
+<td>Code in proportional font</td>
+<td>Code looks like prose</td>
+<td>Missing <code>&lt;code&gt;</code>/<code>&lt;pre&gt;</code> or CSS not loaded</td>
+<td>Apply <code>font-family: ui-monospace, SF Mono, Menlo, Consolas</code></td>
+</tr>
+<tr class="even">
+<td>No copy affordance</td>
+<td>User must select code by hand</td>
+<td>No copy button</td>
+<td>Add hover-revealed copy button (desktop) or always-visible (mobile)</td>
+</tr>
+<tr class="odd">
+<td>Code/output indistinguishable</td>
+<td>User can't tell what to type vs what's printed</td>
+<td>Same styling for both</td>
+<td>Different bg or label ("Output:" header)</td>
+</tr>
+<tr class="even">
+<td>Line numbers selectable</td>
+<td>Copy includes line numbers</td>
+<td>Line numbers in same <code>&lt;pre&gt;</code></td>
+<td>Use CSS counters or <code>user-select: none</code> on numbers</td>
+</tr>
+<tr class="odd">
+<td>Diagram color-only</td>
+<td>Lines distinguished only by red/green</td>
+<td>No patterns / shapes / direct labels</td>
+<td>Add dashed/dotted line styles, shapes, or direct labels</td>
+</tr>
+<tr class="even">
+<td>Diagram no alt</td>
+<td>SVG with no <code>&lt;title&gt;</code> / <code>&lt;desc&gt;</code></td>
+<td>Plain <code>&lt;svg&gt;</code> export</td>
+<td>Add <code>&lt;title&gt;</code> + <code>&lt;desc&gt;</code>, or descriptive caption below</td>
+</tr>
+<tr class="odd">
+<td>Hover-only chart info</td>
+<td>Tooltip required to read values</td>
+<td>All values in tooltip only</td>
+<td>Show key values inline (axis labels, direct callouts), or pair with data table</td>
+</tr>
+<tr class="even">
+<td>Chart not keyboard-reachable</td>
+<td>Mouse-only data exploration</td>
+<td>No <code>tabindex</code>, no key handlers</td>
+<td>Add <code>tabindex="0"</code> to data points + arrow-key navigation</td>
+</tr>
+<tr class="odd">
+<td>Table no header semantics</td>
+<td>Screen reader can't navigate</td>
+<td>All <code>&lt;td&gt;</code>, no <code>&lt;th&gt;</code> with <code>scope</code></td>
+<td>Use <code>&lt;th scope="col"&gt;</code> / <code>&lt;th scope="row"&gt;</code></td>
+</tr>
+<tr class="even">
+<td>Tabular numerals misaligned</td>
+<td>Digits shift between rows</td>
+<td>Proportional digit widths</td>
+<td><code>font-variant-numeric: tabular-nums</code> (web) / <code>.monospacedDigit()</code> (SwiftUI)</td>
+</tr>
+<tr class="odd">
+<td>Mobile table overflow</td>
+<td>Table extends past viewport</td>
+<td>Fixed-width table</td>
+<td>Wrap in scroll container OR collapse to cards on narrow viewport</td>
+</tr>
+<tr class="even">
+<td>Body text too small</td>
+<td>&lt; 16 px on mobile</td>
+<td>Hardcoded 12–14 px</td>
+<td>Use 16 px (1 rem) min on mobile</td>
+</tr>
+<tr class="odd">
+<td>Line length too long</td>
+<td>Body text spans full 1440 px viewport</td>
+<td>No <code>max-width</code> on prose container</td>
+<td><code>max-width: 65ch</code> on body container</td>
+</tr>
+<tr class="even">
+<td>Muted text contrast fail</td>
+<td>"Secondary" text below 4.5:1</td>
+<td><code>text-gray-400</code> (#9CA3AF) on white</td>
+<td>Use <code>slate-600</code> (#475569) minimum for muted</td>
+</tr>
+<tr class="odd">
+<td>Heading skip</td>
+<td>h1 → h3 with no h2</td>
+<td>Designer-driven hierarchy ignoring DOM levels</td>
+<td>Use semantic h2 (style separately if visual differs)</td>
+</tr>
+<tr class="even">
+<td>Placeholder-only label</td>
+<td>Form field label vanishes on focus</td>
+<td><code>placeholder</code> used as label</td>
+<td>Add <code>&lt;label&gt;</code> with <code>for=</code>; placeholder for examples only</td>
+</tr>
+</tbody>
+</table>
+<h2 id="phase-4--ux-heuristic-violations">Phase 4 — UX Heuristic Violations</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Heuristic</th>
+<th>Violation symptom</th>
+<th>Common cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1 (Visibility of system status)</td>
+<td>Submit button no loading state</td>
+<td>Missing async-state UI</td>
+<td>Spinner on tap, disable button while pending</td>
+</tr>
+<tr class="even">
+<td>1 (Visibility)</td>
+<td>Sidebar nav item not highlighted on current page</td>
+<td>No active-route style</td>
+<td>Style active route with bg + accent border</td>
+</tr>
+<tr class="odd">
+<td>2 (Match real world)</td>
+<td>Error: "401 Unauthorized" shown to user</td>
+<td>Raw HTTP response surfaced</td>
+<td>Translate to "Please sign in to continue"</td>
+</tr>
+<tr class="even">
+<td>2 (Match real world)</td>
+<td>Date in MM/DD when locale is DD/MM</td>
+<td>Hardcoded format</td>
+<td>Use locale-aware date formatter</td>
+</tr>
+<tr class="odd">
+<td>3 (User control &amp; freedom)</td>
+<td>Multi-step form loses data on Back</td>
+<td>No state persistence between steps</td>
+<td>Persist to local state or session storage</td>
+</tr>
+<tr class="even">
+<td>3 (User control &amp; freedom)</td>
+<td>Modal with no close, no Esc handler</td>
+<td>Missing dismiss controls</td>
+<td>Add × button + Esc key handler</td>
+</tr>
+<tr class="odd">
+<td>4 (Consistency &amp; standards)</td>
+<td>"Save" / "Update" / "Apply" for same op</td>
+<td>Different teams owning different screens</td>
+<td>Pick one verb in design system, enforce</td>
+</tr>
+<tr class="even">
+<td>4 (Consistency &amp; standards)</td>
+<td>iOS bottom-sheet on one screen, modal on another</td>
+<td>Different presentation patterns</td>
+<td>Standardize per use-case in design system</td>
+</tr>
+<tr class="odd">
+<td>5 (Error prevention)</td>
+<td>Delete button next to Save, same style</td>
+<td>No visual differentiation of destructive actions</td>
+<td>Destructive = red / outlined / requires confirm</td>
+</tr>
+<tr class="even">
+<td>5 (Error prevention)</td>
+<td>Free-text date entry</td>
+<td>No constraint on format</td>
+<td>Use date picker</td>
+</tr>
+<tr class="odd">
+<td>6 (Recognition over recall)</td>
+<td>Active filter not visible after applied</td>
+<td>No filter chip / pill</td>
+<td>Add chip showing filter, × to clear</td>
+</tr>
+<tr class="even">
+<td>6 (Recognition over recall)</td>
+<td>"Format: YYYY-MM-DD" only in help text</td>
+<td>Format hidden</td>
+<td>Show inline placeholder example</td>
+</tr>
+<tr class="odd">
+<td>7 (Flexibility &amp; efficiency)</td>
+<td>No keyboard shortcuts in daily-use tool</td>
+<td>Power-user features absent</td>
+<td>Add shortcuts + visible hint (e.g. <code>⌘K</code>)</td>
+</tr>
+<tr class="even">
+<td>8 (Aesthetic &amp; minimalist)</td>
+<td>Five primary buttons on one screen</td>
+<td>No clear primary action</td>
+<td>Promote one to primary, others secondary/tertiary</td>
+</tr>
+<tr class="odd">
+<td>9 (Recognize / diagnose / recover)</td>
+<td>"An error occurred" with no detail</td>
+<td>Generic catch-all error message</td>
+<td>State problem + cause + recovery in plain text</td>
+</tr>
+<tr class="even">
+<td>9 (Recognize / diagnose / recover)</td>
+<td>Toast vanishes in 3s, error unread</td>
+<td>Auto-dismiss too short</td>
+<td>Persistent inline error at field</td>
+</tr>
+<tr class="odd">
+<td>10 (Help &amp; documentation)</td>
+<td>Icon-only button with no tooltip</td>
+<td>Missing tooltip / aria-label</td>
+<td>Add tooltip + aria-label</td>
+</tr>
+<tr class="even">
+<td>Affordance — false</td>
+<td>Bold colored text isn't a link</td>
+<td>Decorative styling using link conventions</td>
+<td>Either make link or remove conventions</td>
+</tr>
+<tr class="odd">
+<td>Affordance — hidden</td>
+<td>Swipe-to-archive with no signifier</td>
+<td>Gesture-only feature</td>
+<td>Add visual cue or onboarding hint</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/defect-pattern-database.md">source → plugins/proofpunk/references/defect-pattern-database.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:DEFECT-PATTERN-DATABASE</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

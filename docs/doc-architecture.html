@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proofpunk Architecture — How the 18 Skills Execute as One System — proofpunk docs</title>
+<meta name="description" content="This is the authoritative map of how the skills work **with one another**: who">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOC / ARCHITECTURE</div>
+  <div class="doc">
+<h1 id="proofpunk-architecture--how-the-18-skills-execute-as-one-system">Proofpunk Architecture — How the 18 Skills Execute as One System</h1>
+<p>This is the authoritative map of how the skills work <strong>with one another</strong>: who owns each method, who calls whom, in what order, and why nothing is duplicated. If you only read one doc, read this one.</p>
+<h2 id="1-the-mental-model">1. The mental model</h2>
+<p>The 18 skills are <strong>not</strong> 18 independent procedures. They form a <strong>directed acyclic delegation graph</strong>:</p>
+<ul>
+<li><strong>A method lives in exactly one skill</strong> (its <em>owner</em>). Every other skill that needs that method <strong>calls</strong> the owner — it reads the owner's SKILL.md at the invocation point and applies the method verbatim. It never restates the method in its own body.</li>
+<li><strong>Calls are directional.</strong> "A calls B" means: during A's execution, A defers to B's canonical method. Convenience pointers that would create a cycle are deliberately one-way (the stronger direction wins).</li>
+<li><strong>The graph is a DAG</strong>, verified by <code>tools/verify-orchestration.py</code> on every change. Depth = how far a skill sits from the leaf owners:</li>
+</ul>
+<pre><code>depth 6  implement                     (the orchestrator — calls 9 skills)
+depth 5  cook, production-readiness
+depth 4  codebase-truth-audit, full-functional-audit, plan-hardening, stack-testing
+depth 3  mobile-validation-runner, red-team-eval, root-cause-debugging, ui-experience-audit
+depth 2  functional-validation
+depth 1  validation-plan, visual-inspection
+depth 0  brainstorm, end-user-testing, prompt-forge, session-intent   (leaf owners — call nothing)</code></pre>
+<h2 id="2-method-ownership--the-single-source-of-truth">2. Method ownership — the single source of truth</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Owner</th>
+<th>Consumers (call, never copy)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>End-User Actor Mandate + fresh-evidence rules + verdict format</td>
+<td><code>end-user-testing</code></td>
+<td>every validation skill (11 deferrals)</td>
+</tr>
+<tr class="even">
+<td>Scout-first rule (GATE 2) + exact requirements (GATE 3)</td>
+<td><code>brainstorm</code></td>
+<td><code>cook</code>, <code>implement</code></td>
+</tr>
+<tr class="odd">
+<td>Proof-obligation XML format (<code>&lt;proof_obligation id="PO-N"&gt;</code>)</td>
+<td><code>validation-plan</code></td>
+<td><code>cook</code>, <code>implement</code>, <code>plan-hardening</code></td>
+</tr>
+<tr class="even">
+<td>Execution-loop contract (task → prove → next)</td>
+<td><code>cook</code></td>
+<td><code>implement</code></td>
+</tr>
+<tr class="odd">
+<td>Iron Rule of validation (fix the real system, no mocks)</td>
+<td><code>functional-validation</code></td>
+<td><code>full-functional-audit</code> and all drivers</td>
+</tr>
+<tr class="even">
+<td>Screenshot examination protocol</td>
+<td><code>visual-inspection</code></td>
+<td><code>functional-validation</code>, <code>mobile-validation-runner</code>, <code>ui-experience-audit</code></td>
+</tr>
+<tr class="odd">
+<td>Stuck protocol (attempt → root-cause ×3 → split → escalate)</td>
+<td><code>implement</code></td>
+<td><code>cook</code> invokes it per unproven task</td>
+</tr>
+<tr class="even">
+<td>Root-cause method (no fix without reproduction)</td>
+<td><code>root-cause-debugging</code></td>
+<td><code>stack-testing</code>, <code>codebase-truth-audit</code>, <code>full-functional-audit</code></td>
+</tr>
+<tr class="odd">
+<td>Four adversarial lenses</td>
+<td><code>red-team-eval</code></td>
+<td><code>plan-hardening</code> (Stage 4 dispatch)</td>
+</tr>
+<tr class="even">
+<td>Prompt skeleton + rating rubric</td>
+<td><code>prompt-forge</code></td>
+<td><code>implement</code> (Stage 3 FORGE)</td>
+</tr>
+<tr class="odd">
+<td>Session mining (JSONL → intent matrix)</td>
+<td><code>session-intent</code></td>
+<td><code>implement</code> (Stage 1 MINE), <code>codebase-truth-audit</code> (Stage 2)</td>
+</tr>
+</tbody>
+</table>
+<p>Measured deduplication: shared 12-word content blocks across all skill bodies went from <strong>911 → 121 shingles (−87%)</strong> when this ownership was enforced; the verbatim Actor Mandate went from <strong>12 copies → 1 owner + one-line deferrals</strong>.</p>
+<h2 id="3-the-full-call-graph">3. The full call graph</h2>
+<pre class="mermaid"><code>graph TD
+  implement --&gt; session-intent
+  implement --&gt; brainstorm
+  implement --&gt; prompt-forge
+  implement --&gt; validation-plan
+  implement --&gt; cook
+  implement --&gt; end-user-testing
+  implement --&gt; functional-validation
+  implement --&gt; root-cause-debugging
+  implement --&gt; stack-testing
+  cook --&gt; brainstorm
+  cook --&gt; validation-plan
+  cook --&gt; end-user-testing
+  cook --&gt; functional-validation
+  cook --&gt; root-cause-debugging
+  cook --&gt; stack-testing
+  production-readiness --&gt; codebase-truth-audit
+  production-readiness --&gt; full-functional-audit
+  production-readiness --&gt; stack-testing
+  production-readiness --&gt; end-user-testing
+  codebase-truth-audit --&gt; session-intent
+  codebase-truth-audit --&gt; end-user-testing
+  codebase-truth-audit --&gt; root-cause-debugging
+  full-functional-audit --&gt; functional-validation
+  full-functional-audit --&gt; end-user-testing
+  full-functional-audit --&gt; ui-experience-audit
+  full-functional-audit --&gt; root-cause-debugging
+  plan-hardening --&gt; red-team-eval
+  plan-hardening --&gt; validation-plan
+  plan-hardening --&gt; end-user-testing
+  stack-testing --&gt; root-cause-debugging
+  mobile-validation-runner --&gt; end-user-testing
+  mobile-validation-runner --&gt; visual-inspection
+  mobile-validation-runner --&gt; functional-validation
+  red-team-eval --&gt; end-user-testing
+  red-team-eval --&gt; functional-validation
+  root-cause-debugging --&gt; functional-validation
+  root-cause-debugging --&gt; end-user-testing
+  ui-experience-audit --&gt; visual-inspection
+  ui-experience-audit --&gt; functional-validation
+  ui-experience-audit --&gt; end-user-testing
+  functional-validation --&gt; end-user-testing
+  functional-validation --&gt; visual-inspection
+  visual-inspection --&gt; end-user-testing
+  validation-plan --&gt; end-user-testing</code></pre>
+<h2 id="4-execution-order-per-entry-point">4. Execution order, per entry point</h2>
+<p>This is the order the skills actually fire in when you run each slash command. The verifier (<code>tools/verify-orchestration.py</code>) re-derives these traces from the SKILL.md files and fails if the docs drift.</p>
+<h3 id="proofpunkimplement-goal--the-full-pipeline"><code>/proofpunk:implement "&lt;goal&gt;"</code> — the full pipeline</h3>
+<pre><code>Stage 0  (implement)     Distill TRUE success criteria
+Stage 1  session-intent  MINE past sessions for prior implementations
+Stage 2  brainstorm      EXPLORE: scout-first + exact-requirements gates
+Stage 3  prompt-forge    FORGE the build prompt (XML skeleton)
+Stage 4  validation-plan DECOMPOSE: task graph, each task gets a PO-N
+Stage 5  cook            EXECUTE loop semantics, per task:
+           └─ functional-validation   drive the real runtime as the end user
+           └─ end-user-testing        prove it: Six Steps, sealed evidence
+Stage 6  root-cause-debugging   stuck protocol on any unproven task
+Stage 7  (implement)     REPORT from .planning/execution-ledger.json
++        stack-testing   regression rail: suites run AFTER proof, never AS proof</code></pre>
+<h3 id="proofpunkcook-feature-or-plan--scoped-execution"><code>/proofpunk:cook "&lt;feature or plan&gt;"</code> — scoped execution</h3>
+<pre><code>scout      brainstorm            GATE 2 (scout-first) + GATE 3 (exact requirements)
+decompose  validation-plan       proof-obligation format per task
+loop       per task:
+             (cook)              implement following existing patterns
+             functional-validation  drive the real runtime
+             end-user-testing       prove + verdict — not proven = not done
+stuck      root-cause-debugging  when a task cannot be proven
+rail       stack-testing         regression suites after proof</code></pre>
+<h3 id="proofpunktruth-audit-path--evidence-backed-audit"><code>/proofpunk:truth-audit [path]</code> — evidence-backed audit</h3>
+<pre><code>Stage 2  session-intent     reconstruct what the repo was ASKED to become
+Stage 5  end-user-testing   runtime behavior claims get sealed evidence
+on FAIL  root-cause-debugging  root cause of drift before remediation</code></pre>
+<h3 id="proofpunkverify-claim--prove-something-works"><code>/proofpunk:verify "&lt;claim&gt;"</code> — prove something works</h3>
+<pre><code>functional-validation  detect platform, start the real runtime, drive it
+end-user-testing       fresh evidence + verdict
+visual-inspection      any screenshot evidence is examined, never trusted unread</code></pre>
+<h3 id="proofpunkforge-prompt--proofpunkrate-prompt"><code>/proofpunk:forge-prompt</code> / <code>/proofpunk:rate-prompt</code></h3>
+<pre><code>prompt-forge           author or RATE against the quantitative rubric
+plan-hardening         (optional) harden the resulting prompt</code></pre>
+<h2 id="5-deferral-rules-how-calling-works-in-practice">5. Deferral rules (how "calling" works in practice)</h2>
+<ol type="1">
+<li><strong>At the invocation point, read the callee's SKILL.md</strong> — not the whole plugin. Progressive disclosure keeps this cheap.</li>
+<li><strong>Apply the callee's method verbatim.</strong> Do not paraphrase, summarize, or "adapt" it into the caller's body — that is how duplication regresses.</li>
+<li><strong>One-line pointers are allowed; method content is not.</strong> A caller may say <em>"owned by <code>end-user-testing</code> — apply its Actor Mandate verbatim"</em>; it may not restate the mandate.</li>
+<li><strong>Cycles are forbidden.</strong> If two skills feel mutually dependent, keep the stronger direction and demote the other to a Related-Skills note.</li>
+<li><strong>The DAG is machine-checked.</strong> <code>tools/verify-orchestration.py</code> parses the <code>## Skill calls</code> table in every SKILL.md, asserts closure/acyclicity, traces every entry point, and sweeps for re-emerging duplication.</li>
+</ol>
+<h2 id="6-why-this-order-is-correct-the-dependency-argument">6. Why this order is correct (the dependency argument)</h2>
+<p>Execution order is not convention — it is forced by data dependencies:</p>
+<ul>
+<li><strong>Stage 1 MINE before Stage 2 EXPLORE</strong>: past-session intent tells the scouts <em>what to look for</em>; scouting first re-discovers what mining answers in seconds.</li>
+<li><strong>EXPLORE before FORGE</strong>: a build prompt written before scouting encodes assumptions; written after, it encodes the codebase's real patterns.</li>
+<li><strong>DECOMPOSE before EXECUTE</strong>: a task without a written proof obligation cannot be proven — the obligation defines the test before the work starts (test-first at the task level).</li>
+<li><strong>Proof inside the loop, not after it</strong>: end-user testing at the end of a long build localizes nothing; proof per task pins failure to exactly one task's blast radius.</li>
+<li><strong>Regression rail last</strong>: suites protect proven behavior; running them as validation inverts the dependency (a suite can pass while the feature is wrong — the end-user test cannot).</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/architecture.md">source → plugins/proofpunk/docs/architecture.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

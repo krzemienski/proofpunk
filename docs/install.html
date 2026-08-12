@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>install — proofpunk</title>
+<meta name="description" content="Install proofpunk for Claude Code, oh-my-pi (OMP), OpenCode, or any agent — plugin, marketplace, installer, and themes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class=""><span class="n">4</span>docs</a><a href="install.html" class="on"><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">01 / CLAUDE CODE</div>
+  <h1>Install proofpunk<span class="cursor"></span></h1>
+  <p>One plugin: 18 skills, 6 slash commands, and the SessionStart doctrine hook —
+  from the marketplace in two commands.</p>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/plugin marketplace add krzemienski/proofpunk</span></div>
+    <div><span class="p">~$</span> <span class="c">/plugin install proofpunk@proofpunk-marketplace</span></div>
+    <div class="out">proofpunk v1.8.1 · category: quality · license: MIT</div>
+  </div>
+</section>
+<section>
+  <div class="marker">02 / OH-MY-PI (OMP)</div>
+  <h2>OMP plugin — skills, commands, doctrine-guard extension</h2>
+  <p>Catalog at <code>.omp-plugin/marketplace.json</code>, with a Claude-compatible
+  <code>.claude-plugin/</code> fallback.</p>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">omp plugin marketplace add krzemienski/proofpunk</span></div>
+    <div><span class="p">~$</span> <span class="c">omp plugin install proofpunk@proofpunk</span></div>
+  </div>
+</section>
+<section>
+  <div class="marker">03 / OPENCODE &amp; ANY AGENT</div>
+  <h2>OpenCode — or plain skills anywhere</h2>
+  <p>The installer drops the plugin, commands, agent, and skills into
+  <code>~/.config/opencode/</code> — or use the full plugin via the same catalog above. For any
+  other agent, install plain skills into any directory with
+  <code>tools/proofpunk-install.sh</code>:</p>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">bash tools/proofpunk-install.sh --target claude-code</span><span class="out">            # ~/.claude/skills (also read by OpenCode + OMP)</span></div>
+    <div><span class="p">~$</span> <span class="c">bash tools/proofpunk-install.sh --target omp --themes --plugins</span><span class="out"> # oh-my-pi skills + themes + extension</span></div>
+    <div><span class="p">~$</span> <span class="c">bash tools/proofpunk-install.sh --target opencode --themes --plugins</span></div>
+    <div><span class="p">~$</span> <span class="c">bash tools/proofpunk-install.sh --target agents</span><span class="out">                 # ~/.agents/skills (shared)</span></div>
+  </div>
+  <p>Or download <code>proofpunk-marketplace.tar.gz</code> from the repo's release artifacts and
+  extract it into your marketplaces directory.</p>
+  <div class="grid2">
+    <div class="panel"><div class="ptitle">SELF-CONTAINED SKILLS</div>
+      <p>The installer rewrites <code>../../references/X</code> citations to bundled copies inside
+      each skill, injects the <code>proofpunk-doctrine/</code> bundle, and verifies the result —
+      every installed skill stands alone.</p></div>
+    <div class="panel"><div class="ptitle">SURGICAL CONTROL</div>
+      <p><code>--only a,b,c</code> subsets, <code>--override</code> with timestamped
+      <code>.bak</code> backups, <code>--dry-run</code> plans, <code>--verify</code> self-check,
+      <code>--inject-claude-md</code> idempotent rules block.</p></div>
+  </div>
+</section>
+<section>
+  <div class="marker">04 / THEMES</div>
+  <h2>20 flat-black cyberpunk themes</h2>
+  <p><code>--themes</code> copies the pack into every detected platform. One canonical palette
+  source (<code>themes/palettes.json</code>) renders to three formats: OMP theme JSON
+  (<code>~/.omp/agent/themes/</code>), OpenCode theme JSON
+  (<code>~/.config/opencode/themes/</code>), and Hyper modules (merge into
+  <code>~/.hyper.js</code>). Claude Code has no custom-palette API, so the Claude plugin ships the
+  themes for the other surfaces you run beside it.</p>
+  <p style="font-size:13px">neon-tokyo, acid-rain, vapor-grid, ion-storm, red-line, ghost-shell, amber-phosphor, ultraviolet, laser-lime, miami-vice, code-fall, chrome-rose, bio-lumen, solar-flare, cold-fusion, psy-wave, night-drive, overdrive, void-orchid, static-noir</p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>INSTALL</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

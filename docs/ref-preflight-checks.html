@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preflight Checks (shared) — proofpunk doctrine</title>
+<meta name="description" content="Pre-session environment checks to catch blockers BEFORE validation or">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / PREFLIGHT-CHECKS</div>
+  <div class="doc">
+<h1 id="preflight-checks-shared">Preflight Checks (shared)</h1>
+<p>Pre-session environment checks to catch blockers BEFORE validation or implementation work begins. Condensed from the <code>preflight</code> skill (project-specific checks removed). Run at the start of any validation or audit session; fix critical failures before proceeding.</p>
+<h2 id="step-1--detect-project-type">Step 1 — Detect Project Type</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">HAS_IOS</span><span class="op">=</span>0<span class="kw">;</span> <span class="va">HAS_WEB</span><span class="op">=</span>0<span class="kw">;</span> <span class="va">HAS_API</span><span class="op">=</span>0<span class="kw">;</span> <span class="va">HAS_CLI</span><span class="op">=</span>0</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$(</span><span class="fu">find</span> . <span class="at">-maxdepth</span> 3 <span class="at">-name</span> <span class="st">&#39;*.xcodeproj&#39;</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">HAS_IOS</span><span class="op">=</span>1</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$(</span><span class="fu">find</span> . <span class="at">-maxdepth</span> 3 <span class="at">-name</span> <span class="st">&#39;*.tsx&#39;</span> <span class="at">-o</span> <span class="at">-name</span> <span class="st">&#39;*.jsx&#39;</span> <span class="at">-o</span> <span class="at">-name</span> <span class="st">&#39;next.config*&#39;</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">HAS_WEB</span><span class="op">=</span>1</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$(</span><span class="fu">find</span> . <span class="at">-maxdepth</span> 3 <span class="at">-name</span> <span class="st">&#39;routes*&#39;</span> <span class="at">-o</span> <span class="at">-name</span> <span class="st">&#39;controllers*&#39;</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">HAS_API</span><span class="op">=</span>1</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> package.json <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="fu">grep</span> <span class="at">-q</span> <span class="st">&#39;&quot;bin&quot;&#39;</span> package.json <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="va">HAS_CLI</span><span class="op">=</span>1</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;iOS=</span><span class="va">$HAS_IOS</span><span class="st"> Web=</span><span class="va">$HAS_WEB</span><span class="st"> API=</span><span class="va">$HAS_API</span><span class="st"> CLI=</span><span class="va">$HAS_CLI</span><span class="st">&quot;</span></span></code></pre></div>
+<h2 id="step-2--universal-checks">Step 2 — Universal Checks</h2>
+<ol type="1">
+<li><strong>Git status</strong> — uncommitted changes, detached HEAD, wrong branch</li>
+<li><strong>Git worktrees</strong> — <code>git worktree list</code>; check each for uncommitted work</li>
+<li><strong>Runtime available</strong> — <code>node --version</code> / <code>python3 --version</code> / toolchain of record</li>
+<li><strong>Disk space</strong> — <code>df -h .</code> not critically low</li>
+</ol>
+<h2 id="step-3--platform-specific-checks">Step 3 — Platform-Specific Checks</h2>
+<h3 id="web--full-stack">Web / Full-Stack</h3>
+<ol type="1">
+<li>Dev server responds: <code>curl -sf http://localhost:&lt;port&gt; &gt; /dev/null &amp;&amp; echo UP || echo DOWN</code></li>
+<li>Database: <code>pg_isready -h localhost</code> (or equivalent)</li>
+<li>Env file present (<code>.env.local</code> / <code>.env</code>)</li>
+<li>Dependencies installed (<code>node_modules</code> exists / package env importable)</li>
+<li>Browser automation available (Playwright / browser MCP / DevTools)</li>
+<li>Build cache staleness after route/dependency changes</li>
+</ol>
+<h3 id="ios--macos">iOS / macOS</h3>
+<ol type="1">
+<li>Simulator booted: <code>xcrun simctl list devices booted</code></li>
+<li>Toolchain: <code>xcodebuild -version</code></li>
+<li>Backend health endpoint reachable (if the app needs one)</li>
+</ol>
+<h3 id="api-only">API-only</h3>
+<ol type="1">
+<li>Server: <code>curl -sf http://localhost:$PORT/health</code></li>
+<li>Database and cache (e.g. <code>redis-cli ping</code>) reachable</li>
+</ol>
+<h3 id="cli">CLI</h3>
+<ol type="1">
+<li>Binary exists or build script present</li>
+<li><code>--help</code> or <code>--version</code> exits 0</li>
+</ol>
+<h2 id="step-4--summarize">Step 4 — Summarize</h2>
+<p>Report all findings before proceeding. Any critical failure (runtime target unreachable, missing deps, wrong branch, stale caches) is fixed FIRST — building validation on a broken foundation compounds every later step.</p>
+<h2 id="anti-patterns">Anti-Patterns</h2>
+<table>
+<thead>
+<tr class="header">
+<th>NEVER</th>
+<th>WHY</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Skip preflight and jump straight to work</td>
+<td>Undetected blockers waste hours of downstream debugging</td>
+<td>Run preflight at the start of every major session</td>
+</tr>
+<tr class="even">
+<td>Ignore critical failures and proceed</td>
+<td>Every later step fails for the same root cause</td>
+<td>Fix all critical failures before the main task</td>
+</tr>
+<tr class="odd">
+<td>Treat preflight as feature validation</td>
+<td>Environment readiness != behavior proof</td>
+<td>After preflight passes, validate with <code>functional-validation</code> — the AI driving the system as the end user</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/preflight-checks.md">source → plugins/proofpunk/references/preflight-checks.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:PREFLIGHT-CHECKS</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

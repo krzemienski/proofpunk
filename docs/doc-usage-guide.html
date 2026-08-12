@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proofpunk Usage Guide — Claude Code, oh-my-pi, and OpenCode — proofpunk docs</title>
+<meta name="description" content="&gt; **Read first:** [architecture.md](architecture.md) — how the 18 skills execute as one delegation DAG: method ownership, the full call graph, execution order p">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOC / USAGE-GUIDE</div>
+  <div class="doc">
+<h1 id="proofpunk-usage-guide--claude-code-oh-my-pi-and-opencode">Proofpunk Usage Guide — Claude Code, oh-my-pi, and OpenCode</h1>
+<blockquote>
+<p><strong>Read first:</strong> <a href="architecture.md">architecture.md</a> — how the 18 skills execute as one delegation DAG: method ownership, the full call graph, execution order per command, and the deferral rules that keep methods unduplicated.</p>
+</blockquote>
+<p>How to actually invoke all 18 skills once the plugin is installed, with real argument syntax and examples. For the full flag/permutation tables see the README's Command Reference; this guide is the hands-on "type this" version.</p>
+<h2 id="how-invocation-works-per-platform">How invocation works per platform</h2>
+<p><strong>Claude Code</strong> — plugin commands are namespaced: <code>/proofpunk:implement</code>, <code>/proofpunk:cook</code>, <code>/proofpunk:verify</code>, <code>/proofpunk:truth-audit</code>, <code>/proofpunk:rate-prompt</code>, <code>/proofpunk:forge-prompt</code>. Skills also fire directly (<code>/implement</code>, <code>/cook</code>, …) or from natural language. A SessionStart hook injects the doctrine once per session.</p>
+<p><strong>oh-my-pi (OMP)</strong> — after <code>omp plugin install proofpunk@proofpunk</code>, the same command names work (<code>/proofpunk:implement</code>). Skills are discovered from the plugin's <code>skills/</code> directory and load on demand; <code>/skill:&lt;name&gt;</code> opens one interactively. The doctrine-guard extension (<code>extensions/proofpunk.ts</code>, declared in <code>package.json</code> <code>omp.extensions</code>) blocks destructive commands and secret-file reads in every session. Plain installs via <code>proofpunk-install.sh --target omp</code> land in <code>~/.omp/agent/skills</code> (native provider, highest precedence).</p>
+<p><strong>OpenCode</strong> — the installer drops <code>plugin/proofpunk.ts</code> (doctrine guard), six commands (<code>/proofpunk-implement</code>, <code>/proofpunk-cook</code>, <code>/proofpunk-verify</code>, <code>/proofpunk-truth-audit</code>, <code>/proofpunk-rate-prompt</code>, <code>/proofpunk-forge-prompt</code>), and the <code>proofpunk</code> primary agent into <code>~/.config/opencode/</code>. Skills load through OpenCode's native <code>skill</code> tool — and because OpenCode reads <code>~/.claude/skills</code> too, one <code>--target claude-code</code> install serves both platforms.</p>
+<h2 id="how-invocation-works-in-claude-code">How invocation works in Claude Code</h2>
+<ol type="1">
+<li><strong>Slash command</strong>: <code>/skill-name &lt;arguments&gt;</code> — the arguments string is passed to the skill as its input. Positional arguments and CLI-style flags work exactly as each skill's command surface defines them.</li>
+<li><strong>Natural language</strong>: you can also just describe the task ("rate this prompt", "audit this repo for production readiness") — Claude Code routes to the skill from its description. Slash commands are the deterministic path when you want a specific skill with specific args.</li>
+<li><strong>Chaining</strong>: skills delegate to each other per the delegation graph (README diagram 3). Invoking <code>/implement</code> fires session-intent, prompt-forge, validation-plan, plan-hardening, cook, and the proof layer in one run — you don't invoke those separately unless you want just one layer.</li>
+</ol>
+<h2 id="orchestration">Orchestration</h2>
+<h3 id="implement--the-front-door-execution-loop"><code>/implement</code> — the front door (execution loop)</h3>
+<pre><code>/implement &lt;goal&gt; [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]
+/implement mine [--project DIR] [--since DATE] [--until DATE]</code></pre>
+<pre><code>/implement &quot;add billing webhooks with signature verification&quot;
+/implement &quot;add billing webhooks&quot; --mine
+/implement &quot;migrate auth to JWT&quot; --parallel
+/implement &quot;rebuild the notification system&quot; --parallel --auto --mine
+/implement mine --project my-shop --since 2026-07-01</code></pre>
+<p>What happens: Stage 0 distills TRUE success criteria (escalates for your approval if the goal isn't clearly laid out — the only mandatory stop under <code>--auto</code>) → optional session mining → parallel codebase scouts → prompt-forge forges the build prompt → decomposition into a task graph where every task carries a written proof obligation → the execution loop: execute a task, end-user test it immediately, record the proof in the live execution ledger → the stuck protocol on failures (attempt → root-cause → split → escalate) → the report rendered from the ledger: criteria-by-criteria proof table.</p>
+<h2 id="prompt-and-plan-layer">Prompt and plan layer</h2>
+<h3 id="prompt-forge--author--rate--optimize--pipeline"><code>/prompt-forge</code> — author / rate / optimize / pipeline</h3>
+<pre><code>/prompt-forge author &quot;a code-review prompt for Go services&quot;
+/prompt-forge author &quot;a SQL review prompt&quot; --depth advanced --out prompts/sql-review.md
+/prompt-forge rate prompts/login.md
+/prompt-forge rate prompts/login.md --in-place
+/prompt-forge rate prompts/login.md --report-only
+/prompt-forge optimize prompts/login.md --evidence captures/bad-output.txt
+/prompt-forge pipeline &quot;onboarding revamp&quot; --dir .prompts/onboarding</code></pre>
+<p>Positionals: <code>"&lt;goal&gt;"</code> for author/pipeline, <code>NAME.md</code> for rate/optimize. Ratings always write <code>NAME.rating.md</code> + <code>NAME.remediated.md</code> unless you pass <code>--report-only</code> or <code>--in-place</code>. Optimize refuses to run without <code>--evidence</code> — real failure output is its hard requirement.</p>
+<h3 id="brainstorm--decide-the-approach"><code>/brainstorm</code> — decide the approach</h3>
+<pre><code>/brainstorm &quot;websockets vs SSE for live order updates&quot;
+/brainstorm &quot;how should tenant isolation work in the schema&quot;</code></pre>
+<p>No flags. Output: trade-off analysis with brutal honesty, then a design you approve before any planning begins.</p>
+<h3 id="validation-plan--proof-carrying-plans"><code>/validation-plan</code> — proof-carrying plans</h3>
+<pre><code>/validation-plan &quot;the mood-ring feature&quot;
+/validation-plan .planning/BRIEF.md</code></pre>
+<p>No flags. Produces BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking cumulative proof obligations.</p>
+<h3 id="plan-hardening--red-team-a-plan-or-prompt"><code>/plan-hardening</code> — red-team a plan or prompt</h3>
+<pre><code>/plan-hardening .planning/phases/02-webhook-endpoint.md
+/plan-hardening prompts/sql-review.md</code></pre>
+<p>No flags. Positional: the plan or prompt file to harden. Output: confidence-gap scoring, 4-lens red-team, dispositioned gap register, proof obligations injected into the document.</p>
+<h2 id="execution-layer">Execution layer</h2>
+<h3 id="cook--the-execution-engine"><code>/cook</code> — the execution engine</h3>
+<pre><code>/cook &quot;add avatar upload&quot;
+/cook &quot;add avatar upload&quot; --tdd
+/cook &quot;fix the timezone bug&quot; fast
+/cook .planning/ROADMAP.md
+/cook .planning/ROADMAP.md auto --tdd</code></pre>
+<p>Positionals: <code>&lt;goal&gt;</code> (full pipeline with codebase scout) or <code>&lt;plan-path&gt;</code> (loads a plan, scout skipped). Modes: <code>interactive</code> (default) / <code>fast</code> / <code>auto</code> / <code>parallel</code> / <code>no-test</code>; <code>--tdd</code> composes with any of them.</p>
+<h3 id="stack-testing--real-server-test-rigs"><code>/stack-testing</code> — real-server test rigs</h3>
+<pre><code>/stack-testing &quot;run the checkout e2e against the dev server&quot;</code></pre>
+<p>Natural-language routing to the stack runbooks. The bundled CLI for lifecycle-managed servers:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/stack-testing/scripts/with_server.py <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--server</span> <span class="st">&quot;npm run dev&quot;</span> <span class="at">--port</span> 5173 <span class="at">--</span> npx playwright test e2e/checkout.spec.ts</span></code></pre></div>
+<p><code>--server</code> starts the real server, <code>--port</code> proves readiness by the port answering (condition-based, no sleeps), the trailing positional after <code>--</code> is your actual check command.</p>
+<h3 id="mobile-validation-runner--ios-end-user-validation"><code>/mobile-validation-runner</code> — iOS end-user validation</h3>
+<pre><code>/mobile-validation-runner &quot;the login screen&quot;
+/mobile-validation-runner &quot;full onboarding flow on iPhone 16 Pro simulator&quot;</code></pre>
+<p>No flags. Lanes (simctl / XC-MCP / Expo-idb) are routed by your environment and request, not by arguments — say "simctl only" in the request if you want the bundled lane. Protocol: SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet checks.</p>
+<h2 id="proof-layer">Proof layer</h2>
+<h3 id="functional-validation--drive-the-real-system"><code>/functional-validation</code> — drive the real system</h3>
+<pre><code>/functional-validation --analyze
+/functional-validation --analyze --plan
+/functional-validation --execute --platform web
+/functional-validation --execute --fix
+/functional-validation --audit --ci</code></pre>
+<p>No positionals. Flags compose into analyze → plan → execute → (fix) → report; <code>--ci</code> gives machine-readable output and a non-zero exit on FAIL.</p>
+<h3 id="end-user-testing--fresh-evidence-lifecycle"><code>/end-user-testing</code> — fresh evidence lifecycle</h3>
+<pre><code>/end-user-testing &quot;seal the mood-ring run&quot;</code></pre>
+<p>Natural-language routing; the enforcing CLI (invoked by every verdict):</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py init-run mood-ring</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py next-step mood-ring</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py seal</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py validate</span></code></pre></div>
+<p>Positional <code>&lt;slug&gt;</code> names the run. Exit 2 = refusal with STALE:/EMPTY: lines per offending artifact.</p>
+<h3 id="visual-inspection--screenshot-qa"><code>/visual-inspection</code> — screenshot QA</h3>
+<pre><code>/visual-inspection evidence/run-20260811/step-03-checkout.png
+/visual-inspection &quot;all screenshots in the sealed run&quot;</code></pre>
+<p>No flags. Positional: a screenshot path or scope. Severity-classified defect report; never pass a screenshot you haven't actually read.</p>
+<h3 id="ui-experience-audit--deep-ux-audit"><code>/ui-experience-audit</code> — deep UX audit</h3>
+<pre><code>/ui-experience-audit &quot;the checkout flow&quot;
+/ui-experience-audit screenshots/step-05-settings.png</code></pre>
+<p>No flags. Six phases: triage → visual → interactive → content → Nielsen heuristics → synthesis.</p>
+<h3 id="full-functional-audit--app-wide-sweep"><code>/full-functional-audit</code> — app-wide sweep</h3>
+<pre><code>/full-functional-audit
+/full-functional-audit &quot;the admin panel&quot;</code></pre>
+<p>No flags. Inventory every interaction → execute each → remediate → verdict, batched through end-user testing.</p>
+<h2 id="deep-analysis-layer">Deep-analysis layer</h2>
+<h3 id="root-cause-debugging--fix-the-cause-never-the-symptom"><code>/root-cause-debugging</code> — fix the cause, never the symptom</h3>
+<pre><code>/root-cause-debugging &quot;tests pass locally but fail in CI&quot;
+/root-cause-debugging &quot;the webhook endpoint 500s only under load&quot;</code></pre>
+<p>No flags. Reproduce → minimize → hypothesize → instrument; the Iron Rule: no fix without reproduction, no claim without evidence.</p>
+<h3 id="red-team-eval--hostile-review--measured-qa-cycles"><code>/red-team-eval</code> — hostile review + measured QA cycles</h3>
+<pre><code>/red-team-eval .planning/ROADMAP.md
+/red-team-eval prompts/sql-review.md</code></pre>
+<p>No flags. Positional: the artifact to attack. 4 lenses (security, scope-creep, evidence-rigor, failure-modes) plus eval-driven scoring.</p>
+<h3 id="production-readiness--ship-readiness-audit"><code>/production-readiness</code> — ship-readiness audit</h3>
+<pre><code>/production-readiness
+/production-readiness &quot;focus on the billing subsystem&quot;</code></pre>
+<p>No flags. 8-phase audit: cleanup waves, dead code, doc drift, spec-compliance matrix (COVERED/INCOMPLETE/MISSING), dependency supply-chain health.</p>
+<h3 id="session-intent--mine-claude-code-transcripts"><code>/session-intent</code> — mine Claude Code transcripts</h3>
+<pre><code>/session-intent --project my-shop --since 2026-07-01
+/session-intent --since 2026-08-01 --until 2026-08-07 --json out/intent.json</code></pre>
+<p>Flags map straight onto the bundled CLI:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/session-intent/scripts/session_intent.py <span class="dt">\</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--project</span> my-shop <span class="at">--since</span> 2026-07-01 <span class="at">--md</span> out/intent-matrix.md</span></code></pre></div>
+<p>Exit 2 when no transcripts match — never a silent empty success.</p>
+<h3 id="codebase-truth-audit--repo-wide-truth-audit"><code>/codebase-truth-audit</code> — repo-wide truth audit</h3>
+<pre><code>/codebase-truth-audit /path/to/repo
+/codebase-truth-audit /path/to/repo --start 2026-06-01 --end 2026-08-01 --label q3-audit</code></pre>
+<p>Positionals: the repository path. Flags map onto the bundled CLI, which scaffolds the 8-phase audit workspace with captured git evidence:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/codebase-truth-audit/scripts/init_audit_workspace.py <span class="dt">\</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--repo</span> /path/to/repo <span class="at">--label</span> q3-audit <span class="at">--start</span> 2026-06-01 <span class="at">--output-root</span> plans/</span></code></pre></div>
+<p>The audit pauses for explicit approval before any behavior or destructive change.</p>
+<h2 id="chaining-recipes">Chaining recipes</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Goal</th>
+<th>Sequence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ship a feature end to end</td>
+<td><code>/implement "..." --mine</code> (fires the whole chain)</td>
+</tr>
+<tr class="even">
+<td>Ship it unattended</td>
+<td><code>/implement "..." --parallel --auto --mine</code></td>
+</tr>
+<tr class="odd">
+<td>Audit an inherited repo</td>
+<td><code>/codebase-truth-audit /repo</code> → <code>/session-intent --project repo</code> → <code>/production-readiness</code></td>
+</tr>
+<tr class="even">
+<td>Fix a flaky flow</td>
+<td><code>/root-cause-debugging "..."</code> → <code>/stack-testing</code> (reproducer → regression test) → <code>/functional-validation --execute --fix</code></td>
+</tr>
+<tr class="odd">
+<td>Harden a plan before building</td>
+<td><code>/validation-plan "..."</code> → <code>/plan-hardening .planning/...</code> → <code>/cook .planning/ROADMAP.md</code></td>
+</tr>
+<tr class="even">
+<td>Perfect a prompt</td>
+<td><code>/prompt-forge author "..."</code> → <code>/red-team-eval prompts/x.md</code> → <code>/prompt-forge optimize prompts/x.md --evidence ...</code></td>
+</tr>
+<tr class="odd">
+<td>Release check</td>
+<td><code>/functional-validation --audit --ci</code> → <code>/production-readiness</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="after-installing-with-the-script">After installing with the script</h2>
+<p><code>tools/proofpunk-install.sh</code> installs the skills as <strong>plain skills</strong> (not a plugin) into the skills dir of your platform — Claude Code (<code>~/.claude/skills</code>), oh-my-pi (<code>~/.omp/agent/skills</code>), OpenCode (<code>~/.config/opencode/skills</code>), or the shared agents location (<code>~/.agents/skills</code>). Post-install invocation is identical to the above; verify with:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/proofpunk-install.sh</span> <span class="at">--target</span> claude-code <span class="at">--dry-run</span>   <span class="co"># see the full plan</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/proofpunk-install.sh</span> <span class="at">--target</span> claude-code             <span class="co"># install all 18 + doctrine</span></span></code></pre></div>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/usage-guide.md">source → plugins/proofpunk/docs/usage-guide.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOC:USAGE-GUIDE</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

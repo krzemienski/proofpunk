@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CI / Pre-Commit Quality Gates (shared) — proofpunk doctrine</title>
+<meta name="description" content="Methodology for layered build-quality gates, condensed from">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / CI-GATES</div>
+  <div class="doc">
+<h1 id="ci--pre-commit-quality-gates-shared">CI / Pre-Commit Quality Gates (shared)</h1>
+<p>Methodology for layered build-quality gates, condensed from <code>build-quality-gates</code>. Use when a project needs pre-commit hooks or CI gates that catch failures early without slowing the loop.</p>
+<h2 id="priority-classification">Priority Classification</h2>
+<p>Gates are classified by blast radius and rolled out iteratively:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Priority</th>
+<th>What it catches</th>
+<th>When</th>
+<th>Target time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P0 Critical</td>
+<td>Temp files, missing deps, broken fixtures, syntax errors</td>
+<td>Pre-commit</td>
+<td>&lt;10s</td>
+</tr>
+<tr class="even">
+<td>P1 Enhanced</td>
+<td>Shell quality, debug statements, import hygiene, doc freshness</td>
+<td>Pre-commit</td>
+<td>&lt;30s</td>
+</tr>
+<tr class="odd">
+<td>P2 Optimization</td>
+<td>Cross-module integration, performance regression, full static analysis</td>
+<td>Pre-push or CI</td>
+<td>&lt;120s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rollout order matters</strong>: P0 first (highest ROI), measure improvement, then P1, then P2. Each tier should show measurable CI-failure-rate improvement before the next is added.</p>
+<h2 id="baseline-first">Baseline First</h2>
+<p>Analyze the last ~50 CI runs and categorize failures (temp files, deps, imports, test infra, code quality, build config, environment) before writing any gate. Gates target the failure categories that actually occur.</p>
+<h2 id="relationship-to-end-user-testing">Relationship to End-User Testing</h2>
+<p>CI gates are fast mechanical checks — the regression rail. They complement, never replace, the end-user testing proof standard in <code>evidence-contract.md</code>. A green pre-commit hook proves the build is clean; it does not prove the feature works. Behavioral proof still requires the AI driving the real system as the end user per <code>end-user-actor.md</code>. Conversely, do not put slow end-to-end journeys in pre-commit; P2/CI is the right layer for anything over ~30s.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/ci-gates.md">source → plugins/proofpunk/references/ci-gates.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:CI-GATES</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>commands — 6+6 commands — proofpunk</title>
+<meta name="description" content="Proofpunk slash command reference: implement, cook, verify, forge-prompt, rate-prompt, truth-audit — plus OpenCode variants.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class="on"><span class="n">3</span>commands</a><a href="docs.html" class=""><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">01 / CLAUDE CODE COMMANDS</div>
+  <h1>6 slash commands<span class="cursor"></span></h1>
+  <p>Each command activates its skill with a strict contract. These are the real command files
+  from <code>plugins/proofpunk/commands/</code>, rendered verbatim. Conventions:
+  <code>&lt;angle&gt;</code> required, <code>[bracket]</code> optional, <code>A | B</code> alternatives.</p>
+
+  <div class="panel" id="cook">
+    <div class="ptitle">01 / /proofpunk:cook</div>
+    <p><strong>Execute an existing plan or goal under cook execution discipline</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:cook &lt;goal-or-plan-path&gt; [--fast] [--no-test] [--tdd]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>cook</code> skill and run it against:</p>
+<p>$ARGUMENTS</p>
+<p>Work the task list in order; every task ends in executed end-user proof, never asserted status.</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — positional goal only</strong></p>
+<pre><code>/proofpunk:cook &quot;add an export button to the reports page&quot;</code></pre>
+<p>Scouts, decomposes into proof-carrying tasks, executes each to end-user proof with a human checkpoint at every step.</p>
+<p><strong>2. With flags — pick the mode</strong></p>
+<pre><code>/proofpunk:cook .planning/ROADMAP.md --tdd</code></pre>
+<p>Executes an existing plan file (scout output is encoded in the plan) with tests written before each task's implementation.</p>
+<p><strong>3. Composed — plan upstream, cook downstream</strong></p>
+<pre><code>/proofpunk:forge-prompt &quot;notification service plan&quot; --out .planning/notifications.prompt.md
+/proofpunk:cook .planning/notifications.prompt.md --fast</code></pre>
+<p>Plan/prompt first, then cook the approved artifact; <code>--fast</code> skips research because the plan already carries it.</p>
+</div>
+  </div>
+
+  <div class="panel" id="forge-prompt">
+    <div class="ptitle">02 / /proofpunk:forge-prompt</div>
+    <p><strong>Author a new high-quality prompt on the canonical XML skeleton</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:forge-prompt &lt;goal&gt; [--out PATH] [--depth core|advanced]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>prompt-forge</code> skill and run its AUTHOR workflow for:</p>
+<p>$ARGUMENTS</p>
+<p>Produce the .prompt.md file on the canonical skeleton (task, context, sequential_thinking, todos, authorization, constraints, output_contract, validation, example).</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — positional goal only</strong></p>
+<pre><code>/proofpunk:forge-prompt &quot;code review assistant for a Go monorepo&quot;</code></pre>
+<p>Authors a complete .prompt.md on the canonical XML skeleton with the always-on workflow (thinking, todos, authorization, file-output).</p>
+<p><strong>2. With flags — control output and depth</strong></p>
+<pre><code>/proofpunk:forge-prompt &quot;incident triage runbook prompt&quot; --out prompts/triage.prompt.md --depth advanced</code></pre>
+<p>Writes to an explicit path with the advanced tag set (edge cases, failure modes, output contract).</p>
+<p><strong>3. Composed — forge, rate, iterate until it ships</strong></p>
+<pre><code>/proofpunk:forge-prompt &quot;support-agent system prompt&quot; --out prompts/support.prompt.md
+/proofpunk:rate-prompt prompts/support.prompt.md --in-place</code></pre>
+<p>Forge v1, then RATE it against the 100-point rubric and remediate in place until the threshold is met.</p>
+</div>
+  </div>
+
+  <div class="panel" id="implement">
+    <div class="ptitle">03 / /proofpunk:implement</div>
+    <p><strong>Implement a goal end to end with the Proofpunk orchestrator</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:implement &lt;goal&gt; [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>implement</code> skill and run it against:</p>
+<p>$ARGUMENTS</p>
+<p>Follow the skill's execution loop exactly: distill TRUE success criteria (get explicit approval if they are not self-evident), decompose into tasks, execute each task to completion, and validate only through end-user testing that produces proof. Report the criteria-proof table when done.</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — positional goal only</strong></p>
+<pre><code>/proofpunk:implement &quot;team workspaces with invite flow&quot;</code></pre>
+<p>Distills TRUE criteria (asks for approval if not self-evident), then runs all stages 0-7 interactively.</p>
+<p><strong>2. With flags — control the execution mode</strong></p>
+<pre><code>/proofpunk:implement &quot;migrate billing to Stripe&quot; --mine --parallel --auto</code></pre>
+<p>Mines past sessions first, fans scouts/plan-stages/build-lanes out with executable lane contracts, and never stops until every criterion is proven.</p>
+<p><strong>3. Composed — chained with other commands</strong></p>
+<pre><code>/proofpunk:forge-prompt &quot;billing migration build&quot; --out .prompts/billing.prompt.md
+/proofpunk:implement .prompts/billing.prompt.md --tdd</code></pre>
+<p>Forge the build prompt first, review it, then implement from the approved prompt with tests-first per task.</p>
+</div>
+  </div>
+
+  <div class="panel" id="rate-prompt">
+    <div class="ptitle">04 / /proofpunk:rate-prompt</div>
+    <p><strong>Rate a prompt file against the 100-point rubric and apply remediations to file</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:rate-prompt &lt;prompt-file.md&gt; [--in-place] [--report-only] [--out PATH]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>prompt-forge</code> skill and run its RATE workflow on:</p>
+<p>$ARGUMENTS</p>
+<p>Write NAME.rating.md plus the remediated prompt file per the skill's file-output contract. Unexecuted suggestions are UNVERIFIED — remediate, do not merely advise.</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — positional file only</strong></p>
+<pre><code>/proofpunk:rate-prompt prompts/support.prompt.md</code></pre>
+<p>Scores against the 100-point rubric, writes support.rating.md, and applies remediations to a NEW file (default consent level).</p>
+<p><strong>2. With flags — consent and output control</strong></p>
+<pre><code>/proofpunk:rate-prompt prompts/support.prompt.md --in-place --report-only</code></pre>
+<p>Rates and reports without rewriting: the rating file lands, the prompt is untouched.</p>
+<p><strong>3. Composed — regression-test a prompt change like code</strong></p>
+<pre><code>/proofpunk:rate-prompt prompts/v2.prompt.md --out prompts/v2.remediated.md
+/proofpunk:verify &quot;run both prompt versions against the 3 failure cases and diff the outputs&quot;</code></pre>
+<p>Rate the revision, then end-user-test the behavioral difference with executed evidence — no vibes-based prompt reviews.</p>
+</div>
+  </div>
+
+  <div class="panel" id="truth-audit">
+    <div class="ptitle">05 / /proofpunk:truth-audit</div>
+    <p><strong>Run a repo-wide intent-vs-code truth audit with evidence-backed findings</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:truth-audit &lt;repo-path&gt; [--since DATE] [--until DATE] [--label NAME]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>codebase-truth-audit</code> skill and audit:</p>
+<p>$ARGUMENTS</p>
+<p>Ground every conclusion in a commit, command output, or path:line that resolves in the checked-out tree. Pause for explicit approval before any behavior-changing or destructive remediation.</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — audit the current repo</strong></p>
+<pre><code>/proofpunk:truth-audit .</code></pre>
+<p>Full intent-vs-implementation audit with evidence-backed findings; pauses before any behavior change.</p>
+<p><strong>2. With flags — bound the window</strong></p>
+<pre><code>/proofpunk:truth-audit . --since 2026-06-01 --label pre-release</code></pre>
+<p>Audits only the June-forward window and tags all evidence with the <code>pre-release</code> label.</p>
+<p><strong>3. Composed — audit, then harden what the audit surfaces</strong></p>
+<pre><code>/proofpunk:truth-audit . --label q3
+/proofpunk:cook &quot;remediate the 3 HIGH findings from the q3 truth audit&quot;</code></pre>
+<p>The audit produces the findings; cook executes the approved remediation to end-user proof.</p>
+</div>
+  </div>
+
+  <div class="panel" id="verify">
+    <div class="ptitle">06 / /proofpunk:verify</div>
+    <p><strong>End-user test the current work as the end user, producing executed proof</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:verify [scope-or-entry-point]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>functional-validation</code> skill and end-user test:</p>
+<p>$ARGUMENTS</p>
+<p>Run the real system (server, CLI, UI) and exercise the actual user flows. Every claim in the final report must cite executed evidence — a command output, response, or artifact. Unexecuted checks are UNVERIFIED, never PASS.</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — verify the work just completed</strong></p>
+<pre><code>/proofpunk:verify</code></pre>
+<p>Detects the platform, starts the real runtime, drives the feature as the end user, emits a cited verdict.</p>
+<p><strong>2. With a scope — verify one flow</strong></p>
+<pre><code>/proofpunk:verify &quot;password reset flow, from email link to dashboard&quot;</code></pre>
+<p>Scoped end-user test: only the named flow is driven, but every step still requires executed evidence.</p>
+<p><strong>3. Composed — prove a cook run before accepting it</strong></p>
+<pre><code>/proofpunk:cook &quot;stripe webhook handler&quot;
+/proofpunk:verify &quot;deliver a test webhook and confirm idempotent processing&quot;</code></pre>
+<p>Cook builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.</p>
+</div>
+  </div>
+
+</section>
+<section>
+  <div class="marker">02 / OPENCODE VARIANTS</div>
+  <h2>The same six, prefixed for OpenCode</h2>
+  <p>OpenCode commands live in <code>plugins/proofpunk/opencode/commands/</code> and invoke the
+  same skills under the <code>proofpunk-</code> prefix.</p>
+  <div class="board">
+    <div class="brow"><span class="idx">OC1</span><span><span class="name">/proofpunk-cook</span><span class="gate">Execute an existing plan or goal under cook execution discipline — <code>&lt;goal-or-plan-path&gt; [--fast] [--no-test] [--tdd]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC2</span><span><span class="name">/proofpunk-forge-prompt</span><span class="gate">Author a new high-quality prompt on the canonical XML skeleton — <code>&lt;goal&gt; [--out PATH] [--depth core|advanced]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC3</span><span><span class="name">/proofpunk-implement</span><span class="gate">Implement a goal end to end with the Proofpunk orchestrator — <code>&lt;goal&gt; [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC4</span><span><span class="name">/proofpunk-rate-prompt</span><span class="gate">Rate a prompt file against the 100-point rubric and apply remediations to file — <code>&lt;prompt-file.md&gt; [--in-place] [--report-only] [--out PATH]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC5</span><span><span class="name">/proofpunk-truth-audit</span><span class="gate">Run a repo-wide intent-vs-code truth audit with evidence-backed findings — <code>&lt;repo-path&gt; [--since DATE] [--until DATE] [--label NAME]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC6</span><span><span class="name">/proofpunk-verify</span><span class="gate">End-user test the current work as the end user, producing executed proof — <code>[scope-or-entry-point]</code></span></span><span class="badge pass">SHIPS</span></div>
+  </div>
+</section>
+
+</main>
+  <div class="statusline"><span><b>COMMANDS</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>proofpunk — done means proven by end-user testing</title>
+<meta name="description" content="Proofpunk — execution-first delivery plugin for Claude Code, OMP, and OpenCode. 18 skills where end-user testing is the only PASS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class="on"><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class=""><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">01 / WHAT IT IS</div>
+  <h1>“Done” means proven<br>by end-user testing<span class="cursor"></span></h1>
+  <p><strong>Proofpunk</strong> is an execution-first delivery <strong>plugin for Claude Code,
+  oh-my-pi (OMP), and OpenCode</strong>: 18 skills where the AI drives the real system as an
+  end user — clicking, typing, submitting via MCP/automation tools — and any claim it did not
+  actually execute is reported <strong>UNVERIFIED</strong>, never PASS. No mocks, no stubs, no
+  test-mode bypasses.</p>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/plugin marketplace add krzemienski/proofpunk</span></div>
+    <div><span class="p">~$</span> <span class="c">/plugin install proofpunk@proofpunk-marketplace</span></div>
+    <div class="out">proofpunk v1.8.1 │ 18 skills · 6 commands · doctrine hook · <span class="hl">20 flat-black themes</span></div>
+  </div>
+  <div class="chips">
+    <span class="chip"><b>18</b> skills</span>
+    <span class="chip"><b>6</b> slash commands <i>+6 opencode</i></span>
+    <span class="chip"><b>9</b> doctrine references</span>
+    <span class="chip"><b>4</b> architecture docs</span>
+    <span class="chip"><b>20</b> cyberpunk themes</span>
+    <span class="chip"><b>3</b> platforms</span>
+  </div>
+  <div class="grid3">
+    <div class="panel"><div class="ptitle">THE IRON RULE</div>
+      <p>If the real system doesn't work, <strong>fix the real system</strong>. Never mocks, stubs,
+      test doubles, fake endpoints, or test-mode bypasses.</p></div>
+    <div class="panel"><div class="ptitle">END-USER ACTOR MANDATE</div>
+      <p>Validation is never faked, skipped, or assumed. The AI personally executes the actions a
+      real end user would — clicking, tapping, typing, submitting. Unexecuted validation is
+      <strong>UNVERIFIED</strong>, never done.</p></div>
+    <div class="panel"><div class="ptitle">FRESH EVIDENCE</div>
+      <p>Run-scoped, sequential, non-empty, never reused across runs — cited by full path with a
+      description of what is SEEN. PASS criteria are defined <strong>before</strong> evidence.</p></div>
+  </div>
+</section>
+<section>
+  <div class="marker">02 / THE SKILL STACK</div>
+  <h2>18 skills, five layers, one closed graph</h2>
+  <p>Every referenced skill ships — the Related Skills graph is closed. Layers from the repository
+  architecture: orchestration composes prompt &amp; plan, execution, proof, and deep analysis;
+  every verdict cites the shared doctrine in <code>references/</code>.</p>
+  <div class="board">
+    <div class="brow"><span class="idx">L1</span><span><span class="name">ORCHESTRATION</span>
+      <span class="gate"><a href="skills.html#implement">implement</a></span></span>
+      <span class="badge pass">1 SKILL</span></div>
+    <div class="brow"><span class="idx">L2</span><span><span class="name">PROMPT & PLAN</span>
+      <span class="gate"><a href="skills.html#prompt-forge">prompt-forge</a> · <a href="skills.html#brainstorm">brainstorm</a> · <a href="skills.html#validation-plan">validation-plan</a> · <a href="skills.html#plan-hardening">plan-hardening</a></span></span>
+      <span class="badge pass">4 SKILLS</span></div>
+    <div class="brow"><span class="idx">L3</span><span><span class="name">EXECUTION</span>
+      <span class="gate"><a href="skills.html#cook">cook</a> · <a href="skills.html#stack-testing">stack-testing</a> · <a href="skills.html#mobile-validation-runner">mobile-validation-runner</a></span></span>
+      <span class="badge pass">3 SKILLS</span></div>
+    <div class="brow"><span class="idx">L4</span><span><span class="name">PROOF</span>
+      <span class="gate"><a href="skills.html#functional-validation">functional-validation</a> · <a href="skills.html#end-user-testing">end-user-testing</a> · <a href="skills.html#visual-inspection">visual-inspection</a> · <a href="skills.html#ui-experience-audit">ui-experience-audit</a> · <a href="skills.html#full-functional-audit">full-functional-audit</a></span></span>
+      <span class="badge pass">5 SKILLS</span></div>
+    <div class="brow"><span class="idx">L5</span><span><span class="name">DEEP ANALYSIS</span>
+      <span class="gate"><a href="skills.html#root-cause-debugging">root-cause-debugging</a> · <a href="skills.html#red-team-eval">red-team-eval</a> · <a href="skills.html#production-readiness">production-readiness</a> · <a href="skills.html#session-intent">session-intent</a> · <a href="skills.html#codebase-truth-audit">codebase-truth-audit</a></span></span>
+      <span class="badge pass">5 SKILLS</span></div>
+  </div>
+  <p><a href="skills.html">All 18 skills, in detail →</a></p>
+</section>
+<section>
+  <div class="marker">03 / COMMAND SURFACE</div>
+  <h2>Six verbs for the whole pipeline</h2>
+  <div class="board">
+    <div class="brow"><span class="idx">01</span><span><span class="name">/proofpunk:implement</span>
+      <span class="gate">orchestrated front door — mine, forge, plan, execute, prove, report</span></span>
+      <span class="badge pass">ORCHESTRATE</span></div>
+    <div class="brow"><span class="idx">02</span><span><span class="name">/proofpunk:cook</span>
+      <span class="gate">the execution engine — task-by-task, each task proven as the end user</span></span>
+      <span class="badge pass">EXECUTE</span></div>
+    <div class="brow"><span class="idx">03</span><span><span class="name">/proofpunk:verify</span>
+      <span class="gate">end-user test the current work, producing executed proof</span></span>
+      <span class="badge pass">PROVE</span></div>
+    <div class="brow"><span class="idx">04</span><span><span class="name">/proofpunk:forge-prompt</span>
+      <span class="gate">author high-quality prompts on the canonical XML skeleton</span></span>
+      <span class="badge pass">AUTHOR</span></div>
+    <div class="brow"><span class="idx">05</span><span><span class="name">/proofpunk:rate-prompt</span>
+      <span class="gate">score any prompt against the 7-dimension /100 rubric, remediate to file</span></span>
+      <span class="badge pass">SCORE</span></div>
+    <div class="brow"><span class="idx">06</span><span><span class="name">/proofpunk:truth-audit</span>
+      <span class="gate">repo-wide intent-vs-code truth audit with evidence-backed findings</span></span>
+      <span class="badge pass">AUDIT</span></div>
+  </div>
+  <p><a href="commands.html">Full command reference →</a></p>
+</section>
+<section>
+  <div class="marker">04 / THE PROOF</div>
+  <h2>Shipped against itself: the mood-ring walkthrough</h2>
+  <p><code>examples/mood-ring/</code> is a complete live walkthrough on the Flaskr tutorial app:
+  the Mood Ring feature (per-post mood emoji + filter bar), built and audited end-to-end by the
+  skills in series. The sealed evidence run holds <strong>19 artifacts, <code>validate OK</code></strong>,
+  including 5 browser screenshots committed as PNGs — and <strong>32/32 tests green</strong>
+  (24 baseline + 8 new).</p>
+  <ul>
+    <li>A forged <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> mood POST safely defaults to 😐 with a flash notice.</li>
+    <li>An invalid <code>?mood=🦄</code> filter returns 200 unfiltered — no 500, no leak.</li>
+    <li>Visual inspection caught (and the loop fixed) a blue-on-blue invisible “All” filter label — a real HIGH defect.</li>
+  </ul>
+  <div class="grid2">
+    <div class="panel"><div class="ptitle">THEMES — 20 FLAT-BLACK VARIATIONS</div>
+      <p>One canonical palette source renders to OMP, OpenCode, and Hyper formats: neon-tokyo, acid-rain, vapor-grid, ion-storm, red-line, …
+      pure <code>#000000</code> canvas, two-neon accent systems, tuned status colors.</p></div>
+    <div class="panel"><div class="ptitle">THREE PLATFORMS, ONE PLUGIN</div>
+      <p>Claude Code plugin with SessionStart doctrine hook; OMP plugin with doctrine-guard
+      extension; OpenCode plugin + agent + commands; plain skills for any agent via the installer.</p></div>
+  </div>
+</section>
+
+</main>
+  <div class="statusline"><span><b>OVERVIEW</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

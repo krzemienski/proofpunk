@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docs — architecture &amp; doctrine — proofpunk</title>
+<meta name="description" content="Proofpunk architecture, usage guide, consolidation decisions, validation results, and the 9 ruling doctrine references.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">01 / PROJECT DOCS</div>
+  <h1>Architecture &amp; decisions<span class="cursor"></span></h1>
+  <p>The four documents from <code>plugins/proofpunk/docs/</code>, rendered in full as subpages —
+  how the 18 skills execute as one system, how they were consolidated from a 664-skill
+  universe scan, hands-on invocation examples, and the v1.0.0 validation record.</p>
+  <div class="board">
+    <div class="brow"><span class="idx">D1</span><span><span class="name"><a href="doc-architecture.html" style="color:inherit">Proofpunk Architecture — How the 18 Skills Execute as One System</a></span><span class="gate">This is the authoritative map of how the skills work **with one another**: who</span></span><span class="badge pass">RENDERED</span></div>
+    <div class="brow"><span class="idx">D2</span><span><span class="name"><a href="doc-consolidation-decisions.html" style="color:inherit">Consolidation Decisions — Proofpunk</a></span><span class="gate">How the source archive&#x27;s skills were reviewed and consolidated into this</span></span><span class="badge pass">RENDERED</span></div>
+    <div class="brow"><span class="idx">D3</span><span><span class="name"><a href="doc-usage-guide.html" style="color:inherit">Proofpunk Usage Guide — Claude Code, oh-my-pi, and OpenCode</a></span><span class="gate">&gt; **Read first:** [architecture.md](architecture.md) — how the 18 skills execute as one delegation DAG: method ownership, the full call graph, execution order per command, and the </span></span><span class="badge pass">RENDERED</span></div>
+    <div class="brow"><span class="idx">D4</span><span><span class="name"><a href="doc-validation-results.html" style="color:inherit">Validation Results — Proofpunk v1.0.0</a></span><span class="gate">All validation was run against the real plugin source. No mocks, no stubs,</span></span><span class="badge pass">RENDERED</span></div>
+  </div>
+</section>
+<section>
+  <div class="marker">02 / SHARED DOCTRINE</div>
+  <h2>9 ruling references</h2>
+  <p>The doctrine every skill loads on demand — the Iron Rule, the End-User Actor Mandate, the
+  evidence contract, severity model, platform routing, preflight checks, and CI gate
+  classification. Rendered from <code>plugins/proofpunk/references/</code>.</p>
+  <div class="board">
+    <div class="brow"><span class="idx">R1</span><span><span class="name"><a href="ref-ci-gates.html" style="color:inherit">CI / Pre-Commit Quality Gates (shared)</a></span><span class="gate">Methodology for layered build-quality gates, condensed from</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R2</span><span><span class="name"><a href="ref-defect-pattern-database.html" style="color:inherit">UI Defect Pattern Database</a></span><span class="gate">Common defects across iOS, web, and cross-platform with root causes and fix patterns. Organized by audit phase: triage (Phase 0), visual (Phase 1), interactive (Phase 2), content (</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R3</span><span><span class="name"><a href="ref-end-user-actor.html" style="color:inherit">End-User Actor Mandate (shared)</a></span><span class="gate">The cross-cutting operating principle for every Proofpunk skill:</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R4</span><span><span class="name"><a href="ref-evidence-contract.html" style="color:inherit">Evidence Contract (shared)</a></span><span class="gate">Canonical evidence standard for every Proofpunk skill. Consolidated from</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R5</span><span><span class="name"><a href="ref-ios-hig-checklist.html" style="color:inherit">iOS &amp; macOS Visual Inspection — Apple HIG Checklist</a></span><span class="gate">Platform-specific checks supplementing the universal checklist in SKILL.md.</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R6</span><span><span class="name"><a href="ref-platform-routing.html" style="color:inherit">Platform Routing (shared)</a></span><span class="gate">Canonical platform detection and validation routing for Proofpunk skills.</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R7</span><span><span class="name"><a href="ref-preflight-checks.html" style="color:inherit">Preflight Checks (shared)</a></span><span class="gate">Pre-session environment checks to catch blockers BEFORE validation or</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R8</span><span><span class="name"><a href="ref-severity-model.html" style="color:inherit">Severity Model (shared)</a></span><span class="gate">Canonical severity classification and verdict rules for all Proofpunk</span></span><span class="badge part">DOCTRINE</span></div>
+    <div class="brow"><span class="idx">R9</span><span><span class="name"><a href="ref-web-wcag-checklist.html" style="color:inherit">Web Visual Inspection — WCAG 2.2 &amp; Responsive Checklist</a></span><span class="gate">Platform-specific checks supplementing the universal checklist in SKILL.md.</span></span><span class="badge part">DOCTRINE</span></div>
+  </div>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOCS</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v1.8.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>
