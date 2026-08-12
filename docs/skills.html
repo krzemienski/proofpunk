@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>skills — 18 skills — proofpunk</title>
-<meta name="description" content="All 18 proofpunk skills with real frontmatter descriptions, layers, and bundled references/scripts.">
+<title>skills — 19 skills — proofpunk</title>
+<meta name="description" content="All 19 proofpunk skills with real frontmatter descriptions, layers, and bundled references/scripts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
     <span class="brand">PROOFPUNK</span><span class="sep">│</span>
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
-    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>19 skills</span>
     <span class="meta"><span class="led ok"></span>6+6 commands</span>
     <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
@@ -27,7 +27,7 @@
 
 <section>
   <div class="marker">01 / THE ARSENAL</div>
-  <h1>18 skills<span class="cursor"></span></h1>
+  <h1>19 skills<span class="cursor"></span></h1>
   <p>Every skill ships in the plugin — the Related Skills graph is closed, nothing dangles.
   One-line enforcement contracts below; full frontmatter descriptions and bundled materials in
   the detail cards further down. Hands-on invocation examples for every skill live in the
@@ -48,9 +48,10 @@
     <div class="brow"><span class="idx">13</span><span><span class="name"><a href="#root-cause-debugging" style="color:inherit">root-cause-debugging</a></span><span class="gate">Reproduce-first diagnosis, backward call-chain tracing, pollution bisection; symptomatic hacks forbidden</span></span><span class="badge part">DEEP ANALYSIS</span></div>
     <div class="brow"><span class="idx">14</span><span><span class="name"><a href="#session-intent" style="color:inherit">session-intent</a></span><span class="gate">Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts</span></span><span class="badge part">DEEP ANALYSIS</span></div>
     <div class="brow"><span class="idx">15</span><span><span class="name"><a href="#stack-testing" style="color:inherit">stack-testing</a></span><span class="gate">Per-stack real-system test discipline: pytest/Go/C++/Django/Spring gotchas, FastAPI SSE testing, Playwright e2e, condition-based waiting (no sleeps, no new mocks)</span></span><span class="badge part">EXECUTION</span></div>
-    <div class="brow"><span class="idx">16</span><span><span class="name"><a href="#ui-experience-audit" style="color:inherit">ui-experience-audit</a></span><span class="gate">6-phase UX protocol: triage, visual, interactive, content, Nielsen heuristics, synthesis</span></span><span class="badge part">PROOF</span></div>
-    <div class="brow"><span class="idx">17</span><span><span class="name"><a href="#validation-plan" style="color:inherit">validation-plan</a></span><span class="gate">BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations</span></span><span class="badge part">PROMPT &amp; PLAN</span></div>
-    <div class="brow"><span class="idx">18</span><span><span class="name"><a href="#visual-inspection" style="color:inherit">visual-inspection</a></span><span class="gate">Screenshot-driven visual QA with severity model (found a real HIGH defect in the demo)</span></span><span class="badge part">PROOF</span></div>
+    <div class="brow"><span class="idx">16</span><span><span class="name"><a href="#tui-testing" style="color:inherit">tui-testing</a></span><span class="gate"></span></span><span class="badge part"></span></div>
+    <div class="brow"><span class="idx">17</span><span><span class="name"><a href="#ui-experience-audit" style="color:inherit">ui-experience-audit</a></span><span class="gate">6-phase UX protocol: triage, visual, interactive, content, Nielsen heuristics, synthesis</span></span><span class="badge part">PROOF</span></div>
+    <div class="brow"><span class="idx">18</span><span><span class="name"><a href="#validation-plan" style="color:inherit">validation-plan</a></span><span class="gate">BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations</span></span><span class="badge part">PROMPT &amp; PLAN</span></div>
+    <div class="brow"><span class="idx">19</span><span><span class="name"><a href="#visual-inspection" style="color:inherit">visual-inspection</a></span><span class="gate">Screenshot-driven visual QA with severity model (found a real HIGH defect in the demo)</span></span><span class="badge part">PROOF</span></div>
   </div>
 </section>
 <section>
@@ -162,22 +163,29 @@
     <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/stack-testing">source → plugins/proofpunk/skills/stack-testing/</a></p>
   </div>
 
+  <div class="panel" id="tui-testing">
+    <div class="ptitle">16 / TUI-TESTING &nbsp;·&nbsp; </div>
+    <p>End-user proof for terminal UIs (Ink, blessed, textual, ratatui, curses): drive the real TUI in a real PTY as the end user with observe-then-act discipline, matched-assertion waits, three-facet evidence (screen + disk + logs), and pixel proof for visual claims. Codifies the measured lessons of driving agent-tty against a live Ink application: TTY guards, runtime floors, daemon PATH inheritance, cold-boot budgets, key-mount races, transport-envelope traps, and per-run secret scans. Use when validating a TUI/CLI-interactive feature, when a gate drives a terminal app, or when &#x27;prove the TUI works&#x27; is the ask. Not for web UIs (use web-validation via functional-validation) or non-interactive CLIs (use cli-validation).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/tui-testing">source → plugins/proofpunk/skills/tui-testing/</a></p>
+  </div>
+
   <div class="panel" id="ui-experience-audit">
-    <div class="ptitle">16 / UI-EXPERIENCE-AUDIT &nbsp;·&nbsp; PROOF</div>
+    <div class="ptitle">17 / UI-EXPERIENCE-AUDIT &nbsp;·&nbsp; PROOF</div>
     <p>Deep end-to-end audit of any UI screen across four dimensions — visual defects, interactive elements, content quality, and UX heuristics — ending in one severity-classified report. Inventories every action item (button, link, field, gesture), verifies each is discoverable and reachable, audits prose / code-block / diagram / data-viz rendering, and evaluates against Nielsen&#x27;s 10 heuristics plus affordance theory. Modes: identify-and-delegate (screenshot only) or drive-interaction (drive the live system as an end user — preferred). Use when reviewing a UI screen, page, or flow — &#x27;review this screen&#x27;, &#x27;audit this page&#x27;, &#x27;QA this view&#x27;, &#x27;is this UI good&#x27; — iOS, web, or cross-platform. Not for pixel-checklist screenshot QA (use visual-inspection) or app-wide functional sweeps (use full-functional-audit).</p>
     <p style="font-size:13px">Bundled — <strong>4 references</strong>: <code>content-quality-checklist.md</code>, <code>interactive-element-audit.md</code>, <code>responsive-audit.md</code>, <code>ux-heuristics-checklist.md</code> &nbsp;·&nbsp; <strong>1 assets</strong>: <code>audit-report-template.md</code></p>
     <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/ui-experience-audit">source → plugins/proofpunk/skills/ui-experience-audit/</a></p>
   </div>
 
   <div class="panel" id="validation-plan">
-    <div class="ptitle">17 / VALIDATION-PLAN &nbsp;·&nbsp; PROMPT &amp; PLAN</div>
+    <div class="ptitle">18 / VALIDATION-PLAN &nbsp;·&nbsp; PROMPT &amp; PLAN</div>
     <p>Authors multi-phase project plans where every phase carries blocking, cumulative proof obligations — BRIEF, ROADMAP, per-phase PLAN, SUMMARY + VALIDATION with run-scoped evidence. Proofs are cumulative: phase N&#x27;s validation re-verifies phases 1..N-1, so a regression in earlier work blocks advancement. Use when asked to plan a multi-phase build, create a validation plan, structure a project roadmap, break a feature into proven phases, write a BRIEF/ROADMAP, or when an autonomous runner needs phases it cannot advance past without proof. Not for executing the plan (use cook or implement) or hardening an existing draft (use plan-hardening).</p>
     <p style="font-size:13px">Bundled — <strong>1 references</strong>: <code>task-file-format.md</code></p>
     <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/validation-plan">source → plugins/proofpunk/skills/validation-plan/</a></p>
   </div>
 
   <div class="panel" id="visual-inspection">
-    <div class="ptitle">18 / VISUAL-INSPECTION &nbsp;·&nbsp; PROOF</div>
+    <div class="ptitle">19 / VISUAL-INSPECTION &nbsp;·&nbsp; PROOF</div>
     <p>Mandatory visual QA protocol for UI screenshots — iOS (Apple HIG), web (WCAG 2.2), and cross-platform. Evaluates layout, overflow, spacing, typography, contrast, touch targets, dark mode, and visual hierarchy against universal and platform-specific checklists, with severity classification and a defect-pattern database. Use when reviewing simulator captures, browser screenshots, or design-implementation evidence, and before marking ANY screenshot as PASS — even when the user just says &#x27;check this screenshot&#x27;, &#x27;does this look right&#x27;, or attaches a UI image. Not for interactive UX flow audits (use ui-experience-audit) or functional validation of running features (use functional-validation).</p>
     <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
     <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/visual-inspection">source → plugins/proofpunk/skills/visual-inspection/</a></p>
@@ -186,13 +194,13 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>SKILLS</b></span><span>v1.8.1 · ⑂ main · 18 skills · 6+6 commands · 9 refs · generated 2026-08-12</span></div>
+  <div class="statusline"><span><b>SKILLS</b></span><span>v1.9.0 · ⑂ main · 19 skills · 6+6 commands · 9 refs · generated 2026-08-13</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v1.8.1 · MIT license
+    &nbsp;· plugin v1.9.0 · MIT license
   </div>
 </footer>
 </div>
