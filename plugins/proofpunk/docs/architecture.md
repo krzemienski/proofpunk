@@ -1,4 +1,4 @@
-# Proofpunk Architecture — How the 18 Skills Execute as One System
+# Proofpunk Architecture — How the 19 Skills Execute as One System
 
 This is the authoritative map of how the skills work **with one another**: who
 owns each method, who calls whom, in what order, and why nothing is
@@ -6,7 +6,7 @@ duplicated. If you only read one doc, read this one.
 
 ## 1. The mental model
 
-The 18 skills are **not** 18 independent procedures. They form a **directed
+The 19 skills are **not** 19 independent procedures. They form a **directed
 acyclic delegation graph**:
 
 - **A method lives in exactly one skill** (its *owner*). Every other skill
@@ -26,7 +26,7 @@ depth 4  codebase-truth-audit, full-functional-audit, plan-hardening, stack-test
 depth 3  mobile-validation-runner, red-team-eval, root-cause-debugging, ui-experience-audit
 depth 2  functional-validation
 depth 1  validation-plan, visual-inspection
-depth 0  brainstorm, end-user-testing, prompt-forge, session-intent   (leaf owners — call nothing)
+depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing   (leaf owners — call nothing)
 ```
 
 ## 2. Method ownership — the single source of truth
@@ -40,6 +40,7 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent   (leaf owne
 | Iron Rule of validation (fix the real system, no mocks) | `functional-validation` | `full-functional-audit` and all drivers |
 | Screenshot examination protocol | `visual-inspection` | `functional-validation`, `mobile-validation-runner`, `ui-experience-audit` |
 | Stuck protocol (attempt → root-cause ×3 → split → escalate) | `implement` | `cook` invokes it per unproven task |
+| TUI end-user proof (observe-then-act, matched waits, three facets) | `tui-testing` | `implement`, `cook`, `functional-validation`, `full-functional-audit` |
 | Root-cause method (no fix without reproduction) | `root-cause-debugging` | `stack-testing`, `codebase-truth-audit`, `full-functional-audit` |
 | Four adversarial lenses | `red-team-eval` | `plan-hardening` (Stage 4 dispatch) |
 | Prompt skeleton + rating rubric | `prompt-forge` | `implement` (Stage 3 FORGE) |
@@ -53,50 +54,55 @@ verbatim Actor Mandate went from **12 copies → 1 owner + one-line deferrals**.
 
 ```mermaid
 graph TD
+  n0["end-user-testing"]
   implement --> session-intent
   implement --> brainstorm
   implement --> prompt-forge
   implement --> validation-plan
   implement --> cook
-  implement --> end-user-testing
+  implement --> n0
   implement --> functional-validation
   implement --> root-cause-debugging
   implement --> stack-testing
+  implement --> tui-testing
   cook --> brainstorm
   cook --> validation-plan
-  cook --> end-user-testing
+  cook --> n0
   cook --> functional-validation
   cook --> root-cause-debugging
   cook --> stack-testing
+  cook --> tui-testing
   production-readiness --> codebase-truth-audit
   production-readiness --> full-functional-audit
   production-readiness --> stack-testing
-  production-readiness --> end-user-testing
+  production-readiness --> n0
   codebase-truth-audit --> session-intent
-  codebase-truth-audit --> end-user-testing
+  codebase-truth-audit --> n0
   codebase-truth-audit --> root-cause-debugging
   full-functional-audit --> functional-validation
-  full-functional-audit --> end-user-testing
+  full-functional-audit --> n0
   full-functional-audit --> ui-experience-audit
   full-functional-audit --> root-cause-debugging
+  full-functional-audit --> tui-testing
+  functional-validation --> tui-testing
   plan-hardening --> red-team-eval
   plan-hardening --> validation-plan
-  plan-hardening --> end-user-testing
+  plan-hardening --> n0
   stack-testing --> root-cause-debugging
-  mobile-validation-runner --> end-user-testing
+  mobile-validation-runner --> n0
   mobile-validation-runner --> visual-inspection
   mobile-validation-runner --> functional-validation
-  red-team-eval --> end-user-testing
+  red-team-eval --> n0
   red-team-eval --> functional-validation
   root-cause-debugging --> functional-validation
-  root-cause-debugging --> end-user-testing
+  root-cause-debugging --> n0
   ui-experience-audit --> visual-inspection
   ui-experience-audit --> functional-validation
-  ui-experience-audit --> end-user-testing
-  functional-validation --> end-user-testing
+  ui-experience-audit --> n0
+  functional-validation --> n0
   functional-validation --> visual-inspection
-  visual-inspection --> end-user-testing
-  validation-plan --> end-user-testing
+  visual-inspection --> n0
+  validation-plan --> n0
 ```
 
 ## 4. Execution order, per entry point

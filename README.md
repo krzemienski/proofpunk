@@ -1,7 +1,7 @@
 # Proofpunk
 
 An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCode**:
-18 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
+19 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
 
@@ -76,8 +76,9 @@ for the other surfaces you run beside it.
 | `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts, eval-driven development, QA cycling until measured goal attainment |
 | `session-intent` | Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts |
 | `codebase-truth-audit` | Evidence-backed repo-wide truth audits: intent-from-history, code/config/doc/runtime verification, approval-gated remediation (the code-truth lane to session-intent's intent lane) |
+| `tui-testing` | TUI/terminal end-user proof: observe-then-act PTY driving, matched-assertion waits, three-facet evidence (screen + disk + logs), pixel proof for visual claims |
 
-`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline). **v1.7.0**: the doctrine moved from gate-logic to execution-logic — tasks carry proof obligations, validation is end-user testing always, `evidence-gates` became `end-user-testing` — plus the 20-theme flat-black cyberpunk pack and OMP/OpenCode platform support. **v1.8.0**: the project is renamed **Proofpunk** — repo, marketplace, plugin, commands (`/proofpunk:*`), installer (`proofpunk-install.sh`), and doctrine (`proofpunk-doctrine`) all carry the new brand; install commands are `… marketplace add krzemienski/proofpunk`.
+`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline). **v1.7.0**: the doctrine moved from gate-logic to execution-logic — tasks carry proof obligations, validation is end-user testing always, `evidence-gates` became `end-user-testing` — plus the 20-theme flat-black cyberpunk pack and OMP/OpenCode platform support. **v1.8.0**: the project is renamed **Proofpunk** — repo, marketplace, plugin, commands (`/proofpunk:*`), installer (`proofpunk-install.sh`), and doctrine (`proofpunk-doctrine`) all carry the new brand; install commands are `… marketplace add krzemienski/proofpunk`. **v1.9.0**: `tui-testing` (19th skill) — the TUI proof discipline measured from the aperant-tui gate runs — plus round-2 measured improvements to `end-user-testing`, `functional-validation`, `root-cause-debugging`, and `cook` (see `proofpunk-skills-improvement-report-round2.md`).
 
 **Hands-on invocation examples for every skill (`/skill-name <positional> --flag`): `plugins/proofpunk/docs/usage-guide.md`.**
 Five were added in v1.1.0 and `session-intent` in v1.2.0 from a second full-universe scan (664 unique skills
@@ -409,8 +410,8 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 
 | Invocation | What happens |
 |------------|--------------|
-| `proofpunk-install.sh --target claude-code` | first-time: all 18 skills + doctrine + verify, from GitHub |
-| `--target omp --themes --plugins` | 18 skills + 20 themes + doctrine-guard extension for oh-my-pi |
+| `proofpunk-install.sh --target claude-code` | first-time: all 19 skills + doctrine + verify, from GitHub |
+| `--target omp --themes --plugins` | 19 skills + 20 themes + doctrine-guard extension for oh-my-pi |
 | `--only prompt-forge,implement --override` | surgical refresh of two skills, backups taken |
 | `--source local --source-dir /path/to/repo --no-verify` | offline install from a checkout, self-check skipped |
 | `--inject-claude-md ~/.claude/CLAUDE.md` | rules block appended once; re-running leaves it unchanged (idempotent) |
@@ -660,7 +661,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/proofpunk/              the plugin (18 skills + references + docs)
+plugins/proofpunk/              the plugin (19 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 
