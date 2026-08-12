@@ -1,6 +1,6 @@
 # Proofpunk installer — usage, options, and why they exist
 
-`tools/proofpunk-install.sh` installs the 18 Proofpunk skills as **plain
+`tools/proofpunk-install.sh` installs the 19 Proofpunk skills as **plain
 skills** (not a plugin, not a marketplace) into the skills directory of your
 choice, injects the ruling doctrine alongside them, and verifies the result.
 Everything below was executed against the real script before shipping — the
@@ -29,7 +29,7 @@ bash proofpunk-install.sh --target claude-code --override
 
 ```
 <target>/
-├── brainstorm/            # 18 skill dirs, each SELF-CONTAINED:
+├── brainstorm/            # 19 skill dirs, each SELF-CONTAINED:
 │   ├── SKILL.md           #    citations rewritten to references/X
 │   └── references/        #    cited doctrine bundled inside the skill
 │   ...
