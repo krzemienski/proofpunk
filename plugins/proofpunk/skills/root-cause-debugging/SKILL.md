@@ -47,6 +47,27 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
    surrounding suite — a fix that breaks neighbors is a new bug, and its
    blast radius must be re-validated (see the `functional-validation` skill).
 
+## Measured additions (2026-08-12, aperant-tui gate runs)
+
+1. **Verify contracts against the emitter, not the name.** Before writing a
+   listener/subscriber/client, grep the actual emit/call sites. A
+   'task-started' event that "obviously exists" did not exist anywhere in
+   the vendored runtime — the listener would have timed out on every
+   successful start and reported real work as failed (defect D5). The
+   integration test passed only because the failure path happened to share
+   an event name. Assumed contracts fail silently; verified contracts fail
+   loudly.
+2. **Typecheck-green means nothing at runtime boundaries.** An SDK major
+   upgrade renamed `usage.promptTokens` → `usage.inputTokens`; the code
+   typechecked (optional chaining with `?? 0`) and silently recorded zero
+   tokens forever (defect D11). After any dependency major bump, prove one
+   real end-to-end data flow and LOOK at the numbers before trusting the
+   build.
+3. **Module-system mismatches hide behind type stubs.** `@types/node`
+   declares `__dirname` for files that run as ESM under tsx — typecheck
+   green, instant `ReferenceError` at boot (defect D6). Boot the real entry
+   point once before shipping any init-time path logic.
+
 ## Reference Routing
 
 | Situation | Read |

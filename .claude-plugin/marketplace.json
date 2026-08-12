@@ -4,8 +4,8 @@
     "name": "Proofpunk maintainers"
   },
   "metadata": {
-    "description": "Execution-first delivery plugin: 18 skills with end-user testing as the only proof, slash commands, doctrine hooks — plus a 20-theme flat-black cyberpunk pack for oh-my-pi and OpenCode.",
-    "version": "1.8.1",
+    "description": "Execution-first delivery plugin: 19 skills with end-user testing as the only proof, slash commands, doctrine hooks — plus a 20-theme flat-black cyberpunk pack for oh-my-pi and OpenCode.",
+    "version": "1.9.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -13,7 +13,7 @@
       "name": "proofpunk",
       "source": "./plugins/proofpunk",
       "description": "Execution-first delivery pipeline: brainstorm -> plan -> decompose into proof-carrying tasks -> implement -> end-user test -> audit, with no-mock discipline and a live execution ledger.",
-      "version": "1.8.1",
+      "version": "1.9.0",
       "license": "MIT",
       "keywords": [
         "validation",

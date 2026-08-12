@@ -150,6 +150,27 @@ Always enforced (all modes):
 ✓ Step [N]: [brief status] — [key metrics]
 ```
 
+## Measured additions (2026-08-12, aperant-tui gate runs)
+
+1. **Never mutate a running artifact.** Editing a gate/driver script while
+   it executes corrupts the run mid-flight (shells read scripts
+   incrementally); the evidence from such a run is splice-shaped and must
+   be discarded. Edit, then re-launch. Measured basis: a mid-run edit
+   killed a live gate with syntax errors at the edit point; the
+   "successful" early steps and the post-edit steps never coexisted in one
+   process.
+2. **One driver per shared target.** Two gates launched against the same
+   fixture/repo/user-data contaminate each other's disk assertions (a
+   RESUME-on-disk check passed by reading the OTHER run's file). Before
+   launching, list and kill prior drivers; after finishing, destroy the
+   sessions you created. Concurrency belongs to the task graph, not to
+   drivers of the same mutable target.
+3. **Push before you optimize.** Volatile workbenches (tmpfs, ephemeral
+   containers) erase unpushed work without warning; a lost tree costs a
+   full reconstruction. The push point is immediately after every verified
+   unit — the harness, the fixture builder, and the driver scripts belong
+   in the repo (as `tools/`), so a wipe can never orphan them again.
+
 ## Anti-Rationalization
 
 | Thought | Reality |

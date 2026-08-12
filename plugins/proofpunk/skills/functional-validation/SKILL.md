@@ -141,6 +141,27 @@ FAIL -> fix the real system -> re-run FROM STEP 2 (partial re-validation
 misses regressions). BLOCKED -> surface the blockage; never convert to PASS
 by simulating.
 
+## TTY/TUI targets — measured rules (2026-08-12, aperant-tui gate runs)
+
+Driving a terminal UI (Ink, blessed, textual, ratatui) adds three traps the
+generic protocol does not cover — all three produced real false results:
+
+1. **Never pipe a TTY-guarded app.** A well-built TUI exits when stdout is
+   not a TTY ("requires a TTY" guard). `| tee log` silently kills it and
+   every later wait matches nothing. Capture the console byte-stream with
+   `script -qfc '<cmd>' <logfile>` — a real sub-PTY that also logs
+   (defect D7).
+2. **Check the runtime floor before driving.** Automation daemons may
+   require a newer runtime than the system default (e.g.
+   `Promise.withResolvers` → Node ≥22). Probe once (`doctor` or a trivial
+   wait) and fail fast with the runtime version in the report. Bonus trap:
+   a long-lived automation daemon inherits the PATH of its FIRST
+   invocation — after changing runtimes, kill the daemon or every later
+   call still uses the old one.
+3. **Budget cold-boot latency.** A cold compile/boot of a large TUI can
+   exceed 120 s on a fresh cache. Boot waits of 300 s are cheap insurance;
+   a wait that "fails fast" on first boot manufactures fake failures.
+
 ## Failure Diagnosis Table
 
 When validation FAILs, diagnose by symptom before touching code:

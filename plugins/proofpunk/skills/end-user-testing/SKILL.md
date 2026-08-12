@@ -156,6 +156,27 @@ lines for every offending artifact.
 Even with parallel workers: workers provide LOCATIONS, you verify
 CONTENT. Never trust "X passed" without examining X.
 
+## Measured additions (2026-08-12, from the aperant-tui gate runs)
+
+1. **A transport envelope is not an assertion.** Automation CLIs (agent-tty,
+   tmux drivers, RDP bridges) commonly return `ok: true` for "the command
+   executed" even when the awaited condition timed out — the match boolean
+   lives deeper (`result.matched`, `result.timedOut`). Assert the
+   condition-level field, never the transport-level one. Measured basis: an
+   entire gate run showed every wait `ok: true` while the TUI had never
+   booted; only the screenshot told the truth (defect D8).
+2. **Proof has three facets, not one.** UI state alone is not proof. A
+   complete evidence set carries: (a) UI/screenshot proof, (b) persistence
+   proof (direct disk reads of the files the system claims to have
+   written), (c) log proof (process stdout/stderr, structured event logs,
+   crash logs, exit codes). If any facet is absent, the verdict names it.
+3. **Numbers in verdicts come from committed artifacts, never from
+   scrollback.** Before writing any count into a verdict or doc, recompute
+   it from the sealed artifact. Measured basis: a VALIDATION doc claiming
+   "1,807 events / 898 stream events" against a sealed log of 275/132 —
+   numbers had been carried over from an earlier run's console output
+   (caught by the doc-vs-evidence consistency audit).
+
 ## Refusal Rules
 
 - Refuse to write evidence into `e2e-evidence/` root — always a run subdir.
