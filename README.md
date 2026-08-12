@@ -109,7 +109,7 @@ skill's own Related Skills / delegation contract.
 | `session_intent.py [filters] [outputs]` | `session-intent` | none (leaf tool) |
 | `fresh_evidence.py init-run\|next-step\|seal\|validate` | `end-user-testing` | none (leaf tool) |
 | `with_server.py --server ... --port ... -- <check>` | `stack-testing` | none (leaf tool) |
-| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 17 skills + doctrine |
+| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 19 skills + doctrine |
 
 ---
 
@@ -453,7 +453,7 @@ graph TD
     M --> P["plugins/proofpunk<br/>the plugin"]
     M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
-    P --> S["skills/ — 17 skills"]
+    P --> S["skills/ — 19 skills"]
     P --> R["references/ — 9 shared doctrine files"]
     P --> D["docs/ — consolidation + validation records"]
     R -.->|cited by| S
