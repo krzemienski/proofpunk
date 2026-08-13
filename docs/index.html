@@ -115,7 +115,7 @@ summary:hover{color:var(--accent)}
 <section class="animate" style="--i:0">
   <div class="marker">01 / WHAT IT IS</div>
   <h1>“Done” means proven<br>by end-user testing<span class="cursor"></span></h1>
-  <p class="subtitle">execution-first delivery plugin · claude code / oh-my-pi / opencode · v1.9.0</p>
+  <p class="subtitle">execution-first delivery plugin · claude code / oh-my-pi / opencode · v1.10.0</p>
   <p><strong>Proofpunk</strong> is an execution-first delivery <strong>plugin for Claude Code,
   oh-my-pi (OMP), and OpenCode</strong>: 19 skills where the AI drives the real system as an
   end user — clicking, typing, submitting via MCP/automation tools — and any claim it did not
@@ -285,8 +285,21 @@ graph TB
 </section>
 
 <section class="animate" style="--i:3">
-  <div class="marker">04 / COMMAND SURFACE</div>
-  <h2>Six verbs for the whole pipeline</h2>
+  <div class="marker">04 / HOOKS — DOCTRINE MADE DETERMINISTIC</div>
+  <h2>Five lifecycle hooks</h2>
+  <table>
+    <tr><th>hook</th><th>what it enforces</th></tr>
+    <tr><td><code>SessionStart</code></td><td style="color:var(--dim)">injects the doctrine as session context</td></tr>
+    <tr><td><code>Stop / SubagentStop</code></td><td style="color:var(--dim)">completion claim without a cited end-user test artifact → <strong>block</strong>, reason fed back to Claude — unproven is never done</td></tr>
+    <tr><td><code>PreToolUse</code></td><td style="color:var(--dim)">denies writes of probable secrets into evidence directories (redact first)</td></tr>
+    <tr><td><code>InstructionsLoaded</code></td><td style="color:var(--dim)">logs every CLAUDE.md / rules load — memory loading is observable</td></tr>
+  </table>
+  <p>Behavior proofs: <a href="https://github.com/krzemienski/proofpunk/blob/main/evidence/hooks-release/test-hooks-output.txt">13/13 hook cases</a> · <a href="https://github.com/krzemienski/proofpunk/blob/main/proofpunk-hooks-release-report.md">round-3 measured report</a></p>
+</section>
+
+<section class="animate" style="--i:3">
+  <div class="marker">05 / COMMAND SURFACE</div>
+  <h2>Seven verbs for the whole pipeline</h2>
   <table>
     <tr><th>#</th><th>command</th><th>what it does</th><th>lane</th></tr>
     <tr><td>01</td><td><code>/proofpunk:implement</code></td><td>orchestrated front door — mine, forge, plan, execute, prove, report</td><td><span class="badge">ORCHESTRATE</span></td></tr>
@@ -295,12 +308,13 @@ graph TB
     <tr><td>04</td><td><code>/proofpunk:forge-prompt</code></td><td>author high-quality prompts on the canonical XML skeleton</td><td><span class="badge">AUTHOR</span></td></tr>
     <tr><td>05</td><td><code>/proofpunk:rate-prompt</code></td><td>score any prompt against the 7-dimension /100 rubric, remediate to file</td><td><span class="badge">SCORE</span></td></tr>
     <tr><td>06</td><td><code>/proofpunk:truth-audit</code></td><td>repo-wide intent-vs-code truth audit with evidence-backed findings</td><td><span class="badge">AUDIT</span></td></tr>
+    <tr><td>07</td><td><code>/proofpunk:install</code></td><td>project memory installer — CLAUDE.md ≤200 lines marker-merged + scoped .claude/rules/</td><td><span class="badge">SETUP</span></td></tr>
   </table>
   <p><a href="commands.html">full command reference →</a> · <a href="skills.html">all 19 skills in detail →</a></p>
 </section>
 
 <section class="animate" style="--i:4">
-  <div class="marker">05 / THE PROOF</div>
+  <div class="marker">06 / THE PROOF</div>
   <h2>Shipped against itself: the mood-ring walkthrough</h2>
   <p><code>examples/mood-ring/</code> is a complete live walkthrough on the Flaskr tutorial app —
   the Mood Ring feature built and audited end-to-end by the skills in series. The sealed evidence
@@ -323,7 +337,7 @@ graph TB
 </section>
 
 <section class="animate" style="--i:5">
-  <div class="marker">06 / PACKAGE LAYOUT</div>
+  <div class="marker">07 / PACKAGE LAYOUT</div>
   <h2>What ships</h2>
   <section class="diagram-shell"><p class="diagram-shell__hint">Ctrl/Cmd + wheel to zoom. Scroll to pan. Drag to pan when zoomed. Double-click to fit.</p>
 <div class="mermaid-wrap">
@@ -353,10 +367,10 @@ graph TD
 </section>
 
 </div>
-<div class="statusline"><span><b>OVERVIEW</b></span><span>v1.9.0 · ⑂ main · 19 skills · 6+6 commands · 9 refs · generated 2026-08-13</span></div>
+<div class="statusline"><span><b>OVERVIEW</b></span><span>v1.10.0 · ⑂ main · 19 skills · 6+6 commands · 9 refs · generated 2026-08-13</span></div>
 <footer><div class="wrap">
   PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.9.0 · MIT license
+  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.0 · MIT license
 </div></footer>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
