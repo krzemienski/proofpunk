@@ -199,5 +199,6 @@ Always enforced (all modes):
 | `functional-validation` | executing the end-user test | how to drive the real runtime per platform |
 | `root-cause-debugging` | stuck protocol | root cause when a task cannot be proven |
 | `stack-testing` | regression rail | stack-specific test discipline |
+| `tui-testing` | end-user test when the target is a TUI | PTY driving discipline |
 
 Called by: `implement`.

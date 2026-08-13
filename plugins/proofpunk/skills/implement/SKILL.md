@@ -269,3 +269,4 @@ after proof to protect it. They are never the validation itself.
 | `functional-validation` | Stage 5 driving web/API/CLI runtimes | platform detection + real-runtime driving |
 | `root-cause-debugging` | Stage 6 stuck protocol rung 2 | root cause of any unproven task |
 | `stack-testing` | regression rail after proof | per-stack test discipline protecting proven work |
+| `tui-testing` | Stage 5 proof when the runtime is a TUI | PTY driving discipline, matched waits, three facets |

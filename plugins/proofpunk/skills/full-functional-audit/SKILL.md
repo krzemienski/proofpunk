@@ -169,5 +169,6 @@ never assumed PASS.
 | `end-user-testing` | all phases | Actor Mandate + evidence sealing |
 | `ui-experience-audit` | per-screen UX lens during EXECUTE | heuristic evaluation of flagged screens |
 | `root-cause-debugging` | Phase 4 REMEDIATE | root cause of every FAIL before fixing |
+| `tui-testing` | auditing TUI apps | PTY driving discipline |
 
 Called by: `production-readiness`.

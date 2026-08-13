@@ -280,5 +280,6 @@ Modes compose: default flow is analyze -> plan -> execute -> (fix) -> report.
 |-------|------|--------------------|
 | `end-user-testing` | Steps 4-5 evidence | fresh-evidence rules + fresh_evidence.py helper |
 | `visual-inspection` | any screenshot evidence | examination of what the capture actually shows |
+| `tui-testing` | driving terminal-UI runtimes | PTY/TUI runbook (guards, waits, facets) |
 
 Called by: `cook`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`.

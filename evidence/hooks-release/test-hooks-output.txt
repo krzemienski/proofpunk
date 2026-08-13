@@ -1,0 +1,20 @@
+== bash -n syntax check
+  PASS: syntax evidence-guard.sh
+  PASS: syntax instructions-loaded.sh
+  PASS: syntax session-start.sh
+  PASS: syntax stop-guard.sh
+== session-start.sh emits doctrine context
+  PASS: session-start doctrine context
+== stop-guard.sh
+  PASS: stop-guard blocks unproven claim
+  PASS: stop-guard allows proven claim
+  PASS: stop-guard silent on non-claim
+  PASS: stop-guard tolerates missing transcript
+== evidence-guard.sh
+  PASS: evidence-guard denies secret into evidence
+  PASS: evidence-guard allows clean evidence write
+  PASS: evidence-guard ignores non-evidence paths
+== instructions-loaded.sh
+  PASS: instructions-loaded logs load event
+
+HOOK TEST FAILS: 0

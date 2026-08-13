@@ -80,7 +80,7 @@ if not cyc:
     sinks = sorted(s for s, d in depth.items() if d == 0)
     print("  depth map:", ", ".join(f"{s}={d}" for s, d in sorted(depth.items(), key=lambda x: -x[1])))
     check("leaf owners are the canonical-method skills",
-          set(sinks) == {"brainstorm", "end-user-testing", "prompt-forge", "session-intent"},
+          set(sinks) == {"brainstorm", "end-user-testing", "prompt-forge", "session-intent", "tui-testing"},
           f"sinks={sinks}")
 
 # ---- 4. called-by consistency ----------------------------------------------
@@ -141,5 +141,5 @@ print()
 if FAILS:
     print(f"VERDICT: FAIL — {len(FAILS)} check(s) failed: {FAILS}")
     sys.exit(1)
-print("VERDICT: PASS — the 18 skills execute as one delegation DAG, in the")
+print("VERDICT: PASS — the 19 skills execute as one delegation DAG, in the")
 print("documented order, with methods owned exactly once.")
