@@ -110,7 +110,7 @@ summary:hover{color:var(--accent)}
   <span class="brand">PROOFPUNK</span><span class="sep">│</span>
   <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
   <span class="meta">⑂ main</span><span class="sep">│</span>
-  <span class="meta"><span class="led ok"></span>19 skills</span>
+  <span class="meta"><span class="led ok"></span>17 skills</span>
   <span class="meta"><span class="led acc"></span>7+7 commands</span>
   <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
   <span class="meta"><span class="led idle"></span>20 themes</span>
@@ -121,16 +121,15 @@ summary:hover{color:var(--accent)}
 <section class="animate" style="--i:0">
   <div class="marker">01 / CLAUDE COMMANDS</div>
   <h1>Command surface<span class="cursor"></span></h1>
-  <p class="subtitle">seven verbs · rendered verbatim from plugins/proofpunk/commands/*.md</p>
+  <p class="subtitle">six verbs · rendered verbatim from plugins/proofpunk/commands/*.md</p>
   <table>
     <tr><th>#</th><th>command</th><th>description</th><th>argument-hint</th></tr>
-    <tr><td style="font-family:var(--font-mono);color:var(--faint)">01</td><td><code>/proofpunk:cook</code></td><td style="color:var(--dim);font-size:12.5px">Execute an existing plan or goal under cook execution discipline</td><td><code>&quot;&lt;goal-or-plan-path&gt; [--fast] [--no-test] [--tdd]&quot;</code></td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">02</td><td><code>/proofpunk:forge-prompt</code></td><td style="color:var(--dim);font-size:12.5px">Author a new high-quality prompt on the canonical XML skeleton</td><td><code>&quot;&lt;goal&gt; [--out PATH] [--depth core|advanced]&quot;</code></td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">03</td><td><code>/proofpunk:implement</code></td><td style="color:var(--dim);font-size:12.5px">Implement a goal end to end with the Proofpunk orchestrator</td><td><code>&quot;&lt;goal&gt; [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]&quot;</code></td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">04</td><td><code>/proofpunk:rate-prompt</code></td><td style="color:var(--dim);font-size:12.5px">Rate a prompt file against the 100-point rubric and apply remediations to file</td><td><code>&quot;&lt;prompt-file.md&gt; [--in-place] [--report-only] [--out PATH]&quot;</code></td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">05</td><td><code>/proofpunk:truth-audit</code></td><td style="color:var(--dim);font-size:12.5px">Run a repo-wide intent-vs-code truth audit with evidence-backed findings</td><td><code>&quot;&lt;repo-path&gt; [--since DATE] [--until DATE] [--label NAME]&quot;</code></td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">06</td><td><code>/proofpunk:verify</code></td><td style="color:var(--dim);font-size:12.5px">End-user test the current work as the end user, producing executed proof</td><td><code>&quot;[scope-or-entry-point]&quot;</code></td></tr>
-  <tr><td style="font-family:var(--font-mono);color:var(--faint)">07</td><td><code>/proofpunk:install</code></td><td style="color:var(--dim);font-size:12.5px">Install proofpunk project memory — CLAUDE.md (≤200 lines, merged never clobbered) plus scoped .claude/rules/ with the proof contract</td><td><code>[--clobber] [--no-rules]</code></td></tr>
+      <tr><td style="font-family:var(--font-mono);color:var(--faint)">07</td><td><code>/proofpunk:install</code></td><td style="color:var(--dim);font-size:12.5px">Install proofpunk project memory — CLAUDE.md (≤200 lines, merged never clobbered) plus scoped .claude/rules/ with the proof contract</td><td><code>[--clobber] [--no-rules]</code></td></tr>
 </table>
 </section>
 <section class="animate" style="--i:1">
   <div class="marker">02 / OPENCODE VARIANTS</div>
-  <h2>Same seven verbs, opencode wiring</h2>
+  <h2>Same six verbs, opencode wiring</h2>
   <table>
     <tr><th>#</th><th>command</th><th>notes</th></tr>
     <tr><td style="font-family:var(--font-mono);color:var(--faint)">01</td><td><code>/proofpunk-cook</code></td><td style="color:var(--dim);font-size:12.5px">opencode variant of the proofpunk command surface</td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">02</td><td><code>/proofpunk-forge-prompt</code></td><td style="color:var(--dim);font-size:12.5px">opencode variant of the proofpunk command surface</td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">03</td><td><code>/proofpunk-implement</code></td><td style="color:var(--dim);font-size:12.5px">opencode variant of the proofpunk command surface</td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">04</td><td><code>/proofpunk-rate-prompt</code></td><td style="color:var(--dim);font-size:12.5px">opencode variant of the proofpunk command surface</td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">05</td><td><code>/proofpunk-truth-audit</code></td><td style="color:var(--dim);font-size:12.5px">opencode variant of the proofpunk command surface</td></tr><tr><td style="font-family:var(--font-mono);color:var(--faint)">06</td><td><code>/proofpunk-verify</code></td><td style="color:var(--dim);font-size:12.5px">opencode variant of the proofpunk command surface</td></tr>
@@ -155,8 +154,6 @@ summary:hover{color:var(--accent)}
 
   <h3>cook</h3>
   <div class="cmdline">
-    <div><span class="p">~$</span> <span class="c">/proofpunk:cook "export button on the reports page"</span></div>
-    <div><span class="p">~$</span> <span class="c">/proofpunk:cook .planning/ROADMAP.md --fast --tdd</span></div>
   </div>
 
   <h3>verify</h3>
@@ -191,10 +188,10 @@ summary:hover{color:var(--accent)}
   </div>
 </section>
 </div>
-<div class="statusline"><span><b>COMMANDS</b></span><span>v1.10.1 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+<div class="statusline"><span><b>COMMANDS</b></span><span>v2.0.0 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
 <footer><div class="wrap">
   PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.1 · MIT license
+  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v2.0.0 · MIT license
 </div></footer>
 
 <script>
