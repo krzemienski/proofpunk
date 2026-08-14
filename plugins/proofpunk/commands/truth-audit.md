@@ -32,3 +32,12 @@ Audits only the June-forward window and tags all evidence with the `pre-release`
 /proofpunk:cook "remediate the 3 HIGH findings from the q3 truth audit"
 ```
 The audit produces the findings; cook executes the approved remediation to end-user proof.
+
+**5. Full command — every option selected**
+
+```
+/proofpunk:truth-audit . --since 2026-01-01 --until 2026-08-13 --label fy26-h2-audit
+```
+Windowed session-intent alignment across the whole repo, every commit in
+the window mapped to its transcript intent or marked unrecoverable, labeled
+evidence pack under `.planning/audits/fy26-h2-audit/`.

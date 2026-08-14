@@ -29,7 +29,7 @@ Design decisions traceable to the table:
 | Event | Matcher | Type | Script | Behavior |
 |---|---|---|---|---|
 | SessionStart | `startup\|resume\|clear` | command | `session-start.sh` (existing, tightened) | doctrine `additionalContext`; <20ms; exit 0 |
-| **Stop** | (none) | command | `stop-guard.sh` | transcript scan (see §2): strong unproven-claim → `{"decision":"block","reason":…}` (reason is fed back to Claude and the turn continues); otherwise `additionalContext` soft reminder; <50ms |
+| **Stop** | (none) | command | `stop-guard.sh` | transcript scan (see §2): strong unproven-claim → `{"decision":"block","reason":…}` (reason is fed back to Claude and the turn continues); otherwise **silent** (exit 0, no output) — corrected in v1.10.1 after a live multi-plugin session showed per-stop reminder noise; hook discipline: speak only when enforcing |
 | **SubagentStop** | (none) | command | `stop-guard.sh` | same check, subagent transcript |
 | **PreToolUse** | `Write\|Edit` | command | `evidence-guard.sh` | deny (exit 2 + stderr) when the write targets an evidence dir **and** payload matches secret patterns; else allow (exit 0) |
 | **InstructionsLoaded** | (none) | command | `instructions-loaded.sh` | append `{ts, filePath, loadReason, cwd}` to `~/.claude/proofpunk-loads.jsonl`; always exit 0 (the measurement tap for `/proofpunk:install`) |
@@ -48,7 +48,7 @@ Algorithm (deterministic, documented heuristic):
    `curl .*200`, `verdict`).
 4. Block iff claim-signal AND NOT proof-signal:
    `{"decision":"block","reason":"Proofpunk: completion was claimed without a cited end-user test artifact. Run the end-user test (drive the real system), capture run-scoped evidence, cite it by full path — or downgrade the claim to UNVERIFIED."}`
-5. Else: `{"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"proofpunk: done = proven by end-user testing."}}` — soft, non-blocking.
+5. Else: **exit 0 with no output.** (v1.10.0 shipped a soft `additionalContext` reminder here; in real sessions with a dozen-plus plugins that is feedback spam on every stop. SessionStart owns doctrine context; Stop speaks only to block.)
 
 False-positive posture: the block reason tells Claude exactly how to satisfy
 the guard (produce evidence or downgrade), so a mistaken block costs one

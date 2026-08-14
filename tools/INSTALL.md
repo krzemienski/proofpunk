@@ -23,6 +23,16 @@ bash proofpunk-install.sh --skip-skills --themes
 
 # Installed already and want the new versions, keeping backups:
 bash proofpunk-install.sh --target claude-code --override
+
+# Everything at once — all options selected:
+bash proofpunk-install.sh --target claude-code --source github --ref main \
+  --themes --plugins --hooks --inject-memory --override
+# (skills + themes + platform glue + enforcement hooks merged into
+#  ~/.claude/settings.json + the marked rules block in ./CLAUDE.md)
+
+# Offline, one skill, OpenCode's AGENTS.md, nothing else:
+bash proofpunk-install.sh --source-dir /path/to/proofpunk --target opencode \
+  --only tui-testing --inject-memory --no-verify
 ```
 
 ## What an install actually produces

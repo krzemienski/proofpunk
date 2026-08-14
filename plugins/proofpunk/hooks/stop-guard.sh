@@ -4,7 +4,7 @@
 # Reads the session transcript (JSONL) from the hook input and applies the
 # deterministic heuristic documented in docs/hooks-and-init-design.md §2:
 #   claim without cited proof artifact  → decision:block (reason feeds back)
-#   anything else                       → non-blocking additionalContext
+#   anything else                       → SILENT (exit 0, no output)
 #
 # Contract (per Claude Code hooks reference):
 #   - top-level {"decision":"block","reason":"..."} — the turn continues with
@@ -23,9 +23,8 @@ except Exception:
 " 2>/dev/null || true)
 
 [ -n "$transcript" ] && [ -f "$transcript" ] || {
-  cat <<'JSON'
-{"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"proofpunk: done = proven by end-user testing — cite run-scoped evidence by full path."}}
-JSON
+  # nothing to check → stay silent (hook discipline: no output when there is
+  # nothing to enforce; doctrine context belongs to SessionStart, not stops)
   exit 0
 }
 
@@ -57,10 +56,7 @@ if claim and not proof:
               "or downgrade the claim to UNVERIFIED. Unproven is never done.")
     print(json.dumps({"decision": "block", "reason": reason}))
 else:
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "Stop",
-            "additionalContext": "proofpunk: done = proven by end-user testing — cite run-scoped evidence by full path."
-        }
-    }))
+    # claim-with-proof or no claim: silent. No additionalContext — a stop hook
+    # that speaks on every stop is noise in multi-plugin sessions (14+ hooks).
+    pass
 PYEOF

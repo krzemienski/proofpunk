@@ -32,3 +32,12 @@ Executes an existing plan file (scout output is encoded in the plan) with tests 
 /proofpunk:cook .planning/notifications.prompt.md --fast
 ```
 Plan/prompt first, then cook the approved artifact; `--fast` skips research because the plan already carries it.
+
+**4. Full command — every option selected**
+
+```
+/proofpunk:cook .planning/ROADMAP.md --fast --tdd
+```
+Plan file, skip the research sub-step, tests written before each task's code.
+Note: `--no-test` contradicts `--tdd` (one downgrades the rail, the other
+strengthens it) — pick one; `--fast` composes with either.

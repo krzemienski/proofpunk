@@ -97,6 +97,12 @@ summary:hover{color:var(--accent)}
 .callout{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);padding:14px 18px;font-size:13px;line-height:1.6;color:var(--dim);margin-top:20px}
 .callout strong{color:var(--text)}
 @media(max-width:768px){h1{font-size:26px}.chrome-bar{font-size:10px}}
+
+.cmdline, pre{position:relative}
+.copybtn{position:absolute;top:6px;right:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--dim);background:var(--surface2);border:1px solid var(--border);padding:3px 8px;cursor:pointer;opacity:.35;transition:opacity .15s,border-color .15s}
+.cmdline:hover .copybtn, pre:hover .copybtn{opacity:1}
+.copybtn:hover{color:var(--accent);border-color:var(--accent)}
+.copybtn.copied{color:var(--ok);border-color:var(--ok);opacity:1}
 </style>
 </head>
 <body>
@@ -134,12 +140,77 @@ summary:hover{color:var(--accent)}
   <a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/opencode/commands">opencode/commands/</a></p>
 </section>
 
+
+<section class="animate" style="--i:2">
+  <div class="marker">03 / EXAMPLES — INCLUDING EVERY OPTION SELECTED</div>
+  <h2>Copy-ready invocations</h2>
+  <p>Hover any block for a copy button. The last line of each pair is the
+  maximal coherent combination (conflict rules noted where flags exclude each other).</p>
+
+  <h3>implement</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:implement "add Stripe billing webhooks" --parallel --auto --mine</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:implement "add Stripe billing webhooks with signature verification" --parallel --auto --mine --tdd</span></div>
+  </div>
+
+  <h3>cook</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:cook "export button on the reports page"</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:cook .planning/ROADMAP.md --fast --tdd</span></div>
+  </div>
+
+  <h3>verify</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:verify</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:verify src/checkout</span></div>
+  </div>
+
+  <h3>forge-prompt</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:forge-prompt author "Postgres 15 → 17 migration plan" </span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:forge-prompt author "Postgres 15 → 17 migration plan" --out .planning/pg17.prompt.md --depth advanced</span></div>
+  </div>
+
+  <h3>rate-prompt</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:rate-prompt .planning/pg17.prompt.md --in-place</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:rate-prompt .planning/pg17.prompt.md --report-only --out .planning/pg17.rating.md</span></div>
+  </div>
+
+  <h3>truth-audit</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:truth-audit .</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:truth-audit . --since 2026-01-01 --until 2026-08-13 --label fy26-h2-audit</span></div>
+  </div>
+
+  <h3>install</h3>
+  <div class="cmdline">
+    <div><span class="p">~$</span> <span class="c">/proofpunk:install</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:install --platform opencode --clobber</span></div>
+    <div><span class="p">~$</span> <span class="c">/proofpunk:install --platform claude-code --no-rules --clobber</span></div>
+  </div>
+</section>
 </div>
-<div class="statusline"><span><b>COMMANDS</b></span><span>v1.10.0 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+<div class="statusline"><span><b>COMMANDS</b></span><span>v1.10.1 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
 <footer><div class="wrap">
   PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.0 · MIT license
+  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.1 · MIT license
 </div></footer>
 
+<script>
+document.querySelectorAll('.cmdline, pre').forEach(function(el){
+  if (el.querySelector('.copybtn')) return;
+  var b = document.createElement('button');
+  b.className = 'copybtn'; b.type = 'button'; b.textContent = 'COPY';
+  b.addEventListener('click', function(){
+    var txt = el.innerText.replace(/^COPY\n?/, '').replace(/^COPIED ✓\n?/, '');
+    navigator.clipboard.writeText(txt).then(function(){
+      b.textContent = 'COPIED ✓'; b.classList.add('copied');
+      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); }, 1400);
+    });
+  });
+  el.appendChild(b);
+});
+</script>
 </body>
 </html>

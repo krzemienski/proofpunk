@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# proofpunk-install.sh — install the 18 Proofpunk skills as PLAIN skills
+# proofpunk-install.sh — install the 19 Proofpunk skills as PLAIN skills
 # (not a plugin/marketplace) into a target skills directory of your choice,
 # with collision safety, doctrine injection, and post-install verification.
 # Optionally also installs the 20-theme flat-black cyberpunk pack and the
@@ -25,10 +25,12 @@ LIST=0
 OVERRIDE=0
 BACKUP=1
 WITH_DOCTRINE=1
-INJECT_CLAUDE_MD=""             # file to receive the rules block (opt-in)
+INJECT_CLAUDE_MD=""             # legacy alias of --inject-memory
+INJECT_MEMORY=""                # '' | 'auto' | explicit file path
 DRY_RUN=0
 VERIFY=1
 QUIET=0
+WITH_HOOKS=0                    # install enforcement hooks into platform settings
 SKIP_SKILLS=0                   # themes/plugins only
 WITH_THEMES=0                   # install the 20-theme pack into detected TUIs
 WITH_PLUGINS=0                  # install OMP extension + OpenCode plugin glue
@@ -41,7 +43,7 @@ OPENCODE_SUBPATH="plugins/proofpunk/opencode"
 EXTENSIONS_SUBPATH="plugins/proofpunk/extensions"
 DOCTRINE_DIRNAME="proofpunk-doctrine"
 
-ALL_SKILLS="brainstorm codebase-truth-audit cook end-user-testing full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing ui-experience-audit validation-plan visual-inspection"
+ALL_SKILLS="brainstorm codebase-truth-audit cook end-user-testing full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
 
 # ------------------------------------------------------------------- utils --
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }
@@ -70,7 +72,7 @@ SOURCE (where skills come from):
   --source-dir PATH      local Proofpunk checkout (offline / dev)
 
 SELECTION:
-  --only a,b,c           install just these skills (default: all 18)
+  --only a,b,c           install just these skills (default: all 19)
   --skip-skills          install no skills (use with --themes/--plugins)
   --list                 print skills available in the source, then exit
 
@@ -91,7 +93,20 @@ COLLISIONS (same-name skill already exists):
 
 DOCTRINE (the ruling rules):
   --no-doctrine          skip installing the proofpunk-doctrine/ bundle
-  --inject-claude-md F   append the rules block to file F (opt-in, idempotent)
+  --inject-memory [F]    append the rules block to the memory file of the
+                         --target platform: CLAUDE.md for claude-code/omp,
+                         AGENTS.md for opencode/agents (researched
+                         conventions, see INSTALL.md). F overrides the file.
+                         No value = auto: ./<memory-file> of the cwd project
+  --inject-claude-md F   legacy alias of '--inject-memory F'
+
+HOOKS (deterministic enforcement — plugin installs get them automatically):
+  --hooks                copy hook scripts to ~/.proofpunk/hooks and merge them
+                         into the platform's settings file (claude-code:
+                         ~/.claude/settings.json — Stop/SubagentStop unproven-
+                         claim guard + PreToolUse secrets-in-evidence guard).
+                         Idempotent; opencode/omp get enforcement via their
+                         plugin/extension glue (printed guidance instead).
 
 INSPECTION:
   --dry-run              print the full plan, change nothing
@@ -120,10 +135,13 @@ while [ $# -gt 0 ]; do
     --with-doctrine)     WITH_DOCTRINE=1; shift;;
     --no-doctrine)       WITH_DOCTRINE=0; shift;;
     --inject-claude-md)  INJECT_CLAUDE_MD="${2:?--inject-claude-md needs a file}"; shift 2;;
+    --inject-memory)     if [ $# -gt 1 ] && [ "${2#--}" = "$2" ]; then INJECT_MEMORY="$2"; shift 2; else INJECT_MEMORY="auto"; shift; fi;;
+    --inject-memory=*)   INJECT_MEMORY="${1#*=}"; shift;;
     --dry-run)           DRY_RUN=1; shift;;
     --verify)            VERIFY=1; shift;;
     --no-verify)         VERIFY=0; shift;;
     --quiet)             QUIET=1; shift;;
+    --hooks)             WITH_HOOKS=1; shift;;
     -h|--help)           usage; exit 0;;
     *) die "unknown option: $1 (try --help)";;
   esac
@@ -308,6 +326,70 @@ if [ "$WITH_PLUGINS" -eq 1 ]; then
   say "  Claude Code plugin : /plugin marketplace add krzemienski/proofpunk && /plugin install proofpunk@proofpunk-marketplace"
 fi
 
+# ------------------------------------------------------------------ hooks --
+if [ "$WITH_HOOKS" -eq 1 ]; then
+  HOOKS_SRC="$SRC_ROOT/plugins/proofpunk/hooks"
+  HOOK_HOME="$HOME/.proofpunk/hooks"
+  say "hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)"
+  if [ "$TARGET" = "claude-code" ] || [ "$TARGET" = "omp" ] || [ "$TARGET" = "agents" ]; then
+    run "mkdir -p '$HOOK_HOME'"
+    if [ "$DRY_RUN" -eq 0 ]; then
+      cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOK_HOME/"
+      chmod +x "$HOOK_HOME/"*.sh
+      # Idempotent settings.json merge (user-level for claude-code).
+      SETTINGS="$HOME/.claude/settings.json"
+      [ "$TARGET" = "agents" ] && SETTINGS="$HOME/.agents/settings.json"
+      python3 - "$SETTINGS" "$HOOK_HOME" <<'PYEOF'
+import json, os, shutil, sys, time
+
+settings_path, hook_home = sys.argv[1], sys.argv[2]
+os.makedirs(os.path.dirname(settings_path), exist_ok=True)
+settings = {}
+if os.path.exists(settings_path):
+    with open(settings_path) as f:
+        try:
+            settings = json.load(f)
+        except json.JSONDecodeError:
+            backup = settings_path + ".corrupt-" + str(int(time.time()))
+            shutil.copy2(settings_path, backup)
+            print(f"  WARN: existing settings.json was corrupt; backed up to {backup}")
+            settings = {}
+hooks = settings.setdefault("hooks", {})
+
+def ensure(event, command, matcher=None, timeout=10):
+    entries = hooks.setdefault(event, [])
+    for e in entries:
+        for h in e.get("hooks", []):
+            if ".proofpunk/hooks" in h.get("command", ""):
+                return "already present"
+    entry = {"hooks": [{"type": "command", "command": command, "timeout": timeout}]}
+    if matcher is not None:
+        entry["matcher"] = matcher
+    entries.append(entry)
+    return "added"
+
+results = [
+    ("Stop", ensure("Stop", f"sh {hook_home}/stop-guard.sh")),
+    ("SubagentStop", ensure("SubagentStop", f"sh {hook_home}/stop-guard.sh")),
+    ("PreToolUse", ensure("PreToolUse", f"sh {hook_home}/evidence-guard.sh", matcher="Write|Edit", timeout=5)),
+]
+if os.path.exists(settings_path):
+    shutil.copy2(settings_path, settings_path + ".bak")
+with open(settings_path, "w") as f:
+    json.dump(settings, f, indent=2)
+for ev, r in results:
+    print(f"  {ev}: {r}")
+print(f"  settings: {settings_path}")
+PYEOF
+    else
+      say "  [dry-run] would install 3 hook scripts to $HOOK_HOME and merge Stop/SubagentStop/PreToolUse into the platform settings.json"
+    fi
+  else
+    say "  opencode: enforcement lives in the plugin glue (install with --plugins; see opencode/plugin/proofpunk.ts)"
+    say "  omp     : enforcement lives in the doctrine-guard extension (--plugins; extensions/proofpunk.ts)"
+  fi
+fi
+
 # --------------------------------------------------------------- doctrine --
 if [ "$WITH_DOCTRINE" -eq 1 ] && [ "$SKIP_SKILLS" -eq 0 ]; then
   DD="$DIR/$DOCTRINE_DIRNAME"
@@ -341,14 +423,54 @@ DEOF
   fi
 fi
 
-if [ -n "$INJECT_CLAUDE_MD" ]; then
-  say "rules block: $INJECT_CLAUDE_MD (idempotent)"
+# Legacy alias folds into the unified flag.
+if [ -z "$INJECT_MEMORY" ] && [ -n "$INJECT_CLAUDE_MD" ]; then
+  INJECT_MEMORY="$INJECT_CLAUDE_MD"
+fi
+
+if [ -n "$INJECT_MEMORY" ]; then
+  # Target-aware memory file (verified 2026-08-13: Claude Code reads
+  # CLAUDE.md + .claude/rules/*; OpenCode reads AGENTS.md project +
+  # ~/.config/opencode/AGENTS.md global and falls back to CLAUDE.md only
+  # when no AGENTS.md exists; Codex-style agents read AGENTS.md; OMP reads
+  # the Claude-compatible memory chain).
+  case "$TARGET" in
+    opencode|agents) MEMFILE_DEFAULT="AGENTS.md";;
+    *)               MEMFILE_DEFAULT="CLAUDE.md";;
+  esac
+  if [ "$INJECT_MEMORY" = "auto" ]; then
+    MEMFILE="$PWD/$MEMFILE_DEFAULT"
+  else
+    MEMFILE="$INJECT_MEMORY"
+  fi
+  say "rules block: $MEMFILE (platform default for $TARGET: $MEMFILE_DEFAULT; idempotent)"
   if [ "$DRY_RUN" -eq 0 ]; then
-    touch "$INJECT_CLAUDE_MD"
-    if grep -q 'BEGIN PROOFPUNK RULES' "$INJECT_CLAUDE_MD"; then
+    touch "$MEMFILE"
+    if grep -q 'BEGIN PROOFPUNK RULES' "$MEMFILE"; then
       say "  already present — left unchanged"
     else
-      cat >> "$INJECT_CLAUDE_MD" <<'CEOF'
+      # OpenCode/AGENTS.md has no automatic @path loading — the block tells
+      # the agent to load the doctrine on demand instead (per opencode docs).
+      if [ "$MEMFILE_DEFAULT" = "AGENTS.md" ]; then
+        cat >> "$MEMFILE" <<'CEOF'
+
+<!-- BEGIN PROOFPUNK RULES (installed by proofpunk-install.sh) -->
+## Proofpunk operating rules
+- Iron Rule: fix the real system; never mocks, stubs, test doubles, or
+  test-mode bypasses.
+- End-User Actor Mandate: validate by driving the live system as the end
+  user. Test runners are regression tooling, never validation.
+  Unexecuted = UNVERIFIED, never PASS.
+- Remediation = reproduce, fix the root cause (never the symptom),
+  re-validate the original failure and its blast radius with fresh evidence.
+- Evidence: fresh, run-scoped, non-empty, cited by full path.
+- On first use of a proofpunk skill, load its bundled doctrine from
+  proofpunk-doctrine/README.md on a need-to-know basis (AGENTS.md has no
+  automatic @-imports — load files explicitly, do not preload).
+<!-- END PROOFPUNK RULES -->
+CEOF
+      else
+        cat >> "$MEMFILE" <<'CEOF'
 
 <!-- BEGIN PROOFPUNK RULES (installed by proofpunk-install.sh) -->
 ## Proofpunk operating rules
@@ -363,8 +485,11 @@ if [ -n "$INJECT_CLAUDE_MD" ]; then
 - Evidence: fresh, run-scoped, non-empty, cited by full path.
 <!-- END PROOFPUNK RULES -->
 CEOF
+      fi
       say "  appended (marked block; safe to re-run)"
     fi
+  else
+    say "  [dry-run] would append the marked rules block to $MEMFILE"
   fi
 fi
 

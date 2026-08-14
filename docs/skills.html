@@ -97,6 +97,12 @@ summary:hover{color:var(--accent)}
 .callout{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);padding:14px 18px;font-size:13px;line-height:1.6;color:var(--dim);margin-top:20px}
 .callout strong{color:var(--text)}
 @media(max-width:768px){h1{font-size:26px}.chrome-bar{font-size:10px}}
+
+.cmdline, pre{position:relative}
+.copybtn{position:absolute;top:6px;right:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--dim);background:var(--surface2);border:1px solid var(--border);padding:3px 8px;cursor:pointer;opacity:.35;transition:opacity .15s,border-color .15s}
+.cmdline:hover .copybtn, pre:hover .copybtn{opacity:1}
+.copybtn:hover{color:var(--accent);border-color:var(--accent)}
+.copybtn.copied{color:var(--ok);border-color:var(--ok);opacity:1}
 </style>
 </head>
 <body>
@@ -222,11 +228,26 @@ summary:hover{color:var(--accent)}
 </section>
 
 </div>
-<div class="statusline"><span><b>SKILLS</b></span><span>v1.10.0 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+<div class="statusline"><span><b>SKILLS</b></span><span>v1.10.1 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
 <footer><div class="wrap">
   PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.0 · MIT license
+  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.1 · MIT license
 </div></footer>
 
+<script>
+document.querySelectorAll('.cmdline, pre').forEach(function(el){
+  if (el.querySelector('.copybtn')) return;
+  var b = document.createElement('button');
+  b.className = 'copybtn'; b.type = 'button'; b.textContent = 'COPY';
+  b.addEventListener('click', function(){
+    var txt = el.innerText.replace(/^COPY\n?/, '').replace(/^COPIED ✓\n?/, '');
+    navigator.clipboard.writeText(txt).then(function(){
+      b.textContent = 'COPIED ✓'; b.classList.add('copied');
+      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); }, 1400);
+    });
+  });
+  el.appendChild(b);
+});
+</script>
 </body>
 </html>

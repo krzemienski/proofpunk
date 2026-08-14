@@ -97,6 +97,12 @@ summary:hover{color:var(--accent)}
 .callout{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);padding:14px 18px;font-size:13px;line-height:1.6;color:var(--dim);margin-top:20px}
 .callout strong{color:var(--text)}
 @media(max-width:768px){h1{font-size:26px}.chrome-bar{font-size:10px}}
+
+.cmdline, pre{position:relative}
+.copybtn{position:absolute;top:6px;right:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--dim);background:var(--surface2);border:1px solid var(--border);padding:3px 8px;cursor:pointer;opacity:.35;transition:opacity .15s,border-color .15s}
+.cmdline:hover .copybtn, pre:hover .copybtn{opacity:1}
+.copybtn:hover{color:var(--accent);border-color:var(--accent)}
+.copybtn.copied{color:var(--ok);border-color:var(--ok);opacity:1}
 </style>
 </head>
 <body>
@@ -115,7 +121,7 @@ summary:hover{color:var(--accent)}
 <section class="animate" style="--i:0">
   <div class="marker">01 / WHAT IT IS</div>
   <h1>“Done” means proven<br>by end-user testing<span class="cursor"></span></h1>
-  <p class="subtitle">execution-first delivery plugin · claude code / oh-my-pi / opencode · v1.10.0</p>
+  <p class="subtitle">execution-first delivery plugin · claude code / oh-my-pi / opencode · v1.10.1</p>
   <p><strong>Proofpunk</strong> is an execution-first delivery <strong>plugin for Claude Code,
   oh-my-pi (OMP), and OpenCode</strong>: 19 skills where the AI drives the real system as an
   end user — clicking, typing, submitting via MCP/automation tools — and any claim it did not
@@ -290,7 +296,7 @@ graph TB
   <table>
     <tr><th>hook</th><th>what it enforces</th></tr>
     <tr><td><code>SessionStart</code></td><td style="color:var(--dim)">injects the doctrine as session context</td></tr>
-    <tr><td><code>Stop / SubagentStop</code></td><td style="color:var(--dim)">completion claim without a cited end-user test artifact → <strong>block</strong>, reason fed back to Claude — unproven is never done</td></tr>
+    <tr><td><code>Stop / SubagentStop</code></td><td style="color:var(--dim)">completion claim without a cited end-user test artifact → <strong>block</strong>, reason fed back to Claude; silent otherwise (no per-stop noise)</td></tr>
     <tr><td><code>PreToolUse</code></td><td style="color:var(--dim)">denies writes of probable secrets into evidence directories (redact first)</td></tr>
     <tr><td><code>InstructionsLoaded</code></td><td style="color:var(--dim)">logs every CLAUDE.md / rules load — memory loading is observable</td></tr>
   </table>
@@ -367,10 +373,10 @@ graph TD
 </section>
 
 </div>
-<div class="statusline"><span><b>OVERVIEW</b></span><span>v1.10.0 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+<div class="statusline"><span><b>OVERVIEW</b></span><span>v1.10.1 · ⑂ main · 19 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
 <footer><div class="wrap">
   PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.0 · MIT license
+  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v1.10.1 · MIT license
 </div></footer>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -437,7 +443,22 @@ function initDiagram(shell){
     wrap.style.height=Math.round(clamp(idealH,config.minHeight,hardMax))+'px';}
   function openInNewTab(){const svg=canvas.querySelector('svg');if(!svg)return;const c=svg.cloneNode(true);
     c.style.width='';c.style.height='';
-    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>diagram</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#050507;padding:40px;box-sizing:border-box}svg{max-width:100%;max-height:90vh;height:auto}</style></head><body>${c.outerHTML}</body></html>`;
+    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>diagram</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#050507;padding:40px;box-sizing:border-box}svg{max-width:100%;max-height:90vh;height:auto}</style></head><body>${c.outerHTML}<script>
+document.querySelectorAll('.cmdline, pre').forEach(function(el){
+  if (el.querySelector('.copybtn')) return;
+  var b = document.createElement('button');
+  b.className = 'copybtn'; b.type = 'button'; b.textContent = 'COPY';
+  b.addEventListener('click', function(){
+    var txt = el.innerText.replace(/^COPY\n?/, '').replace(/^COPIED ✓\n?/, '');
+    navigator.clipboard.writeText(txt).then(function(){
+      b.textContent = 'COPIED ✓'; b.classList.add('copied');
+      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); }, 1400);
+    });
+  });
+  el.appendChild(b);
+});
+</script>
+</body></html>`;
     open(URL.createObjectURL(new Blob([html],{type:'text/html'})),'_blank');}
   async function render(){try{
     const code=source.textContent.trim();

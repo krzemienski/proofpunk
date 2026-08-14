@@ -37,18 +37,18 @@ cat > "$TMP/t2.jsonl" <<'EOF'
 {"role":"assistant","text":"All done — complete. Evidence in e2e-evidence/run-2026-x/step-03-shot.png"}
 EOF
 out=$(printf '{"session_id":"s2","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t2.jsonl" | sh "$HOOKS/stop-guard.sh")
-if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard false-blocked proven claim — got: $out"; else case_ok "stop-guard allows proven claim"; fi
+if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard false-blocked proven claim — got: $out"; elif [ -n "$out" ]; then case_fail "stop-guard spoke on a proven claim (must be silent) — got: $out"; else case_ok "stop-guard silent on proven claim"; fi
 
 # Case 3: no claim at all → no block
 cat > "$TMP/t3.jsonl" <<'EOF'
 {"role":"assistant","text":"I am still investigating the failing test."}
 EOF
 out=$(printf '{"session_id":"s3","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t3.jsonl" | sh "$HOOKS/stop-guard.sh")
-if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard blocked a non-claim — got: $out"; else case_ok "stop-guard silent on non-claim"; fi
+if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard blocked a non-claim — got: $out"; elif [ -n "$out" ]; then case_fail "stop-guard spoke on a non-claim (must be silent) — got: $out"; else case_ok "stop-guard silent on non-claim"; fi
 
 # Case 4: missing transcript → non-blocking
 out=$(printf '{"session_id":"s4","transcript_path":"/nonexistent/x.jsonl","cwd":"/tmp"}' | sh "$HOOKS/stop-guard.sh")
-if printf '%s' "$out" | grep -q "additionalContext"; then case_ok "stop-guard tolerates missing transcript"; else case_fail "stop-guard missing-transcript — got: $out"; fi
+if [ -z "$out" ]; then case_ok "stop-guard silent on missing transcript"; else case_fail "stop-guard spoke on missing transcript (must be silent) — got: $out"; fi
 
 echo "== evidence-guard.sh"
 # Case 5: secret into evidence dir → denied (exit 2). JSON via heredoc —

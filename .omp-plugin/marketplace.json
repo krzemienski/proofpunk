@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Evidence-driven delivery pipeline: 19 skills, 20 flat-black cyberpunk themes, and execution-first implement orchestration.",
-    "version": "1.10.0",
+    "version": "1.10.1",
     "pluginRoot": "plugins"
   },
   "plugins": [
@@ -14,7 +14,7 @@
       "name": "proofpunk",
       "description": "Evidence-driven delivery pipeline: brainstorm, plan, harden, implement, end-user-test, and audit — plus 20 flat-black cyberpunk themes for OMP and OpenCode.",
       "source": "./proofpunk",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "category": "development",
       "license": "MIT",
       "keywords": [

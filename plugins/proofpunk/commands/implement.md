@@ -32,3 +32,13 @@ Mines past sessions first, fans scouts/plan-stages/build-lanes out with executab
 /proofpunk:implement .prompts/billing.prompt.md --tdd
 ```
 Forge the build prompt first, review it, then implement from the approved prompt with tests-first per task.
+
+**4. Full command — every option selected**
+
+```
+/proofpunk:implement "add Stripe billing webhooks with signature verification" --parallel --auto --mine --tdd
+```
+Mines past sessions first, fans out scouts, forges the prompt, decomposes
+with proof obligations, runs independent lanes in parallel with executable
+lane contracts, tests before code per task, and never stops until every
+criterion is proven. Note: `--no-test` contradicts `--tdd` — pick one.

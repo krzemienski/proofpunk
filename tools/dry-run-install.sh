@@ -69,5 +69,20 @@ grep -c "proofpunk:begin" "$FIX/CLAUDE.md"
 head -3 "$FIX/.claude/rules/proof-obligations.md"
 
 echo
+echo "== opencode target: AGENTS.md + .opencode/rules"
+FIX2="/tmp/pp-init-fixture-oc"
+rm -rf "$FIX2"; mkdir -p "$FIX2"
+printf '{"name":"oc-app","scripts":{"test":"go test ./..."}}' > "$FIX2/package.json"
+sed -e "s|{{PROJECT_NAME}}|oc-app|g" -e "s|{{TEST_COMMAND}}|go test ./...|g" -e "s|{{BUILD_COMMAND}}|go build ./...|g" \
+    "$PP/assets/agents-md-template.md" > "$FIX2/AGENTS.md"
+mkdir -p "$FIX2/.opencode/rules"
+cp "$PP/assets/rules/proof-obligations.md" "$FIX2/.opencode/rules/"
+grep -q "proofpunk:begin" "$FIX2/AGENTS.md" && ok "opencode AGENTS.md marker present"
+grep -q "no automatic file imports" "$FIX2/AGENTS.md" && ok "AGENTS.md carries the no-@-imports instruction"
+! grep -q "@README" "$FIX2/AGENTS.md" && ok "AGENTS.md has no Claude-only @-imports"
+[ -f "$FIX2/.opencode/rules/proof-obligations.md" ] && ok "opencode rules dir written"
+! grep -q "{{" "$FIX2/AGENTS.md" && ok "AGENTS.md placeholders substituted"
+
+echo
 echo "INSTALL DRY-RUN FAILS: $FAILS"
 exit "$FAILS"

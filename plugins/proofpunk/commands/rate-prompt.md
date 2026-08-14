@@ -32,3 +32,12 @@ Rates and reports without rewriting: the rating file lands, the prompt is untouc
 /proofpunk:verify "run both prompt versions against the 3 failure cases and diff the outputs"
 ```
 Rate the revision, then end-user-test the behavioral difference with executed evidence — no vibes-based prompt reviews.
+
+**5. Full command — every option selected**
+
+```
+/proofpunk:rate-prompt .planning/pg17.prompt.md --report-only --out .planning/pg17.rating.md
+```
+Scores against the 7-dimension /100 rubric and writes the report to file
+without touching the prompt. Note: `--in-place` and `--out` are exclusive
+(same-file edit vs. separate output); `--report-only` composes with `--out`.

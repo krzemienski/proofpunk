@@ -32,3 +32,12 @@ Scoped end-user test: only the named flow is driven, but every step still requir
 /proofpunk:verify "deliver a test webhook and confirm idempotent processing"
 ```
 Cook builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.
+
+**4. Scoped — everything you can select**
+
+```
+/proofpunk:verify src/checkout
+```
+`verify` takes a single positional scope — there are no flags to combine.
+Everything else is the proof standard: fresh run-scoped evidence, the
+assertion defined first, verdict citing full paths.

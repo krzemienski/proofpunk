@@ -1,6 +1,6 @@
 {
   "name": "proofpunk",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "Execution-first delivery pipeline: brainstorm, plan, decompose into proof-carrying tasks, implement, end-user test, and audit — end-user testing is the only PASS, no mocks, executed evidence over assertion. 19 skills: functional validation, full functional audit, validation planning with cumulative proof obligations, plan hardening, prompt engineering/rating with mandatory file-output remediation, sequential thinking and authorization discipline, meta-prompt pipelines, visual inspection, UI experience audit, structured implementation (cook) and the implement orchestrator (session mining, parallel scouts/lanes with executable lane contracts, distilled success criteria, stuck protocol, live execution ledger, no-stop --auto mode), per-stack real-system testing (pytest/Go/C++/Django/Spring/FastAPI/Playwright), iOS simulator validation, root-cause debugging, production-readiness audits, red-team/eval workflows, session-intent reconstruction, codebase-truth-audit — plus slash commands, a doctrine SessionStart hook, and a 20-theme flat-black cyberpunk pack for oh-my-pi (OMP) and OpenCode TUIs and Hyper terminal — in one plugin with a closed Related Skills graph (every referenced skill ships).",
   "author": {
     "name": "Proofpunk maintainers"

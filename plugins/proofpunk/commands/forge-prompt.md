@@ -32,3 +32,11 @@ Writes to an explicit path with the advanced tag set (edge cases, failure modes,
 /proofpunk:rate-prompt prompts/support.prompt.md --in-place
 ```
 Forge v1, then RATE it against the 100-point rubric and remediate in place until the threshold is met.
+
+**5. Full command — every option selected**
+
+```
+/proofpunk:forge-prompt author "migration plan for Postgres 15 → 17 across 3 services" --out .planning/pg17.prompt.md --depth advanced
+```
+AUTHOR mode, advanced depth (full evaluation + remediation guidance),
+written to a named file — ready for `rate-prompt` and then `cook`.

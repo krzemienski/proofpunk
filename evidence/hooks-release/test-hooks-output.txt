@@ -7,9 +7,9 @@
   PASS: session-start doctrine context
 == stop-guard.sh
   PASS: stop-guard blocks unproven claim
-  PASS: stop-guard allows proven claim
+  PASS: stop-guard silent on proven claim
   PASS: stop-guard silent on non-claim
-  PASS: stop-guard tolerates missing transcript
+  PASS: stop-guard silent on missing transcript
 == evidence-guard.sh
   PASS: evidence-guard denies secret into evidence
   PASS: evidence-guard allows clean evidence write
