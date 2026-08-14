@@ -144,6 +144,14 @@ summary:hover{color:var(--accent)}
 bash tools/proofpunk-install.sh --target omp --themes --plugins <span style="color:var(--faint)"># oh-my-pi skills + themes + extension</span>
 bash tools/proofpunk-install.sh --target opencode --themes --plugins
 bash tools/proofpunk-install.sh --target agents                 <span style="color:var(--faint)"># ~/.agents/skills (shared)</span></span></pre>
+  <h3>Everything at once — all options selected</h3>
+  <pre><span class="c">bash tools/proofpunk-install.sh --target claude-code --source github --ref main \
+    --themes --plugins --hooks --inject-memory --override</span></pre>
+  <p>Skills + themes + platform glue + enforcement hooks (merged into
+  <code>~/.claude/settings.json</code>, idempotent) + the marked rules block in the
+  platform's memory file (<code>CLAUDE.md</code> for claude-code/omp,
+  <code>AGENTS.md</code> for opencode/agents — the installer picks per
+  <code>--target</code>).</p>
   <p>Idempotent; <code>--override</code> upgrades in place keeping backups; <code>--skip-skills --themes</code>
   installs themes only. Full semantics: <a href="https://github.com/krzemienski/proofpunk/blob/main/tools/INSTALL.md">tools/INSTALL.md</a>.</p>
 </section>
