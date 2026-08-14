@@ -9,8 +9,8 @@ description: >
   preflight environment checks. Use when validating an iOS or Expo feature
   marking any mobile task complete, booting/controlling simulators
   capturing mobile UI evidence, or debugging Metro/simulator issues.
-  Unexecuted mobile validation is UNVERIFIED, never done. Not for web
-  desktop, or API validation  or non-iOS test
+  Unexecuted mobile validation is UNVERIFIED, never done. Not for web,
+  desktop, or API validation (the shared runbooks) or non-iOS test
   suites (use stack-testing).
 ---
 

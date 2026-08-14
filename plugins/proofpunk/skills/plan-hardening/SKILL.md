@@ -11,7 +11,7 @@ description: >
   this plan', 'red-team my plan', 'stress-test this design', 'add proof
   obligations to this prompt' — or before executing any high-stakes
   multi-phase plan. Not for authoring a plan from scratch (use
-  validation-plan) or executing one (use implement or implement).
+  validation-plan) or executing one (use implement).
 ---
 
 # Plan Hardening

@@ -9,8 +9,8 @@ description: >
   captures, browser screenshots, or design-implementation evidence, and
   before marking ANY screenshot as PASS — even when the user just says
   'check this screenshot', 'does this look right', or attaches a UI image.
-  Not for interactive UX flow audits (use ui-experience-audit) or functional
-  validation of running features .
+  Not for interactive UX flow audits (use ui-experience-audit) or driving
+  running features (the shared runbooks).
 ---
 
 # Visual Inspection Protocol

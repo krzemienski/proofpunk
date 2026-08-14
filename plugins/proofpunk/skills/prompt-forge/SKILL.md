@@ -12,7 +12,7 @@ description: >
   unknown flags rejected. Use when writing, rating, improving, or debugging
   a prompt; designing a system prompt; forcing structured output; managing
   long context; or when model output is unreliable and the prompt is the
-  suspect. Not for executing build plans (use implement/implement) or adversarial
+  suspect. Not for executing build plans (use implement) or adversarial
   plan review (use plan-hardening/red-team-eval).
 ---
 

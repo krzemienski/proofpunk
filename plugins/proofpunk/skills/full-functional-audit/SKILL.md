@@ -10,7 +10,7 @@ description: >
   defer FAILs), Verdict (coverage statement). Use when asked to 'audit the
   whole app', 'click through everything', 'find bugs on this site/URL'
   'test everything', 'full QA sweep', or for pre-release hardening. Not for
-  single-feature checks , per-screen UX review
+  single-feature checks (drive the real system per the shared runbooks), per-screen UX review
   (use ui-experience-audit), or one known bug (use root-cause-debugging).
 ---
 

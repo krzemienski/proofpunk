@@ -9,7 +9,7 @@ description: >
   compliance). Use when preparing a first release, open-sourcing, doing a
   major version bump, auditing whether a spec was fully implemented
   reviewing dependency risk, or after rapid prototyping leaves the repo in
-  unknown shape. Not for runtime feature QA 
+  unknown shape. Not for runtime feature QA (drive the real system per the shared runbooks),
   screenshot review (use visual-inspection), or intent provenance (use
   session-intent).
 ---
