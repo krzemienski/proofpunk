@@ -104,7 +104,7 @@ for i in range(1, len(stage_secs), 2):
     stage_text[num] = stage_secs[i] + (stage_secs[i+1] if i+1 < len(stage_secs) else "")
 stage_expect = [
     ("1", "session-intent"), ("2", "brainstorm"), ("3", "prompt-forge"),
-    ("4", "validation-plan"), ("5", "cook"), ("5", "end-user-testing"),
+    ("4", "validation-plan"), ("5", "end-user-testing"),
     ("6", "root-cause-debugging"),
 ]
 for num, callee in stage_expect:
@@ -113,8 +113,8 @@ for num, callee in stage_expect:
           "" if num in stage_text else f"Stage {num} heading not found")
 nums = [int(n) for n in stage_text]
 check("stage sections appear in declared order", nums == sorted(nums), f"order={nums}")
-rail = re.search(r"regression rail[^\n]*", impl, re.I)
-check("regression rail declared (suites after proof, never as proof)", bool(rail))
+rail = re.search(r"regression (posture|rail)[^\n]*", impl, re.I)
+check("regression posture declared (existing suites stay green, never proof)", bool(rail))
 
 # ---- 6. duplication sweep ---------------------------------------------------
 print("CHECK 6: duplication sweep")
@@ -141,5 +141,5 @@ print()
 if FAILS:
     print(f"VERDICT: FAIL — {len(FAILS)} check(s) failed: {FAILS}")
     sys.exit(1)
-print("VERDICT: PASS — the 19 skills execute as one delegation DAG, in the")
+print("VERDICT: PASS — the 17 skills execute as one delegation DAG, in the")
 print("documented order, with methods owned exactly once.")

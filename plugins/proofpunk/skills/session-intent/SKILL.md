@@ -30,8 +30,8 @@ Copy this checklist and track your progress:
 The key difference from every other audit lane in this plugin: the input is
 **the sessions themselves**, not summaries of them. A session summary is a
 claim about intent, written after the fact, possibly about a tree that has
-since moved. The transcript is the intent — the literal prompt the user typed,
-at that timestamp, on that branch. Per `../../references/evidence-contract.md`,
+since moved. The transcript is the intent — the literal prompt the user typed
+at that timestamp, on that branch. Per `../../references/evidence-contract.md`
 this skill treats transcripts as evidence and everything downstream
 (summaries, docs, commit messages) as claims to be checked against it.
 
@@ -70,7 +70,7 @@ this skill treats transcripts as evidence and everything downstream
    ```
 
    Per session it records: first prompt (intent), steering prompts, tool
-   counts, files touched, `git commit` invocations observed, branch, models,
+   counts, files touched, `git commit` invocations observed, branch, models
    and exact time bounds. Null intent means the transcript contained no real
    user prompt (e.g. tool-only session) — it stays null.
 3. **Align** — for each commit in the window (`git log --since/--until

@@ -1,14 +1,14 @@
 ---
 name: validation-plan
 description: >
-  Authors multi-phase project plans where every phase carries blocking,
+  Authors multi-phase project plans where every phase carries blocking
   cumulative proof obligations — BRIEF, ROADMAP, per-phase PLAN, SUMMARY +
   VALIDATION with run-scoped evidence. Proofs are cumulative: phase N's
   validation re-verifies phases 1..N-1, so a regression in earlier work
   blocks advancement. Use when asked to plan a multi-phase build, create a
   validation plan, structure a project roadmap, break a feature into proven
   phases, write a BRIEF/ROADMAP, or when an autonomous runner needs phases
-  it cannot advance past without proof. Not for executing the plan (use cook
+  it cannot advance past without proof. Not for executing the plan (use implement
   or implement) or hardening an existing draft (use plan-hardening).
 ---
 
@@ -48,7 +48,7 @@ evidence it must produce, and later phases re-prove earlier ones.
 Capture in one page:
 
 - **Problem**: the observable pain or gap, with evidence it exists
-- **Expected output**: concrete artifacts (files, behaviors, endpoints,
+- **Expected output**: concrete artifacts (files, behaviors, endpoints
   screens) verifiable later
 - **Acceptance criteria**: specific inputs -> outputs and edge cases that
   must work
@@ -91,7 +91,7 @@ evidence:
   actor: ai-end-user                        # the AI drives the actions via MCP/automation tools
 ```
 
-Proof obligations must specify DRIVEN end-user actions ("agent clicks X,
+Proof obligations must specify DRIVEN end-user actions ("agent clicks X
 observes Y"), never passive checks ("screenshot exists"). See
 `../../references/end-user-actor.md`.
 
@@ -105,11 +105,11 @@ refuses to validate it.
 
 ## Step 4 — Execution handoff
 
-The runner (human, `cook`, or an autonomous loop) works the PLAN, then writes:
+The runner (human, `implement`, or an autonomous loop) works the PLAN, then writes:
 
 - **SUMMARY.md**: what was actually done, deviations from PLAN and why
 - **VALIDATION.md**: the verdict from `end-user-testing` — PASS criteria cited
-  to fresh run-scoped evidence paths, cumulative re-verification included,
+  to fresh run-scoped evidence paths, cumulative re-verification included
   and an explicit record of the end-user actions the AI actually executed
   (tools used + actions performed). Criteria whose validation was not
   executed are marked UNVERIFIED — never silently passed.
@@ -157,4 +157,4 @@ Cumulative re-verification:
 |-------|------|--------------------|
 | `end-user-testing` | every VALIDATION gate | run-scoped evidence the gates cite |
 
-Called by: `cook`, `implement`, `plan-hardening`.
+Called by: `implement`, `plan-hardening`.

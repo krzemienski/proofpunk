@@ -53,6 +53,44 @@ export default function proofpunk(pi: ExtensionAPI) {
       }
     }
 
+    // The write path never creates test artifacts (hard guarantee).
+    if (event.toolName === "write" || event.toolName === "edit") {
+      const path = String(input.path ?? input.file_path ?? "");
+      const TEST_PATH =
+        /(_?tests?_|__tests__|\.spec\.|\.test\.|\/tests?\/|\/test_|_test\.|\/fixtures?\/.*test|\/testing\/)/i;
+      if (path && TEST_PATH.test(path)) {
+        return {
+          block: true,
+          reason:
+            "Blocked by Proofpunk doctrine guard: the write path never creates test files " +
+            `(${path}). Validate by driving the real system as the end user. If the project ` +
+            "has a pre-existing suite and the operator asked to extend it, let them run it manually.",
+        };
+      }
+    }
+
+    return undefined;
+  });
+
+  // Unproven-completion guard for the main session stop (cap 8 forced
+  // continuations is the runtime's own guard against loops).
+  pi.on("session_stop", async (_event, _ctx) => {
+    const text = JSON.stringify(
+      (_ctx as { session?: unknown }).session ?? {},
+    ).slice(-6000);
+    const CLAIM =
+      /\b(done|complete|completed|finished|shipped|works now|fixed it)\b/i;
+    const PROOF =
+      /(e2e-evidence\/|evidence-inventory|step-\d+[-.]|screenshot|verdict|curl\s+\S+\s+200|validate\s+OK)/i;
+    if (CLAIM.test(text) && !PROOF.test(text)) {
+      return {
+        continue: true,
+        reason:
+          "Proofpunk: a completion was claimed without a cited end-user evidence artifact. " +
+          "Drive the real system as the end user, capture run-scoped evidence, cite it by full path — " +
+          "or downgrade the claim to UNVERIFIED.",
+      };
+    }
     return undefined;
   });
 

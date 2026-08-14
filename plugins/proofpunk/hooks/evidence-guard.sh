@@ -32,15 +32,26 @@ SECRET_PATTERNS = [
     r"github_pat_[A-Za-z0-9_]{20,}",
     r"AKIA[0-9A-Z]{16}",
     r"BEGIN (RSA|OPENSSH|EC|PGP) PRIVATE KEY",
-    r"(?i)(api[_-]?key|secret[_-]?key|access[_-]?token)\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{16,}",
 ]
+GENERIC_SECRET = re.compile(
+    r"(api[_-]?key|secret[_-]?key|access[_-]?token)\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{16,}",
+    re.I,
+)
 for pat in SECRET_PATTERNS:
     if re.search(pat, content):
-        sys.stderr.write(
-            "Proofpunk: refusing to write probable secret material into an evidence directory. "
-            "Evidence is committed and public — redact keys/tokens first "
-            "(see references/evidence-contract.md: redact, never commit).\n"
-        )
-        sys.exit(2)
+        hit = pat
+        break
+else:
+    hit = None
+if hit is None and GENERIC_SECRET.search(content):
+    hit = "generic-credential-assignment"
+
+if hit:
+    sys.stderr.write(
+        "Proofpunk: refusing to write probable secret material into an evidence directory. "
+        "Evidence is committed and public — redact keys/tokens first "
+        "(see references/evidence-contract.md: redact, never commit).\n"
+    )
+    sys.exit(2)
 sys.exit(0)
 PYEOF

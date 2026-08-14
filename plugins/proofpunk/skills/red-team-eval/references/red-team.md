@@ -32,7 +32,7 @@ Invoke automatically (no user prompt needed) when:
 - User asks to "run", "execute", or "ralph" a plan that spans 3+ phases
 - User hands you an XML mega-prompt, .md runbook, or `plan.md`
 - User says any of: "red team", "find the holes", "stress test", "adversarial", "harden"
-- An autonomous loop (`/autopilot`, `/ralph`, `/cook`, `/ultrawork`) is about to start
+- An autonomous loop (`/autopilot`, `/ralph`, `/implement`, `/ultrawork`) is about to start
 
 ## The Four Lenses
 

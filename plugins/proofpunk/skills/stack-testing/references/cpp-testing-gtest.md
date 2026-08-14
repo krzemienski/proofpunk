@@ -348,4 +348,4 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 ## APPLICABILITY GUARD
 
-This skill is for C++ projects only (GoogleTest/GoogleMock with CMake/CTest). Do not activate for non-C++ projects. Before using, check whether the project has a no-mocking policy (e.g., `no-mocking-validation-gates` or `functional-validation` mandates) — if so, use real dependencies instead of mocks/fakes where possible.
+This skill is for C++ projects only (GoogleTest/GoogleMock with CMake/CTest). Do not activate for non-C++ projects. Before using, check whether the project has a no-mocking policy (e.g., a no-mocking policy or the implement pipeline's validation phase) — if so, use real dependencies instead of mocks/fakes where possible.

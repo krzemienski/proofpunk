@@ -3,13 +3,13 @@ name: ui-experience-audit
 description: >
   Deep end-to-end audit of any UI screen across four dimensions — visual
   defects, interactive elements, content quality, and UX heuristics — ending
-  in one severity-classified report. Inventories every action item (button,
+  in one severity-classified report. Inventories every action item (button
   link, field, gesture), verifies each is discoverable and reachable, audits
   prose / code-block / diagram / data-viz rendering, and evaluates against
   Nielsen's 10 heuristics plus affordance theory. Modes:
   identify-and-delegate (screenshot only) or drive-interaction (drive the
-  live system as an end user — preferred). Use when reviewing a UI screen,
-  page, or flow — 'review this screen', 'audit this page', 'QA this view',
+  live system as an end user — preferred). Use when reviewing a UI screen
+  page, or flow — 'review this screen', 'audit this page', 'QA this view'
   'is this UI good' — iOS, web, or cross-platform. Not for pixel-checklist
   screenshot QA (use visual-inspection) or app-wide functional sweeps (use
   full-functional-audit).
@@ -77,16 +77,16 @@ evidence/audit-<screen>-<YYYYMMDD-HHMM>/
 └── audit-report.md
 ```
 
-The per-element `.log` records: element, selector/coordinates, pre-state,
+The per-element `.log` records: element, selector/coordinates, pre-state
 action taken, post-state, verdict, evidence paths.
 
 ## References (load on demand)
 
-Always: `references/interactive-element-audit.md`,
-`references/content-quality-checklist.md`,
-`references/ux-heuristics-checklist.md`,
+Always: `references/interactive-element-audit.md`
+`references/content-quality-checklist.md`
+`references/ux-heuristics-checklist.md`
 `../../references/defect-pattern-database.md`
-Platform: `../../references/ios-hig-checklist.md` (iOS),
+Platform: `../../references/ios-hig-checklist.md` (iOS)
 `../../references/web-wcag-checklist.md` (web), both (cross-platform).
 Web/cross-platform: `references/responsive-audit.md`.
 Report: copy `assets/audit-report-template.md`.
@@ -105,19 +105,19 @@ findings. Zero findings means you skipped a phase.
 
 ## Phase 0 — Triage (30 seconds)
 
-Record as CRITICAL immediately: missing/broken content (empty chart plot,
-broken image, "undefined"/"NaN" as text), lorem ipsum or placeholder data,
+Record as CRITICAL immediately: missing/broken content (empty chart plot
+broken image, "undefined"/"NaN" as text), lorem ipsum or placeholder data
 visible error states/stack traces, crash or blank screens, unstyled-content
 flash residue, visible console errors.
 
-**Coverage check**: note which axes the evidence covers (light/dark,
+**Coverage check**: note which axes the evidence covers (light/dark
 viewports, empty/loading/populated/error, long content). Single-axis coverage
 caps the verdict at PASS (LIMITED COVERAGE) — and is itself a finding.
 
 ## Phase 1 — Visual Defect Inspection
 
-Walk the universal checklist (overflow/clipping, spacing/alignment,
-typography/contrast, heading hierarchy, affordance sizing, visual hierarchy,
+Walk the universal checklist (overflow/clipping, spacing/alignment
+typography/contrast, heading hierarchy, affordance sizing, visual hierarchy
 dark/light mode, edge cases) then the platform checklist from the loaded
 reference. This is the same protocol as `visual-inspection`; canonical
 checklists live in the shared references.
@@ -133,7 +133,7 @@ Follow `references/interactive-element-audit.md`:
 
 1. **Inventory** every action item: buttons, links, inputs, toggles, swipe
    targets, draggables, hover-revealed controls, keyboard shortcuts
-2. Record per item: position, type, signifier present?, affordance match?,
+2. Record per item: position, type, signifier present?, affordance match?
    target size, focus order
 3. **Verify reachability** — minimum target size, tab order, no covering
    element stealing hits
@@ -148,18 +148,18 @@ PASS WITH ISSUES (verification pending), never PASS.
 
 ## Phase 3 — Content Quality Audit
 
-Follow `references/content-quality-checklist.md`: prose (heading hierarchy,
+Follow `references/content-quality-checklist.md`: prose (heading hierarchy
 line length 65-75 chars, body >= 16px web / 17pt iOS), code blocks
 (monospace, highlight contrast, mobile wrap, copy affordance, language
-label), diagrams (title, alt text, non-color channels, keyboard reachability),
-data viz (tabindex per point, tooltips without mouse, labelled axes, legend,
+label), diagrams (title, alt text, non-color channels, keyboard reachability)
+data viz (tabindex per point, tooltips without mouse, labelled axes, legend
 text alternative), media (captions, transcripts, no autoplay with sound).
 
 ## Phase 4 — UX Heuristic Evaluation
 
 Follow `references/ux-heuristics-checklist.md`: Nielsen's 10 (system status
-visibility, real-world match, user control, consistency, error prevention,
-recognition over recall, flexibility, minimalist design, error recovery,
+visibility, real-world match, user control, consistency, error prevention
+recognition over recall, flexibility, minimalist design, error recovery
 help) plus affordance/signifier alignment for every interactive element.
 Cite the heuristic number and name per violation.
 
@@ -180,7 +180,7 @@ The report header records the tools and actions actually performed. An audit
 that executed nothing says so — skipping or faking verification steps is a
 process violation, not a shortcut.
 
-Hand-offs: wiring doubts -> `functional-validation`; app-wide scope ->
+Hand-offs: wiring doubts -> the shared runbooks (`references/*-validation.md`); app-wide scope ->
 `full-functional-audit`; pure pixel QA -> `visual-inspection`.
 
 ## Anti-Patterns
@@ -207,7 +207,6 @@ Hand-offs: wiring doubts -> `functional-validation`; app-wide scope ->
 | Calls | When | What it hands over |
 |-------|------|--------------------|
 | `visual-inspection` | Phase 1 visual defects | the checklist protocol for screenshots |
-| `functional-validation` | drive-interaction mode | how to drive the live system |
 | `end-user-testing` | evidence capture | run-scoped evidence rules |
 
 Called by: `full-functional-audit`.

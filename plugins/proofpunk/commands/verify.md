@@ -3,7 +3,7 @@ description: End-user test the current work as the end user, producing executed 
 argument-hint: "[scope-or-entry-point]"
 ---
 
-Activate the `functional-validation` skill and end-user test:
+Run end-user validation directly — the same protocol `implement` runs inline in Stage 5 (platform detection via `references/platform-routing.md`, then the matching `references/*-validation.md` runbook), with the proof standard owned by `end-user-testing`:
 
 $ARGUMENTS
 
@@ -25,10 +25,10 @@ Detects the platform, starts the real runtime, drives the feature as the end use
 ```
 Scoped end-user test: only the named flow is driven, but every step still requires executed evidence.
 
-**3. Composed — prove a cook run before accepting it**
+**3. Composed — prove a implement run before accepting it**
 
 ```
-/proofpunk:cook "stripe webhook handler"
+/proofpunk:implement "stripe webhook handler"
 /proofpunk:verify "deliver a test webhook and confirm idempotent processing"
 ```
 Cook builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.

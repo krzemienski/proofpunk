@@ -4,7 +4,7 @@ description: >
   Attack your own plans, prompts, and outputs before reality does — 4-lens
   hostile review (security, scope-creep, evidence-rigor, failure-modes)
   against plans/prompts/artifacts, formal eval-driven development (EDD)
-  scoring agent sessions against rubrics, QA cycling loops (test, verify,
+  scoring agent sessions against rubrics, QA cycling loops (test, verify
   fix, repeat until goal met), and agent evaluation with scoring rubrics and
   benchmarks. Use when a plan or prompt needs adversarial stress beyond a
   friendly review, when you want measurable quality scores for agent output
@@ -45,7 +45,7 @@ scores instead of impressions. Findings carry severities per
 
 1. **Choose the target and the attack.** Plans and prompts get the 4-lens
    red team; implementations get QA cycling; quality regressions get evals.
-2. **Red team**: each lens (security, scope-creep, evidence-rigor,
+2. **Red team**: each lens (security, scope-creep, evidence-rigor
    failure-modes) reviews independently — findings are merged and
    severity-tagged, and every HIGH/CRITICAL is dispositioned (fixed or
    explicitly accepted with rationale) before the artifact proceeds.
@@ -83,6 +83,5 @@ scores instead of impressions. Findings carry severities per
 | Calls | When | What it hands over |
 |-------|------|--------------------|
 | `end-user-testing` | QA cycling loops | evidence standard for test-verify-fix iterations |
-| `functional-validation` | fix-verify loops | driving the real system each cycle |
 
 Called by: `plan-hardening`.

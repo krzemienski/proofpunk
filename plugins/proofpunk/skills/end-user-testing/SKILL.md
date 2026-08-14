@@ -44,7 +44,7 @@ applies verbatim instead of re-stating:
    Marking any validation complete without actually doing this is faking it.
    Unexecuted = UNVERIFIED, always; never upgraded to PASS by assumption.
 2. **The fresh-evidence rules** — every proof artifact is run-scoped
-   (timestamped run directory), sequential, non-empty, personally examined,
+   (timestamped run directory), sequential, non-empty, personally examined
    and never reused across runs; caches are cleared before final passes;
    the evidence directory is sealed with `scripts/fresh_evidence.py`.
 
@@ -62,7 +62,7 @@ When another skill says "apply the Actor Mandate" or "fresh evidence per
 
 ### Step 1 — Read the proof obligation
 
-Extract the task's `evidence.assertion`, `evidence.type`,
+Extract the task's `evidence.assertion`, `evidence.type`
 `evidence.path_template`, `evidence.min_size_bytes` from the plan. If any
 are missing, the task is not provable as specified — shrink or re-specify
 it before proceeding. (The `validation-plan` and `plan-hardening` skills
@@ -70,8 +70,8 @@ author these blocks.)
 
 ### Step 2 — Clear stale build caches
 
-Clear caches that can mask regressions — `.next`, `.turbo`, `dist`,
-`node_modules/.cache`, `DerivedData`, `__pycache__`, `.pytest_cache`,
+Clear caches that can mask regressions — `.next`, `.turbo`, `dist`
+`node_modules/.cache`, `DerivedData`, `__pycache__`, `.pytest_cache`
 `target/`, `build/` — AFTER a dry-run preview and ONLY inside the project
 root (`git rev-parse --show-toplevel`). Log the clear operation as
 `step-01-cache-clear.log`. Refuse to touch anything outside the project root.
@@ -158,7 +158,7 @@ CONTENT. Never trust "X passed" without examining X.
 
 ## Measured additions (2026-08-12, from the aperant-tui gate runs)
 
-1. **A transport envelope is not an assertion.** Automation CLIs (agent-tty,
+1. **A transport envelope is not an assertion.** Automation CLIs (agent-tty
    tmux drivers, RDP bridges) commonly return `ok: true` for "the command
    executed" even when the awaited condition timed out — the match boolean
    lives deeper (`result.matched`, `result.timedOut`). Assert the
@@ -168,7 +168,7 @@ CONTENT. Never trust "X passed" without examining X.
 2. **Proof has three facets, not one.** UI state alone is not proof. A
    complete evidence set carries: (a) UI/screenshot proof, (b) persistence
    proof (direct disk reads of the files the system claims to have
-   written), (c) log proof (process stdout/stderr, structured event logs,
+   written), (c) log proof (process stdout/stderr, structured event logs
    crash logs, exit codes). If any facet is absent, the verdict names it.
 3. **Numbers in verdicts come from committed artifacts, never from
    scrollback.** Before writing any count into a verdict or doc, recompute
@@ -226,4 +226,4 @@ would I show them?" No citations -> NOT complete.
 
 Leaf skill — owns canonical methods; calls nothing.
 
-Called by: `codebase-truth-audit`, `cook`, `full-functional-audit`, `functional-validation`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`, `validation-plan`, `visual-inspection`.
+Called by: `codebase-truth-audit`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`, `validation-plan`, `visual-inspection`.

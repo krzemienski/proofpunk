@@ -10,7 +10,7 @@ description: >
   validation. Use when asked to audit a codebase, compare implementation
   with intent or docs, plan a refactor, clean a repository safely, close
   documentation drift, or prepare a repo for production. Not for greenfield
-  planning (use validation-plan), feature builds (use cook or implement), or
+  planning (use validation-plan), feature builds (use implement or implement), or
   mining session transcripts (use session-intent).
 ---
 

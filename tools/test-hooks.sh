@@ -32,8 +32,9 @@ EOF
 out=$(printf '{"session_id":"s1","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t1.jsonl" | sh "$HOOKS/stop-guard.sh")
 if printf '%s' "$out" | grep -q '"decision": "block"'; then case_ok "stop-guard blocks unproven claim"; else case_fail "stop-guard should block — got: $out"; fi
 
-# Case 2: claim WITH proof → no block
+# Case 2: claim WITH proof AND scout record → silent
 cat > "$TMP/t2.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout context summary: entry points src/main.ts, touchpoints src/cart.ts"}
 {"role":"assistant","text":"All done — complete. Evidence in e2e-evidence/run-2026-x/step-03-shot.png"}
 EOF
 out=$(printf '{"session_id":"s2","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t2.jsonl" | sh "$HOOKS/stop-guard.sh")
@@ -75,6 +76,62 @@ EOF
 )
 rc=$?
 if [ "$rc" -eq 0 ]; then case_ok "evidence-guard ignores non-evidence paths"; else case_fail "evidence-guard non-evidence path — rc=$rc"; fi
+
+echo "== no-test-files.sh"
+# Case 9: test file path → denied (exit 2)
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"src/checkout.test.ts","content":"import {describe} from 'vitest'"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "no-test-files blocks *.test.* creation"; else case_fail "no-test-files test-file deny — rc=$rc out=$out"; fi
+
+# Case 10: __tests__ dir → denied
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"src/__tests__/checkout.ts","content":"x"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "no-test-files blocks __tests__ dir"; else case_fail "no-test-files __tests__ deny — rc=$rc"; fi
+
+# Case 11: production path → allowed
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"src/checkout.ts","content":"export const x = 1"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ]; then case_ok "no-test-files allows production code"; else case_fail "no-test-files production write — rc=$rc"; fi
+
+echo "== post-write-walkthrough.sh"
+# Case 12: production change → walkthrough reminder
+out=$(sh "$HOOKS/post-write-walkthrough.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"src/checkout.ts","content":"export const x = 1"}}
+EOF
+)
+if printf '%s' "$out" | grep -q "drive the real system"; then case_ok "post-write walkthrough reminder on production change"; else case_fail "post-write reminder — got: $out"; fi
+
+# Case 13: evidence/docs write → silent
+out=$(sh "$HOOKS/post-write-walkthrough.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"e2e-evidence/run-x/step-01.md","content":"note"}}
+EOF
+)
+if [ -z "$out" ]; then case_ok "post-write silent on evidence writes"; else case_fail "post-write spoke on evidence write — got: $out"; fi
+
+echo "== stop-guard scout requirement"
+# Case 14: claim + proof + no scout → blocked with scout reason
+cat > "$TMP/t5.jsonl" <<'EOF'
+{"role":"assistant","text":"All done. Evidence in e2e-evidence/run-x/step-01.png"}
+EOF
+out=$(printf '{"session_id":"s5","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t5.jsonl" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q "scout"; then case_ok "stop-guard blocks claim+proof without scout record"; else case_fail "stop-guard scout requirement — got: $out"; fi
+
+# Case 15: claim + proof + scout → silent
+cat > "$TMP/t6.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout context summary: files touched src/a.ts, touchpoints src/b.ts"}
+{"role":"assistant","text":"All done. Evidence in e2e-evidence/run-x/step-01.png"}
+EOF
+out=$(printf '{"session_id":"s6","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t6.jsonl" | sh "$HOOKS/stop-guard.sh")
+if [ -z "$out" ]; then case_ok "stop-guard silent on claim+proof+scout"; else case_fail "stop-guard spoke on fully-proven claim — got: $out"; fi
 
 echo "== instructions-loaded.sh"
 # Case 8: writes a JSONL log line, exits 0

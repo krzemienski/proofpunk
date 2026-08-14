@@ -334,7 +334,7 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
   if [ "$TARGET" = "claude-code" ] || [ "$TARGET" = "omp" ] || [ "$TARGET" = "agents" ]; then
     run "mkdir -p '$HOOK_HOME'"
     if [ "$DRY_RUN" -eq 0 ]; then
-      cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOK_HOME/"
+      cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOKS_SRC/no-test-files.sh" "$HOOKS_SRC/post-write-walkthrough.sh" "$HOOK_HOME/"
       chmod +x "$HOOK_HOME/"*.sh
       # Idempotent settings.json merge (user-level for claude-code).
       SETTINGS="$HOME/.claude/settings.json"
@@ -371,7 +371,9 @@ def ensure(event, command, matcher=None, timeout=10):
 results = [
     ("Stop", ensure("Stop", f"sh {hook_home}/stop-guard.sh")),
     ("SubagentStop", ensure("SubagentStop", f"sh {hook_home}/stop-guard.sh")),
-    ("PreToolUse", ensure("PreToolUse", f"sh {hook_home}/evidence-guard.sh", matcher="Write|Edit", timeout=5)),
+    ("PreToolUse:no-test-files", ensure("PreToolUse", f"sh {hook_home}/no-test-files.sh", matcher="Write|Edit", timeout=5)),
+    ("PreToolUse:evidence-guard", ensure("PreToolUse", f"sh {hook_home}/evidence-guard.sh", matcher="Write|Edit", timeout=5)),
+    ("PostToolUse", ensure("PostToolUse", f"sh {hook_home}/post-write-walkthrough.sh", matcher="Write|Edit", timeout=5)),
 ]
 if os.path.exists(settings_path):
     shutil.copy2(settings_path, settings_path + ".bak")

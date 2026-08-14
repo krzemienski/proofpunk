@@ -1,7 +1,7 @@
 # Proofpunk
 
 An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCode**:
-19 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
+17 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
 
@@ -62,9 +62,7 @@ for the other surfaces you run beside it.
 | `prompt-forge` | Prompt AUTHOR / RATE (7-dimension /100 rubric) / OPTIMIZE / PIPELINE modes with a scored quality bar |
 | `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations |
 | `plan-hardening` | Confidence-gap scoring, 4 red-team lenses, dispositioned gap register, proof-obligation injection |
-| `cook` | Task-by-task execution of validation plans; every task completes only with end-user proof (the engine `implement` delegates to) |
-| `implement` | Orchestrated front door composing ALL skills: session mining (`--mine`), parallel scout agents, prompt-forged plans, parallel lanes (`--parallel`), no-stop mode with distilled success criteria, stuck protocol, live execution ledger (`--auto`) |
-| `functional-validation` | Drive the real system end-to-end per platform (web/iOS/API/CLI runbooks) |
+| `implement` | The single write path: mandatory codebase scouting, session mining (`--mine`), prompt-forged plans, parallel lanes (`--parallel`), no-stop mode (`--auto`), live execution ledger — with end-user validation INLINE after every task (never a separate skill, never a test file) |
 | `end-user-testing` | Run-scoped fresh evidence (`fresh_evidence.py`: init-run/next-step/seal/validate), verdict templates |
 | `visual-inspection` | Screenshot-driven visual QA with severity model (found a real HIGH defect in the demo) |
 | `ui-experience-audit` | 6-phase UX protocol: triage, visual, interactive, content, Nielsen heuristics, synthesis |
@@ -78,7 +76,7 @@ for the other surfaces you run beside it.
 | `codebase-truth-audit` | Evidence-backed repo-wide truth audits: intent-from-history, code/config/doc/runtime verification, approval-gated remediation (the code-truth lane to session-intent's intent lane) |
 | `tui-testing` | TUI/terminal end-user proof: observe-then-act PTY driving, matched-assertion waits, three-facet evidence (screen + disk + logs), pixel proof for visual claims |
 
-`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline). **v1.7.0**: the doctrine moved from gate-logic to execution-logic — tasks carry proof obligations, validation is end-user testing always, `evidence-gates` became `end-user-testing` — plus the 20-theme flat-black cyberpunk pack and OMP/OpenCode platform support. **v1.8.0**: the project is renamed **Proofpunk** — repo, marketplace, plugin, commands (`/proofpunk:*`), installer (`proofpunk-install.sh`), and doctrine (`proofpunk-doctrine`) all carry the new brand; install commands are `… marketplace add krzemienski/proofpunk`. **v1.9.0**: `tui-testing` (19th skill) — the TUI proof discipline measured from the aperant-tui gate runs — plus round-2 measured improvements to `end-user-testing`, `functional-validation`, `root-cause-debugging`, and `cook` (see `proofpunk-skills-improvement-report-round2.md`). **v1.10.0**: deterministic doctrine — five lifecycle hooks (Stop/SubagentStop unproven-claim block, PreToolUse secrets-in-evidence deny, InstructionsLoaded observability) and `/proofpunk:install`, the project-memory installer (CLAUDE.md ≤200 lines merged via markers + scoped `.claude/rules/`); behavior proofs in `tools/test-hooks.sh` and `evidence/hooks-release/`. **v1.10.1**: stop-guard is silent when there is nothing to enforce (per-stop reminder removed after live multi-plugin session noise).
+`prompt-forge` gained its always-on workflow + command surface in v1.4.0/v1.5.0, `implement` arrived in v1.5.0, and `codebase-truth-audit` in v1.6.0 — closing the last dangling Related Skills edge (session-intent's intent → code-truth pipeline). **v1.7.0**: the doctrine moved from gate-logic to execution-logic — tasks carry proof obligations, validation is end-user testing always, `evidence-gates` became `end-user-testing` — plus the 20-theme flat-black cyberpunk pack and OMP/OpenCode platform support. **v1.8.0**: the project is renamed **Proofpunk** — repo, marketplace, plugin, commands (`/proofpunk:*`), installer (`proofpunk-install.sh`), and doctrine (`proofpunk-doctrine`) all carry the new brand; install commands are `… marketplace add krzemienski/proofpunk`. **v1.9.0**: `tui-testing` (new skill) — the TUI proof discipline measured from the aperant-tui gate runs — plus round-2 measured improvements to `end-user-testing`, `functional-validation`, `root-cause-debugging`, and `cook` (see `proofpunk-skills-improvement-report-round2.md`). **v1.10.0**: deterministic doctrine — five lifecycle hooks (Stop/SubagentStop unproven-claim block, PreToolUse secrets-in-evidence deny, InstructionsLoaded observability) and `/proofpunk:install`, the project-memory installer (CLAUDE.md ≤200 lines merged via markers + scoped `.claude/rules/`); behavior proofs in `tools/test-hooks.sh` and `evidence/hooks-release/`. **v1.10.1**: stop-guard is silent when there is nothing to enforce (per-stop reminder removed after live multi-plugin session noise). **v2.0.0**: ONE write path — `cook` merged into `implement` and `functional-validation` absorbed as implement's inline Stage 5 (the runbooks moved to shared `references/`); no test files anywhere in the pipeline (PreToolUse hard-block); PostToolUse walkthrough requirement; stop-guard now demands a scout record too; plugin-bundled agents for Claude Code (`agents/implement|scout|end-user-validate`), OpenCode, and OMP so subagents carry the skills in their own context. Behavior proofs: `tools/test-hooks.sh` 19/19; graph verifier PASS @ 17 skills.
 
 **Hands-on invocation examples for every skill (`/skill-name <positional> --flag`): `plugins/proofpunk/docs/usage-guide.md`.**
 Five were added in v1.1.0 and `session-intent` in v1.2.0 from a second full-universe scan (664 unique skills
@@ -101,16 +99,14 @@ skill's own Related Skills / delegation contract.
 
 | You run | Skill that fires | Then delegates to |
 |---------|------------------|-------------------|
-| `implement "<goal>" [flags]` | `implement` | session-intent, prompt-forge, validation-plan, plan-hardening, cook, root-cause-debugging, functional-validation, end-user-testing, stack-testing |
+| `implement "<goal>" [flags]` | `implement` | session-intent, brainstorm (scouts), prompt-forge, validation-plan, plan-hardening, root-cause-debugging, end-user-testing |
 | `implement mine [filters]` | `implement` (Phase 1 only) | session-intent |
-| `prompt-forge author\|rate\|optimize\|pipeline ...` | `prompt-forge` | none (leaf); pipeline stages later execute under cook |
-| `cook <goal\|plan-path> [mode] [--tdd]` | `cook` | brainstorm, validation-plan, functional-validation, end-user-testing |
-| `functional-validation --analyze\|--plan\|--execute\|--fix\|--audit\|--report` | `functional-validation` | end-user-testing, full-functional-audit, visual-inspection, ui-experience-audit, validation-plan |
+| `prompt-forge author\|rate\|optimize\|pipeline ...` | `prompt-forge` | none (leaf); pipeline stages later execute under implement |
 | `session_intent.py [filters] [outputs]` | `session-intent` | none (leaf tool) |
 | `fresh_evidence.py init-run\|next-step\|seal\|validate` | `end-user-testing` | none (leaf tool) |
 | `with_server.py --server ... --port ... -- <check>` | `stack-testing` | none (leaf tool) |
 | `/proofpunk:install [--clobber] [--no-rules]` | project memory installer (command) | writes CLAUDE.md + `.claude/rules/` from `assets/` |
-| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 19 skills + doctrine |
+| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 17 skills + doctrine |
 
 ---
 
@@ -135,7 +131,7 @@ implement mine [--project DIR] [--since DATE] [--until DATE]
 | `--parallel` | multi-module goals where wall-clock matters | parallel scout agents (structure/patterns/contracts/history), plan authored as a `.prompts/` pipeline with parallel independent stages, execution split into parallel lanes by module boundary |
 | `--auto` | unattended runs with a real finish line | no stopping until every success criterion is proven as the end user; the ONLY mandatory stop is Phase 0 approval when criteria aren't clearly laid out; destructive ops, out-of-scope edits, below-threshold shipping still stop for consent |
 | `--mine` | you've implemented similar things before | Phase 1 runs session-intent: past sessions become an intent matrix (prompts, tools, files, commits) that feeds exploration and forging |
-| `--fast` | known territory, known stack | planning's research sub-step skipped (cook fast-mode semantics) |
+| `--fast` | known territory, known stack | planning's research sub-step skipped (implement --fast semantics) |
 | `--no-test` | no runnable suite in this environment | the regression rail downgrades to a warning you must explicitly accept; end-user testing is never downgraded |
 | `--tdd` | refactor-heavy goals | tests for current behavior written before the change, re-verified after |
 | `--project DIR` (mine) | scope mining to one project | substring filter on project dir slug / cwd |
@@ -145,14 +141,14 @@ implement mine [--project DIR] [--since DATE] [--until DATE]
 
 | Invocation | Why you'd use it | What happens, end to end | Skills executed | You end up with |
 |------------|------------------|--------------------------|-----------------|-----------------|
-| `implement "add billing webhooks"` | standard supervised run | Phase 0 criteria (approval if unclear) → explore → forge prompt → plan → execute the task loop (prove each task as you go) → report from the ledger | prompt-forge → validation-plan → plan-hardening → cook → functional-validation → end-user-testing → stack-testing | implementation + criteria-by-criteria proof table + todo ledger |
+| `implement "add billing webhooks"` | standard supervised run | Phase 0 criteria (approval if unclear) → explore → forge prompt → plan → execute the task loop (prove each task as you go) → report from the ledger | prompt-forge → validation-plan → plan-hardening → implement (scout → build → end-user validate inline) → root-cause-debugging | implementation + criteria-by-criteria proof table + todo ledger |
 | `... --mine` | reuse past approaches | Phase 1 mines sessions first; the intent matrix steers scouts (past touchpoints) and the forged prompt (framings that worked) | session-intent → *(as above)* | + previous-implementations matrix |
-| `... --parallel` | multi-module, speed matters | 4 parallel scouts; prompt-forge PIPELINE authors `.prompts/` with parallel stages; cook executes lanes concurrently; contract checks serialize lane merges | *(scouts in parallel)* → prompt-forge (PIPELINE) → cook (lanes) → functional-validation → end-user-testing | + `.prompts/` tree with PROMPT.md + SUMMARY.md per stage |
+| `... --parallel` | multi-module, speed matters | 4 parallel scouts; prompt-forge PIPELINE authors `.prompts/` with parallel stages; cook executes lanes concurrently; contract checks serialize lane merges | *(scouts in parallel)* → prompt-forge (PIPELINE) → implement (parallel lanes, inline end-user validation) | + `.prompts/` tree with PROMPT.md + SUMMARY.md per stage |
 | `... --auto` | run unattended | criteria confirmation (if the goal is unclear) is the ONLY mandatory stop; the loop executes → end-user tests → stuck protocol until every criterion is proven; UNVERIFIED = NOT DONE | + root-cause-debugging on every failure | proof table with PASS per criterion, or an explicit blocker statement naming the consent needed |
 | `... --parallel --auto` | unattended multi-module | both behaviors combined; the stuck protocol handles failures automatically — only human-decision escalations (destructive ops, out-of-scope edits, unclear criteria) stop the run | *(both chains above)* | full pipeline artifacts + ledger-rendered proof table; the only stops are criteria confirmation and consent escalations |
 | `... --auto --mine` | unattended, informed by history | mining feeds the criteria distillation itself (past intent sharpens what "done" means) | session-intent → full auto chain | + intent matrix cited in the final report |
-| `... --parallel --mine` | supervised but fast and informed | parallel scouts ALSO receive the mined touchpoint list as their History lane assignment | session-intent → parallel scouts → parallel pipeline → supervised cook | combined artifacts, human checkpoints intact |
-| `... --parallel --auto --mine` | "full send" | every stage maximally delegated; the run stops only for criteria confirmation (if needed) and authorization-boundary consents | session-intent → parallel scouts → prompt-forge PIPELINE → parallel cook lanes → root-cause-debugging loop → proof layer | everything above; the complete trail from mined intent to sealed evidence |
+| `... --parallel --mine` | supervised but fast and informed | parallel scouts ALSO receive the mined touchpoint list as their History lane assignment | session-intent → parallel scouts → parallel pipeline → supervised implement | combined artifacts, human checkpoints intact |
+| `... --parallel --auto --mine` | "full send" | every stage maximally delegated; the run stops only for criteria confirmation (if needed) and authorization-boundary consents | session-intent → parallel scouts → prompt-forge PIPELINE → parallel implement lanes → root-cause-debugging loop → end-user proof layer | everything above; the complete trail from mined intent to sealed evidence |
 | any of the above `+ --fast` | you know the codebase cold | research sub-step skipped everywhere planning happens | same chains, research elided | same artifacts, faster planning |
 | any of the above `+ --no-test` | environment can't run suites | the regression rail becomes a warning requiring your explicit acceptance; end-user testing still mandatory | same chains | report carries the accepted warning verbatim |
 | any of the above `+ --tdd` | refactoring existing behavior | characterization tests written first per phase, re-verified after | same chains | + characterization test suite |
@@ -218,91 +214,47 @@ Skills executed: none downstream (leaf). It is executed BY `implement`
 
 ---
 
-### 3. `cook` — the execution engine
+### 3. `implement` — the single write path (execution reference)
 
 ```
-cook <goal> [mode] [--tdd]
-cook <plan-path> [mode] [--tdd]
+implement "<goal>" [--parallel] [--auto] [--mine] [--fast]
+implement mine [--project DIR] [--since DATE] [--until DATE] [--json]
 ```
 
-**Positional arguments**
+implement IS the execution engine — cook merged into it at v2.0.0. The
+pipeline: Stage 0 distill TRUE criteria → Stage 1 mine past sessions →
+Stage 2 scout the real codebase (mandatory, subagents) → Stage 3 forge the
+build prompt → Stage 4 decompose into proof-carrying tasks → Stage 5
+execution loop (implement task → end-user validation inline → proof into the
+ledger) → Stage 6 stuck protocol → Stage 7 report.
 
-| Argument | Why it exists | What happens |
-|----------|---------------|--------------|
-| `<goal>` | a feature/fix in natural language | full pipeline: scout the codebase → exact requirements → research → decompose into proof-carrying tasks → implement → end-user test each task → finalize |
-| `<plan-path>` | a pre-written plan file | the scout step is skipped — the plan encodes scout output; execution follows the plan's task list |
+| Flag | Effect |
+|------|--------|
+| `--parallel` | scouts fan out; build splits into lanes bound by executable lane contracts |
+| `--auto` | never stops until every criterion is proven; unclear criteria escalate before code |
+| `--mine` | session mining first (never skipped with this flag) |
+| `--fast` | scout collapses to a single quick pass (known territory) |
 
-**Modes** (pick one; interactive is the default)
-
-| Mode | Research | Checkpoints | Progression | Why you'd use it |
-|------|----------|--------------|-------------|------------------|
-| `interactive` (default) | yes | human confirmation at each checkpoint | one step at a time | supervised work, unfamiliar territory |
-| `fast` | no | human confirmation at each checkpoint | one step at a time | known stack, known patterns |
-| `auto` | yes | auto-approve LOW-risk only; high-risk stops | continuous on low-risk | unattended on well-bounded changes |
-| `parallel` | optional | human confirmation at each checkpoint | batched groups | independent phases executed in batches |
-| `no-test` | yes | human confirmation at each checkpoint | one step at a time | no runnable suite; the rail becomes a warning you must accept |
-
-**Permutations — mode × `--tdd`**
-
-| Invocation | What happens | You end up with |
-|------------|--------------|-----------------|
-| `cook "add avatar upload"` | full supervised pipeline, 4 human checkpoints | feature + test pass + end-user evidence |
-| `cook "add avatar upload" --tdd` | characterization tests before each phase's change, re-verified after | + safety net for every touched behavior |
-| `cook "add avatar upload" fast` | research skipped; checkpoints unchanged | same, faster ramp-up |
-| `cook "add avatar upload" fast --tdd` | known territory + tests-first | same artifacts, fastest supervised path |
-| `cook "add avatar upload" auto` | low-risk steps auto-approved; any high-risk step (contract change, deletion, migration) stops for you | continuous progress with named stops |
-| `cook "add avatar upload" auto --tdd` | unattended + tests-first; high-risk stops still apply | same, with regression net |
-| `cook "add avatar upload" parallel` | independent tasks batched concurrently, proof per batch | batched-phase execution log |
-| `cook "add avatar upload" parallel --tdd` | batches with tests-first inside each phase | same + net |
-| `cook "add avatar upload" no-test` | 100%-pass requirement downgraded to a warning you must explicitly accept; acceptance criteria, regression walk, contract checks still enforced | report carrying the accepted warning |
-| `cook "add avatar upload" no-test --tdd` | warning mode, but characterization tests still written (they just aren't the proof) | tests exist; the rail is advisory |
-| `cook .planning/ROADMAP.md` | plan file loaded; scout skipped; proof obligations per plan phase | plan executed end to end |
-| `cook .planning/ROADMAP.md --tdd` | plan-driven + tests-first | same + net |
-
-Skills executed: `brainstorm` (when the approach is undecided upstream),
-`validation-plan` (authors the plans cook executes), `functional-validation`
-+ `end-user-testing` (Gate 4 end-user proof). It is executed BY `implement`
-Phase 5.
-
----
-
-### 4. `functional-validation` — end-user proof protocol
-
-```
-functional-validation [--analyze] [--plan] [--execute] [--fix] [--audit] [--report]
-                      [--platform web|ios|api|cli] [--ci]
-```
-
-No positional arguments. Flags compose into the default flow
-**analyze → plan → execute → (fix) → report**.
-
-| Flag | Why it exists | What happens |
-|------|---------------|--------------|
-| `--analyze` | criteria before execution (confirmation-bias guard) | inventory features + interfaces, define PASS criteria; NO execution |
-| `--plan` | ordered, proof-carrying validation | ordered validation plan with proof obligations per feature |
-| `--execute` | the actual driving | run the plan against the real system, capture evidence |
-| `--fix` | remediation inside the loop | fix FAILs against the real system, then re-validate |
-| `--audit` | one feature isn't enough | full pass over EVERY feature (delegates to `full-functional-audit`) |
-| `--report` | one verdict document | synthesize all verdicts into a single report |
-| `--platform <p>` | detection got it wrong | force the platform runbook |
-| `--ci` | automation needs exit codes | machine-readable output, non-zero exit on FAIL |
+There are no `--tdd` / `--no-test` flags. The write path never produces
+test files (the PreToolUse hook hard-blocks them); validation is the
+completed user job, driven in the real runtime with run-scoped evidence.
 
 **Permutations**
 
 | Invocation | What happens |
 |------------|--------------|
-| `functional-validation` (no flags) | full default flow: analyze → plan → execute → fix (if FAILs) → report |
-| `--analyze` alone | feature inventory + PASS criteria only; nothing executed |
-| `--analyze --plan` | criteria + proof-carrying plan, still zero execution |
-| `--execute` alone | run an existing plan; refuses if no criteria exist yet |
-| `--execute --fix` | execute and remediate in one loop, re-validating after each fix |
-| `--audit --ci` | full-app pass with machine-readable verdicts and a failing exit code on any FAIL — the CI wiring |
-| `--platform ios --execute` | force the iOS runbook (pairs with `mobile-validation-runner` lanes) |
+| `implement "add avatar upload"` | full supervised pipeline: scout → plan → per-task prove-as-user |
+| `implement "add avatar upload" --fast` | single-pass scout; checkpoints unchanged |
+| `implement "add avatar upload" --auto` | continuous until proven; only criteria/authorization stops |
+| `implement "add avatar upload" --parallel --mine` | parallel scouts fed by the mined touchpoint matrix |
+| `implement "add avatar upload" --parallel --auto --mine` | everything maximally delegated; full trail from mined intent to sealed evidence |
 
-Skills executed: `end-user-testing` (freshness + citation for every verdict),
-`full-functional-audit` (on `--audit`), `visual-inspection` /
-`ui-experience-audit` (reviewing captured visual evidence), `validation-plan`
-(embedding checks as blocking proof obligations).
+Skills invoked: `session-intent` (Stage 1), `brainstorm` (Stage 2 scout
+gates), `prompt-forge` (Stage 3), `validation-plan` (Stage 4 proof-obligation
+format), `end-user-testing` (Stage 5 proof standard), `tui-testing` (Stage 5
+for terminal UIs), `root-cause-debugging` (Stage 6). The platform runbooks
+(`references/api|web|cli|ios-validation.md`) are shared doctrine loaded
+directly by Stage 5 — they are not a skill.
 
 ---
 
@@ -362,8 +314,8 @@ capture) → seal → validate**. Exit codes: `0` OK; `2` refusal (bad slug,
 no active run, stale/empty artifacts, missing metadata) — `validate` prints
 `STALE:` / `EMPTY:` for every offending artifact so nothing fails silently.
 
-Skills executed: none (leaf tool). It is executed BY cook's Gate 4,
-`functional-validation`, `mobile-validation-runner`, `implement` Phase 7,
+Skills executed: none (leaf tool). It is executed BY implement's Stage 5,
+`mobile-validation-runner`, `implement` Stage 7,
 `red-team-eval`, `production-readiness` — every verdict in the plugin seals
 through this lifecycle.
 
@@ -382,7 +334,7 @@ cd scripts/playwright && npm install && node run.js --help
 | `--port N` | readiness is proven by the port answering | poll until accepting connections or fail loudly |
 | `-- <check-cmd>` (trailing positional) | the actual check to run against the live server | runs your check (Playwright script, curl probe, pytest e2e), then tears the server down |
 
-Skills executed: none (leaf tool). Consumed BY `cook`, `functional-validation`,
+Skills executed: none (leaf tool). Consumed BY `implement`,
 `root-cause-debugging` (turning a reproducer into a permanent regression test).
 
 ---
@@ -411,8 +363,8 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 
 | Invocation | What happens |
 |------------|--------------|
-| `proofpunk-install.sh --target claude-code` | first-time: all 19 skills + doctrine + verify, from GitHub |
-| `--target omp --themes --plugins` | 19 skills + 20 themes + doctrine-guard extension for oh-my-pi |
+| `proofpunk-install.sh --target claude-code` | first-time: all 17 skills + doctrine + verify, from GitHub |
+| `--target omp --themes --plugins` | 17 skills + 20 themes + doctrine-guard extension for oh-my-pi |
 | `--only prompt-forge,implement --override` | surgical refresh of two skills, backups taken |
 | `--source local --source-dir /path/to/repo --no-verify` | offline install from a checkout, self-check skipped |
 | `--inject-claude-md ~/.claude/CLAUDE.md` | rules block appended once; re-running leaves it unchanged (idempotent) |
@@ -431,16 +383,16 @@ is what they execute downstream:
 
 | You invoke | What happens | Skills executed downstream |
 |------------|--------------|---------------------------|
-| `brainstorm` | scout-first ideation with trade-off analysis; no code before an approved design | validation-plan (plan the design), plan-hardening (red-team it), cook (build it) |
+| `brainstorm` | scout-first ideation with trade-off analysis; no code before an approved design | validation-plan (plan the design), plan-hardening (red-team it), implement (build it) |
 | `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking cumulative proof obligations | plan-hardening (strengthen drafts), end-user-testing (executes the proof blocks), cook (executes phases) |
 | `plan-hardening` | confidence-gap scoring, 4 red-team lenses, dispositioned gap register | validation-plan (the plans it hardens), prompt-forge (the prompts it hardens), brainstorm (upstream) |
-| `visual-inspection` | screenshot QA with severity classification | ui-experience-audit (deeper pass), functional-validation (exercise after visual PASS) |
-| `ui-experience-audit` | 6-phase UX protocol (triage → visual → interactive → content → heuristics → synthesis) | visual-inspection (Phase 1), functional-validation (drives flagged flows), full-functional-audit (app-wide), end-user-testing (citations) |
-| `full-functional-audit` | app-wide interaction inventory → execute → remediate → verdict | functional-validation (per-interaction protocol), end-user-testing (batch verdicts), ui-experience-audit (per-screen), validation-plan (fix list → plan) |
+| `visual-inspection` | screenshot QA with severity classification | ui-experience-audit (deeper pass) (exercise after visual PASS) |
+| `ui-experience-audit` | 6-phase UX protocol (triage → visual → interactive → content → heuristics → synthesis) | visual-inspection (Phase 1), end-user driving per the shared runbooks (flagged flows), full-functional-audit (app-wide), end-user-testing (citations) |
+| `full-functional-audit` | app-wide interaction inventory → execute → remediate → verdict | end-user driving inline (per-interaction protocol), end-user-testing (batch verdicts), ui-experience-audit (per-screen), validation-plan (fix list → plan) |
 | `mobile-validation-runner` | iOS end-user validation: SETUP→RECORD→ACT→COLLECT→VERIFY; lanes: simctl (bundled, always available), XC-MCP (a11y-first UI automation), Expo/idb (React Native) | visual-inspection (audit every screenshot), ui-experience-audit (per-screen), end-user-testing (sealing), functional-validation (web/API equivalent) |
-| `root-cause-debugging` | reproduce → minimize → hypothesize → instrument; fixes the ROOT CAUSE, never the symptom | stack-testing (reproducer → regression test), functional-validation (blast-radius re-check), plan-hardening (large fixes), end-user-testing (claims) |
+| `root-cause-debugging` | reproduce → minimize → hypothesize → instrument; fixes the ROOT CAUSE, never the symptom | stack-testing (reproducer → existing-suite guard), end-user driving (blast-radius re-check), plan-hardening (large fixes), end-user-testing (claims) |
 | `production-readiness` | 8-phase ship-readiness audit + spec-compliance matrix + dependency health | full-functional-audit (drive everything), stack-testing (close gaps), end-user-testing (seal waves), plan-hardening (remediation plan) |
-| `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts + measured QA cycles | plan-hardening (planning-stage lenses), prompt-forge (rubric rating), functional-validation (post-convergence PASS/FAIL), end-user-testing (seal scores) |
+| `red-team-eval` | 4-lens hostile review of plans/prompts/artifacts + measured QA cycles | plan-hardening (planning-stage lenses), prompt-forge (rubric rating), end-user driving per the shared runbooks (post-convergence PASS/FAIL), end-user-testing (seal scores) |
 
 ---
 
@@ -454,7 +406,7 @@ graph TD
     M --> P["plugins/proofpunk<br/>the plugin"]
     M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
-    P --> S["skills/ — 19 skills"]
+    P --> S["skills/ — 17 skills"]
     P --> R["references/ — 9 shared doctrine files"]
     P --> D["docs/ — consolidation + validation records"]
     R -.->|cited by| S
@@ -474,12 +426,11 @@ graph TB
         PH["plan-hardening"]
     end
     subgraph EXEC["Execution"]
-        CK["cook"]
+        IM2["implement"]
         ST["stack-testing"]
         MVR["mobile-validation-runner"]
     end
     subgraph PROOF["Proof"]
-        FV["functional-validation"]
         EG["end-user-testing"]
         VI["visual-inspection"]
         UX["ui-experience-audit"]
@@ -516,57 +467,45 @@ graph LR
     IMP --> PF["prompt-forge"]
     IMP --> VP["validation-plan"]
     IMP --> PH["plan-hardening"]
-    IMP --> CK["cook"]
+    IMP --> IM2["implement"]
     IMP --> RCD["root-cause-debugging"]
-    IMP --> FV["functional-validation"]
     IMP --> EG["end-user-testing"]
     IMP --> ST["stack-testing"]
     IMP --> BS["brainstorm"]
-    CK --> VP
-    CK --> FV
-    CK --> EG
-    CK --> BS
+    IM2 --> VP
+    IM2 --> EG
+    IM2 --> BS
     BS --> VP
     BS --> PH
-    BS --> CK
+    BS --> IM2
     VP --> PH
     VP --> EG
-    VP --> CK
+    VP --> IM2
     PH --> VP
     PH --> PF
     PF --> PH
     PF --> VP
-    FV --> EG
-    FV --> FFA["full-functional-audit"]
-    FV --> VI["visual-inspection"]
-    FV --> UX["ui-experience-audit"]
-    FFA --> FV
     FFA --> EG
     FFA --> UX
     UX --> VI
-    UX --> FV
     MVR["mobile-validation-runner"] --> VI
     MVR --> UX
     MVR --> EG
     RCD --> ST
-    RCD --> FV
     RCD --> EG
-    ST --> FV
     ST --> EG
     ST --> RCD
-    ST --> CK
+    ST --> IM2
     PR["production-readiness"] --> FFA
     PR --> ST
     PR --> EG
     PR --> PH
     RTE["red-team-eval"] --> PH
     RTE --> PF
-    RTE --> FV
     RTE --> EG
     SI --> PR
     SI --> RCD
     SI --> EG
-    EG --> FV
     EG --> VI
     EG --> UX
 ```
@@ -582,9 +521,8 @@ sequenceDiagram
     participant SC as scout agents
     participant PF as prompt-forge
     participant PL as validation-plan + plan-hardening
-    participant CK as cook
     participant RC as root-cause-debugging
-    participant PR as proof layer (functional-validation + end-user-testing + stack-testing)
+    participant PR as proof layer (end-user driving + end-user-testing + stack-testing)
     U->>I: implement "add billing webhooks" --parallel --auto --mine
     I->>SI: Phase 1: mine past implementation sessions
     SI-->>I: intent matrix (prompts, tools, files, commits)
@@ -606,12 +544,9 @@ sequenceDiagram
     PF-->>I: dependency-aware stage tree
     I->>PL: harden the plan (proof obligations inside, not after)
     par Phase 5: parallel execution lanes
-        I->>CK: lane A (webhook endpoint)
-        I->>CK: lane B (signature verification)
-        I->>CK: lane C (persistence + retries)
     end
     loop --auto: until every criterion is proven
-        CK-->>I: lane result
+        IM2 -->>I: lane result
         alt failure
             I->>RC: reproduce, minimize, root-cause fix
             RC-->>I: fix + blast-radius re-check
@@ -662,7 +597,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/proofpunk/              the plugin (19 skills + references + docs)
+plugins/proofpunk/              the plugin (17 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 

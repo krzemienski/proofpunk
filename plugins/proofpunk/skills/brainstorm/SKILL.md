@@ -3,15 +3,15 @@ name: brainstorm
 description: >
   Structured solution brainstorming with trade-off analysis and brutal
   honesty: scans the codebase BEFORE asking questions, pins exact
-  requirements (expected output, acceptance criteria, scope boundary,
+  requirements (expected output, acceptance criteria, scope boundary
   constraints, touchpoints), presents 2-3 approaches with pros/cons in
   visible text, and writes no code until the user approves a design. Use
-  when exploring ideas, weighing architecture or technology options,
-  technical debates, feasibility assessment, design discussions,
+  when exploring ideas, weighing architecture or technology options
+  technical debates, feasibility assessment, design discussions
   problem-first inversion ('user already picked a solution — find the real
-  problem'), or whenever the path forward is unclear — 'let's brainstorm',
+  problem'), or whenever the path forward is unclear — 'let's brainstorm'
   'explore ideas', 'what are my options', 'which approach is best'. Not for
-  executing an approved plan (use cook), end-to-end orchestrated builds (use
+  executing an approved plan (use implement), end-to-end orchestrated builds (use
   implement), or auditing finished work (use full-functional-audit).
 ---
 
@@ -60,7 +60,7 @@ wasted cycles.
 
 Before proposing approaches, be able to answer in one concrete sentence each:
 
-1. **Expected output** — the artifact(s) at the end (file, behavior, screen,
+1. **Expected output** — the artifact(s) at the end (file, behavior, screen
    API shape, CLI command) — concrete enough to verify later
 2. **Acceptance criteria** — how the user will know it's done correctly
 3. **Scope boundary** — what is explicitly OUT this round
@@ -113,8 +113,8 @@ Scout (MANDATORY) -> Summarize findings -> Clarifying questions
 
 ## Scope Assessment
 
-If the request describes 3+ independent concerns ("platform with chat,
-billing, analytics"), flag immediately and decompose: identify pieces,
+If the request describes 3+ independent concerns ("platform with chat
+billing, analytics"), flag immediately and decompose: identify pieces
 relationships, build order. Each sub-project gets its own brainstorm -> plan
 -> implement cycle. Don't refine details of something that needs
 decomposition first.
@@ -138,7 +138,7 @@ When agreement is reached, write a markdown summary:
 
 On approval, offer: create a gated plan with `validation-plan` (recommended
 for multi-phase work), harden an existing draft with `plan-hardening`, or
-end the session. Implementation belongs to `cook` — after a plan exists.
+end the session. Implementation belongs to `implement` — after a plan exists.
 
 ## Anti-Rationalization
 
@@ -167,4 +167,4 @@ end the session. Implementation belongs to `cook` — after a plan exists.
 
 Leaf skill — owns canonical methods; calls nothing.
 
-Called by: `cook`, `implement`.
+Called by: `implement`.

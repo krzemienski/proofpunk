@@ -6,11 +6,11 @@ description: >
   discipline, matched-assertion waits, three-facet evidence (screen + disk +
   logs), and pixel proof for visual claims. Codifies the measured lessons of
   driving agent-tty against a live Ink application: TTY guards, runtime
-  floors, daemon PATH inheritance, cold-boot budgets, key-mount races,
+  floors, daemon PATH inheritance, cold-boot budgets, key-mount races
   transport-envelope traps, and per-run secret scans. Use when validating a
   TUI/CLI-interactive feature, when a gate drives a terminal app, or when
   'prove the TUI works' is the ask. Not for web UIs (use web-validation via
-  functional-validation) or non-interactive CLIs (use cli-validation).
+  the implement validation phase) or non-interactive CLIs (use `references/cli-validation.md`).
 ---
 
 # TUI Testing — Terminal UI End-User Proof
@@ -37,7 +37,7 @@ automation envelopes lie politely. This skill is the measured discipline.
    nothing. Use `script -qfc 'cmd' logfile` — a real sub-PTY that logs every
    byte. (D7: two full gate runs produced no app at all.)
 2. **Transport `ok` is not a match.** agent-tty-style envelopes return
-   `ok: true` for "command executed" — with `result.matched: false,
+   `ok: true` for "command executed" — with `result.matched: false
    timedOut: true` inside. Assert the condition-level field for EVERY wait;
    treat a missing/empty result as failure. (D8: a whole run reported
    green while the app never booted; a screenshot exposed it.)
@@ -60,7 +60,7 @@ automation envelopes lie politely. This skill is the measured discipline.
    hash is text-only: theme/color/state-glyph changes need a rendered
    screenshot with pixel inspection. Match the screenshot tool's browser
    dependency before the run (playwright headless shell version parity).
-7. **Three facets or it didn't happen.** (a) screen waits + screenshots,
+7. **Three facets or it didn't happen.** (a) screen waits + screenshots
    (b) direct disk reads of every file the app claims to have written
    (settings, plans, sentinels — never trust the UI's claim), (c) logs:
    console byte-stream + the app's own event/crash logs + exit codes.
@@ -73,7 +73,7 @@ automation envelopes lie politely. This skill is the measured discipline.
    read scripts incrementally — editing mid-run corrupts the run. Two
    drivers on one fixture contaminate each other's disk assertions. Kill
    prior drivers; destroy sessions you created.
-10. **The harness belongs in the repo.** Gate scripts, fixture builders,
+10. **The harness belongs in the repo.** Gate scripts, fixture builders
     and restore tools live in `tools/` with the code they test — volatile
     workbenches (tmpfs) wipe without warning, and the harness must never be
     the thing that gets lost.
@@ -128,5 +128,5 @@ driver + version, runtime floor probed, boot wait used, facet checklist
 ## Skill calls
 
 Leaf skill — owns canonical methods; calls nothing.
-Called by: `implement`, `cook`, `functional-validation`, `full-functional-audit`.
-Pairs with `end-user-testing` (proof standard) and `functional-validation` (platform routing).
+Called by: `implement`, `full-functional-audit`.
+Pairs with `end-user-testing` (proof standard) and the shared runbooks (`references/*-validation.md`) (platform routing).

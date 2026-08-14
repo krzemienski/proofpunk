@@ -29,9 +29,9 @@ Audits only the June-forward window and tags all evidence with the `pre-release`
 
 ```
 /proofpunk:truth-audit . --label q3
-/proofpunk:cook "remediate the 3 HIGH findings from the q3 truth audit"
+/proofpunk:implement "remediate the 3 HIGH findings from the q3 truth audit"
 ```
-The audit produces the findings; cook executes the approved remediation to end-user proof.
+The audit produces the findings; implement executes the approved remediation to end-user proof.
 
 **5. Full command — every option selected**
 

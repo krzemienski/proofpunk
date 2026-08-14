@@ -6,13 +6,13 @@ description: >
   quantitative rubric with test cases and metrics, optimizes weak prompts
   against real failure evidence, and builds multi-stage meta-prompt
   pipelines (.prompts/ directories, dependency-aware stages, each with a
-  SUMMARY.md). Always-on workflow: sequential thinking, todo tracking,
-  authorization engine, file-output contract; flags --in-place,
+  SUMMARY.md). Always-on workflow: sequential thinking, todo tracking
+  authorization engine, file-output contract; flags --in-place
   --report-only, --ship-below-threshold, --out, --evidence, --depth, --dir;
   unknown flags rejected. Use when writing, rating, improving, or debugging
   a prompt; designing a system prompt; forcing structured output; managing
   long context; or when model output is unreliable and the prompt is the
-  suspect. Not for executing build plans (use cook/implement) or adversarial
+  suspect. Not for executing build plans (use implement/implement) or adversarial
   plan review (use plan-hardening/red-team-eval).
 ---
 
@@ -28,7 +28,7 @@ Copy this checklist and track your progress:
 - [ ] Apply remediations to a file per the file-output contract
 - [ ] Verify written output satisfies the rubric thresholds
 
-Design it, rate it, fix it, chain it. Prompt work backed by patterns,
+Design it, rate it, fix it, chain it. Prompt work backed by patterns
 rubrics, and evidence — not vibes. Every engagement ends with a file on
 disk, and every decision runs through the always-on workflow.
 
@@ -59,7 +59,7 @@ cause of prompt re-work.
 
 Track multi-step prompt work as an explicit todo list:
 
-- One todo per concrete action (intake, draft, gate-check, write file,
+- One todo per concrete action (intake, draft, gate-check, write file
   re-rate) — never one mega-todo
 - Exactly ONE todo in progress at a time
 - Complete a todo the moment its action is done; add newly discovered
@@ -79,7 +79,7 @@ Every file-touching or shipping decision checks this table first:
 | Overwrite or delete anything beyond the input file | Yes — explicit consent, always |
 | Produce a report-only rating with NO file output | Yes — only when the user explicitly asks for report-only |
 
-Default-safe posture: when authorization is ambiguous, write a new file,
+Default-safe posture: when authorization is ambiguous, write a new file
 leave the input untouched, and say what you did. Never block on consent
 you don't need (new files), never act without consent you do need
 (in-place edits, below-threshold shipping).
@@ -150,7 +150,7 @@ Section 0 runs first in every mode.
 ## Command Surface (CLI-style arguments)
 
 Invocations take flags. Flags are how the user grants the consents the
-authorization engine (0.3) requires — a flag IS the explicit consent,
+authorization engine (0.3) requires — a flag IS the explicit consent
 recorded in the report.
 
 ```
@@ -323,14 +323,14 @@ Build multi-stage prompt pipelines under `.prompts/`:
 └── 03-<topic>-do/
 ```
 
-- **Purpose routing**: each stage is one of Research (gather), Plan (decide),
+- **Purpose routing**: each stage is one of Research (gather), Plan (decide)
   Do (execute), Refine (improve) — never a blend
 - **Dependency-aware**: stage N's prompt declares which earlier SUMMARY.md
   files it consumes; execution order follows dependencies
 - **Every stage gets a SUMMARY.md** — the contract that lets later stages
   trust earlier outputs
 - **Every stage prompt follows the 0.5 skeleton** — Research and Plan
-  stages included; a pipeline stage is where XML discipline pays off most,
+  stages included; a pipeline stage is where XML discipline pays off most
   because later stages parse earlier outputs
 - **Every stage maps to a todo** (0.2) — pipeline execution is the
   canonical multi-todo workflow

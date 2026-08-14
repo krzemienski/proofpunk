@@ -8,9 +8,9 @@ description: >
   until clean. Five phases: Explore (interaction inventory), Plan, Execute
   (fresh evidence per interaction), Remediate (fix the real system, never
   defer FAILs), Verdict (coverage statement). Use when asked to 'audit the
-  whole app', 'click through everything', 'find bugs on this site/URL',
+  whole app', 'click through everything', 'find bugs on this site/URL'
   'test everything', 'full QA sweep', or for pre-release hardening. Not for
-  single-feature checks (use functional-validation), per-screen UX review
+  single-feature checks , per-screen UX review
   (use ui-experience-audit), or one known bug (use root-cause-debugging).
 ---
 
@@ -128,7 +128,7 @@ Date / run ids / platforms covered
 ## Verdict
 PASS | PASS WITH ISSUES | FAIL | UNVERIFIED — per ../../references/severity-model.md
 Behavioral PASS requires that every interaction was actually driven by the
-AI as the end user; any interaction not executed is reported UNVERIFIED,
+AI as the end user; any interaction not executed is reported UNVERIFIED
 never assumed PASS.
 ## Evidence index
 <run directories>
@@ -165,7 +165,6 @@ never assumed PASS.
 
 | Calls | When | What it hands over |
 |-------|------|--------------------|
-| `functional-validation` | Phase 3 EXECUTE — every interaction | the per-feature validation engine + Iron Rule |
 | `end-user-testing` | all phases | Actor Mandate + evidence sealing |
 | `ui-experience-audit` | per-screen UX lens during EXECUTE | heuristic evaluation of flagged screens |
 | `root-cause-debugging` | Phase 4 REMEDIATE | root cause of every FAIL before fixing |

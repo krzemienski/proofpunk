@@ -10,9 +10,9 @@ README's Command Reference; this guide is the hands-on "type this" version.
 ## How invocation works per platform
 
 **Claude Code** — plugin commands are namespaced: `/proofpunk:implement`,
-`/proofpunk:cook`, `/proofpunk:verify`, `/proofpunk:truth-audit`,
+`/proofpunk:verify`, `/proofpunk:truth-audit`,
 `/proofpunk:rate-prompt`, `/proofpunk:forge-prompt`. Skills also fire
-directly (`/implement`, `/cook`, …) or from natural language. A SessionStart
+directly (`/implement`, `/verify`, …) or from natural language. A SessionStart
 hook injects the doctrine once per session.
 
 **oh-my-pi (OMP)** — after `omp plugin install proofpunk@proofpunk`, the
@@ -25,7 +25,7 @@ secret-file reads in every session. Plain installs via
 provider, highest precedence).
 
 **OpenCode** — the installer drops `plugin/proofpunk.ts` (doctrine guard),
-six commands (`/proofpunk-implement`, `/proofpunk-cook`,
+six commands (`/proofpunk-implement`, `/proofpunk-install`,
 `/proofpunk-verify`, `/proofpunk-truth-audit`, `/proofpunk-rate-prompt`,
 `/proofpunk-forge-prompt`), and the `proofpunk` primary agent into
 `~/.config/opencode/`. Skills load through OpenCode's native `skill` tool —
@@ -43,7 +43,7 @@ and because OpenCode reads `~/.claude/skills` too, one
    deterministic path when you want a specific skill with specific args.
 3. **Chaining**: skills delegate to each other per the delegation graph
    (README diagram 3). Invoking `/implement` fires session-intent,
-   prompt-forge, validation-plan, plan-hardening, cook, and the proof
+   prompt-forge, validation-plan, plan-hardening, and the proof
    layer in one run — you don't invoke those separately unless you want
    just one layer.
 
@@ -126,21 +126,6 @@ proof obligations injected into the document.
 
 ## Execution layer
 
-### `/cook` — the execution engine
-
-```
-/cook "add avatar upload"
-/cook "add avatar upload" --tdd
-/cook "fix the timezone bug" fast
-/cook .planning/ROADMAP.md
-/cook .planning/ROADMAP.md auto --tdd
-```
-
-Positionals: `<goal>` (full pipeline with codebase scout) or
-`<plan-path>` (loads a plan, scout skipped). Modes: `interactive`
-(default) / `fast` / `auto` / `parallel` / `no-test`; `--tdd` composes
-with any of them.
-
 ### `/stack-testing` — real-server test rigs
 
 ```
@@ -172,19 +157,6 @@ request if you want the bundled lane. Protocol:
 SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet checks.
 
 ## Proof layer
-
-### `/functional-validation` — drive the real system
-
-```
-/functional-validation --analyze
-/functional-validation --analyze --plan
-/functional-validation --execute --platform web
-/functional-validation --execute --fix
-/functional-validation --audit --ci
-```
-
-No positionals. Flags compose into analyze → plan → execute → (fix) →
-report; `--ci` gives machine-readable output and a non-zero exit on FAIL.
 
 ### `/end-user-testing` — fresh evidence lifecycle
 
@@ -308,10 +280,10 @@ destructive change.
 | Ship a feature end to end | `/implement "..." --mine` (fires the whole chain) |
 | Ship it unattended | `/implement "..." --parallel --auto --mine` |
 | Audit an inherited repo | `/codebase-truth-audit /repo` → `/session-intent --project repo` → `/production-readiness` |
-| Fix a flaky flow | `/root-cause-debugging "..."` → `/stack-testing` (reproducer → regression test) → `/functional-validation --execute --fix` |
-| Harden a plan before building | `/validation-plan "..."` → `/plan-hardening .planning/...` → `/cook .planning/ROADMAP.md` |
+| Fix a flaky flow | `/root-cause-debugging "..."` → drive the fixed flow as the end user (shared runbooks in `references/`) |
+| Harden a plan before building | `/validation-plan "..."` → `/plan-hardening .planning/...` → `/implement .planning/ROADMAP.md` |
 | Perfect a prompt | `/prompt-forge author "..."` → `/red-team-eval prompts/x.md` → `/prompt-forge optimize prompts/x.md --evidence ...` |
-| Release check | `/functional-validation --audit --ci` → `/production-readiness` |
+| Release check | `/full-functional-audit` → `/production-readiness` |
 
 ## After installing with the script
 

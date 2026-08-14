@@ -9,7 +9,7 @@ description: >
   a bug's cause is unclear, errors surface far from their origin, fixes keep
   not sticking, tests pollute each other, or you're tempted to patch a
   symptom or add a retry. Iron Rule: no fix without reproduction, no claim
-  without evidence. Not for full-site bug hunts (use full-functional-audit),
+  without evidence. Not for full-site bug hunts (use full-functional-audit)
   flaky-test discipline (use stack-testing), or pre-release audits (use
   production-readiness).
 ---
@@ -45,7 +45,7 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
    `../../references/evidence-contract.md`.
 5. **Verify the fix against the original reproduction**, then re-run the
    surrounding suite — a fix that breaks neighbors is a new bug, and its
-   blast radius must be re-validated (see the `functional-validation` skill).
+   blast radius must be re-validated (see the the shared runbooks (`references/*-validation.md`) skill).
 
 ## Measured additions (2026-08-12, aperant-tui gate runs)
 
@@ -106,7 +106,6 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 
 | Calls | When | What it hands over |
 |-------|------|--------------------|
-| `functional-validation` | verifying the fix | end-to-end proof the root cause is gone |
 | `end-user-testing` | evidence of reproduction + fix | fresh-evidence standard |
 
-Called by: `codebase-truth-audit`, `cook`, `full-functional-audit`, `implement`, `stack-testing`.
+Called by: `codebase-truth-audit`, `full-functional-audit`, `implement`, `stack-testing`.

@@ -37,6 +37,19 @@ export const Proofpunk: Plugin = async ({ client }) => {
           );
         }
       }
+
+      // The write path never creates test artifacts (hard guarantee).
+      if (input.tool === "write" || input.tool === "edit") {
+        const wpath = String(output.args?.path ?? output.args?.file_path ?? "");
+        const TEST_PATH =
+          /(_?tests?_|__tests__|\.spec\.|\.test\.|\/tests?\/|\/test_|_test\.|\/fixtures?\/.*test|\/testing\/)/i;
+        if (wpath && TEST_PATH.test(wpath)) {
+          throw new Error(
+            "Blocked by Proofpunk doctrine guard: the write path never creates test files " +
+              `(${wpath}). Validate by driving the real system as the end user.`,
+          );
+        }
+      }
     },
 
     event: async ({ event }) => {

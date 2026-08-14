@@ -15,4 +15,4 @@ Produce the .prompt.md file on the canonical skeleton (task, context, sequential
 /proofpunk-forge-prompt author "migration plan for Postgres 15 → 17 across 3 services" --out .planning/pg17.prompt.md --depth advanced
 ```
 AUTHOR mode, advanced depth (full evaluation + remediation guidance),
-written to a named file — ready for `rate-prompt` and then `cook`.
+written to a named file — ready for `rate-prompt` and then `implement`.

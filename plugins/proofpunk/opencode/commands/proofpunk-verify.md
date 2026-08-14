@@ -3,7 +3,7 @@ description: End-user test the current work as the end user, producing executed 
 argument-hint: "[scope-or-entry-point]"
 ---
 
-Activate the `functional-validation` skill and end-user test:
+Run end-user validation directly — the same protocol `implement` runs inline in Stage 5 (platform detection via `references/platform-routing.md`, then the matching `references/*-validation.md` runbook), with the proof standard owned by `end-user-testing`:
 
 $ARGUMENTS
 

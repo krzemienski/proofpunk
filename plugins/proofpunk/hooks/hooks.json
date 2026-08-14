@@ -1,5 +1,5 @@
 {
-  "description": "proofpunk doctrine hooks — context injection plus deterministic enforcement of the proof contract",
+  "description": "proofpunk doctrine hooks \u2014 context injection plus deterministic enforcement of the proof contract (end-user-driven only; no test files)",
   "hooks": {
     "SessionStart": [
       {
@@ -41,6 +41,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/no-test-files.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
             "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/evidence-guard.sh",
             "timeout": 5
           }
@@ -53,6 +58,18 @@
           {
             "type": "command",
             "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/instructions-loaded.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/post-write-walkthrough.sh",
             "timeout": 5
           }
         ]

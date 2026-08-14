@@ -12,7 +12,7 @@
 ## When NOT to Use
 
 - No spec file exists (write the spec first)
-- Testing or validation of running system (use `functional-validation`)
+- Driving the running system as the end user (shared runbooks in `references/`, owned by `implement`'s validation phase)
 - Code review against coding standards (use `code-review`)
 
 

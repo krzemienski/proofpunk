@@ -2,9 +2,9 @@
 name: stack-testing
 description: >
   Real-system test discipline per stack — pytest/Go/C++/Django/Spring Boot
-  gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl,
+  gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl
   Playwright browser automation with server lifecycle management, and
-  condition-based waiting to kill timing flakes. Use when writing,
+  condition-based waiting to kill timing flakes. Use when writing
   debugging, or deflaking test suites in Python, Go, C++, Django, Spring
   Boot, or FastAPI projects; when tests pass locally but fail in CI; when
   browser e2e needs a dev server managed; or when any test uses
@@ -28,7 +28,7 @@ Copy this checklist and track your progress:
 
 Test against the REAL system, per stack. This skill bundles the field-tested
 "what goes wrong" knowledge for each major test stack and the browser-e2e
-helpers, under one discipline: no mocks for new tests, no arbitrary sleeps,
+helpers, under one discipline: no mocks for new tests, no arbitrary sleeps
 evidence for every green claim.
 
 ## Operating Rules
@@ -43,7 +43,7 @@ evidence for every green claim.
    database, real server, real browser. Testcontainers-style real services in
    Docker are the gold pattern (see `references/springboot-testing-gotchas.md`).
 3. **No `sleep()` in tests.** Replace every arbitrary timeout with condition
-   polling — `references/condition-based-waiting.md` is the canonical pattern,
+   polling — `references/condition-based-waiting.md` is the canonical pattern
    with `examples/condition_based_waiting.ts`.
 4. **Flaky = bug.** A test that "sometimes passes" is a defect in the test or
    the system, never a reason to re-run CI until green. Diagnose per stack
@@ -52,7 +52,7 @@ evidence for every green claim.
    final run to a file and seal it with the `end-user-testing` skill's
    `fresh_evidence.py` — labeled REGRESSION ("the suite is green"). The
    feature-level verdict comes only from driving the live system as the end
-   user (`functional-validation`: `curl` for JSON backends, browser for UI,
+   user (the shared runbooks (`references/*-validation.md`): `curl` for JSON backends, browser for UI
    simulator for mobile). A green suite cited as proof a feature works is a
    doctrine violation — see `../../references/end-user-actor.md`.
 
@@ -110,4 +110,4 @@ patterns from the source skills.
 |-------|------|--------------------|
 | `root-cause-debugging` | flakes that survive condition-based waiting | root cause, never a retry |
 
-Called by: `cook`, `implement`, `production-readiness`.
+Called by: `production-readiness`.

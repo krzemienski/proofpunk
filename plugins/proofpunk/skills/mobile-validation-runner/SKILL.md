@@ -6,11 +6,11 @@ description: >
   streaming, and screenshot evidence; three-facet validation checkpoints
   (simulator + backend + log analysis); xcrun simctl device control; XC-MCP
   accessibility-first UI automation; Expo/React Native simulator workflows;
-  preflight environment checks. Use when validating an iOS or Expo feature,
-  marking any mobile task complete, booting/controlling simulators,
+  preflight environment checks. Use when validating an iOS or Expo feature
+  marking any mobile task complete, booting/controlling simulators
   capturing mobile UI evidence, or debugging Metro/simulator issues.
-  Unexecuted mobile validation is UNVERIFIED, never done. Not for web,
-  desktop, or API validation (use functional-validation) or non-iOS test
+  Unexecuted mobile validation is UNVERIFIED, never done. Not for web
+  desktop, or API validation  or non-iOS test
   suites (use stack-testing).
 ---
 
@@ -34,10 +34,10 @@ or the feature is UNVERIFIED. See `../../references/end-user-actor.md`.
 
 Five phases, from `references/ios-validation-runner.md`:
 
-1. **SETUP** — preflight the environment (`references/preflight.md`: Xcode,
+1. **SETUP** — preflight the environment (`references/preflight.md`: Xcode
    simctl, dev server, disk), boot a clean simulator, start the backend.
 2. **RECORD** — start video recording + log streaming BEFORE acting.
-3. **ACT** — drive the feature as the end user: taps, typing, gestures,
+3. **ACT** — drive the feature as the end user: taps, typing, gestures
    navigation. Prefer accessibility-driven interaction (XC-MCP) over blind
    coordinates; fall back to coordinates only when the a11y tree is empty.
 4. **COLLECT** — screenshots at every state change, stop recording, pull
@@ -63,8 +63,8 @@ Seal the evidence directory with the `end-user-testing` skill's
 ## Platform Notes
 
 - **iOS coverage is complete** (simctl + XC-MCP + idb lanes are all bundled).
-- **Android**: the two Android verification sources (`android_ui_verification`,
-  `android-ui-journey-testing`) were present only in the original skills.zip,
+- **Android**: the two Android verification sources (`android_ui_verification`
+  `android-ui-journey-testing`) were present only in the original skills.zip
   which is no longer accessible — Android guidance is therefore NOT bundled and
   must not be improvised from memory; flag it as a gap if a task needs it.
 - XC-MCP and idb are external tools; if unavailable, `scripts/simulator.sh` — run it to cover
@@ -101,4 +101,3 @@ Seal the evidence directory with the `end-user-testing` skill's
 |-------|------|--------------------|
 | `end-user-testing` | COLLECT/VERIFY sealing | fresh-evidence sealing of the run directory |
 | `visual-inspection` | every captured screenshot | audit before trusting it |
-| `functional-validation` | backend facet | the web/API equivalent checks |

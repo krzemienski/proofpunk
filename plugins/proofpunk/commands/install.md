@@ -5,7 +5,7 @@ argument-hint: "[--platform claude-code|opencode|agents|omp] [--clobber] [--no-r
 
 # /proofpunk:install — project memory installer
 
-Sets up the memory layer that makes the doctrine stick in THIS project,
+Sets up the memory layer that makes the doctrine stick in THIS project
 using the conventions of the platform you're running on. Platform defaults
 (verified against vendor docs, 2026-08-13):
 
@@ -43,12 +43,12 @@ the project is a TUI (ink/textual/ratatui in dependencies).
 
 Template: `assets/claude-md-template.md` (claude-code/omp) or
 `assets/agents-md-template.md` (opencode/agents) in this plugin — read the
-right one. Substitute `{{PROJECT_NAME}}`, `{{TEST_COMMAND}}`,
+right one. Substitute `{{PROJECT_NAME}}`, `{{TEST_COMMAND}}`
 `{{BUILD_COMMAND}}` with detected values (omit lines with no detected
 value — never write "unknown").
 
 - **No existing file** → create from the template.
-- **Existing file** → merge: replace an existing marked section in place,
+- **Existing file** → merge: replace an existing marked section in place
   otherwise append it. Never edit outside the markers.
 - **Both CLAUDE.md and AGENTS.md exist on opencode** → warn that AGENTS.md
   wins and CLAUDE.md is ignored by OpenCode; merge into AGENTS.md only.

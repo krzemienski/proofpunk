@@ -2,14 +2,14 @@
 name: production-readiness
 description: >
   Take a codebase from 'works on my machine' to shippable — systematic
-  8-phase production-readiness audit (risk-based cleanup waves, dead code,
+  8-phase production-readiness audit (risk-based cleanup waves, dead code
   documentation drift, zero-regression enforcement), spec-vs-implementation
   compliance audits that find COVERED/INCOMPLETE/MISSING gaps, and
   dependency supply-chain health (CVEs, CVSS, lockfile hygiene, license
   compliance). Use when preparing a first release, open-sourcing, doing a
-  major version bump, auditing whether a spec was fully implemented,
+  major version bump, auditing whether a spec was fully implemented
   reviewing dependency risk, or after rapid prototyping leaves the repo in
-  unknown shape. Not for runtime feature QA (use functional-validation),
+  unknown shape. Not for runtime feature QA 
   screenshot review (use visual-inspection), or intent provenance (use
   session-intent).
 ---
@@ -26,7 +26,7 @@ Copy this checklist and track your progress:
 - [ ] Generate remediation plan with validation gates
 - [ ] Execute approved remediations; re-verify zero regressions
 
-Ship-readiness is proven, not felt. Three lenses, each with its own reference,
+Ship-readiness is proven, not felt. Three lenses, each with its own reference
 all reporting through the plugin's evidence discipline
 (`../../references/evidence-contract.md`): every claim in the readiness report
 cites the command output, file, or audit artifact that proves it.
@@ -43,7 +43,7 @@ cites the command output, file, or audit artifact that proves it.
    evidence, and grade COVERED / INCOMPLETE / MISSING. Missing coverage
    generates blocking validation checkpoints — not a shrug in a report footnote.
 3. **Dependency health** — `references/dependency-health.md`
-   CVE and CVSS triage, lockfile hygiene, freshness vs. stability trade-offs,
+   CVE and CVSS triage, lockfile hygiene, freshness vs. stability trade-offs
    supply-chain attack surface, license compliance. Every dependency is
    justified or removed.
 

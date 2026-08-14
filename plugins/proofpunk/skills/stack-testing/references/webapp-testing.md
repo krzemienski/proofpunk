@@ -117,4 +117,4 @@ with sync_playwright() as p:
 - Broader web testing strategy including Vitest, k6, accessibility (use `web-testing`)
 - Testing FastAPI backends without frontend (use `python-fastapi-backend-testing`)
 - Using Playwright MCP tools directly from Claude (use Playwright MCP tools, not Python scripts)
-- Writing unit tests or mocks (use `functional-validation` for real-system validation instead)
+- Writing unit tests or mocks as validation (drive the real system per `references/web-validation.md` instead)

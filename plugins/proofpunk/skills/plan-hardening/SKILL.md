@@ -2,7 +2,7 @@
 name: plan-hardening
 description: >
   Second-pass plan strengthening: red-teams a draft plan through multiple
-  adversarial lenses, scores confidence gaps, researches weak sections,
+  adversarial lenses, scores confidence gaps, researches weak sections
   injects or strengthens proof obligations, and surgically remediates
   findings while preserving the original intent. Also converts arbitrary
   prompts or plans into proof-carrying versions using the standard proof
@@ -11,7 +11,7 @@ description: >
   this plan', 'red-team my plan', 'stress-test this design', 'add proof
   obligations to this prompt' — or before executing any high-stakes
   multi-phase plan. Not for authoring a plan from scratch (use
-  validation-plan) or executing one (use cook or implement).
+  validation-plan) or executing one (use implement or implement).
 ---
 
 # Plan Hardening
@@ -45,9 +45,9 @@ Score each section:
 gap_score = trigger_count + risk_bonus + critical_section_bonus
 ```
 
-- **trigger_count**: hedging language ("should work", "probably", "assume",
+- **trigger_count**: hedging language ("should work", "probably", "assume"
   "etc."), undefined terms, missing owners, unverifiable claims
-- **risk_bonus**: touches data migrations, auth, payments, public APIs,
+- **risk_bonus**: touches data migrations, auth, payments, public APIs
   irreversible operations
 - **critical_section_bonus**: section is on the plan's critical path
 

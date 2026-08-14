@@ -6,7 +6,7 @@ duplicated. If you only read one doc, read this one.
 
 ## 1. The mental model
 
-The 19 skills are **not** 19 independent procedures. They form a **directed
+The 17 skills are **not** 19 independent procedures. They form a **directed
 acyclic delegation graph**:
 
 - **A method lives in exactly one skill** (its *owner*). Every other skill
@@ -21,10 +21,9 @@ acyclic delegation graph**:
 
 ```
 depth 6  implement                     (the orchestrator — calls 9 skills)
-depth 5  cook, production-readiness
+depth 5  production-readiness
 depth 4  codebase-truth-audit, full-functional-audit, plan-hardening, stack-testing
 depth 3  mobile-validation-runner, red-team-eval, root-cause-debugging, ui-experience-audit
-depth 2  functional-validation
 depth 1  validation-plan, visual-inspection
 depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing   (leaf owners — call nothing)
 ```
@@ -34,13 +33,13 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 | Method | Owner | Consumers (call, never copy) |
 |--------|-------|------------------------------|
 | End-User Actor Mandate + fresh-evidence rules + verdict format | `end-user-testing` | every validation skill (11 deferrals) |
-| Scout-first rule (GATE 2) + exact requirements (GATE 3) | `brainstorm` | `cook`, `implement` |
-| Proof-obligation XML format (`<proof_obligation id="PO-N">`) | `validation-plan` | `cook`, `implement`, `plan-hardening` |
-| Execution-loop contract (task → prove → next) | `cook` | `implement` |
-| Iron Rule of validation (fix the real system, no mocks) | `functional-validation` | `full-functional-audit` and all drivers |
-| Screenshot examination protocol | `visual-inspection` | `functional-validation`, `mobile-validation-runner`, `ui-experience-audit` |
-| Stuck protocol (attempt → root-cause ×3 → split → escalate) | `implement` | `cook` invokes it per unproven task |
-| TUI end-user proof (observe-then-act, matched waits, three facets) | `tui-testing` | `implement`, `cook`, `functional-validation`, `full-functional-audit` |
+| Scout-first rule (GATE 2) + exact requirements (GATE 3) | `brainstorm` | `implement` |
+| Proof-obligation XML format (`<proof_obligation id="PO-N">`) | `validation-plan` | `implement`, `plan-hardening` |
+| Execution-loop contract (task → prove → next) | `implement` | (top of the write path) |
+| Iron Rule of validation (fix the real system, no mocks) | `implement` (Stage 5) | `full-functional-audit` and all drivers |
+| Screenshot examination protocol | `visual-inspection` | `mobile-validation-runner`, `ui-experience-audit`, `implement` (Stage 5) |
+| Stuck protocol (attempt → root-cause ×3 → split → escalate) | `implement` | self-invoked per unproven task |
+| TUI end-user proof (observe-then-act, matched waits, three facets) | `tui-testing` | `implement`, `full-functional-audit` |
 | Root-cause method (no fix without reproduction) | `root-cause-debugging` | `stack-testing`, `codebase-truth-audit`, `full-functional-audit` |
 | Four adversarial lenses | `red-team-eval` | `plan-hardening` (Stage 4 dispatch) |
 | Prompt skeleton + rating rubric | `prompt-forge` | `implement` (Stage 3 FORGE) |
@@ -59,19 +58,10 @@ graph TD
   implement --> brainstorm
   implement --> prompt-forge
   implement --> validation-plan
-  implement --> cook
   implement --> n0
-  implement --> functional-validation
   implement --> root-cause-debugging
   implement --> stack-testing
   implement --> tui-testing
-  cook --> brainstorm
-  cook --> validation-plan
-  cook --> n0
-  cook --> functional-validation
-  cook --> root-cause-debugging
-  cook --> stack-testing
-  cook --> tui-testing
   production-readiness --> codebase-truth-audit
   production-readiness --> full-functional-audit
   production-readiness --> stack-testing
@@ -79,28 +69,20 @@ graph TD
   codebase-truth-audit --> session-intent
   codebase-truth-audit --> n0
   codebase-truth-audit --> root-cause-debugging
-  full-functional-audit --> functional-validation
   full-functional-audit --> n0
   full-functional-audit --> ui-experience-audit
   full-functional-audit --> root-cause-debugging
   full-functional-audit --> tui-testing
-  functional-validation --> tui-testing
   plan-hardening --> red-team-eval
   plan-hardening --> validation-plan
   plan-hardening --> n0
   stack-testing --> root-cause-debugging
   mobile-validation-runner --> n0
   mobile-validation-runner --> visual-inspection
-  mobile-validation-runner --> functional-validation
   red-team-eval --> n0
-  red-team-eval --> functional-validation
-  root-cause-debugging --> functional-validation
   root-cause-debugging --> n0
   ui-experience-audit --> visual-inspection
-  ui-experience-audit --> functional-validation
   ui-experience-audit --> n0
-  functional-validation --> n0
-  functional-validation --> visual-inspection
   visual-inspection --> n0
   validation-plan --> n0
 ```
@@ -119,26 +101,14 @@ Stage 1  session-intent  MINE past sessions for prior implementations
 Stage 2  brainstorm      EXPLORE: scout-first + exact-requirements gates
 Stage 3  prompt-forge    FORGE the build prompt (XML skeleton)
 Stage 4  validation-plan DECOMPOSE: task graph, each task gets a PO-N
-Stage 5  cook            EXECUTE loop semantics, per task:
-           └─ functional-validation   drive the real runtime as the end user
+Stage 5  (implement)     EXECUTE loop, per task: production code, then INLINE
+           └─ end-user driving        drive the real runtime as the end user
            └─ end-user-testing        prove it: Six Steps, sealed evidence
 Stage 6  root-cause-debugging   stuck protocol on any unproven task
 Stage 7  (implement)     REPORT from .planning/execution-ledger.json
 +        stack-testing   regression rail: suites run AFTER proof, never AS proof
 ```
 
-### `/proofpunk:cook "<feature or plan>"` — scoped execution
-
-```
-scout      brainstorm            GATE 2 (scout-first) + GATE 3 (exact requirements)
-decompose  validation-plan       proof-obligation format per task
-loop       per task:
-             (cook)              implement following existing patterns
-             functional-validation  drive the real runtime
-             end-user-testing       prove + verdict — not proven = not done
-stuck      root-cause-debugging  when a task cannot be proven
-rail       stack-testing         regression suites after proof
-```
 
 ### `/proofpunk:truth-audit [path]` — evidence-backed audit
 
@@ -151,7 +121,7 @@ on FAIL  root-cause-debugging  root cause of drift before remediation
 ### `/proofpunk:verify "<claim>"` — prove something works
 
 ```
-functional-validation  detect platform, start the real runtime, drive it
+(implement Stage 5 inline) detect platform, start the real runtime, drive it
 end-user-testing       fresh evidence + verdict
 visual-inspection      any screenshot evidence is examined, never trusted unread
 ```

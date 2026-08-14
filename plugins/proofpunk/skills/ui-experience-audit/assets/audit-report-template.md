@@ -78,7 +78,7 @@ back" — or "none (no tool path available)">
 <!-- Structured task list for the receiving skill. -->
 
 ```
-functional-validation:
+implement (validation phase):
   - [Element <id>] <action to verify>
 
 ios-validation-runner:
@@ -134,7 +134,7 @@ full-functional-audit:
 ### Hand-offs
 
 ```
-functional-validation:
+implement (validation phase):
   -
 
 full-functional-audit:

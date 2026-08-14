@@ -54,7 +54,7 @@ This skill does NOT apply to:
 - Pure research/planning tasks
 - Documentation-only changes
 - Configuration file edits (CLAUDE.md, settings, etc.)
-- Non-iOS projects (use `e2e-validate` or `functional-validation` instead)
+- Non-iOS projects (the shared runbooks in `references/` — api/web/cli-validation.md — inside implement's validation phase)
 
 ## The Three Validation Gates
 
@@ -343,4 +343,4 @@ When any gate fails:
 
 - Pure research/planning tasks with no code changes
 - Documentation-only changes — no build or runtime behavior to validate
-- Non-iOS projects — use `e2e-validate` or `functional-validation` instead
+- Non-iOS projects — the shared runbooks in `references/` (api/web/cli-validation.md) inside implement's validation phase
