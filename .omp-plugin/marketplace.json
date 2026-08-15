@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Evidence-driven delivery pipeline: 17 skills, 20 flat-black cyberpunk themes, and execution-first implement orchestration.",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "pluginRoot": "plugins"
   },
   "plugins": [

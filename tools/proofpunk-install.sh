@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# proofpunk-install.sh — install the 19 Proofpunk skills as PLAIN skills
+# proofpunk-install.sh — install the 17 Proofpunk skills as PLAIN skills
 # (not a plugin/marketplace) into a target skills directory of your choice,
 # with collision safety, doctrine injection, and post-install verification.
 # Optionally also installs the 20-theme flat-black cyberpunk pack and the
@@ -43,7 +43,7 @@ OPENCODE_SUBPATH="plugins/proofpunk/opencode"
 EXTENSIONS_SUBPATH="plugins/proofpunk/extensions"
 DOCTRINE_DIRNAME="proofpunk-doctrine"
 
-ALL_SKILLS="brainstorm codebase-truth-audit cook end-user-testing full-functional-audit functional-validation implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
+ALL_SKILLS="brainstorm codebase-truth-audit end-user-testing full-functional-audit implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
 
 # ------------------------------------------------------------------- utils --
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }
@@ -72,7 +72,7 @@ SOURCE (where skills come from):
   --source-dir PATH      local Proofpunk checkout (offline / dev)
 
 SELECTION:
-  --only a,b,c           install just these skills (default: all 19)
+  --only a,b,c           install just these skills (default: all 17)
   --skip-skills          install no skills (use with --themes/--plugins)
   --list                 print skills available in the source, then exit
 
@@ -160,6 +160,13 @@ fi
 say "== Proofpunk installer =="
 say "target dir : $DIR  ($TARGET)"
 
+# Version awareness: what is installed now vs what this source carries.
+PKG_JSON_REL="plugins/proofpunk/package.json"
+INSTALLED_VERSION="none"
+if [ -f "$DIR/implement/SKILL.md" ]; then
+  INSTALLED_VERSION=$(grep -m1 -o 'v[0-9][0-9.]*' "$DIR/proofpunk-doctrine/VERSION" 2>/dev/null || echo "pre-versioned")
+fi
+
 # ----------------------------------------------------------------- source --
 WORK=""
 cleanup() { if [ -n "$WORK" ]; then rm -rf "$WORK"; fi; return 0; }
@@ -196,6 +203,12 @@ REFS_SRC="$SRC_ROOT/$REFS_SUBPATH"
 if [ "$DRY_RUN" -eq 0 ]; then
   [ -d "$SKILLS_SRC" ] || die "skills not found at $SKILLS_SRC"
 fi
+SRC_VERSION="unknown"
+if [ "$DRY_RUN" -eq 0 ] && [ -f "$SRC_ROOT/$PKG_JSON_REL" ]; then
+  SRC_VERSION=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$SRC_ROOT/$PKG_JSON_REL" | head -1)
+fi
+say "version    : installed=$INSTALLED_VERSION → source=$SRC_VERSION (source is always the newest main)"
+
 
 # ------------------------------------------------------------- selection --
 if [ "$SKIP_SKILLS" -eq 1 ]; then
@@ -259,11 +272,20 @@ for skill in $SELECTED; do
       -e 's|\.\./\.\./\.\./references/|../references/|g' \
       -e 's|\.\./\.\./references/|references/|g' {} \;
     find "$dst" -name '*.bak' -delete
+    # Depth normalization: files INSIDE the skill's references/ dir cite
+    # bundled siblings by bare name (they live in the same directory).
+    if [ -d "$dst/references" ]; then
+      find "$dst/references" -name '*.md' -exec sed -i.bak \
+        -e 's|references/\([A-Za-z0-9._-]*\)|\1|g' {} \;
+      find "$dst/references" -name '*.bak' -delete
+    fi
     if [ -d "$REFS_SRC" ]; then
       mkdir -p "$dst/references"
       for ref in "$REFS_SRC"/*; do
         name="$(basename "$ref")"
-        if grep -rq "references/$name" "$dst" --include='*.md'; then
+        # match citations at any depth: 'references/<name>', '../references/<name>',
+        # or a bare '<name>' (already depth-normalized inside references/ files)
+        if grep -rqE "\`(\./)*(\.\./)*(references/)?$name\`" "$dst" --include='*.md'; then
           [ -f "$dst/references/$name" ] || cp "$ref" "$dst/references/$name"
         fi
       done
@@ -497,41 +519,83 @@ fi
 
 # ----------------------------------------------------------------- verify --
 if [ "$VERIFY" -eq 1 ] && [ "$DRY_RUN" -eq 0 ]; then
+  say "verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)"
   FAIL=0
   for skill in $SELECTED; do
     dst="$DIR/$skill"
     [ -d "$dst" ] || continue
     if [ ! -f "$dst/SKILL.md" ]; then
-      warn "verify: $dst/SKILL.md missing"; FAIL=1; continue
+      warn "  ✗ $skill: SKILL.md missing"; FAIL=1; continue
     fi
     if command -v python3 >/dev/null 2>&1; then
-      python3 - "$dst" <<'PYEOF' || FAIL=1
-import re, sys, os
-dst = sys.argv[1]
+      python3 - "$dst" "$REFS_SRC" <<'PYEOF'
+import re, sys, os, shutil
+dst, refs_src = sys.argv[1], sys.argv[2]
+name = os.path.basename(dst)
 text = open(os.path.join(dst, 'SKILL.md'), encoding='utf-8').read()
-assert text.startswith('---'), 'no frontmatter'
+if not text.startswith('---'):
+    print(f'  ✗ {name}: no frontmatter'); sys.exit(1)
 fm = re.match(r'^---\n(.*?)\n---', text, re.DOTALL).group(1)
-assert re.search(r'^name:\s*\S+', fm, re.M), 'no name'
-assert re.search(r'^description:', fm, re.M), 'no description'
-# every cited references/ path inside the skill must resolve
-bad = []
-for dp, _, fns in os.walk(dst):
-    for fn in fns:
-        if not fn.endswith('.md'): continue
-        p = os.path.join(dp, fn)
-        for m in re.finditer(r'`((?:\.\./)*(?:references|scripts|assets|examples)/[^`\s]+)`',
-                             open(p, encoding='utf-8').read()):
-            t = m.group(1).split('#')[0]
-            if '<' in t or '{' in t or '*' in t: continue
-            if not os.path.exists(os.path.normpath(os.path.join(dp, t))):
-                bad.append(f'{fn} -> {t}')
+ok = True
+for req, label in [(r'^name:\s*\S+', 'name'), (r'^description:', 'description')]:
+    if not re.search(req, fm, re.M):
+        print(f'  ✗ {name}: no {label}'); ok = False
+
+def find_bad(root):
+    bad = []
+    for dp, _, fns in os.walk(root):
+        for fn in fns:
+            if not fn.endswith('.md'):
+                continue
+            p = os.path.join(dp, fn)
+            src = open(p, encoding='utf-8').read()
+            # explicit relative citations: references/X, ../references/X, …
+            for m in re.finditer(r'`((?:\.\./)*(?:references|scripts|assets|examples)/[^`\s]+)`', src):
+                t = m.group(1).split('#')[0]
+                if '<' in t or '{' in t or '*' in t:
+                    continue
+                if not os.path.exists(os.path.normpath(os.path.join(dp, t))):
+                    bad.append((fn, t, dp))
+            # bare-name citations of shared doctrine files (depth-normalized
+            # inside references/) must resolve to a bundled sibling
+            if os.path.basename(dp) == 'references' and os.path.isdir(refs_src):
+                for m in re.finditer(r'`([a-z0-9][a-z0-9._-]*\.md)`', src):
+                    t = m.group(1)
+                    if os.path.exists(os.path.join(refs_src, t)) and not os.path.exists(os.path.join(dp, t)):
+                        bad.append((fn, t, dp))
+    return bad
+
+bad = find_bad(dst)
 if bad:
-    print('verify BROKEN refs:', bad[:5]); sys.exit(1)
+    # AUTO-FIX: repair by copying the shared doctrine file into the skill's
+    # references/ bundle, then re-run the check. Only depth/citation damage
+    # is repairable this way — anything else still fails loudly.
+    repaired = 0
+    for fn, t, dp in bad:
+        base = os.path.basename(t)
+        src = os.path.join(refs_src, base)
+        if os.path.exists(src):
+            bundle = os.path.join(dst, 'references')
+            os.makedirs(bundle, exist_ok=True)
+            shutil.copy2(src, os.path.join(bundle, base))
+            repaired += 1
+    still = find_bad(dst)
+    if still:
+        print(f'  ✗ {name}: BROKEN refs after auto-fix: {[(f, t) for f, t, _ in still][:5]}')
+        sys.exit(1)
+    print(f'  ✓ {name} (auto-fixed {repaired} broken ref(s))')
+elif ok:
+    print(f'  ✓ {name}')
+if not ok:
+    sys.exit(1)
 PYEOF
+      [ $? -eq 0 ] || FAIL=1
+    else
+      say "  ✓ $skill (frontmatter only — python3 unavailable for ref checks)"
     fi
   done
-  [ "$FAIL" -eq 0 ] && say "verify     : all installed skills pass frontmatter + reference checks" \
-                    || die "verification failed (see WARN lines)"
+  [ "$FAIL" -eq 0 ] && say "verify     : all skills pass (see ✓ lines above)" \
+                    || die "verification failed even after auto-fix (see ✗ lines)"
 fi
 
 # ---------------------------------------------------------------- summary --

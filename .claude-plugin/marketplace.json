@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Execution-first delivery plugin: 17 skills with end-user testing as the only proof, slash commands, doctrine hooks \u2014 plus a 20-theme flat-black cyberpunk pack for oh-my-pi and OpenCode.",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "pluginRoot": "./plugins"
   },
   "plugins": [
