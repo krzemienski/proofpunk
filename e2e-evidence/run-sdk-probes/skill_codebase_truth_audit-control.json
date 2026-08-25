@@ -1,0 +1,31 @@
+{
+  "probe": "skill_codebase_truth_audit",
+  "why": "'codebase-truth-audit' must load from the plugin, not a same-named local copy",
+  "plugin_loaded": false,
+  "elapsed_s": 6.4,
+  "reply": "I'll invoke that skill.There is no skill named `proofpunk:codebase-truth-audit` \u2014 the Skill tool returned \"Unknown skill,\" and it doesn't appear in the available skills list (which includes things like `code-review`, `security-review`, `simplify`, `init`, etc.). So I can't invoke it or tell you what it's for, since it doesn't exist in this session.\n\nIf you meant something similar, the closest avai",
+  "hook_events": [],
+  "tools_used": [
+    "Skill"
+  ],
+  "hook_runs": [],
+  "tool_calls": [
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"proofpunk:codebase-truth-audit\"}"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 2,
+    "cost_usd": 0.11995550000000002
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": true,
+    "tool_arg_matches": true,
+    "tool_succeeded": false
+  },
+  "expect_text": "",
+  "pass": false
+}

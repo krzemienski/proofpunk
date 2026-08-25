@@ -1,4 +1,4 @@
-# SDK end-user validation — 3 PASS, 2 UNPROVEN
+# SDK end-user validation — 12 PASS, 1 OBSERVED, 2 UNPROVEN
 
 First genuine end-user validation of this plugin. Earlier "validation" ran
 `tools/test-hooks.sh`, which executes one hook script in isolation — that proves
@@ -7,22 +7,39 @@ surfaces its skills, or fires its hooks. This drives a real Claude session with
 the plugin loaded through `claude-agent-sdk` 0.2.144 and observes what happens.
 
 Harness: `tools/sdk_probe.py`. Every probe runs twice — with the plugin, and a
-control arm without it (`--no-plugin`, `setting_sources=[]` so ambient host
-config cannot contaminate the result). A probe that cannot fail proves nothing.
+control arm without it (`--no-plugin`, `setting_sources=[]`, which excludes
+user/project settings sources). That reduces ambient contamination but does not
+eliminate it: the control still emits `SessionStart`, so some host-level hooks
+run regardless. Claims are scoped accordingly. A probe that cannot fail proves
+nothing.
 
 ## Results
 
 | Probe | Plugin | Control | Proves |
 |---|---|---|---|
 | `doctrine` | PASS | FAIL | SessionStart delivers doctrine into live context |
-| `skills_listed` | PASS | FAIL | a plugin skill loads *from the plugin* |
 | `router` | PASS | FAIL | the router skill loads and executes |
+| `skills_listed` | PASS | FAIL | `proofpunk:end-user-testing` loads from the plugin |
+| `skill_implement` | PASS | FAIL | `proofpunk:implement` loads from the plugin |
+| `skill_validation_plan` | PASS | — | `proofpunk:validation-plan` loads |
+| `skill_root_cause_debugging` | PASS | — | `proofpunk:root-cause-debugging` loads |
+| `skill_full_functional_audit` | PASS | — | `proofpunk:full-functional-audit` loads |
+| `skill_red_team_eval` | PASS | FAIL | `proofpunk:red-team-eval` loads from the plugin |
+| `skill_visual_inspection` | PASS | — | `proofpunk:visual-inspection` loads |
+| `skill_production_readiness` | PASS | — | `proofpunk:production-readiness` loads |
+| `skill_codebase_truth_audit` | PASS | FAIL | `proofpunk:codebase-truth-audit` loads from the plugin |
 | `instructions_loaded` | PASS | FAIL | the InstructionsLoaded tap runs and appends |
-| `stop_guard` | PASS | FAIL | Stop event fires and its hooks exit clean † |
+| `stop_guard` | OBSERVED | FAIL | Stop event fires, hooks exit clean † |
 | `blocks_test_file` | UNPROVEN | — | session advertises no `Write` tool |
 | `allows_normal_file` | UNPROVEN | — | same |
 
-5/5 pass loaded, 5/5 fail unloaded.
+**12 plugin-attributed PASS**, 1 host-lifecycle OBSERVED, 2 UNPROVEN.
+
+Every probe with a control arm fails without the plugin. The five skill probes
+marked `—` share the identical predicate as the four that were control-tested
+(observed `Skill` call + namespaced argument + successful tool result); their
+controls were not run, so they are attributable by construction rather than by
+a measured negative.
 
 † **Scope limit.** The `hook_response` record's `hook_name` is the *event*
 (`"Stop"`, `"SessionStart:startup"`), never the script filename, so this proves
@@ -31,9 +48,12 @@ the Stop event fired and its hooks exited `success` — **not** that
 a clean turn emits no attributable signal. Proving the block path needs a
 transcript that trips the heuristic; not done here, and not claimed.
 
-`instructions_loaded` has real attribution: the plugin arm appended **30 lines**
-resolving to this run's cwd, the control arm appended **0**. A duplicate tap or
-concurrent session would have shown lines in the control.
+`instructions_loaded` attribution: the plugin arm appended **30 lines** resolving
+to this run's cwd, the control arm appended **0**. The arms ran sequentially, so
+a concurrent session writing the same cwd could in principle land in either
+window — the control's zero makes that unlikely here but does not exclude it.
+What is established: with the plugin loaded the tap appends, without it it does
+not.
 
 ## Four false-pass traps the control arms caught
 

@@ -1,0 +1,48 @@
+{
+  "probe": "skill_red_team_eval",
+  "why": "'red-team-eval' must load from the plugin, not a same-named local copy",
+  "plugin_loaded": false,
+  "elapsed_s": 28.4,
+  "reply": "I could not invoke it \u2014 the Skill tool rejects both `proofpunk:red-team-eval` and `red-team-eval` with \"Unknown skill.\" It isn't registered in this session (the available-skills list has no proofpunk plugin entry), even though a `red-team-eval` skill exists on disk at `~/.claude/skills/red-team-eval/`. It likely needs the plugin enabled / session restarted to load.\n\nFrom that on-disk `SKILL.md`, w",
+  "hook_events": [],
+  "tools_used": [
+    "Bash",
+    "Skill"
+  ],
+  "hook_runs": [],
+  "tool_calls": [
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls ~/.claude/plugins 2>/dev/null; echo \\\"---\\\"; find ~/.claude /workspace -maxdepth 6 -iname \\\"*red-team*\\\" 2>/dev/null | head -20; echo \\\"---\\\"; find ~/.claude -maxdepth 4 -iname \\\"*proo"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls -la /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/ 2>/dev/null; echo \\\"=== skills dir ===\\\"; ls -la /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpun"
+    },
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"proofpunk:red-team-eval\"}"
+    },
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"red-team-eval\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n '1,20p' /Users/nick/.claude/skills/red-team-eval/SKILL.md\", \"description\": \"Read red-team-eval skill frontmatter\"}"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 6,
+    "cost_usd": 0.24259100000000003
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": true,
+    "tool_arg_matches": true,
+    "tool_succeeded": false
+  },
+  "expect_text": "",
+  "pass": false
+}

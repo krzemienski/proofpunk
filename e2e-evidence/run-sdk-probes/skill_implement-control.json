@@ -1,0 +1,52 @@
+{
+  "probe": "skill_implement",
+  "why": "'implement' must load from the plugin, not a same-named local copy",
+  "plugin_loaded": false,
+  "elapsed_s": 24.4,
+  "reply": "I'll invoke that skill now.I couldn't invoke it \u2014 `proofpunk:implement` isn't loaded as a skill in this session (the Skill tool returned \"Unknown skill\"). The plugin `proofpunk@proofpunk-marketplace` v1.10.1 is installed on disk at `~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/1.10.1/skills/implement/`, but its skills aren't registered here, so it isn't callable. Enabling the plugin in ",
+  "hook_events": [],
+  "tools_used": [
+    "Bash",
+    "Skill"
+  ],
+  "hook_runs": [],
+  "tool_calls": [
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"proofpunk:implement\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls ~/.claude/plugins 2>/dev/null; find ~/.claude -maxdepth 4 -iname '*proofpunk*' 2>/dev/null | head -20\", \"description\": \"Look for proofpunk plugin/skill on disk\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls ~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/skills/ 2>/dev/null | head -40; echo \\\"---installed---\\\"; cat ~/.claude/plugins/installed_plugins.json 2>/dev/null | head -40\", "
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"grep -o '\\\"[^\\\"]*proofpunk[^\\\"]*\\\"' ~/.claude/plugins/installed_plugins.json | sort -u; echo \\\"=== dirs ===\\\"; find ~/.claude/plugins/cache/proofpunk-marketplace ~/.claude/plugins/marketp"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls ~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/1.10.1/skills/\", \"description\": \"List proofpunk skill names\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"sed -n '1,20p' ~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/1.10.1/skills/implement/SKILL.md\", \"description\": \"Read implement skill frontmatter\"}"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 7,
+    "cost_usd": 0.261777
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": true,
+    "tool_arg_matches": true,
+    "tool_succeeded": false
+  },
+  "expect_text": "",
+  "pass": false
+}

@@ -128,6 +128,22 @@ PROBES = {
     ),
 }
 
+# Parameterized namespaced skill-load probes. Every one of the 17 skills also
+# exists standalone in ~/.claude/skills on this host, so only the `proofpunk:`
+# form is attributable to the plugin. Each requires an observed Skill call whose
+# argument matches AND whose tool result came back successful.
+for _sk in ("implement", "validation-plan", "root-cause-debugging",
+            "full-functional-audit", "red-team-eval", "visual-inspection",
+            "production-readiness", "codebase-truth-audit"):
+    PROBES[f"skill_{_sk.replace('-', '_')}"] = dict(
+        prompt=(f"Invoke the skill named exactly 'proofpunk:{_sk}' using the "
+                "Skill tool, then state in one line what it is for."),
+        expect_text="",
+        require_tool="Skill",
+        require_tool_arg=f"proofpunk:{_sk}",
+        why=f"'{_sk}' must load from the plugin, not a same-named local copy",
+    )
+
 
 async def run(name: str, cwd: str, use_plugin: bool) -> dict:
     spec = PROBES[name]
