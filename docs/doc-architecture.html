@@ -3,205 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>architecture — done means proven by end-user testing — PROOFPUNK</title>
-<meta name="description" content="Proofpunk architecture: 17 skills as one delegation DAG — ownership, execution order, deferral rules.">
+<title>Proofpunk Architecture — How the 18 Skills Execute as One System — proofpunk docs</title>
+<meta name="description" content="This is the authoritative map of how the skills work **with one another**: who">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#050507; --surface:#0A0A0E; --surface2:#0F0F14; --border:#1C1C24; --border-focus:#FF6B35;
-  --text:#D8D8E0; --dim:#5A5A66; --faint:#33333D;
-  --accent:#FF6B35; --accent2:#FF3E8A; --ok:#00E676; --err:#FF4757; --warn:#FFD93D; --info:#40C4FF;
-  --font-body:'Bricolage Grotesque',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono','SF Mono','DejaVu Sans Mono',monospace;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.animate{animation:fadeUp .45s ease-out both;animation-delay:calc(var(--i,0)*.06s)}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}}
-.wrap{max-width:1180px;margin:0 auto;padding:0 18px 60px}
-.chrome-bar{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:11px;flex-wrap:wrap}
-.brand{color:var(--accent);font-weight:700;letter-spacing:1.6px}
-.sep{color:var(--faint)}
-.meta{color:var(--dim)}
-.led{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
-.led.ok{background:var(--ok)}.led.warn{background:var(--warn)}.led.idle{background:var(--faint)}.led.acc{background:var(--accent)}
-.tabs{display:flex;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:11px;overflow-x:auto}
-.tabs a{padding:7px 16px;color:var(--dim);text-decoration:none;white-space:nowrap}
-.tabs a.on{background:var(--accent);color:var(--bg);font-weight:700}
-.tabs a .n{opacity:.55;margin-right:6px}
-.statusline{display:flex;justify-content:space-between;gap:12px;padding:7px 18px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:10.5px;color:var(--dim)}
-.statusline b{color:var(--accent);letter-spacing:1px}
-.marker{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.6px;color:var(--accent);margin:38px 0 10px}
-h1{font-size:40px;font-weight:700;letter-spacing:-1px;margin-bottom:12px;text-wrap:balance}
-h2{font-size:22px;font-weight:600;margin:26px 0 12px}
-h3{font-size:16px;font-weight:600;margin:18px 0 8px;color:var(--accent2)}
-p{line-height:1.65;margin-bottom:12px;max-width:76ch}
-.subtitle{color:var(--dim);font-family:var(--font-mono);font-size:12px;margin-bottom:26px}
-.cursor::after{content:"▌";color:var(--accent);animation:blink 1.1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-code{font-family:var(--font-mono);font-size:.92em;background:var(--surface2);color:var(--accent2);padding:1px 6px;border:1px solid var(--border)}
-pre{font-family:var(--font-mono);font-size:12px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;overflow-x:auto;line-height:1.6;margin:12px 0}
-pre code{background:none;border:none;padding:0;color:var(--text)}
-.cmdline{font-family:var(--font-mono);font-size:12.5px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin:16px 0}
-.cmdline .p{color:var(--accent)}
-.cmdline .c{color:var(--text)}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin:16px 0}
-.panel{background:var(--surface);border:1px solid var(--border);padding:16px 18px;min-width:0}
-.panel .ptitle{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.4px;color:var(--dim);margin-bottom:8px}
-.panel:hover{border-color:var(--border-focus)}
-table{border-collapse:collapse;width:100%;font-size:13px;margin:14px 0}
-th{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.2px;color:var(--dim);text-align:left;padding:6px 10px;border-bottom:1px solid var(--border)}
-td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:break-word}
-td code{white-space:nowrap}
-.badge{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1px;color:var(--accent2);border:1px solid var(--border);padding:1px 7px;white-space:nowrap}
-.badge.pass{color:var(--ok)}
-.badge.warn{color:var(--warn)}
-.statrow{display:flex;gap:26px;flex-wrap:wrap;margin:22px 0;font-family:var(--font-mono)}
-.stat .v{font-size:30px;font-weight:700;color:var(--accent)}
-.stat .k{font-size:10.5px;color:var(--dim);letter-spacing:1.2px}
-.brow{display:flex;gap:12px;align-items:baseline;padding:9px 4px;border-bottom:1px solid var(--border);min-width:0}
-.brow .idx{font-family:var(--font-mono);color:var(--faint);width:28px;flex-shrink:0}
-.brow .name{color:var(--accent2);font-family:var(--font-mono);font-size:12.5px;white-space:nowrap}
-.brow .what{color:var(--dim);font-size:12.5px;min-width:0;overflow-wrap:break-word}
-.brow a{color:var(--accent2);text-decoration:none}
-.brow a:hover{color:var(--accent)}
-ul.tight{padding-left:20px;margin:10px 0}
-ul.tight li{margin-bottom:6px;line-height:1.55}
-footer .wrap{padding:18px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:10.5px;color:var(--faint)}
-a{color:var(--info);text-decoration:none}
-a:hover{color:var(--accent)}
-details{margin:10px 0}
-summary{cursor:pointer;font-family:var(--font-mono);font-size:12px;color:var(--dim)}
-summary:hover{color:var(--accent)}
-/* ---- diagram shell (visual-explainer canonical) ---- */
-.diagram-shell{position:relative;margin:18px 0}
-.diagram-shell__hint{font-family:var(--font-mono);font-size:10.5px;color:var(--faint);margin-bottom:8px}
-.mermaid-wrap{position:relative;background:var(--surface);border:1px solid var(--border);padding:24px 18px;overflow:hidden;min-height:340px;cursor:grab}
-.mermaid-wrap.is-panning{cursor:grabbing;user-select:none}
-.mermaid-wrap:hover{border-color:var(--border-focus)}
-.zoom-controls{position:absolute;top:8px;right:8px;display:flex;gap:2px;z-index:10;background:var(--surface2);border:1px solid var(--border);padding:2px}
-.zoom-controls button{width:28px;height:28px;border:none;background:transparent;color:var(--dim);font-family:var(--font-mono);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.zoom-controls button:hover{background:var(--border);color:var(--text)}
-.zoom-label{font-family:var(--font-mono);font-size:10px;color:var(--dim);padding:5px 6px;white-space:nowrap}
-.mermaid-viewport{position:relative;overflow:hidden;width:100%;height:100%;min-height:300px}
-.mermaid-canvas{position:absolute;top:0;left:0}
-.mermaid .nodeLabel{font-family:var(--font-mono)!important;font-size:14px!important}
-.mermaid .edgeLabel{font-family:var(--font-mono)!important;font-size:12px!important}
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}
-.legend-item{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--dim)}
-.legend-swatch{width:11px;height:11px;border:1px solid var(--border)}
-.callout{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);padding:14px 18px;font-size:13px;line-height:1.6;color:var(--dim);margin-top:20px}
-.callout strong{color:var(--text)}
-@media(max-width:768px){h1{font-size:26px}.chrome-bar{font-size:10px}}
-
-.cmdline, pre{position:relative}
-.copybtn{position:absolute;top:6px;right:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--dim);background:var(--surface2);border:1px solid var(--border);padding:3px 8px;cursor:pointer;opacity:.35;transition:opacity .15s,border-color .15s}
-.cmdline:hover .copybtn, pre:hover .copybtn{opacity:1}
-.copybtn:hover{color:var(--accent);border-color:var(--accent)}
-.copybtn.copied{color:var(--ok);border-color:var(--ok);opacity:1}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="chrome-bar">
-  <span class="brand">PROOFPUNK</span><span class="sep">│</span>
-  <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
-  <span class="meta">⑂ main</span><span class="sep">│</span>
-  <span class="meta"><span class="led ok"></span>17 skills</span>
-  <span class="meta"><span class="led acc"></span>7+7 commands</span>
-  <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
-  <span class="meta"><span class="led idle"></span>20 themes</span>
-</div>
-<nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
 <div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
 
-<section class="animate" style="--i:0">
+<section>
   <div class="marker">DOC / ARCHITECTURE</div>
-  <h1 id="proofpunk-architecture--how-the-19-skills-execute-as-one-system">Proofpunk Architecture — How the 19 Skills Execute as One System</h1>
+  <div class="doc">
+<h1 id="proofpunk-architecture--how-the-18-skills-execute-as-one-system">Proofpunk Architecture — How the 18 Skills Execute as One System</h1>
 <p>This is the authoritative map of how the skills work <strong>with one another</strong>: who owns each method, who calls whom, in what order, and why nothing is duplicated. If you only read one doc, read this one.</p>
 <h2 id="1-the-mental-model">1. The mental model</h2>
-<p>The 17 skills are <strong>not</strong> 19 independent procedures. They form a <strong>directed acyclic delegation graph</strong>:</p>
+<p>The 18 skills are <strong>not</strong> 18 independent procedures. They form a <strong>directed acyclic delegation graph</strong>:</p>
 <ul>
 <li><strong>A method lives in exactly one skill</strong> (its <em>owner</em>). Every other skill that needs that method <strong>calls</strong> the owner — it reads the owner's SKILL.md at the invocation point and applies the method verbatim. It never restates the method in its own body.</li>
 <li><strong>Calls are directional.</strong> "A calls B" means: during A's execution, A defers to B's canonical method. Convenience pointers that would create a cycle are deliberately one-way (the stronger direction wins).</li>
 <li><strong>The graph is a DAG</strong>, verified by <code>tools/verify-orchestration.py</code> on every change. Depth = how far a skill sits from the leaf owners:</li>
 </ul>
-<pre><code>depth 6  implement                     (the orchestrator — calls 9 skills)
-depth 5  cook, production-readiness
-depth 4  codebase-truth-audit, full-functional-audit, plan-hardening, stack-testing
-depth 3  mobile-validation-runner, red-team-eval, root-cause-debugging, ui-experience-audit
-depth 2  functional-validation
-depth 1  validation-plan, visual-inspection
+<pre><code>depth 5  proofpunk                     (the router head — calls all 17, called by none)
+depth 4  production-readiness
+depth 3  full-functional-audit
+depth 2  codebase-truth-audit, implement, mobile-validation-runner, plan-hardening,
+         stack-testing, ui-experience-audit
+depth 1  red-team-eval, root-cause-debugging, validation-plan, visual-inspection
 depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing   (leaf owners — call nothing)</code></pre>
 <h2 id="2-method-ownership--the-single-source-of-truth">2. Method ownership — the single source of truth</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Method</th>
 <th>Owner</th>
 <th>Consumers (call, never copy)</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>End-User Actor Mandate + fresh-evidence rules + verdict format</td>
 <td><code>end-user-testing</code></td>
 <td>every validation skill (11 deferrals)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Scout-first rule (GATE 2) + exact requirements (GATE 3)</td>
 <td><code>brainstorm</code></td>
-<td><code>cook</code>, <code>implement</code></td>
+<td><code>implement</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Proof-obligation XML format (<code>&lt;proof_obligation id="PO-N"&gt;</code>)</td>
 <td><code>validation-plan</code></td>
-<td><code>cook</code>, <code>implement</code>, <code>plan-hardening</code></td>
+<td><code>implement</code>, <code>plan-hardening</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Execution-loop contract (task → prove → next)</td>
-<td><code>cook</code></td>
 <td><code>implement</code></td>
+<td>(top of the write path)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Iron Rule of validation (fix the real system, no mocks)</td>
-<td><code>functional-validation</code></td>
+<td><code>implement</code> (Stage 5)</td>
 <td><code>full-functional-audit</code> and all drivers</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Screenshot examination protocol</td>
 <td><code>visual-inspection</code></td>
-<td><code>functional-validation</code>, <code>mobile-validation-runner</code>, <code>ui-experience-audit</code></td>
+<td><code>mobile-validation-runner</code>, <code>ui-experience-audit</code>, <code>implement</code> (Stage 5)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Stuck protocol (attempt → root-cause ×3 → split → escalate)</td>
 <td><code>implement</code></td>
-<td><code>cook</code> invokes it per unproven task</td>
+<td>self-invoked per unproven task</td>
 </tr>
-<tr class="even">
+<tr>
 <td>TUI end-user proof (observe-then-act, matched waits, three facets)</td>
 <td><code>tui-testing</code></td>
-<td><code>implement</code>, <code>cook</code>, <code>functional-validation</code>, <code>full-functional-audit</code></td>
+<td><code>implement</code>, <code>full-functional-audit</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Root-cause method (no fix without reproduction)</td>
 <td><code>root-cause-debugging</code></td>
 <td><code>stack-testing</code>, <code>codebase-truth-audit</code>, <code>full-functional-audit</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Four adversarial lenses</td>
 <td><code>red-team-eval</code></td>
 <td><code>plan-hardening</code> (Stage 4 dispatch)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Prompt skeleton + rating rubric</td>
 <td><code>prompt-forge</code></td>
 <td><code>implement</code> (Stage 3 FORGE)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Session mining (JSONL → intent matrix)</td>
 <td><code>session-intent</code></td>
 <td><code>implement</code> (Stage 1 MINE), <code>codebase-truth-audit</code> (Stage 2)</td>
@@ -210,71 +118,56 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 </table>
 <p>Measured deduplication: shared 12-word content blocks across all skill bodies went from <strong>911 → 121 shingles (−87%)</strong> when this ownership was enforced; the verbatim Actor Mandate went from <strong>12 copies → 1 owner + one-line deferrals</strong>.</p>
 <h2 id="3-the-full-call-graph">3. The full call graph</h2>
-<section class="diagram-shell"><p class="diagram-shell__hint">Ctrl/Cmd + wheel to zoom. Scroll to pan. Drag to pan when zoomed. Double-click to fit.</p>
-<div class="mermaid-wrap">
-  <div class="zoom-controls">
-    <button type="button" data-action="zoom-in" title="Zoom in">+</button>
-    <button type="button" data-action="zoom-out" title="Zoom out">−</button>
-    <button type="button" data-action="zoom-fit" title="Smart fit">⤢</button>
-    <button type="button" data-action="zoom-one" title="1:1 zoom">1:1</button>
-    <button type="button" data-action="zoom-expand" title="Open full size">⛶</button>
-    <span class="zoom-label">Loading…</span>
-  </div>
-  <div class="mermaid-viewport"><div class="mermaid mermaid-canvas"></div></div>
-</div>
-<script type="text/plain" class="diagram-source">
-graph TD
-  n0["end-user-testing"]
-  implement --> session-intent
-  implement --> brainstorm
-  implement --> prompt-forge
-  implement --> validation-plan
-  implement --> cook
-  implement --> n0
-  implement --> functional-validation
-  implement --> root-cause-debugging
-  implement --> stack-testing
-  implement --> tui-testing
-  cook --> brainstorm
-  cook --> validation-plan
-  cook --> n0
-  cook --> functional-validation
-  cook --> root-cause-debugging
-  cook --> stack-testing
-  cook --> tui-testing
-  production-readiness --> codebase-truth-audit
-  production-readiness --> full-functional-audit
-  production-readiness --> stack-testing
-  production-readiness --> n0
-  codebase-truth-audit --> session-intent
-  codebase-truth-audit --> n0
-  codebase-truth-audit --> root-cause-debugging
-  full-functional-audit --> functional-validation
-  full-functional-audit --> n0
-  full-functional-audit --> ui-experience-audit
-  full-functional-audit --> root-cause-debugging
-  full-functional-audit --> tui-testing
-  functional-validation --> tui-testing
-  plan-hardening --> red-team-eval
-  plan-hardening --> validation-plan
-  plan-hardening --> n0
-  stack-testing --> root-cause-debugging
-  mobile-validation-runner --> n0
-  mobile-validation-runner --> visual-inspection
-  mobile-validation-runner --> functional-validation
-  red-team-eval --> n0
-  red-team-eval --> functional-validation
-  root-cause-debugging --> functional-validation
-  root-cause-debugging --> n0
-  ui-experience-audit --> visual-inspection
-  ui-experience-audit --> functional-validation
-  ui-experience-audit --> n0
-  functional-validation --> n0
-  functional-validation --> visual-inspection
-  visual-inspection --> n0
-  validation-plan --> n0
-</script>
-</section>
+<pre class="mermaid"><code>graph TD
+  n0[&quot;end-user-testing&quot;]
+  proofpunk --&gt; implement
+  proofpunk --&gt; brainstorm
+  proofpunk --&gt; validation-plan
+  proofpunk --&gt; plan-hardening
+  proofpunk --&gt; codebase-truth-audit
+  proofpunk --&gt; full-functional-audit
+  proofpunk --&gt; production-readiness
+  proofpunk --&gt; ui-experience-audit
+  proofpunk --&gt; root-cause-debugging
+  proofpunk --&gt; red-team-eval
+  proofpunk --&gt; stack-testing
+  proofpunk --&gt; mobile-validation-runner
+  proofpunk --&gt; n0
+  proofpunk --&gt; visual-inspection
+  proofpunk --&gt; tui-testing
+  proofpunk --&gt; session-intent
+  proofpunk --&gt; prompt-forge
+  implement --&gt; session-intent
+  implement --&gt; brainstorm
+  implement --&gt; prompt-forge
+  implement --&gt; validation-plan
+  implement --&gt; n0
+  implement --&gt; root-cause-debugging
+  implement --&gt; stack-testing
+  implement --&gt; tui-testing
+  production-readiness --&gt; codebase-truth-audit
+  production-readiness --&gt; full-functional-audit
+  production-readiness --&gt; stack-testing
+  production-readiness --&gt; n0
+  codebase-truth-audit --&gt; session-intent
+  codebase-truth-audit --&gt; n0
+  codebase-truth-audit --&gt; root-cause-debugging
+  full-functional-audit --&gt; n0
+  full-functional-audit --&gt; ui-experience-audit
+  full-functional-audit --&gt; root-cause-debugging
+  full-functional-audit --&gt; tui-testing
+  plan-hardening --&gt; red-team-eval
+  plan-hardening --&gt; validation-plan
+  plan-hardening --&gt; n0
+  stack-testing --&gt; root-cause-debugging
+  mobile-validation-runner --&gt; n0
+  mobile-validation-runner --&gt; visual-inspection
+  red-team-eval --&gt; n0
+  root-cause-debugging --&gt; n0
+  ui-experience-audit --&gt; visual-inspection
+  ui-experience-audit --&gt; n0
+  visual-inspection --&gt; n0
+  validation-plan --&gt; n0</code></pre><p class="mmd-note">(diagram source — pre-renderer unavailable)</p>
 <h2 id="4-execution-order-per-entry-point">4. Execution order, per entry point</h2>
 <p>This is the order the skills actually fire in when you run each slash command. The verifier (<code>tools/verify-orchestration.py</code>) re-derives these traces from the SKILL.md files and fails if the docs drift.</p>
 <h3 id="proofpunkimplement-goal--the-full-pipeline"><code>/proofpunk:implement "&lt;goal&gt;"</code> — the full pipeline</h3>
@@ -283,27 +176,18 @@ Stage 1  session-intent  MINE past sessions for prior implementations
 Stage 2  brainstorm      EXPLORE: scout-first + exact-requirements gates
 Stage 3  prompt-forge    FORGE the build prompt (XML skeleton)
 Stage 4  validation-plan DECOMPOSE: task graph, each task gets a PO-N
-Stage 5  cook            EXECUTE loop semantics, per task:
-           └─ functional-validation   drive the real runtime as the end user
+Stage 5  (implement)     EXECUTE loop, per task: production code, then INLINE
+           └─ end-user driving        drive the real runtime as the end user
            └─ end-user-testing        prove it: Six Steps, sealed evidence
 Stage 6  root-cause-debugging   stuck protocol on any unproven task
 Stage 7  (implement)     REPORT from .planning/execution-ledger.json
 +        stack-testing   regression rail: suites run AFTER proof, never AS proof</code></pre>
-<h3 id="proofpunkcook-feature-or-plan--scoped-execution"><code>/proofpunk:cook "&lt;feature or plan&gt;"</code> — scoped execution</h3>
-<pre><code>scout      brainstorm            GATE 2 (scout-first) + GATE 3 (exact requirements)
-decompose  validation-plan       proof-obligation format per task
-loop       per task:
-             (cook)              implement following existing patterns
-             functional-validation  drive the real runtime
-             end-user-testing       prove + verdict — not proven = not done
-stuck      root-cause-debugging  when a task cannot be proven
-rail       stack-testing         regression suites after proof</code></pre>
 <h3 id="proofpunktruth-audit-path--evidence-backed-audit"><code>/proofpunk:truth-audit [path]</code> — evidence-backed audit</h3>
 <pre><code>Stage 2  session-intent     reconstruct what the repo was ASKED to become
 Stage 5  end-user-testing   runtime behavior claims get sealed evidence
 on FAIL  root-cause-debugging  root cause of drift before remediation</code></pre>
 <h3 id="proofpunkverify-claim--prove-something-works"><code>/proofpunk:verify "&lt;claim&gt;"</code> — prove something works</h3>
-<pre><code>functional-validation  detect platform, start the real runtime, drive it
+<pre><code>(implement Stage 5 inline) detect platform, start the real runtime, drive it
 end-user-testing       fresh evidence + verdict
 visual-inspection      any screenshot evidence is examined, never trusted unread</code></pre>
 <h3 id="proofpunkforge-prompt--proofpunkrate-prompt"><code>/proofpunk:forge-prompt</code> / <code>/proofpunk:rate-prompt</code></h3>
@@ -327,144 +211,20 @@ plan-hardening         (optional) harden the resulting prompt</code></pre>
 <li><strong>Regression rail last</strong>: suites protect proven behavior; running them as validation inverts the dependency (a suite can pass while the feature is wrong — the end-user test cannot).</li>
 </ul>
 
+  </div>
   <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/architecture.md">source → plugins/proofpunk/docs/architecture.md</a> · <a href="docs.html">← all docs</a></p>
 </section>
 
+</main>
+  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
-<div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
-<footer><div class="wrap">
-  PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v2.0.1 · MIT license
-</div></footer>
-<script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-import elkLayouts from 'https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk/dist/mermaid-layout-elk.esm.min.mjs';
-
-const config = {fitPadding:24,minHeight:320,maxHeightPx:900,maxHeightVh:.82,maxInitialZoom:1.7,minZoom:.08,maxZoom:6,zoomStep:.14,readabilityFloor:.55};
-const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
-let activeDrag=null;
-addEventListener('mousemove',(e)=>activeDrag?.onMove(e));
-addEventListener('mouseup',()=>{activeDrag?.onEnd();activeDrag=null;});
-
-mermaid.registerLayoutLoaders(elkLayouts);
-mermaid.initialize({startOnLoad:false,theme:'base',look:'classic',layout:'elk',
-  themeVariables:{
-    fontFamily:"'JetBrains Mono','SF Mono',monospace",fontSize:'14px',
-    primaryColor:'#121216',primaryBorderColor:'#FF6B35',primaryTextColor:'#D8D8E0',
-    secondaryColor:'#16161C',secondaryBorderColor:'#FF3E8A',secondaryTextColor:'#B8BCC4',
-    tertiaryColor:'#101418',tertiaryBorderColor:'#40C4FF',tertiaryTextColor:'#B8BCC4',
-    lineColor:'#5A5A66',noteBkgColor:'#121216',noteTextColor:'#D8D8E0',noteBorderColor:'#FFD93D',
-    clusterBkg:'#0A0A0E',clusterBorder:'#1C1C24',titleColor:'#D8D8E0',
-    actorBkg:'#121216',actorBorder:'#FF6B35',actorTextColor:'#D8D8E0',actorLineColor:'#5A5A66',
-    signalColor:'#B8BCC4',signalTextColor:'#D8D8E0',labelBoxBkgColor:'#16161C',labelBoxBorderColor:'#FF3E8A',labelTextColor:'#D8D8E0',
-    loopTextColor:'#FF6B35',activationBkgColor:'#16161C',activationBorderColor:'#FF6B35',
-    stateBkg:'#121216',stateBorder:'#FF6B35',stateLabelColor:'#D8D8E0',transitionColor:'#5A5A66',transitionLabelColor:'#B8BCC4',
-    specialStateColor:'#16161C',compositeStateBackground:'#0A0A0E',altStateBkg:'#16161C',innerEndBackground:'#FF6B35',
-  },
-  sequence:{actorMargin:60,width:150,height:56,boxMargin:8,boxTextMargin:4,noteMargin:6,messageMargin:32},
-  state:{defaultWhite:false},
-});
-
-function initDiagram(shell){
-  const wrap=shell.querySelector('.mermaid-wrap'),viewport=shell.querySelector('.mermaid-viewport'),
-        canvas=shell.querySelector('.mermaid-canvas'),source=shell.querySelector('.diagram-source'),
-        label=shell.querySelector('.zoom-label');
-  if(!wrap||!viewport||!canvas||!source||!label){console.error('diagram-shell incomplete',shell);return;}
-  let zoom=1,fitMode='contain',panX=0,panY=0,svgW=0,svgH=0,sx=0,sy=0,spx=0,spy=0,touchDist=0,touchCx=0,touchCy=0;
-  function constrainPan(){const vpW=viewport.clientWidth,vpH=viewport.clientHeight,rW=svgW*zoom,rH=svgH*zoom,pad=config.fitPadding;
-    panX=(rW+pad*2<=vpW)?(vpW-rW)/2:clamp(panX,vpW-rW-pad,pad);
-    panY=(rH+pad*2<=vpH)?(vpH-rH)/2:clamp(panY,vpH-rH-pad,pad);}
-  function applyTransform(){const svg=canvas.querySelector('svg');if(!svg||!svgW)return;constrainPan();
-    svg.style.width=(svgW*zoom)+'px';svg.style.height=(svgH*zoom)+'px';
-    canvas.style.transform=`translate(${panX}px,${panY}px)`;
-    label.textContent=Math.round(zoom*100)+'% — '+fitMode;}
-  function canPan(){return svgW*zoom+config.fitPadding*2>viewport.clientWidth||svgH*zoom+config.fitPadding*2>viewport.clientHeight;}
-  function computeSmartFit(){const vpW=viewport.clientWidth,vpH=viewport.clientHeight,aW=Math.max(80,vpW-config.fitPadding*2),aH=Math.max(80,vpH-config.fitPadding*2),contain=Math.min(aW/svgW,aH/svgH);
-    let z=contain,mode='contain';
-    if(contain<config.readabilityFloor){const cR=svgH/svgW,vR=vpH/Math.max(vpW,1);
-      if(cR>=vR){z=aW/svgW;mode='width-priority';}else{z=aH/svgH;mode='height-priority';}}
-    return{zoom:clamp(z,config.minZoom,config.maxInitialZoom),mode};}
-  function fitDiagram(){if(!svgW)return;const f=computeSmartFit();zoom=f.zoom;fitMode=f.mode;
-    panX=(viewport.clientWidth-svgW*zoom)/2;panY=(viewport.clientHeight-svgH*zoom)/2;applyTransform();}
-  function setOneToOne(){zoom=1;fitMode='1:1';panX=(viewport.clientWidth-svgW)/2;panY=(viewport.clientHeight-svgH)/2;applyTransform();}
-  function zoomAround(factor,cx,cy){const next=clamp(zoom*factor,config.minZoom,config.maxZoom),ratio=next/zoom;
-    panX=cx-ratio*(cx-panX);panY=cy-ratio*(cy-panY);zoom=next;fitMode='custom';applyTransform();}
-  function readSize(svg){let w=0,h=0;
-    if(svg.viewBox?.baseVal?.width>0){w=svg.viewBox.baseVal.width;h=svg.viewBox.baseVal.height;}
-    if(!w){w=parseFloat(svg.getAttribute('width'))||0;h=parseFloat(svg.getAttribute('height'))||0;}
-    if(!w){const b=svg.getBBox();w=b.width;h=b.height;}
-    if(!svg.getAttribute('viewBox'))svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
-    return{w,h};}
-  function setHeight(){if(!svgW)return;const uW=Math.max(280,wrap.getBoundingClientRect().width-2),
-    idealH=(svgH/svgW)*uW+config.fitPadding*2,maxVp=Math.floor(innerHeight*config.maxHeightVh),
-    hardMax=Math.min(config.maxHeightPx,Math.max(config.minHeight+40,maxVp));
-    wrap.style.height=Math.round(clamp(idealH,config.minHeight,hardMax))+'px';}
-  function openInNewTab(){const svg=canvas.querySelector('svg');if(!svg)return;const c=svg.cloneNode(true);
-    c.style.width='';c.style.height='';
-    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>diagram</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#050507;padding:40px;box-sizing:border-box}svg{max-width:100%;max-height:90vh;height:auto}</style></head><body>${c.outerHTML}<script>
-document.querySelectorAll('.cmdline, pre').forEach(function(el){
-  if (el.querySelector('.copybtn')) return;
-  var b = document.createElement('button');
-  b.className = 'copybtn'; b.type = 'button'; b.textContent = 'COPY';
-  b.addEventListener('click', function(){
-    var txt = el.innerText.replace(/^COPY\n?/, '').replace(/^COPIED ✓\n?/, '');
-    navigator.clipboard.writeText(txt).then(function(){
-      b.textContent = 'COPIED ✓'; b.classList.add('copied');
-      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); }, 1400);
-    });
-  });
-  el.appendChild(b);
-});
-</script>
-</body></html>`;
-    open(URL.createObjectURL(new Blob([html],{type:'text/html'})),'_blank');}
-  async function render(){try{
-    const code=source.textContent.trim();
-    if(!code){label.textContent='Error: empty source';return;}
-    const id='d'+Date.now()+Math.random().toString(36).slice(2,7);
-    const{svg}=await mermaid.render(id,code);
-    const parsed=new DOMParser().parseFromString(svg,'text/html');
-    const psvg=parsed.body.querySelector('svg');
-    if(!psvg){label.textContent='Error: no svg';return;}
-    canvas.replaceChildren(document.adoptNode(psvg));
-    const node=canvas.querySelector('svg');
-    const size=readSize(node);svgW=size.w;svgH=size.h;
-    node.removeAttribute('width');node.removeAttribute('height');
-    node.style.maxWidth='none';node.style.display='block';
-    setHeight();fitDiagram();
-  }catch(err){console.error('mermaid render failed',err);label.textContent='Error: '+(err.message||'render failed');}}
-  const actions={'zoom-in':()=>zoomAround(1+config.zoomStep,viewport.clientWidth/2,viewport.clientHeight/2),
-    'zoom-out':()=>zoomAround(1/(1+config.zoomStep),viewport.clientWidth/2,viewport.clientHeight/2),
-    'zoom-fit':fitDiagram,'zoom-one':setOneToOne,'zoom-expand':openInNewTab};
-  Object.entries(actions).forEach(([a,h])=>wrap.querySelector(`[data-action="${a}"]`)?.addEventListener('click',h));
-  viewport.addEventListener('dblclick',fitDiagram);
-  viewport.addEventListener('wheel',(e)=>{
-    if(e.ctrlKey||e.metaKey){e.preventDefault();const r=viewport.getBoundingClientRect(),
-      f=e.deltaY<0?1+config.zoomStep:1/(1+config.zoomStep);zoomAround(f,e.clientX-r.left,e.clientY-r.top);return;}
-    if(canPan()){e.preventDefault();panX-=e.deltaX;panY-=e.deltaY;applyTransform();}
-  },{passive:false});
-  viewport.addEventListener('mousedown',(e)=>{
-    if(e.target.closest('.zoom-controls')||!canPan())return;
-    wrap.classList.add('is-panning');sx=e.clientX;sy=e.clientY;spx=panX;spy=panY;e.preventDefault();
-    activeDrag={onMove:(ev)=>{panX=spx+(ev.clientX-sx);panY=spy+(ev.clientY-sy);applyTransform();},
-      onEnd:()=>wrap.classList.remove('is-panning')};});
-  viewport.addEventListener('touchstart',(e)=>{
-    if(e.touches.length===1){sx=e.touches[0].clientX;sy=e.touches[0].clientY;spx=panX;spy=panY;}
-    else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
-      touchDist=Math.hypot(dx,dy);const r=viewport.getBoundingClientRect();
-      touchCx=(e.touches[0].clientX+e.touches[1].clientX)/2-r.left;touchCy=(e.touches[0].clientY+e.touches[1].clientY)/2-r.top;}
-  },{passive:true});
-  viewport.addEventListener('touchmove',(e)=>{
-    if(e.touches.length===1&&canPan()){if(touchDist>0){sx=e.touches[0].clientX;sy=e.touches[0].clientY;spx=panX;spy=panY;touchDist=0;}
-      e.preventDefault();panX=spx+(e.touches[0].clientX-sx);panY=spy+(e.touches[0].clientY-sy);applyTransform();}
-    else if(e.touches.length===2&&touchDist>0){e.preventDefault();
-      const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d=Math.hypot(dx,dy);
-      zoomAround(d/touchDist,touchCx,touchCy);touchDist=d;}
-  },{passive:false});
-  new ResizeObserver(()=>{if(svgW){setHeight();fitDiagram();}}).observe(wrap);
-  render();
-}
-document.querySelectorAll('.diagram-shell').forEach(initDiagram);
-</script>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
 </body>
 </html>

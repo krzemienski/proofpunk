@@ -17,9 +17,9 @@
     <span class="brand">PROOFPUNK</span><span class="sep">│</span>
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
-    <span class="meta"><span class="led ok"></span>17 skills</span>
-    <span class="meta"><span class="led ok"></span>7+7 commands</span>
-    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -33,34 +33,34 @@
 <h2 id="typography-san-francisco">Typography (San Francisco)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Body text size</td>
 <td>Min 17pt body, 11pt minimum anywhere</td>
 <td>Hardcoded <code>size: 10</code> or <code>size: 12</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Dynamic Type</td>
 <td>All text uses <code>.font(.system(...))</code> or theme tokens</td>
 <td>Fixed pixel sizes ignoring user preference</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Font weight hierarchy</td>
 <td>Headlines bold/semibold, body regular, captions medium</td>
 <td>All text same weight</td>
 </tr>
-<tr class="even">
+<tr>
 <td>SF Pro usage</td>
 <td>SF Pro Text ≤19pt, SF Pro Display ≥20pt</td>
 <td>System handles this — don't override with custom fonts unless intentional</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Monospaced numbers</td>
 <td>Counters/badges use <code>.monospacedDigit()</code></td>
 <td>Numbers shift layout when values change</td>
@@ -70,39 +70,39 @@
 <h2 id="layout--safe-areas">Layout &amp; Safe Areas</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Safe area respected</td>
 <td>Content within <code>safeAreaInset</code> on all edges</td>
 <td>Text under status bar or home indicator</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Navigation bar</td>
 <td>44pt standard height, large title 96pt</td>
 <td>Custom nav overlapping status bar</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Tab bar</td>
 <td>49pt standard (83pt with home indicator)</td>
 <td>Content hidden behind tab bar</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Scroll content insets</td>
 <td><code>ScrollView</code> content not clipped by nav/tab bars</td>
 <td>Last list item hidden under tab bar</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Notch/Dynamic Island</td>
 <td>No content hidden behind sensor housing</td>
 <td>Centered content shifted by island</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Landscape layout</td>
 <td>Content reflows properly</td>
 <td>Fixed portrait layout broken in landscape</td>
@@ -112,34 +112,34 @@
 <h2 id="touch-targets-critical">Touch Targets (CRITICAL)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Minimum size</td>
 <td>44x44pt touch target (Apple HIG mandate)</td>
 <td>30x30 icon buttons with no padding</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Spacing between targets</td>
 <td>8pt minimum between adjacent targets</td>
 <td>Buttons touching with no gap</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Toolbar buttons</td>
 <td>Adequate hit area even for small icons</td>
 <td>22pt icon with no frame expansion</td>
 </tr>
-<tr class="even">
+<tr>
 <td>List row height</td>
 <td>Min 44pt row height for tappable rows</td>
 <td>Compressed rows at 32pt</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Swipe actions</td>
 <td>Discoverable with adequate target area</td>
 <td>Tiny swipe reveal buttons</td>
@@ -149,34 +149,34 @@
 <h2 id="navigation-patterns">Navigation Patterns</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Back button</td>
 <td>Always present in pushed views</td>
 <td>Missing back button after deep navigation</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Navigation title</td>
 <td><code>.navigationTitle()</code> set on every screen</td>
 <td>Blank navigation bar</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Sheet presentation</td>
 <td>Grabber visible, detents configured</td>
 <td>Sheet without dismiss affordance</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Tab bar visibility</td>
 <td>Visible on root screens, hidden on pushed detail</td>
 <td>Tab bar persisting on every screen</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Deep link navigation</td>
 <td>URL scheme navigates to correct screen</td>
 <td>Deep link shows wrong screen or crashes</td>
@@ -186,7 +186,7 @@
 <h2 id="swiftui-specific-defects">SwiftUI-Specific Defects</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>What to Look For</th>
 <th>Root Cause</th>
@@ -194,43 +194,43 @@
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>VStack overflow</td>
 <td>Content clipped at bottom without scroll</td>
 <td><code>VStack</code> in constrained height, no <code>ScrollView</code></td>
 <td>Wrap in <code>ScrollView(.vertical)</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Fixed frame too small</td>
 <td>Content overlapping card boundaries</td>
 <td><code>.frame(height: N)</code> too small for dynamic content</td>
 <td>Use <code>.frame(minHeight: N)</code> + <code>.clipped()</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Environment crash</td>
 <td>View body crashes on navigation</td>
 <td><code>@Observable</code> not injected on sibling <code>NavigationDestination</code></td>
 <td>Add <code>.environment()</code> to all destination branches</td>
 </tr>
-<tr class="even">
+<tr>
 <td>LazyVGrid alignment</td>
 <td>Grid items misaligned</td>
 <td>Missing <code>.alignment</code> on <code>GridItem</code></td>
 <td>Set explicit alignment</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>GeometryReader zero</td>
 <td>Blank view on first render</td>
 <td>GeometryReader reports 0,0 before layout pass</td>
 <td>Use default size fallback</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Sheet dark mode</td>
 <td>Sheet content renders in light mode</td>
 <td>Missing <code>.preferredColorScheme(.dark)</code> on sheet</td>
 <td>Add color scheme to sheet presentation</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>@AppStorage caching</td>
 <td>Feature flags stale after reinstall</td>
 <td>UserDefaults cached from previous install</td>
@@ -241,24 +241,24 @@
 <h2 id="glass--material-effects-ios-17">Glass &amp; Material Effects (iOS 17+)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Glass background</td>
 <td>Content readable through glass effect</td>
 <td>Text illegible over busy backgrounds</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Blur intensity</td>
 <td><code>.ultraThinMaterial</code> to <code>.thickMaterial</code> appropriate</td>
 <td>Too thin = unreadable, too thick = opaque (defeats purpose)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Vibrancy</td>
 <td>Use <code>.secondary</code> vibrancy for labels on glass</td>
 <td>White text on glass with no vibrancy</td>
@@ -268,29 +268,29 @@
 <h2 id="status-indicators">Status Indicators</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Green/red dots</td>
 <td>Sufficient contrast on both light and dark backgrounds</td>
 <td>Green dots invisible on dark green cards</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Badge counts</td>
 <td>Badge positioned without overflowing parent</td>
 <td>Badge "17" clips outside icon bounds</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Progress indicators</td>
 <td>Shimmer/spinner visible during loading</td>
 <td>Frozen UI with no loading indication</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Connection status</td>
 <td>Online/offline state clearly communicated</td>
 <td>No indication when offline</td>
@@ -300,33 +300,33 @@
 <h2 id="accessibility">Accessibility</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>VoiceOver labels</td>
 <td>All interactive elements have <code>.accessibilityLabel()</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Accessibility traits</td>
 <td>Buttons marked <code>.isButton</code>, headers marked <code>.isHeader</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Reduce Motion</td>
 <td>Animations respect <code>UIAccessibility.isReduceMotionEnabled</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Bold Text</td>
 <td>UI adapts when user enables bold text</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Increased Contrast</td>
 <td>UI adapts when user enables increased contrast</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Color not sole indicator</td>
 <td>Status conveyed by icon/text in addition to color</td>
 </tr>
@@ -353,7 +353,7 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>REF:IOS-HIG-CHECKLIST</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+  <div class="statusline"><span><b>REF:IOS-HIG-CHECKLIST</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

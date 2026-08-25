@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invocation Contracts — how skills, hooks, agents, and plugins actually fire — proofpunk docs</title>
+<meta name="description" content="Researched 2026-08-13 from official/vendor sources only. This table is the">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOC / INVOCATION-CONTRACTS</div>
+  <div class="doc">
+<h1 id="invocation-contracts--how-skills-hooks-agents-and-plugins-actually-fire">Invocation Contracts — how skills, hooks, agents, and plugins actually fire</h1>
+<p>Researched 2026-08-13 from official/vendor sources only. This table is the trigger-owner map the v2.0.0 revamp was built against.</p>
+<h2 id="trigger-owners-per-platform">Trigger owners per platform</h2>
+<table>
+<thead>
+<tr>
+<th>Behavior</th>
+<th>Claude Code</th>
+<th>OpenCode</th>
+<th>OMP (oh-my-pi)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Skill auto-invoke</td>
+<td>model judgment over name+description listing (1,536 chars/skill budget, 1% of context); <code>paths:</code> narrows</td>
+<td>model invokes <code>skill</code> tool on description match; six discovery roots incl. <code>~/.claude/skills</code> fallback</td>
+<td>name+description in system prompt; body via <code>read</code> on <code>skill://&lt;name&gt;</code>; <code>/skill:&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td>Slash command</td>
+<td><code>/plugin:command</code> (user)</td>
+<td><code>/&lt;name&gt;</code> in TUI (user)</td>
+<td><code>registerCommand</code> in extensions</td>
+</tr>
+<tr>
+<td>Hooks (hard guarantee)</td>
+<td><code>hooks/hooks.json</code> merges on enable; command/http/mcp_tool/prompt/agent types</td>
+<td>plugin TS module; <code>tool.execute.before</code> throws to block</td>
+<td>extension <code>pi.on(...)</code>: <code>tool_call</code> can <code>{block, reason}</code>; <code>session_stop</code> can force continuation (cap 8)</td>
+</tr>
+<tr>
+<td>Subagents</td>
+<td><code>agents/*.md</code> (name+description required; <code>skills:</code> preloads full skill bodies); Agent tool spawns by description match; NOT automatic at install</td>
+<td><code>agents/*.md</code> with <code>permission:</code> map (<code>tools:</code> deprecated); Task tool auto-invokes by description</td>
+<td><code>task</code> tool; agents in <code>~/.omp/agent/agents/</code>, <code>.omp/agents/</code>, extension roots; <code>autoloadSkills</code> frontmatter</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>CLAUDE.md + <code>.claude/rules/*.md</code> (<code>paths:</code> lazy-load); concatenation model</td>
+<td>AGENTS.md &gt; CLAUDE.md fallback; no <code>@</code>-imports; <code>instructions[]</code> globs in opencode.json</td>
+<td><code>.omp/AGENTS.md</code> + sticky <code>RULES.md</code>; CLAUDE.md via claude provider; AGENTS.md walked up</td>
+</tr>
+<tr>
+<td>Plugin = ship unit</td>
+<td>skills+agents+hooks+MCP all activate on enable; <code>/reload-plugins</code> for the current session</td>
+<td>plugins are TS hook modules; agents/commands via config (unofficial)</td>
+<td><code>omp plugin install</code> (npm/git) + marketplace (Claude-registry-compatible, <code>.omp-plugin/marketplace.json</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://docs.anthropic.com/en/docs/claude-code/skills">https://docs.anthropic.com/en/docs/claude-code/skills</a> · /plugins · /plugins-reference · /hooks · /sub-agents · /memory</li>
+<li><a href="https://opencode.ai/docs/plugins/">https://opencode.ai/docs/plugins/</a> · /agents/ · /skills/ · /commands/ · /rules/</li>
+<li><a href="https://github.com/can1357/oh-my-pi">https://github.com/can1357/oh-my-pi</a> docs/{extensions,skills,task-agent-discovery,context-files,marketplace}.md (verified against source @ ffd53ff)</li>
+</ul>
+<h2 id="what-the-docs-dont-answer-recorded-not-assumed">What the docs DON'T answer (recorded, not assumed)</h2>
+<ul>
+<li>No deterministic skill-match metric anywhere — auto-invocation is model judgment over the description. Specific descriptions are the only lever.</li>
+<li>CLAUDE.md conflict precedence is explicitly undefined.</li>
+<li>Hook execution is guaranteed; model compliance with soft context is not — hard guarantees live only in blocking decisions (PreToolUse deny, Stop block).</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/invocation-contracts.md">source → plugins/proofpunk/docs/invocation-contracts.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOC:INVOCATION-CONTRACTS</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

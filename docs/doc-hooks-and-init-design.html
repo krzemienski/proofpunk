@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design — proofpunk v1.10.0: deterministic hook enforcement + `/proofpunk:install` — proofpunk docs</title>
+<meta name="description" content="**Status**: implemented in this release. Sources cited per section.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOC / HOOKS-AND-INIT-DESIGN</div>
+  <div class="doc">
+<h1 id="design--proofpunk-v1100-deterministic-hook-enforcement--proofpunkinstall">Design — proofpunk v1.10.0: deterministic hook enforcement + <code>/proofpunk:install</code></h1>
+<p><strong>Status</strong>: implemented in this release. Sources cited per section.</p>
+<h2 id="0-research-basis-all-external-verified-2026-08-13">0. Research basis (all external, verified 2026-08-13)</h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>What it contributed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Code Hooks reference (code.claude.com/docs/en/hooks)</td>
+<td>30 lifecycle events; decision-control matrix (<code>decision:"block"</code>, <code>hookSpecificOutput.permissionDecision</code>, <code>additionalContext</code>); matcher grammar; <code>${CLAUDE_PLUGIN_ROOT}</code>; prompt-hook response schema</td>
+</tr>
+<tr>
+<td>anthropics/claude-code <code>plugin-dev/skills/hook-development</code></td>
+<td>Canonical Stop/SubagentStop completeness-check pattern (block feeds <code>reason</code> back to Claude to continue); PreToolUse JSON output shape</td>
+</tr>
+<tr>
+<td>claude-mem hooks architecture doc</td>
+<td>Performance discipline: hooks sub-100ms, always-exit-0 on Setup, version-marker pattern, suppressOutput where appropriate</td>
+</tr>
+<tr>
+<td>CLAUDE.md current best practices (Anthropic memory docs + luongnv89/claude-howto + community)</td>
+<td>≤200 lines (adherence degrades past it); imperative voice; high-priority rules in first 40 lines; NO verification reminders (Opus-5-era over-verification); <code>.claude/rules/*.md</code> with <code>paths:</code> frontmatter for scoped loading; never clobber — marked-section merge</td>
+</tr>
+</tbody>
+</table>
+<p>Design decisions traceable to the table:</p>
+<ul>
+<li><strong>Stop guard is a command hook, not a prompt hook.</strong> The official canonical example for Stop is prompt-based (Haiku judges completeness). We use a deterministic command hook instead: (a) it is locally testable end-to-end (a prompt hook's judgment can't be measured without an LLM in the loop — and this release must be <em>measured</em>); (b) zero latency/cost per stop; (c) the heuristic is narrow and documented, blocking only on a strong unproven-claim signal, defaulting to non-blocking additionalContext.</li>
+<li><strong>PreToolUse guards are command hooks</strong> (fast, deterministic, JSON deny) — prompt hooks for path checks would be waste; the docs' own <code>.env</code> example is a command hook for exactly this class.</li>
+<li><strong>CLAUDE.md ≤ 200 lines</strong> is a hard acceptance criterion of <code>/proofpunk:install</code>.</li>
+</ul>
+<h2 id="1-hook-set-hookshooksjson">1. Hook set (hooks/hooks.json)</h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Matcher</th>
+<th>Type</th>
+<th>Script</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SessionStart</td>
+<td><code>startup|resume|clear</code></td>
+<td>command</td>
+<td><code>session-start.sh</code> (existing, tightened)</td>
+<td>doctrine <code>additionalContext</code>; &lt;20ms; exit 0</td>
+</tr>
+<tr>
+<td><strong>Stop</strong></td>
+<td>(none)</td>
+<td>command</td>
+<td><code>stop-guard.sh</code></td>
+<td>transcript scan (see §2): strong unproven-claim → <code>{"decision":"block","reason":…}</code> (reason is fed back to Claude and the turn continues); otherwise <strong>silent</strong> (exit 0, no output) — corrected in v1.10.1 after a live multi-plugin session showed per-stop reminder noise; hook discipline: speak only when enforcing</td>
+</tr>
+<tr>
+<td><strong>SubagentStop</strong></td>
+<td>(none)</td>
+<td>command</td>
+<td><code>stop-guard.sh</code></td>
+<td>same check, subagent transcript</td>
+</tr>
+<tr>
+<td><strong>PreToolUse</strong></td>
+<td><code>Write|Edit</code></td>
+<td>command</td>
+<td><code>evidence-guard.sh</code></td>
+<td>deny (exit 2 + stderr) when the write targets an evidence dir <strong>and</strong> payload matches secret patterns; else allow (exit 0)</td>
+</tr>
+<tr>
+<td><strong>InstructionsLoaded</strong></td>
+<td>(none)</td>
+<td>command</td>
+<td><code>instructions-loaded.sh</code></td>
+<td>append <code>{ts, filePath, loadReason, cwd}</code> to <code>~/.claude/proofpunk-loads.jsonl</code>; always exit 0 (the measurement tap for <code>/proofpunk:install</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-stop-guardsh--the-unproven-completion-detector">2. stop-guard.sh — the unproven-completion detector</h2>
+<p>Inputs (stdin JSON): <code>session_id</code>, <code>transcript_path</code>, <code>cwd</code>, <code>hook_event_name</code>.</p>
+<p>Algorithm (deterministic, documented heuristic):</p>
+<ol type="1">
+<li>Read the last 40 lines of <code>transcript_path</code> (JSONL). No file → exit 0.</li>
+<li>Claim signal: an assistant text line containing a completion marker (<code>\b(done|complete|completed|finished|shipped|all tests pass|works now)\b</code> case-insensitive).</li>
+<li>Proof signal: any line in the same window referencing a proof artifact (<code>e2e-evidence/</code>, <code>evidence-inventory</code>, <code>step-\d+</code>, <code>screenshot</code>, <code>curl .*200</code>, <code>verdict</code>).</li>
+<li>Block iff claim-signal AND NOT proof-signal: <code>{"decision":"block","reason":"Proofpunk: completion was claimed without a cited end-user test artifact. Run the end-user test (drive the real system), capture run-scoped evidence, cite it by full path — or downgrade the claim to UNVERIFIED."}</code></li>
+<li>Else: <strong>exit 0 with no output.</strong> (v1.10.0 shipped a soft <code>additionalContext</code> reminder here; in real sessions with a dozen-plus plugins that is feedback spam on every stop. SessionStart owns doctrine context; Stop speaks only to block.)</li>
+</ol>
+<p>False-positive posture: the block reason tells Claude exactly how to satisfy the guard (produce evidence or downgrade), so a mistaken block costs one turn of clarification, not a halt. This mirrors the official pattern where the reason is the next instruction.</p>
+<h2 id="3-evidence-guardsh--secrets-never-enter-evidence">3. evidence-guard.sh — secrets never enter evidence</h2>
+<p>Inputs: <code>tool_name</code>, <code>tool_input.file_path</code> (Write/Edit).</p>
+<ol type="1">
+<li>If <code>file_path</code> matches <code>*(e2e-evidence|evidence)/*</code>: scan <code>tool_input.content</code> for secret patterns (<code>sk-[A-Za-z0-9_-]{16,}</code>, <code>ghp_[A-Za-z0-9]{20,}</code>, <code>AKIA[0-9A-Z]{16}</code>, <code>BEGIN (RSA|OPENSSH|EC|PGP) PRIVATE KEY</code>, <code>api[_-]?key</code>). Match → exit 2, stderr: "Proofpunk: refusing to write probable secret material into an evidence directory (see evidence-contract: redact, never commit)."</li>
+<li>Else exit 0.</li>
+</ol>
+<h2 id="4-proofpunkinstall--project-memory-installer-7th-command">4. <code>/proofpunk:install</code> — project memory installer (7th command)</h2>
+<p>Command doc: <code>commands/install.md</code>. The agent executes four steps with explicit verification after each:</p>
+<ol type="1">
+<li><strong>Detect</strong> — stack manifests (package.json/pyproject/go.mod/Cargo.toml), test/build commands, existing <code>CLAUDE.md</code>, existing <code>.claude/rules/</code>, project name from the root directory.</li>
+<li><strong>CLAUDE.md</strong> — write or merge:
+<ul>
+<li>Template (<code>assets/claude-md-template.md</code>): ≤40 lines of proofpunk doctrine + detected commands. Total file MUST stay ≤200 lines.</li>
+<li>Existing file → merge into <code>&lt;!-- proofpunk:begin --&gt;</code> … <code>&lt;!-- proofpunk:end --&gt;</code> section (replace section if present, append if absent). Never edit outside the markers. Report the diff.</li>
+</ul></li>
+<li><strong>Scoped rules</strong> — <code>.claude/rules/</code>:
+<ul>
+<li><code>proof-obligations.md</code> (no <code>paths:</code> — global): task-level proof rule.</li>
+<li><code>evidence-contract.md</code> (<code>paths: ["e2e-evidence/**", "evidence/**"]</code>): redact + freshness rules, loads only when evidence files are touched.</li>
+<li><code>tui-driving.md</code> (<code>paths: ["**/*.tsx", "**/ink*"]</code>, only when the project is a TUI): the tui-testing discipline pointer.</li>
+</ul></li>
+<li><strong>Verify</strong> — read the files back (line counts), print the InstructionsLoaded log line proving the last load event (<code>~/.claude/proofpunk-loads.jsonl</code> tail), and state the acceptance criteria: CLAUDE.md ≤200 lines, markers present, rules parse.</li>
+</ol>
+<p>opencode variant: <code>opencode/commands/proofpunk-install.md</code> (same playbook).</p>
+<h2 id="5-measurement-plan-before--after-all-executed-none-claimed">5. Measurement plan (before → after, all executed, none claimed)</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>v1.9.0</th>
+<th>v1.10.0</th>
+<th>Instrument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hook events covered</td>
+<td>1</td>
+<td>5</td>
+<td>hooks.json diff</td>
+</tr>
+<tr>
+<td>Deterministic doctrine enforcement</td>
+<td>0 blocking hooks</td>
+<td>3 decision points (Stop, SubagentStop, PreToolUse)</td>
+<td><code>tools/test-hooks.sh</code> run</td>
+</tr>
+<tr>
+<td>Commands (claude + opencode)</td>
+<td>6+6</td>
+<td>7+7</td>
+<td>file count</td>
+</tr>
+<tr>
+<td>Project-memory scaffolding</td>
+<td>none</td>
+<td>CLAUDE.md + 3 scoped rules via one command</td>
+<td>dry-run in <code>/tmp/pp-init-fixture</code></td>
+</tr>
+<tr>
+<td>Hook-script correctness</td>
+<td>untested</td>
+<td>bash -n + 8 JSON-stdin behavior cases green</td>
+<td>test output committed</td>
+</tr>
+<tr>
+<td>Orchestration graph</td>
+<td>closed</td>
+<td>closed (verifier exit 0)</td>
+<td>verify-orchestration.py</td>
+</tr>
+<tr>
+<td>Site</td>
+<td>v1.9.0 pages</td>
+<td>v1.10.0 + install command row + hooks section</td>
+<td>regenerated</td>
+</tr>
+</tbody>
+</table>
+<p>Acceptance: every row measured by a script whose output is committed to <code>evidence/hooks-release/</code>.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/hooks-and-init-design.md">source → plugins/proofpunk/docs/hooks-and-init-design.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOC:HOOKS-AND-INIT-DESIGN</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

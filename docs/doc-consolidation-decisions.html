@@ -17,9 +17,9 @@
     <span class="brand">PROOFPUNK</span><span class="sep">│</span>
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
-    <span class="meta"><span class="led ok"></span>17 skills</span>
-    <span class="meta"><span class="led ok"></span>7+7 commands</span>
-    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -45,69 +45,69 @@
 <h3 id="functional-validation-family--functional-validation-full-functional-audit-end-user-testing">Functional validation family → <code>functional-validation</code>, <code>full-functional-audit</code>, <code>end-user-testing</code></h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>functional-validation/SKILL.md</code></td>
 <td>Iron Rule (fix the real system, never mocks), pre-defined PASS criteria, platform detection, real dependencies, manual evidence review</td>
 <td><code>functional-validation</code> + <code>../references/evidence-contract.md</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>no-mocking-validation-gates/SKILL.md</code></td>
 <td>Diagnose→Fix→Verify sequence; prohibited mock fallbacks, fake endpoints, test-mode guards</td>
 <td><code>../references/evidence-contract.md</code> (No-Mock Guardrails)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>e2e-validate/SKILL.md</code></td>
 <td>Mode flags (<code>--analyze/--plan/--execute/--fix/--audit/--report/--ci/--platform/--scope</code>)</td>
 <td><code>functional-validation</code> Modes table</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>full-functional-audit/SKILL.md</code></td>
 <td>Explore→Plan→Execute→Remediate→Verdict; interaction inventory; resource mutexes; no deferred FAILs</td>
 <td><code>full-functional-audit</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>full-ui-experience-audit/SKILL.md</code></td>
 <td>App-wide UX loop folded into the audit verdict + per-screen hand-off</td>
 <td><code>full-functional-audit</code> + <code>ui-experience-audit</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>gate-validation-discipline/SKILL.md</code></td>
 <td>Verification loop; workers give locations, you verify content; completion challenge</td>
 <td><code>../references/evidence-contract.md</code> + <code>end-user-testing</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>verification-before-completion/SKILL.md</code></td>
 <td>Lightweight pre-claim behavioral check</td>
 <td><code>../references/evidence-contract.md</code> (Completion Challenge)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>validate-phase/SKILL.md</code></td>
 <td>Six-step phase gate; cache-clearing before final passes; verdict.md format; BLOCK on ungated phase</td>
 <td><code>end-user-testing</code> (Six-Step Phase Gate)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>fresh-evidence/SKILL.md</code> + its <code>fresh-evidence.sh</code> script</td>
 <td>Eight fresh-evidence rules; init-run/next-step/seal/validate operations</td>
 <td><code>../references/evidence-contract.md</code> + <code>../skills/end-user-testing/scripts/fresh_evidence.py</code> (clean-room Python port, stdlib-only)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>transform-validation-prompt/SKILL.md</code></td>
 <td><code>&lt;validation_gate&gt;</code> XML block pattern</td>
 <td><code>../references/evidence-contract.md</code> + <code>plan-hardening</code> Stage 6</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>ios-validation-runner/SKILL.md</code></td>
 <td>SETUP→RECORD→ACT→COLLECT→VERIFY; simctl traps (SIGINT video stop, <code>--info --debug</code> log flags, status bar override, settle timing)</td>
 <td><code>../references/platform-routing.md</code> (iOS-Specific Traps)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>ios-validation-gate/</code>, <code>evidence-gate/</code>, <code>android_ui_verification/</code>, <code>llm-gate/</code></td>
 <td>Reviewed; their substance duplicates the gate/evidence rules above</td>
 <td>folded into shared references (no separate skill)</td>
@@ -117,29 +117,29 @@
 <h3 id="prompt-rating--prompt-engineering-family--prompt-forge">Prompt rating / prompt engineering family → <code>prompt-forge</code></h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>prompt-engineer</code> (recovered from <code>prompt-engineer.skill</code> package — top-level symlink target absent)</td>
 <td>Prompt patterns, system-prompt architecture, structured outputs, context management, optimization, evaluation frameworks</td>
 <td><code>prompt-forge</code> Sections 1+3 + <code>skills/prompt-forge/references/*.md</code> (6 files carried)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>prompt-factory/SKILL.md</code></td>
 <td>Mandatory 5–7 question intake; prompt-only output; format routing (XML/Claude/ChatGPT/Gemini); Core vs Advanced modes; seven quality gates</td>
 <td><code>prompt-forge</code> Section 1 (intake + quality gates)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>create-meta-prompts/SKILL.md</code></td>
 <td><code>.prompts/</code> pipeline layout; Do/Plan/Research/Refine purpose routing; dependency-aware execution; SUMMARY.md contract</td>
 <td><code>prompt-forge</code> Section 4 (PIPELINE)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Prompt rating need (from task: "prompt rating ones")</td>
 <td>7-dimension /100 rubric with test cases and before/after re-measurement</td>
 <td><code>prompt-forge</code> Section 2 (RATE), backed by <code>../skills/prompt-forge/references/evaluation-frameworks.md</code></td>
@@ -149,29 +149,29 @@
 <h3 id="validation-plan-family--validation-plan-plan-hardening">Validation-plan family → <code>validation-plan</code>, <code>plan-hardening</code></h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>create-validation-plan/SKILL.md</code></td>
 <td><code>.planning/</code> BRIEF→ROADMAP→phases hierarchy; PLAN/SUMMARY/VALIDATION per phase; blocking cumulative gates</td>
 <td><code>validation-plan</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>deepen-prompt-plan/SKILL.md</code></td>
 <td>Confidence-gap scoring (<code>trigger_count + risk_bonus + critical_section_bonus</code>); targeted research of weak sections; preserve original intent</td>
 <td><code>plan-hardening</code> Stages 3–5</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>harden-plan/SKILL.md</code></td>
 <td>Red-team lenses, gap register, surgical remediation, gate injection, consensus validation; no finalize with open critical findings</td>
 <td><code>plan-hardening</code> Stages 4–7</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>transform-validation-prompt/SKILL.md</code></td>
 <td>Arbitrary-prompt → validation-gated-prompt conversion</td>
 <td><code>plan-hardening</code> Prompt Transformation Mode</td>
@@ -181,24 +181,24 @@
 <h3 id="visual-inspection-family--visual-inspection-ui-experience-audit">Visual inspection family → <code>visual-inspection</code>, <code>ui-experience-audit</code></h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>visual-inspection/SKILL.md</code> + <code>references/</code></td>
 <td>Universal 7-section checklist; platform routing; severity table; defect-pattern database</td>
 <td><code>visual-inspection</code> + shared <code>references/</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>visual-inspection.zip</code> (packaged artifact)</td>
 <td>Verified as a duplicate of the extracted <code>visual-inspection/</code> directory; used the directory copy</td>
 <td>— (duplicate, not double-counted)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>ui-experience-audit/SKILL.md</code> + <code>references/</code> + <code>assets/</code></td>
 <td>6-phase protocol (triage, visual, interactive, content, heuristics, synthesis); identify-and-delegate vs drive-interaction modes; evidence-capture conventions; verdict rules; report template; Nielsen's 10; contrast rules-of-thumb</td>
 <td><code>ui-experience-audit</code> (+ its 4 references + template carried)</td>
@@ -209,14 +209,14 @@
 <h3 id="brainstorm-b-range-family--brainstorm">Brainstorm ("B-range") family → <code>brainstorm</code></h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>brainstorm/SKILL.md</code> (<code>ck:brainstorm</code> v2.4.0)</td>
 <td>Scout-first gate; exact-requirements gate; present-before-asking gate; problem-first inversion; scope decomposition; YAGNI/KISS/DRY; brutal honesty; anti-rationalization table; report structure; plan handoff</td>
 <td><code>brainstorm</code></td>
@@ -227,14 +227,14 @@
 <h3 id="cook-cooking-family--cook">Cook ("cooking") family → <code>cook</code></h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>cook/SKILL.md</code> (<code>ck:cook</code> v2.2.0)</td>
 <td>No-code-before-plan gate; scout-first gate; exact-requirements gate; no-side-effects gate with user-decided regression options; mode matrix (interactive/fast/auto/parallel/no-test/tdd); blocking review gates; anti-rationalization</td>
 <td><code>cook</code></td>
@@ -245,17 +245,17 @@
 <h3 id="skill-creator--plugin-format-family--build-process-not-a-shipped-skill">Skill-creator / plugin-format family → build process (not a shipped skill)</h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill</th>
 <th>Use</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>skill-creator/SKILL.md</code> + its <code>plugin-marketplace-overview.md</code> and <code>plugin-marketplace-schema.md</code> references</td>
 <td>Drove this plugin's structure: marketplace + plugin manifests, <code>skills/&lt;name&gt;/SKILL.md</code> layout, kebab-case names, reserved-name check, concise pushy descriptions, references kept on-demand</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>working-with-cc</code> references <code>plugins-reference.md</code>, <code>plugins.md</code>, <code>plugin-marketplaces.md</code></td>
 <td>Canonical plugin layout (<code>.claude-plugin/plugin.json</code>, optional commands/agents/hooks/.mcp.json) and manifest field reference</td>
 </tr>
@@ -266,34 +266,34 @@
 <h2 id="exclusions">Exclusions</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source</th>
 <th>Decision</th>
 <th>Reason</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>spec-miner</code></td>
 <td>EXCLUDED</td>
 <td>Dangling symlink; target content absent from the archive. Cannot incorporate what cannot be read.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>6 absolute symlinks (<code>zen-office-*</code>, <code>zen-discovery</code>, <code>.venv/bin/python3.11</code>)</td>
 <td>EXCLUDED</td>
 <td>Unsafe: point outside the archive root; skipped at extraction.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>show-off/scripts/node_modules</code> and similar dependency trees</td>
 <td>EXCLUDED</td>
 <td>Vendored third-party dependencies, not skill content.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>._*</code> AppleDouble files, <code>.DS_Store</code></td>
 <td>EXCLUDED</td>
 <td>macOS metadata noise.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>AgentWiki publishing, claudekit journaling/project-management hooks</td>
 <td>EXCLUDED</td>
 <td>External service/ecosystem dependencies that would violate the no-unsupported-dependencies requirement.</td>
@@ -321,44 +321,44 @@
 <h2 id="capability-matrix-additions-skills-refzip">Capability-Matrix Additions (skills-ref.zip)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source skill (skills-ref.zip)</th>
 <th>Content incorporated</th>
 <th>Destination</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>functional-validation/SKILL.md</code> + <code>references/{ios,web,api,cli}-validation.md</code></td>
 <td>Richer version of the skill: per-platform validation runbooks, Failure Diagnosis Table, Multi-Platform Order (Database → Backend API → Frontend/CLI/Mobile), Evidence Quality Standards, Mock Detection Red Flags, NEVER list</td>
 <td><code>../skills/functional-validation/SKILL.md</code> (Step 1 runbook-loading table + new sections) + 4 runbooks carried verbatim into <code>../skills/functional-validation/references/</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>preflight/SKILL.md</code></td>
 <td>Environment/toolchain preflight pass: project-type detection, universal checks, per-platform checks, summarize step</td>
 <td><code>../references/preflight-checks.md</code> (NEW shared reference; SessionForge-specific tooling removed); linked from <code>end-user-testing</code> Step 3 and <code>platform-routing.md</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>build-quality-gates/SKILL.md</code></td>
 <td>P0/P1/P2 CI gate classification, rollout order, baseline-first adoption</td>
 <td><code>../references/ci-gates.md</code> (NEW shared reference); linked from <code>end-user-testing</code> Related Skills</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>e2e-validate/templates/verdict.md</code></td>
 <td>Full copy-ready verdict document</td>
 <td><code>../skills/end-user-testing/assets/verdict-template.md</code> (NEW asset), adapted with Driven-by / Actions-executed fields and the UNVERIFIED status rule</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>full-functional-audit/SKILL.md</code> (ref version)</td>
 <td>Per-platform team structure: iOS / Web-Full / API-only worker templates with EXCLUSIVE/PARALLEL resource mutex annotations; "workers provide evidence LOCATIONS, the lead examines CONTENT"</td>
 <td><code>../skills/full-functional-audit/SKILL.md</code> Phase 2</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>prompt-enhancer/SKILL.md</code> + <code>optimize-prompt/SKILL.md</code></td>
 <td>Input-type handling table (voice transcript / file path / partial idea / single word / multi-part); capability-inventory injection (<code>&lt;skills_to_activate&gt;</code>, <code>&lt;mcp_tools&gt;</code>); model-specific tone guidance</td>
 <td><code>../skills/prompt-forge/SKILL.md</code> Section 1 (AUTHOR)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>code-task-generator/SKILL.md</code></td>
 <td><code>.code-task.md</code> standalone task-file format — the ONLY "task generator" present in either archive</td>
 <td><code>../skills/validation-plan/references/task-file-format.md</code> (NEW), with the End-User Actor policy applied: acceptance criteria are executable end-user actions with an explicit "When is a driven action" clause; anti-pattern "marking criteria done without executing them = validation theater; unexecuted = UNVERIFIED". Linked from <code>validation-plan</code> Step 3.</td>
@@ -368,34 +368,34 @@
 <h2 id="exclusions-skills-refzip">Exclusions (skills-ref.zip)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source</th>
 <th>Decision</th>
 <th>Reason</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>testing-anti-patterns</code>, <code>tdd-workflow</code>, <code>testing-strategy</code></td>
 <td>EXCLUDED</td>
 <td>Their core loop is TDD-with-mocks (mock-first test doubles as the default), which directly contradicts this plugin's Iron Rule (fix the real system; never mocks/stubs/test doubles). Incorporating them would create an internal policy conflict.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>website-bug-hunt</code></td>
 <td>EXCLUDED</td>
 <td>Duplicates capabilities already covered by the user's own <code>bug-hunnter</code> skill and this plugin's <code>full-functional-audit</code>; adding it would create a third overlapping audit path.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>worktree-merge-validate</code></td>
 <td>EXCLUDED</td>
 <td>Hard dependency on the Auto-Claude worktree runner ecosystem; would violate ecosystem independence.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>ak-brainstorm</code>, <code>ak-cook</code></td>
 <td>EXCLUDED</td>
 <td>Empty stubs (0 files) — nothing to incorporate.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Dated duplicate skill copies, <code>._*</code> AppleDouble files, <code>.DS_Store</code></td>
 <td>EXCLUDED</td>
 <td>Older duplicates of already-consolidated skills and macOS metadata noise.</td>
@@ -418,29 +418,29 @@
 <h2 id="incorporated-26-sources--5-new-skills">Incorporated (26 sources → 5 new skills)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>New skill</th>
 <th>Sources incorporated</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>stack-testing</code></td>
 <td><code>python-testing</code>, <code>golang-testing</code>, <code>cpp-testing</code>, <code>django-tdd</code>, <code>springboot-tdd</code>, <code>python-fastapi-backend-testing</code>, <code>webapp-testing</code> (+ <code>with_server.py</code>, 3 examples), <code>playwright-skill</code> (+ runner/helpers/API ref), <code>condition-based-waiting</code> (+ example)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>mobile-validation-runner</code></td>
 <td><code>ios-validation-runner</code> (+ validate.sh), <code>ios-validation-gate</code>, <code>ios-simulator-control</code> (+ reference.md, 3 scripts), <code>xc-mcp</code> (+ 8 workflows, 6 references), <code>complete-expo-ios-testing-workflow</code>, <code>expo-ios-complete-testing-workflow</code>, <code>preflight</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>root-cause-debugging</code></td>
 <td><code>diagnose</code> (+ hitl-loop template), <code>root-cause-tracing</code> (+ find-polluter.sh), <code>debug-like-expert</code> (+ 5 references), <code>trace</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>production-readiness</code></td>
 <td><code>production-readiness-audit</code>, <code>spec-compliance</code>, <code>dependency-health</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>red-team-eval</code></td>
 <td><code>red-team</code> (+ evals assets), <code>eval-harness</code>, <code>ultraqa</code>, <code>eval</code></td>
 </tr>
@@ -450,37 +450,37 @@
 <h2 id="exclusions-with-reasons">Exclusions (with reasons)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source(s)</th>
 <th>Reason</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>accessibility-compliance-accessibility-audit</code>, <code>accesslint-audit/scan/diff</code>, <code>android_ui_verification</code>, <code>android-ui-journey-testing</code>, <code>mcp-audit</code>, <code>agenttrace-session-audit</code>, <code>advanced-evaluation</code>, <code>agent-evaluation</code>, <code>edge-case-analyzer</code></td>
 <td>Only in the 403-inaccessible skills.zip; cannot incorporate what cannot be read. Mobile skill explicitly flags the Android gap rather than improvising it.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>python-fastapi-claude-backend-testing</code></td>
 <td>Dated duplicate of <code>python-fastapi-backend-testing</code> (same claude-code-api subject).</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>SKILL 2026-*.md</code> dated copies inside <code>ios-validation-gate</code>, <code>production-readiness-audit</code>, <code>playwright-skill</code></td>
 <td>Older duplicates.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>release</code></td>
 <td>Hardwired to the oh-my-claudecode repo ecosystem.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>ck-debug</code>, <code>fix</code>, <code>ak-debug</code>, <code>ship</code></td>
 <td>Empty stubs (no SKILL.md, empty references/).</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>testing-anti-patterns</code>, <code>tdd-workflow</code>, <code>testing-strategy</code></td>
 <td>Still excluded (mock-first doctrine conflicts with the Iron Rule). <code>cpp-testing</code>/<code>springboot-tdd</code>/<code>django-tdd</code> were incorporated WITH adaptation notes: mock-framework chapters are for reading existing suites; new tests hit the real system (Testcontainers pattern endorsed).</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>playwright-skill/.validation/</code> PNGs, <code>.temp-execution-*.js</code>, <code>.DS_Store</code>, <code>package-lock.json</code></td>
 <td>Stale evidence, temp files, OS noise, regenerable lockfile.</td>
 </tr>
@@ -497,25 +497,25 @@
 <h2 id="considered-not-incorporated-with-reasons">Considered, not incorporated (with reasons)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Source</th>
 <th>Reason</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>mem-search</code></td>
 <td>Requires the claude-mem external memory ecosystem; unsupported dependency. Its cross-session search need is served by the parser + grep over extracted JSON.</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>optimize-prompt</code></td>
 <td>Prospective prompt crafting (raw input → good prompt), not retrospective intent reconstruction.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>learner</code></td>
 <td>Extracts a reusable skill from a conversation — different question than "what was the user trying to get done".</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>agenttrace-session-audit</code>, <code>evaluate-session.sh</code></td>
 <td>Only in the 403-inaccessible skills.zip.</td>
 </tr>
@@ -535,7 +535,7 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:CONSOLIDATION-DECISIONS</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+  <div class="statusline"><span><b>DOC:CONSOLIDATION-DECISIONS</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

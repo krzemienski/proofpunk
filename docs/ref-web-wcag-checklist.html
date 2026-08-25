@@ -17,9 +17,9 @@
     <span class="brand">PROOFPUNK</span><span class="sep">│</span>
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
-    <span class="meta"><span class="led ok"></span>17 skills</span>
-    <span class="meta"><span class="led ok"></span>7+7 commands</span>
-    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -33,39 +33,39 @@
 <h2 id="color-contrast-wcag-22-aa">Color Contrast (WCAG 2.2 AA)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Tool</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Normal text</td>
 <td>4.5:1 contrast ratio (text &lt;18pt or &lt;14pt bold)</td>
 <td>WebAIM Contrast Checker</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Large text</td>
 <td>3:1 contrast ratio (text ≥18pt or ≥14pt bold)</td>
 <td>DevTools color picker</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>UI components</td>
 <td>3:1 for borders, icons, form controls against background</td>
 <td>Manual inspection</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Focus indicators</td>
 <td>3:1 contrast for focus ring against adjacent colors</td>
 <td>Tab through elements</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Disabled elements</td>
 <td>No contrast requirement, but must look intentionally disabled</td>
 <td>Visual inspection</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Placeholder text</td>
 <td>4.5:1 — placeholders are NOT exempt from contrast rules</td>
 <td>Common violation</td>
@@ -91,34 +91,34 @@ WCAG 2 ratio: ~3.9 (would pass AA-Large, but the APCA signal is correct)</code><
 <h2 id="touchclick-targets-wcag-258">Touch/Click Targets (WCAG 2.5.8)</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Minimum size</td>
 <td>24x24 CSS px target size (WCAG 2.2 AA)</td>
 <td>Tiny icon buttons at 16x16</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Recommended size</td>
 <td>44x44 CSS px (Apple HIG / best practice)</td>
 <td>Links with no padding</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Target spacing</td>
 <td>8px min between adjacent targets</td>
 <td>Navigation links touching</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Inline exceptions</td>
 <td>Inline text links exempt from size requirement</td>
 <td>N/A</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Padding expansion</td>
 <td>Use <code>padding</code> to expand clickable area beyond visual size</td>
 <td>Icon-only buttons with no padding</td>
@@ -128,34 +128,34 @@ WCAG 2 ratio: ~3.9 (would pass AA-Large, but the APCA signal is correct)</code><
 <h2 id="responsive-layout">Responsive Layout</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Viewport</th>
 <th>Width</th>
 <th>Check</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Mobile S</td>
 <td>320px</td>
 <td>No horizontal scroll, all content reachable</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Mobile M</td>
 <td>375px</td>
 <td>Standard iPhone — primary mobile test</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Tablet</td>
 <td>768px</td>
 <td>Layout adapts (single → multi column)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Desktop</td>
 <td>1024px</td>
 <td>Full layout with sidebars/panels</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Wide</td>
 <td>1440px</td>
 <td>Content doesn't stretch beyond readable width</td>
@@ -164,57 +164,50 @@ WCAG 2 ratio: ~3.9 (would pass AA-Large, but the APCA signal is correct)</code><
 </table>
 <h3 id="per-viewport-checks">Per-Viewport Checks</h3>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-No horizontal scrollbar at any viewport</li>
-<li><input type="checkbox" disabled="" />
-Text readable without zooming (16px min body)</li>
-<li><input type="checkbox" disabled="" />
-Navigation accessible (hamburger menu on mobile works)</li>
-<li><input type="checkbox" disabled="" />
-Images scale without overflow</li>
-<li><input type="checkbox" disabled="" />
-Tables scroll horizontally OR reflow to cards</li>
-<li><input type="checkbox" disabled="" />
-Modals/dialogs fit within viewport</li>
-<li><input type="checkbox" disabled="" />
-Fixed/sticky elements don't cover content</li>
+<li>&lt;label&gt;<input type="checkbox" />No horizontal scrollbar at any viewport&lt;/label&gt;</li>
+<li>&lt;label&gt;<input type="checkbox" />Text readable without zooming (16px min body)&lt;/label&gt;</li>
+<li>&lt;label&gt;<input type="checkbox" />Navigation accessible (hamburger menu on mobile works)&lt;/label&gt;</li>
+<li>&lt;label&gt;<input type="checkbox" />Images scale without overflow&lt;/label&gt;</li>
+<li>&lt;label&gt;<input type="checkbox" />Tables scroll horizontally OR reflow to cards&lt;/label&gt;</li>
+<li>&lt;label&gt;<input type="checkbox" />Modals/dialogs fit within viewport&lt;/label&gt;</li>
+<li>&lt;label&gt;<input type="checkbox" />Fixed/sticky elements don't cover content&lt;/label&gt;</li>
 </ul>
 <h2 id="typography">Typography</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Body text</td>
 <td>Min 16px (1rem) on mobile</td>
 <td>12px or 14px body text</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Line height</td>
 <td>1.5-1.75 for body text</td>
 <td>Line height 1.0 or 1.2</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Line length</td>
 <td>65-75 characters max per line</td>
 <td>Full-width text at 1440px</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Heading hierarchy</td>
 <td>h1 → h2 → h3 (no skipping levels)</td>
 <td>h1 → h3 (missing h2)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Font loading</td>
 <td>Text visible during web font load (FOUT over FOIT)</td>
 <td>Blank text until font loads</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Tabular numbers</td>
 <td>Use <code>font-variant-numeric: tabular-nums</code> for data</td>
 <td>Numbers misaligning in tables</td>
@@ -224,44 +217,44 @@ Fixed/sticky elements don't cover content</li>
 <h2 id="interactive-states">Interactive States</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>State</th>
 <th>Required Visual Change</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Hover</td>
 <td>Color/opacity/shadow change</td>
 <td>No hover indication</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Focus</td>
 <td>Visible focus ring (2px+ outline, 3:1 contrast)</td>
 <td><code>outline: none</code> with no replacement</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Active/Pressed</td>
 <td>Visual depression or color shift</td>
 <td>No active state</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Disabled</td>
 <td>Reduced opacity + <code>cursor: not-allowed</code></td>
 <td>Looks enabled but doesn't work</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Loading</td>
 <td>Spinner/skeleton + disabled interaction</td>
 <td>Frozen UI, multiple clicks queue</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Error</td>
 <td>Red border + icon + text message near field</td>
 <td>Only color change (inaccessible)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Selected</td>
 <td>Background change + checkmark or bold</td>
 <td>Only color difference</td>
@@ -271,39 +264,39 @@ Fixed/sticky elements don't cover content</li>
 <h2 id="dark-mode">Dark Mode</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>CSS variables</td>
 <td>Use semantic tokens (<code>--foreground</code>, <code>--background</code>)</td>
 <td>Hardcoded hex values</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Glass cards light mode</td>
 <td><code>bg-white/80</code> or higher opacity</td>
 <td><code>bg-white/10</code> (invisible)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Text contrast light</td>
 <td><code>slate-900</code> (#0F172A) for body text</td>
 <td><code>slate-400</code> (#94A3B8) too light</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Muted text light</td>
 <td><code>slate-600</code> (#475569) minimum</td>
 <td><code>gray-400</code> or lighter</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Border visibility</td>
 <td><code>border-gray-200</code> light / <code>border-gray-700</code> dark</td>
 <td><code>border-white/10</code> (invisible in light)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Both modes tested</td>
 <td>Screenshot evidence in BOTH light and dark</td>
 <td>Only tested in one mode</td>
@@ -313,34 +306,34 @@ Fixed/sticky elements don't cover content</li>
 <h2 id="forms">Forms</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Labels</td>
 <td>Every input has visible <code>&lt;label&gt;</code> with <code>for</code> attribute</td>
 <td>Placeholder-only labels</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Error messages</td>
 <td>Inline, near the field, not just toast</td>
 <td>Toast disappears before user reads it</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Required fields</td>
 <td>Marked with asterisk AND <code>aria-required</code></td>
 <td>Only visual asterisk</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Autocomplete</td>
 <td><code>autocomplete</code> attribute on name/email/address fields</td>
 <td>No autocomplete hints</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Validation timing</td>
 <td>On blur or submit, not on every keystroke</td>
 <td>Errors while still typing</td>
@@ -350,34 +343,34 @@ Fixed/sticky elements don't cover content</li>
 <h2 id="navigation--structure">Navigation &amp; Structure</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Skip link</td>
 <td>"Skip to content" link as first focusable element</td>
 <td>No skip navigation</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Landmark roles</td>
 <td><code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code> present</td>
 <td>All <code>&lt;div&gt;</code> structure</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Heading structure</td>
 <td>Single <code>&lt;h1&gt;</code>, logical h2-h6 hierarchy</td>
 <td>Multiple h1s, skipped levels</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Tab order</td>
 <td>Matches visual reading order (no positive <code>tabindex</code>)</td>
 <td><code>tabindex="5"</code> creating chaos</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Keyboard navigation</td>
 <td>All features accessible via keyboard alone</td>
 <td>Mouse-only interactions</td>
@@ -387,34 +380,34 @@ Fixed/sticky elements don't cover content</li>
 <h2 id="images--media">Images &amp; Media</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>Rule</th>
 <th>Common Violation</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Alt text</td>
 <td>Meaningful alt for content images, <code>alt=""</code> for decorative</td>
 <td>Missing alt, generic "image"</td>
 </tr>
-<tr class="even">
+<tr>
 <td>SVG accessibility</td>
 <td><code>role="img"</code> + <code>aria-label</code> on meaningful SVGs</td>
 <td>Unlabeled SVG icons</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Lazy loading</td>
 <td><code>loading="lazy"</code> on below-fold images</td>
 <td>All images eager-loaded</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Aspect ratio</td>
 <td><code>aspect-ratio</code> or <code>width</code>/<code>height</code> to prevent CLS</td>
 <td>Layout shift on image load</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Video captions</td>
 <td>Captions/subtitles for video content</td>
 <td>No captions</td>
@@ -424,29 +417,29 @@ Fixed/sticky elements don't cover content</li>
 <h2 id="performance-visual-impact">Performance Visual Impact</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Check</th>
 <th>What to Look For</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Cumulative Layout Shift</td>
 <td>Elements jumping as page loads (images, ads, fonts)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Content flash</td>
 <td>White flash before dark mode applies</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Skeleton screens</td>
 <td>Loading state shows content shape, not blank space</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Progressive loading</td>
 <td>Above-fold content renders first</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Font flash</td>
 <td>Text invisible then suddenly appears (FOIT)</td>
 </tr>
@@ -473,7 +466,7 @@ Fixed/sticky elements don't cover content</li>
 </section>
 
 </main>
-  <div class="statusline"><span><b>REF:WEB-WCAG-CHECKLIST</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+  <div class="statusline"><span><b>REF:WEB-WCAG-CHECKLIST</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

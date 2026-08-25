@@ -17,9 +17,9 @@
     <span class="brand">PROOFPUNK</span><span class="sep">│</span>
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
-    <span class="meta"><span class="led ok"></span>17 skills</span>
-    <span class="meta"><span class="led ok"></span>7+7 commands</span>
-    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -41,49 +41,49 @@
 <p>Every <code>skills/&lt;name&gt;/SKILL.md</code> has YAML frontmatter with <code>name</code> matching its directory and a <code>description</code>. Line counts (all within progressive-disclosure budgets):</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Skill</th>
 <th>Lines</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>brainstorm</td>
 <td>153</td>
 </tr>
-<tr class="even">
+<tr>
 <td>cook</td>
 <td>145</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>end-user-testing</td>
 <td>172</td>
 </tr>
-<tr class="even">
+<tr>
 <td>full-functional-audit</td>
 <td>154</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>functional-validation</td>
 <td>239</td>
 </tr>
-<tr class="even">
+<tr>
 <td>plan-hardening</td>
 <td>145</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>prompt-forge</td>
 <td>171</td>
 </tr>
-<tr class="even">
+<tr>
 <td>ui-experience-audit</td>
 <td>194</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>validation-plan</td>
 <td>143</td>
 </tr>
-<tr class="even">
+<tr>
 <td>visual-inspection</td>
 <td>144</td>
 </tr>
@@ -103,7 +103,7 @@
 <p>Real invocations against a scratch directory (<code>/tmp/fe-test</code>):</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>#</th>
 <th>Test</th>
 <th>Expected</th>
@@ -111,73 +111,73 @@
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>1</td>
 <td><code>init-run login-flow</code></td>
 <td>exit 0, prints <code>run-&lt;ISO&gt;-login-flow</code>, creates dir + <code>.run-meta</code> + empty inventory</td>
 <td>PASS</td>
 </tr>
-<tr class="even">
+<tr>
 <td>2</td>
 <td><code>init-run "bad slug!"</code></td>
 <td>exit 2, <code>slug must be kebab-case alnum/dash/underscore</code></td>
 <td>PASS</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>3</td>
 <td><code>next-step home-loaded</code></td>
 <td>exit 0, prints <code>.../step-01-home-loaded</code></td>
 <td>PASS</td>
 </tr>
-<tr class="even">
+<tr>
 <td>4</td>
 <td>capture two artifacts (&gt;1KB each)</td>
 <td>files land at printed prefixes; step numbers sequential</td>
 <td>PASS</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>5</td>
 <td><code>seal</code></td>
 <td>writes inventory with per-file byte counts + <code>sealed=... count=2 total_bytes=3041</code></td>
 <td>PASS</td>
 </tr>
-<tr class="even">
+<tr>
 <td>6</td>
 <td><code>validate</code> (clean run)</td>
 <td>exit 0, <code>validate OK: e2e-evidence/run-...</code></td>
 <td>PASS</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>7</td>
 <td><code>validate</code> with a zero-byte artifact</td>
 <td>exit 2, <code>EMPTY: ... (zero bytes)</code> + <code>validate FAIL: 1 issues</code></td>
 <td>PASS</td>
 </tr>
-<tr class="even">
+<tr>
 <td>8</td>
 <td><code>validate</code> with a 2020-mtime artifact</td>
 <td>exit 2, <code>STALE: ... (mtime 1577808000 &lt; run-start ...)</code></td>
 <td>PASS</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>9</td>
 <td><code>next-step</code>/<code>seal</code>/<code>validate</code> with no run</td>
 <td>all exit 2, <code>no active run</code></td>
 <td>PASS</td>
 </tr>
-<tr class="even">
+<tr>
 <td>10</td>
 <td>unknown command <code>frobnicate</code></td>
 <td>exit 2 + usage</td>
 <td>PASS</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>11</td>
 <td><code>init-run</code> with no slug</td>
 <td>exit 2, <code>init-run requires a slug</code></td>
 <td>PASS</td>
 </tr>
-<tr class="even">
+<tr>
 <td>12</td>
 <td><code>validate</code> after removing bad artifacts</td>
 <td>exit 0 (recovery path works)</td>
@@ -195,61 +195,61 @@
 <p>Changes applied and re-verified:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Location</th>
 <th>Change</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>../references/evidence-contract.md</code></td>
 <td>Added "The Non-Negotiable Validation Rule" after the Iron Rule; added two refusal rules (no completing validation without the AI invoking tools as the end user; no skipping/faking QA steps under any circumstance)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>../references/end-user-actor.md</code></td>
 <td>Non-negotiable statement at the head of The Rule</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>../references/severity-model.md</code></td>
 <td>Added UNVERIFIED verdict; PASS for behavior now requires executed, tool-driven, end-user checks</td>
 </tr>
-<tr class="even">
+<tr>
 <td>All 10 skills</td>
 <td>Two anti-pattern rows added to every anti-pattern table (verified placed inside tables with matching column counts)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>functional-validation</code>, <code>end-user-testing</code>, <code>full-functional-audit</code></td>
 <td>Verdict templates now record "Driven by: AI as end user via &lt;tools&gt; — &lt;actions performed&gt;" and offer UNVERIFIED for unexecuted criteria</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>validation-plan</code></td>
 <td>VALIDATION.md handoff requires an explicit record of executed end-user actions</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>plan-hardening</code></td>
 <td>Consensus checklist requires every behavioral criterion to pair with a driven end-user action; gate block verdict adds UNVERIFIED</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>cook</code></td>
 <td>End-user verification gate: never skipped/faked; no tool path -&gt; report says UNVERIFIED with reason; finalize cites driven evidence per criterion</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>brainstorm</code></td>
 <td>Success metrics/validation criteria must be phrased as end-user-executable checks</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>prompt-forge</code></td>
 <td>Quality gate 8: end-user validation clause for any system-touching prompt</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>visual-inspection</code></td>
 <td>PASS certifies visual quality only; behavioral claims route to driven validation</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>ui-experience-audit</code> + report template</td>
 <td>UNVERIFIED verdict added; template header records tools + actions actually executed</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>README.md</code></td>
 <td>Operating Principle 2 restated with the non-negotiable language</td>
 </tr>
@@ -261,41 +261,41 @@
 <p>Changes applied in this pass:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Location</th>
 <th>Change</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>../skills/functional-validation/references/{ios,web,api,cli}-validation.md</code></td>
 <td>4 platform runbooks carried verbatim from the ref <code>functional-validation</code> (85/88/75/120 lines)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>../skills/functional-validation/SKILL.md</code></td>
 <td>Step 1 runbook-loading table; Failure Diagnosis Table; Multi-Platform Order; Evidence Quality Standards; Mock Detection Red Flags; NEVER list (158 -&gt; 239 lines)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>../references/preflight-checks.md</code></td>
 <td>NEW shared reference from ref <code>preflight</code> (61 lines); linked from <code>end-user-testing</code> Step 3 and <code>platform-routing.md</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>../references/ci-gates.md</code></td>
 <td>NEW shared reference from ref <code>build-quality-gates</code> (34 lines); linked from <code>end-user-testing</code> Related Skills</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>../skills/end-user-testing/assets/verdict-template.md</code></td>
 <td>NEW asset adapted from ref <code>e2e-validate/templates/verdict.md</code> with Driven-by / Actions-executed / UNVERIFIED (40 lines)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>../skills/validation-plan/references/task-file-format.md</code></td>
 <td>NEW from ref <code>code-task-generator</code> with End-User Actor policy applied (60 lines); linked from <code>validation-plan</code> Step 3</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>../skills/full-functional-audit/SKILL.md</code></td>
 <td>Per-platform team templates (iOS / Web-Full / API-only) with EXCLUSIVE/PARALLEL mutex annotations (134 -&gt; 154 lines)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>../skills/prompt-forge/SKILL.md</code></td>
 <td>Input-type handling table, capability-inventory injection, model tone guidance (136 -&gt; 171 lines)</td>
 </tr>
@@ -423,7 +423,7 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:VALIDATION-RESULTS</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+  <div class="statusline"><span><b>DOC:VALIDATION-RESULTS</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

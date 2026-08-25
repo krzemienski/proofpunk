@@ -3,263 +3,198 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>17 skills — done means proven by end-user testing — PROOFPUNK</title>
-<meta name="description" content="All 19 proofpunk skills with real enforcement contracts and layer assignments.">
+<title>skills — 18 skills — proofpunk</title>
+<meta name="description" content="All 18 proofpunk skills with real frontmatter descriptions, layers, and bundled references/scripts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#050507; --surface:#0A0A0E; --surface2:#0F0F14; --border:#1C1C24; --border-focus:#FF6B35;
-  --text:#D8D8E0; --dim:#5A5A66; --faint:#33333D;
-  --accent:#FF6B35; --accent2:#FF3E8A; --ok:#00E676; --err:#FF4757; --warn:#FFD93D; --info:#40C4FF;
-  --font-body:'Bricolage Grotesque',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono','SF Mono','DejaVu Sans Mono',monospace;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.animate{animation:fadeUp .45s ease-out both;animation-delay:calc(var(--i,0)*.06s)}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}}
-.wrap{max-width:1180px;margin:0 auto;padding:0 18px 60px}
-.chrome-bar{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:11px;flex-wrap:wrap}
-.brand{color:var(--accent);font-weight:700;letter-spacing:1.6px}
-.sep{color:var(--faint)}
-.meta{color:var(--dim)}
-.led{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
-.led.ok{background:var(--ok)}.led.warn{background:var(--warn)}.led.idle{background:var(--faint)}.led.acc{background:var(--accent)}
-.tabs{display:flex;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:11px;overflow-x:auto}
-.tabs a{padding:7px 16px;color:var(--dim);text-decoration:none;white-space:nowrap}
-.tabs a.on{background:var(--accent);color:var(--bg);font-weight:700}
-.tabs a .n{opacity:.55;margin-right:6px}
-.statusline{display:flex;justify-content:space-between;gap:12px;padding:7px 18px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:10.5px;color:var(--dim)}
-.statusline b{color:var(--accent);letter-spacing:1px}
-.marker{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.6px;color:var(--accent);margin:38px 0 10px}
-h1{font-size:40px;font-weight:700;letter-spacing:-1px;margin-bottom:12px;text-wrap:balance}
-h2{font-size:22px;font-weight:600;margin:26px 0 12px}
-h3{font-size:16px;font-weight:600;margin:18px 0 8px;color:var(--accent2)}
-p{line-height:1.65;margin-bottom:12px;max-width:76ch}
-.subtitle{color:var(--dim);font-family:var(--font-mono);font-size:12px;margin-bottom:26px}
-.cursor::after{content:"▌";color:var(--accent);animation:blink 1.1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-code{font-family:var(--font-mono);font-size:.92em;background:var(--surface2);color:var(--accent2);padding:1px 6px;border:1px solid var(--border)}
-pre{font-family:var(--font-mono);font-size:12px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;overflow-x:auto;line-height:1.6;margin:12px 0}
-pre code{background:none;border:none;padding:0;color:var(--text)}
-.cmdline{font-family:var(--font-mono);font-size:12.5px;background:var(--surface);border:1px solid var(--border);padding:14px 16px;margin:16px 0}
-.cmdline .p{color:var(--accent)}
-.cmdline .c{color:var(--text)}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin:16px 0}
-.panel{background:var(--surface);border:1px solid var(--border);padding:16px 18px;min-width:0}
-.panel .ptitle{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.4px;color:var(--dim);margin-bottom:8px}
-.panel:hover{border-color:var(--border-focus)}
-table{border-collapse:collapse;width:100%;font-size:13px;margin:14px 0}
-th{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.2px;color:var(--dim);text-align:left;padding:6px 10px;border-bottom:1px solid var(--border)}
-td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:break-word}
-td code{white-space:nowrap}
-.badge{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1px;color:var(--accent2);border:1px solid var(--border);padding:1px 7px;white-space:nowrap}
-.badge.pass{color:var(--ok)}
-.badge.warn{color:var(--warn)}
-.statrow{display:flex;gap:26px;flex-wrap:wrap;margin:22px 0;font-family:var(--font-mono)}
-.stat .v{font-size:30px;font-weight:700;color:var(--accent)}
-.stat .k{font-size:10.5px;color:var(--dim);letter-spacing:1.2px}
-.brow{display:flex;gap:12px;align-items:baseline;padding:9px 4px;border-bottom:1px solid var(--border);min-width:0}
-.brow .idx{font-family:var(--font-mono);color:var(--faint);width:28px;flex-shrink:0}
-.brow .name{color:var(--accent2);font-family:var(--font-mono);font-size:12.5px;white-space:nowrap}
-.brow .what{color:var(--dim);font-size:12.5px;min-width:0;overflow-wrap:break-word}
-.brow a{color:var(--accent2);text-decoration:none}
-.brow a:hover{color:var(--accent)}
-ul.tight{padding-left:20px;margin:10px 0}
-ul.tight li{margin-bottom:6px;line-height:1.55}
-footer .wrap{padding:18px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:10.5px;color:var(--faint)}
-a{color:var(--info);text-decoration:none}
-a:hover{color:var(--accent)}
-details{margin:10px 0}
-summary{cursor:pointer;font-family:var(--font-mono);font-size:12px;color:var(--dim)}
-summary:hover{color:var(--accent)}
-/* ---- diagram shell (visual-explainer canonical) ---- */
-.diagram-shell{position:relative;margin:18px 0}
-.diagram-shell__hint{font-family:var(--font-mono);font-size:10.5px;color:var(--faint);margin-bottom:8px}
-.mermaid-wrap{position:relative;background:var(--surface);border:1px solid var(--border);padding:24px 18px;overflow:hidden;min-height:340px;cursor:grab}
-.mermaid-wrap.is-panning{cursor:grabbing;user-select:none}
-.mermaid-wrap:hover{border-color:var(--border-focus)}
-.zoom-controls{position:absolute;top:8px;right:8px;display:flex;gap:2px;z-index:10;background:var(--surface2);border:1px solid var(--border);padding:2px}
-.zoom-controls button{width:28px;height:28px;border:none;background:transparent;color:var(--dim);font-family:var(--font-mono);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.zoom-controls button:hover{background:var(--border);color:var(--text)}
-.zoom-label{font-family:var(--font-mono);font-size:10px;color:var(--dim);padding:5px 6px;white-space:nowrap}
-.mermaid-viewport{position:relative;overflow:hidden;width:100%;height:100%;min-height:300px}
-.mermaid-canvas{position:absolute;top:0;left:0}
-.mermaid .nodeLabel{font-family:var(--font-mono)!important;font-size:14px!important}
-.mermaid .edgeLabel{font-family:var(--font-mono)!important;font-size:12px!important}
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}
-.legend-item{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--dim)}
-.legend-swatch{width:11px;height:11px;border:1px solid var(--border)}
-.callout{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);padding:14px 18px;font-size:13px;line-height:1.6;color:var(--dim);margin-top:20px}
-.callout strong{color:var(--text)}
-@media(max-width:768px){h1{font-size:26px}.chrome-bar{font-size:10px}}
-
-.cmdline, pre{position:relative}
-.copybtn{position:absolute;top:6px;right:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--dim);background:var(--surface2);border:1px solid var(--border);padding:3px 8px;cursor:pointer;opacity:.35;transition:opacity .15s,border-color .15s}
-.cmdline:hover .copybtn, pre:hover .copybtn{opacity:1}
-.copybtn:hover{color:var(--accent);border-color:var(--accent)}
-.copybtn.copied{color:var(--ok);border-color:var(--ok);opacity:1}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="chrome-bar">
-  <span class="brand">PROOFPUNK</span><span class="sep">│</span>
-  <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
-  <span class="meta">⑂ main</span><span class="sep">│</span>
-  <span class="meta"><span class="led ok"></span>17 skills</span>
-  <span class="meta"><span class="led acc"></span>7+7 commands</span>
-  <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
-  <span class="meta"><span class="led idle"></span>20 themes</span>
-</div>
-<nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class="on"><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class=""><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
 <div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class="on"><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class=""><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
 
-<section class="animate" style="--i:0">
+<section>
   <div class="marker">01 / THE ARSENAL</div>
-  <h1>17 skills<span class="cursor"></span></h1>
-  <p class="subtitle">closed related-skills graph — nothing dangles</p>
-  <p>One-line enforcement contracts below; full frontmatter descriptions in the detail cards.
-  Hands-on invocation examples for every skill live in the <a href="doc-usage-guide.html">usage guide</a>.</p>
-  <table>
-<tr><th colspan="3" style="padding-top:16px;color:var(--accent)">ORCHESTRATION · 1</th></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">01</td><td><a href="#implement" class="name">implement</a></td><td class="what" style="color:var(--dim);font-size:12.5px">The single write path: scouts the real codebase (mandatory, subagents) distills TRUE success criteria, mines past sessions (session-intent) forges the build prompt (prompt-forge), decomposes into a task graph where every…</td></tr>
-<tr><th colspan="3" style="padding-top:16px;color:var(--accent)">PROMPT & PLAN · 4</th></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">02</td><td><a href="#prompt-forge" class="name">prompt-forge</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Prompt engineering, rating, and pipeline design: authors high-quality prompts on the canonical XML tag skeleton, rates any prompt against a quantitative rubric with test cases and metrics, optimizes weak prompts against …</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">03</td><td><a href="#brainstorm" class="name">brainstorm</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Structured solution brainstorming with trade-off analysis and brutal honesty: scans the codebase BEFORE asking questions, pins exact requirements (expected output, acceptance criteria, scope boundary constraints, touchpo…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">04</td><td><a href="#validation-plan" class="name">validation-plan</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Authors multi-phase project plans where every phase carries blocking cumulative proof obligations — BRIEF, ROADMAP, per-phase PLAN, SUMMARY + VALIDATION with run-scoped evidence. Proofs are cumulative: phase N&#x27;s validati…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">05</td><td><a href="#plan-hardening" class="name">plan-hardening</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Second-pass plan strengthening: red-teams a draft plan through multiple adversarial lenses, scores confidence gaps, researches weak sections injects or strengthens proof obligations, and surgically remediates findings wh…</td></tr>
-<tr><th colspan="3" style="padding-top:16px;color:var(--accent)">EXECUTION · 2</th></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">06</td><td><a href="#stack-testing" class="name">stack-testing</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Real-system test discipline per stack — pytest/Go/C++/Django/Spring Boot gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl Playwright browser automation with server lifecycle management, and condition-based…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">07</td><td><a href="#mobile-validation-runner" class="name">mobile-validation-runner</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Drive and validate iOS apps end-to-end on real simulators — five-phase SETUP, RECORD, ACT, COLLECT, VERIFY protocol with video recording, log streaming, and screenshot evidence; three-facet validation checkpoints (simula…</td></tr>
-<tr><th colspan="3" style="padding-top:16px;color:var(--accent)">PROOF · 5</th></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">08</td><td><a href="#end-user-testing" class="name">end-user-testing</a></td><td class="what" style="color:var(--dim);font-size:12.5px">The proof standard for end-user testing: every completion claim is proven by driving the real system as the end user, with run-scoped fresh evidence (timestamped, sequential, non-empty, never reused across runs), full-pa…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">09</td><td><a href="#visual-inspection" class="name">visual-inspection</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Mandatory visual QA protocol for UI screenshots — iOS (Apple HIG), web (WCAG 2.2), and cross-platform. Evaluates layout, overflow, spacing typography, contrast, touch targets, dark mode, and visual hierarchy against univ…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">10</td><td><a href="#ui-experience-audit" class="name">ui-experience-audit</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Deep end-to-end audit of any UI screen across four dimensions — visual defects, interactive elements, content quality, and UX heuristics — ending in one severity-classified report. Inventories every action item (button l…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">11</td><td><a href="#full-functional-audit" class="name">full-functional-audit</a></td><td class="what" style="color:var(--dim);font-size:12.5px">App-wide functional audit of a live site or app that inventories EVERY user interaction — every screen, page, button, form, link, endpoint, and flow — then clicks through everything and validates each one against the rea…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">12</td><td><a href="#tui-testing" class="name">tui-testing</a></td><td class="what" style="color:var(--dim);font-size:12.5px">End-user proof for terminal UIs (Ink, blessed, textual, ratatui, curses): drive the real TUI in a real PTY as the end user with observe-then-act discipline, matched-assertion waits, three-facet evidence (screen + disk + …</td></tr>
-<tr><th colspan="3" style="padding-top:16px;color:var(--accent)">DEEP ANALYSIS · 5</th></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">13</td><td><a href="#root-cause-debugging" class="name">root-cause-debugging</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Find and fix the real cause of bugs, never the symptom — disciplined reproduce-minimize-hypothesize-instrument loops for hard bugs and performance regressions, backward call-stack tracing to the original trigger, test-po…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">14</td><td><a href="#red-team-eval" class="name">red-team-eval</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Attack your own plans, prompts, and outputs before reality does — 4-lens hostile review (security, scope-creep, evidence-rigor, failure-modes) against plans/prompts/artifacts, formal eval-driven development (EDD) scoring…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">15</td><td><a href="#production-readiness" class="name">production-readiness</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Take a codebase from &#x27;works on my machine&#x27; to shippable — systematic 8-phase production-readiness audit (risk-based cleanup waves, dead code documentation drift, zero-regression enforcement), spec-vs-implementation compl…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">16</td><td><a href="#session-intent" class="name">session-intent</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Reconstruct what was actually ASKED from the sessions themselves — parses Claude Code JSONL transcripts into a per-session intent matrix (first user prompt = stated intent, subsequent prompts = steering, tool calls, file…</td></tr>
-<tr><td style="font-family:var(--font-mono);color:var(--faint)">17</td><td><a href="#codebase-truth-audit" class="name">codebase-truth-audit</a></td><td class="what" style="color:var(--dim);font-size:12.5px">Conduct an evidence-backed, end-to-end audit and safe remediation of any software repository. Reconstructs change intent from history, verifies code, configuration, documentation, runtime behavior, dependencies, and prod…</td></tr>
-</table>
+  <h1>18 skills<span class="cursor"></span></h1>
+  <p>Every skill ships in the plugin — the Related Skills graph is closed, nothing dangles.
+  One-line enforcement contracts below; full frontmatter descriptions and bundled materials in
+  the detail cards further down. Hands-on invocation examples for every skill live in the
+  <a href="doc-usage-guide.html">usage guide</a>.</p>
+  <div class="board">
+    <div class="brow"><span class="idx">01</span><span><span class="name"><a href="#brainstorm" style="color:inherit">brainstorm</a></span><span class="gate">Scout-first, exact-requirements, present-before-asking discipline; no code before an approved design</span></span><span class="badge part">PROMPT &amp; PLAN</span></div>
+    <div class="brow"><span class="idx">02</span><span><span class="name"><a href="#codebase-truth-audit" style="color:inherit">codebase-truth-audit</a></span><span class="gate">Evidence-backed repo-wide truth audits: intent-from-history, code/config/doc/runtime verification, approval-gated remediation (the code-truth lane to session-intent&#x27;s intent lane)</span></span><span class="badge part">DEEP ANALYSIS</span></div>
+    <div class="brow"><span class="idx">03</span><span><span class="name"><a href="#end-user-testing" style="color:inherit">end-user-testing</a></span><span class="gate">Run-scoped fresh evidence (`fresh_evidence.py`: init-run/next-step/seal/validate), verdict templates</span></span><span class="badge part">PROOF</span></div>
+    <div class="brow"><span class="idx">04</span><span><span class="name"><a href="#full-functional-audit" style="color:inherit">full-functional-audit</a></span><span class="gate">App-wide interaction inventory → execute → remediate → verdict</span></span><span class="badge part">PROOF</span></div>
+    <div class="brow"><span class="idx">05</span><span><span class="name"><a href="#implement" style="color:inherit">implement</a></span><span class="gate">The single write path: mandatory codebase scouting, session mining (`--mine`), prompt-forged plans, parallel lanes (`--parallel`), no-stop mode (`--auto`), live execution ledger — with end-user validation INLINE after every task (never a separate skill, never a test file)</span></span><span class="badge part">ORCHESTRATION</span></div>
+    <div class="brow"><span class="idx">06</span><span><span class="name"><a href="#mobile-validation-runner" style="color:inherit">mobile-validation-runner</a></span><span class="gate">iOS end-user validation: SETUP→RECORD→ACT→COLLECT→VERIFY, three-facet checks, simctl/XC-MCP/Expo lanes, preflight checks</span></span><span class="badge part">EXECUTION</span></div>
+    <div class="brow"><span class="idx">07</span><span><span class="name"><a href="#plan-hardening" style="color:inherit">plan-hardening</a></span><span class="gate">Confidence-gap scoring, 4 red-team lenses, dispositioned gap register, proof-obligation injection</span></span><span class="badge part">PROMPT &amp; PLAN</span></div>
+    <div class="brow"><span class="idx">08</span><span><span class="name"><a href="#production-readiness" style="color:inherit">production-readiness</a></span><span class="gate">8-phase ship-readiness audit + spec-compliance matrix (COVERED/INCOMPLETE/MISSING) + dependency supply-chain health</span></span><span class="badge part">DEEP ANALYSIS</span></div>
+    <div class="brow"><span class="idx">09</span><span><span class="name"><a href="#prompt-forge" style="color:inherit">prompt-forge</a></span><span class="gate">Prompt AUTHOR / RATE (7-dimension /100 rubric) / OPTIMIZE / PIPELINE modes with a scored quality bar</span></span><span class="badge part">PROMPT &amp; PLAN</span></div>
+    <div class="brow"><span class="idx">10</span><span><span class="name"><a href="#proofpunk" style="color:inherit">proofpunk</a></span><span class="gate">Entry router: classifies the request and hands off to the shortest ordered chain across the 17 delivery skills</span></span><span class="badge part"></span></div>
+    <div class="brow"><span class="idx">11</span><span><span class="name"><a href="#red-team-eval" style="color:inherit">red-team-eval</a></span><span class="gate">4-lens hostile review of plans/prompts/artifacts, eval-driven development, QA cycling until measured goal attainment</span></span><span class="badge part">DEEP ANALYSIS</span></div>
+    <div class="brow"><span class="idx">12</span><span><span class="name"><a href="#root-cause-debugging" style="color:inherit">root-cause-debugging</a></span><span class="gate">Reproduce-first diagnosis, backward call-chain tracing, pollution bisection; symptomatic hacks forbidden</span></span><span class="badge part">DEEP ANALYSIS</span></div>
+    <div class="brow"><span class="idx">13</span><span><span class="name"><a href="#session-intent" style="color:inherit">session-intent</a></span><span class="gate">Reconstruct what was actually ASKED from Claude Code transcripts themselves: per-session intent matrix, session-to-commit alignment, intent-vs-implementation verdicts</span></span><span class="badge part">DEEP ANALYSIS</span></div>
+    <div class="brow"><span class="idx">14</span><span><span class="name"><a href="#stack-testing" style="color:inherit">stack-testing</a></span><span class="gate">Per-stack real-system test discipline: pytest/Go/C++/Django/Spring gotchas, FastAPI SSE testing, Playwright e2e, condition-based waiting (no sleeps, no new mocks)</span></span><span class="badge part">EXECUTION</span></div>
+    <div class="brow"><span class="idx">15</span><span><span class="name"><a href="#tui-testing" style="color:inherit">tui-testing</a></span><span class="gate">TUI/terminal end-user proof: observe-then-act PTY driving, matched-assertion waits, three-facet evidence (screen + disk + logs), pixel proof for visual claims</span></span><span class="badge part">PROOF</span></div>
+    <div class="brow"><span class="idx">16</span><span><span class="name"><a href="#ui-experience-audit" style="color:inherit">ui-experience-audit</a></span><span class="gate">6-phase UX protocol: triage, visual, interactive, content, Nielsen heuristics, synthesis</span></span><span class="badge part">PROOF</span></div>
+    <div class="brow"><span class="idx">17</span><span><span class="name"><a href="#validation-plan" style="color:inherit">validation-plan</a></span><span class="gate">BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations</span></span><span class="badge part">PROMPT &amp; PLAN</span></div>
+    <div class="brow"><span class="idx">18</span><span><span class="name"><a href="#visual-inspection" style="color:inherit">visual-inspection</a></span><span class="gate">Screenshot-driven visual QA with severity model (found a real HIGH defect in the demo)</span></span><span class="badge part">PROOF</span></div>
+  </div>
 </section>
-<section class="animate" style="--i:1">
+<section>
   <div class="marker">02 / DETAIL CARDS</div>
   <h2>What each skill actually does</h2>
-  <div class="grid2"><div class="panel" id="brainstorm" style="scroll-margin-top:80px">
-  <div class="ptitle">01 / BRAINSTORM · <span class="badge">PROMPT & PLAN</span></div>
-  <p style="font-size:13px;color:var(--dim)">Structured solution brainstorming with trade-off analysis and brutal honesty: scans the codebase BEFORE asking questions, pins exact requirements (expected output, acceptance criteria, scope boundary constraints, touchpoints), presents 2-3 approaches with pros/cons in visible text, and writes no code until the user approves a design. Use when exploring ideas, weighing architecture or technology options technical debates, feasibility assessment, design discussions problem-first inversion (&#x27;user already picked a solution — find the real problem&#x27;), or whenever the path forward is unclear — &#x27;let&#x27;s brainstorm&#x27; &#x27;explore ideas&#x27;, &#x27;what are my options&#x27;, &#x27;which approach is best&#x27;. Not for executing an approved plan (use implement), end-to-end orchestrated builds (use implement), or auditing finished work (use full-functional-audit).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/brainstorm/SKILL.md">source → plugins/proofpunk/skills/brainstorm/</a></p>
-</div>
-<div class="panel" id="codebase-truth-audit" style="scroll-margin-top:80px">
-  <div class="ptitle">02 / CODEBASE-TRUTH-AUDIT · <span class="badge">DEEP ANALYSIS</span></div>
-  <p style="font-size:13px;color:var(--dim)">Conduct an evidence-backed, end-to-end audit and safe remediation of any software repository. Reconstructs change intent from history, verifies code, configuration, documentation, runtime behavior, dependencies, and production readiness; identifies drift, dead code, stale docs, cleanup risks, and remediation options; pauses for explicit approval before behavior or destructive changes; then executes approved remediation with validation. Use when asked to audit a codebase, compare implementation with intent or docs, plan a refactor, clean a repository safely, close documentation drift, or prepare a repo for production. Not for greenfield planning (use validation-plan), feature builds (use implement or implement), or mining session transcripts (use session-intent).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/codebase-truth-audit/SKILL.md">source → plugins/proofpunk/skills/codebase-truth-audit/</a></p>
-</div>
-<div class="panel" id="end-user-testing" style="scroll-margin-top:80px">
-  <div class="ptitle">03 / END-USER-TESTING · <span class="badge">PROOF</span></div>
-  <p style="font-size:13px;color:var(--dim)">The proof standard for end-user testing: every completion claim is proven by driving the real system as the end user, with run-scoped fresh evidence (timestamped, sequential, non-empty, never reused across runs), full-path citations describing what is SEEN, personally examined proof before any task is marked done, cache-clearing before final passes, and refusal to PASS without cited artifacts. Includes the fresh_evidence.py helper enforcing init-run / next-step / seal / validate. Use when a verdict is about to be written, when capturing end-user test evidence, when marking tasks complete, or when the user says &#x27;end-user test this&#x27;, &#x27;capture evidence&#x27;, &#x27;fresh screenshot&#x27;, &#x27;produce a verdict&#x27;, or &#x27;prove it&#x27;s done&#x27;. Not for writing test suites (use stack-testing) or visual/UX review (use visual-inspection or ui-experience-audit).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/end-user-testing/SKILL.md">source → plugins/proofpunk/skills/end-user-testing/</a></p>
-</div>
-<div class="panel" id="full-functional-audit" style="scroll-margin-top:80px">
-  <div class="ptitle">04 / FULL-FUNCTIONAL-AUDIT · <span class="badge">PROOF</span></div>
-  <p style="font-size:13px;color:var(--dim)">App-wide functional audit of a live site or app that inventories EVERY user interaction — every screen, page, button, form, link, endpoint, and flow — then clicks through everything and validates each one against the real running system, remediates failures immediately, and revalidates until clean. Five phases: Explore (interaction inventory), Plan, Execute (fresh evidence per interaction), Remediate (fix the real system, never defer FAILs), Verdict (coverage statement). Use when asked to &#x27;audit the whole app&#x27;, &#x27;click through everything&#x27;, &#x27;find bugs on this site/URL&#x27; &#x27;test everything&#x27;, &#x27;full QA sweep&#x27;, or for pre-release hardening. Not for single-feature checks , per-screen UX review (use ui-experience-audit), or one known bug (use root-cause-debugging).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/full-functional-audit/SKILL.md">source → plugins/proofpunk/skills/full-functional-audit/</a></p>
-</div>
-<div class="panel" id="implement" style="scroll-margin-top:80px">
-  <div class="ptitle">05 / IMPLEMENT · <span class="badge">ORCHESTRATION</span></div>
-  <p style="font-size:13px;color:var(--dim)">The single write path: scouts the real codebase (mandatory, subagents) distills TRUE success criteria, mines past sessions (session-intent) forges the build prompt (prompt-forge), decomposes into a task graph where every task carries a proof obligation, then runs the execution loop — implement a task, drive the finished feature as the end user immediately record the proof — until every criterion is proven. End-user validation is an inline phase of every task, not an optional skill: the real runtime gets driven as the end user, always, with fresh run-scoped evidence. Never writes test files; validation is the completed user job. Flags: --parallel (executable lane contracts), --auto (never stops until proven), --mine --fast. Use when asked to &#x27;implement X&#x27;, &#x27;build X end to end&#x27;, &#x27;ship X&#x27; &#x27;make X work&#x27;, &#x27;use all the skills to ship this&#x27;, or to execute a plan against a real codebase. Not for planning without building (use validation-plan) or ideation (use brainstorm).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/implement/SKILL.md">source → plugins/proofpunk/skills/implement/</a></p>
-</div>
-<div class="panel" id="mobile-validation-runner" style="scroll-margin-top:80px">
-  <div class="ptitle">06 / MOBILE-VALIDATION-RUNNER · <span class="badge">EXECUTION</span></div>
-  <p style="font-size:13px;color:var(--dim)">Drive and validate iOS apps end-to-end on real simulators — five-phase SETUP, RECORD, ACT, COLLECT, VERIFY protocol with video recording, log streaming, and screenshot evidence; three-facet validation checkpoints (simulator + backend + log analysis); xcrun simctl device control; XC-MCP accessibility-first UI automation; Expo/React Native simulator workflows; preflight environment checks. Use when validating an iOS or Expo feature marking any mobile task complete, booting/controlling simulators capturing mobile UI evidence, or debugging Metro/simulator issues. Unexecuted mobile validation is UNVERIFIED, never done. Not for web desktop, or API validation or non-iOS test suites (use stack-testing).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/mobile-validation-runner/SKILL.md">source → plugins/proofpunk/skills/mobile-validation-runner/</a></p>
-</div>
-<div class="panel" id="plan-hardening" style="scroll-margin-top:80px">
-  <div class="ptitle">07 / PLAN-HARDENING · <span class="badge">PROMPT & PLAN</span></div>
-  <p style="font-size:13px;color:var(--dim)">Second-pass plan strengthening: red-teams a draft plan through multiple adversarial lenses, scores confidence gaps, researches weak sections injects or strengthens proof obligations, and surgically remediates findings while preserving the original intent. Also converts arbitrary prompts or plans into proof-carrying versions using the standard proof block. Use when a plan exists but may be shallow, overconfident, missing failure modes, or lacking proof obligations — &#x27;harden this plan&#x27;, &#x27;deepen this plan&#x27;, &#x27;red-team my plan&#x27;, &#x27;stress-test this design&#x27;, &#x27;add proof obligations to this prompt&#x27; — or before executing any high-stakes multi-phase plan. Not for authoring a plan from scratch (use validation-plan) or executing one (use implement or implement).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/plan-hardening/SKILL.md">source → plugins/proofpunk/skills/plan-hardening/</a></p>
-</div>
-<div class="panel" id="production-readiness" style="scroll-margin-top:80px">
-  <div class="ptitle">08 / PRODUCTION-READINESS · <span class="badge">DEEP ANALYSIS</span></div>
-  <p style="font-size:13px;color:var(--dim)">Take a codebase from &#x27;works on my machine&#x27; to shippable — systematic 8-phase production-readiness audit (risk-based cleanup waves, dead code documentation drift, zero-regression enforcement), spec-vs-implementation compliance audits that find COVERED/INCOMPLETE/MISSING gaps, and dependency supply-chain health (CVEs, CVSS, lockfile hygiene, license compliance). Use when preparing a first release, open-sourcing, doing a major version bump, auditing whether a spec was fully implemented reviewing dependency risk, or after rapid prototyping leaves the repo in unknown shape. Not for runtime feature QA screenshot review (use visual-inspection), or intent provenance (use session-intent).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/production-readiness/SKILL.md">source → plugins/proofpunk/skills/production-readiness/</a></p>
-</div>
-<div class="panel" id="prompt-forge" style="scroll-margin-top:80px">
-  <div class="ptitle">09 / PROMPT-FORGE · <span class="badge">PROMPT & PLAN</span></div>
-  <p style="font-size:13px;color:var(--dim)">Prompt engineering, rating, and pipeline design: authors high-quality prompts on the canonical XML tag skeleton, rates any prompt against a quantitative rubric with test cases and metrics, optimizes weak prompts against real failure evidence, and builds multi-stage meta-prompt pipelines (.prompts/ directories, dependency-aware stages, each with a SUMMARY.md). Always-on workflow: sequential thinking, todo tracking authorization engine, file-output contract; flags --in-place --report-only, --ship-below-threshold, --out, --evidence, --depth, --dir; unknown flags rejected. Use when writing, rating, improving, or debugging a prompt; designing a system prompt; forcing structured output; managing long context; or when model output is unreliable and the prompt is the suspect. Not for executing build plans (use implement/implement) or adversarial plan review (use plan-hardening/red-team-eval).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/prompt-forge/SKILL.md">source → plugins/proofpunk/skills/prompt-forge/</a></p>
-</div>
-<div class="panel" id="red-team-eval" style="scroll-margin-top:80px">
-  <div class="ptitle">10 / RED-TEAM-EVAL · <span class="badge">DEEP ANALYSIS</span></div>
-  <p style="font-size:13px;color:var(--dim)">Attack your own plans, prompts, and outputs before reality does — 4-lens hostile review (security, scope-creep, evidence-rigor, failure-modes) against plans/prompts/artifacts, formal eval-driven development (EDD) scoring agent sessions against rubrics, QA cycling loops (test, verify fix, repeat until goal met), and agent evaluation with scoring rubrics and benchmarks. Use when a plan or prompt needs adversarial stress beyond a friendly review, when you want measurable quality scores for agent output across runs, when a fix-verify loop must not stop at &#x27;looks done&#x27;, or when regression-testing prompt changes against real failure cases. Not for finding a bug&#x27;s root cause (use root-cause-debugging) or pre-execution plan strengthening (use plan-hardening).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/red-team-eval/SKILL.md">source → plugins/proofpunk/skills/red-team-eval/</a></p>
-</div>
-<div class="panel" id="root-cause-debugging" style="scroll-margin-top:80px">
-  <div class="ptitle">11 / ROOT-CAUSE-DEBUGGING · <span class="badge">DEEP ANALYSIS</span></div>
-  <p style="font-size:13px;color:var(--dim)">Find and fix the real cause of bugs, never the symptom — disciplined reproduce-minimize-hypothesize-instrument loops for hard bugs and performance regressions, backward call-stack tracing to the original trigger, test-pollution bisection with a find-polluter script, expert investigation protocols, and competing-hypothesis tracing lanes. Use when a bug&#x27;s cause is unclear, errors surface far from their origin, fixes keep not sticking, tests pollute each other, or you&#x27;re tempted to patch a symptom or add a retry. Iron Rule: no fix without reproduction, no claim without evidence. Not for full-site bug hunts (use full-functional-audit) flaky-test discipline (use stack-testing), or pre-release audits (use production-readiness).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/root-cause-debugging/SKILL.md">source → plugins/proofpunk/skills/root-cause-debugging/</a></p>
-</div>
-<div class="panel" id="session-intent" style="scroll-margin-top:80px">
-  <div class="ptitle">12 / SESSION-INTENT · <span class="badge">DEEP ANALYSIS</span></div>
-  <p style="font-size:13px;color:var(--dim)">Reconstruct what was actually ASKED from the sessions themselves — parses Claude Code JSONL transcripts into a per-session intent matrix (first user prompt = stated intent, subsequent prompts = steering, tool calls, files touched, commits made), aligns sessions to git history, and builds intent-vs-implementation matrices where every row cites its session intent source or is marked intent-unrecoverable. Use when auditing what a codebase was supposed to become versus what it became; when session summaries, CLAUDE.md, or commit messages are the only stated rationale; when building commit-to-intent provenance; or when asked &#x27;why was this change made&#x27; and the answer must come from evidence, not memory. Not for live repo audits (use codebase-truth-audit) or planning future work (use validation-plan).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/session-intent/SKILL.md">source → plugins/proofpunk/skills/session-intent/</a></p>
-</div>
-<div class="panel" id="stack-testing" style="scroll-margin-top:80px">
-  <div class="ptitle">13 / STACK-TESTING · <span class="badge">EXECUTION</span></div>
-  <p style="font-size:13px;color:var(--dim)">Real-system test discipline per stack — pytest/Go/C++/Django/Spring Boot gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl Playwright browser automation with server lifecycle management, and condition-based waiting to kill timing flakes. Use when writing debugging, or deflaking test suites in Python, Go, C++, Django, Spring Boot, or FastAPI projects; when tests pass locally but fail in CI; when browser e2e needs a dev server managed; or when any test uses sleep()/arbitrary timeouts. Iron Rule: mocks chapters in references are for understanding existing suites only; new tests run against the real system. Not for end-user proof of a finished feature (use end-user-testing) or single-bug root causes (use root-cause-debugging).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/stack-testing/SKILL.md">source → plugins/proofpunk/skills/stack-testing/</a></p>
-</div>
-<div class="panel" id="tui-testing" style="scroll-margin-top:80px">
-  <div class="ptitle">14 / TUI-TESTING · <span class="badge">PROOF</span></div>
-  <p style="font-size:13px;color:var(--dim)">End-user proof for terminal UIs (Ink, blessed, textual, ratatui, curses): drive the real TUI in a real PTY as the end user with observe-then-act discipline, matched-assertion waits, three-facet evidence (screen + disk + logs), and pixel proof for visual claims. Codifies the measured lessons of driving agent-tty against a live Ink application: TTY guards, runtime floors, daemon PATH inheritance, cold-boot budgets, key-mount races transport-envelope traps, and per-run secret scans. Use when validating a TUI/CLI-interactive feature, when a gate drives a terminal app, or when &#x27;prove the TUI works&#x27; is the ask. Not for web UIs (use web-validation via the implement validation phase) or non-interactive CLIs (use `references/cli-validation.md`).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/tui-testing/SKILL.md">source → plugins/proofpunk/skills/tui-testing/</a></p>
-</div>
-<div class="panel" id="ui-experience-audit" style="scroll-margin-top:80px">
-  <div class="ptitle">15 / UI-EXPERIENCE-AUDIT · <span class="badge">PROOF</span></div>
-  <p style="font-size:13px;color:var(--dim)">Deep end-to-end audit of any UI screen across four dimensions — visual defects, interactive elements, content quality, and UX heuristics — ending in one severity-classified report. Inventories every action item (button link, field, gesture), verifies each is discoverable and reachable, audits prose / code-block / diagram / data-viz rendering, and evaluates against Nielsen&#x27;s 10 heuristics plus affordance theory. Modes: identify-and-delegate (screenshot only) or drive-interaction (drive the live system as an end user — preferred). Use when reviewing a UI screen page, or flow — &#x27;review this screen&#x27;, &#x27;audit this page&#x27;, &#x27;QA this view&#x27; &#x27;is this UI good&#x27; — iOS, web, or cross-platform. Not for pixel-checklist screenshot QA (use visual-inspection) or app-wide functional sweeps (use full-functional-audit).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/ui-experience-audit/SKILL.md">source → plugins/proofpunk/skills/ui-experience-audit/</a></p>
-</div>
-<div class="panel" id="validation-plan" style="scroll-margin-top:80px">
-  <div class="ptitle">16 / VALIDATION-PLAN · <span class="badge">PROMPT & PLAN</span></div>
-  <p style="font-size:13px;color:var(--dim)">Authors multi-phase project plans where every phase carries blocking cumulative proof obligations — BRIEF, ROADMAP, per-phase PLAN, SUMMARY + VALIDATION with run-scoped evidence. Proofs are cumulative: phase N&#x27;s validation re-verifies phases 1..N-1, so a regression in earlier work blocks advancement. Use when asked to plan a multi-phase build, create a validation plan, structure a project roadmap, break a feature into proven phases, write a BRIEF/ROADMAP, or when an autonomous runner needs phases it cannot advance past without proof. Not for executing the plan (use implement or implement) or hardening an existing draft (use plan-hardening).</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/validation-plan/SKILL.md">source → plugins/proofpunk/skills/validation-plan/</a></p>
-</div>
-<div class="panel" id="visual-inspection" style="scroll-margin-top:80px">
-  <div class="ptitle">17 / VISUAL-INSPECTION · <span class="badge">PROOF</span></div>
-  <p style="font-size:13px;color:var(--dim)">Mandatory visual QA protocol for UI screenshots — iOS (Apple HIG), web (WCAG 2.2), and cross-platform. Evaluates layout, overflow, spacing typography, contrast, touch targets, dark mode, and visual hierarchy against universal and platform-specific checklists, with severity classification and a defect-pattern database. Use when reviewing simulator captures, browser screenshots, or design-implementation evidence, and before marking ANY screenshot as PASS — even when the user just says &#x27;check this screenshot&#x27;, &#x27;does this look right&#x27;, or attaches a UI image. Not for interactive UX flow audits (use ui-experience-audit) or functional validation of running features .</p>
-  <p style="font-size:11px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/skills/visual-inspection/SKILL.md">source → plugins/proofpunk/skills/visual-inspection/</a></p>
-</div></div>
+
+  <div class="panel" id="brainstorm">
+    <div class="ptitle">01 / BRAINSTORM &nbsp;·&nbsp; PROMPT &amp; PLAN</div>
+    <p>Structured solution brainstorming with trade-off analysis and brutal honesty: scans the codebase BEFORE asking questions, pins exact requirements (expected output, acceptance criteria, scope boundary constraints, touchpoints), presents 2-3 approaches with pros/cons in visible text, and writes no code until the user approves a design. Use when exploring ideas, weighing architecture or technology options technical debates, feasibility assessment, design discussions problem-first inversion (&#x27;user already picked a solution — find the real problem&#x27;), or whenever the path forward is unclear — &#x27;let&#x27;s brainstorm&#x27; &#x27;explore ideas&#x27;, &#x27;what are my options&#x27;, &#x27;which approach is best&#x27;. Not for executing an approved plan (use implement), end-to-end orchestrated builds (use implement), or auditing finished work (use full-functional-audit).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/brainstorm">source → plugins/proofpunk/skills/brainstorm/</a></p>
+  </div>
+
+  <div class="panel" id="codebase-truth-audit">
+    <div class="ptitle">02 / CODEBASE-TRUTH-AUDIT &nbsp;·&nbsp; DEEP ANALYSIS</div>
+    <p>Conduct an evidence-backed, end-to-end audit and safe remediation of any software repository. Reconstructs change intent from history, verifies code, configuration, documentation, runtime behavior, dependencies, and production readiness; identifies drift, dead code, stale docs, cleanup risks, and remediation options; pauses for explicit approval before behavior or destructive changes; then executes approved remediation with validation. Use when asked to audit a codebase, compare implementation with intent or docs, plan a refactor, clean a repository safely, close documentation drift, or prepare a repo for production. Not for greenfield planning (use validation-plan), feature builds (use implement), or mining session transcripts (use session-intent).</p>
+    <p style="font-size:13px">Bundled — <strong>1 references</strong>: <code>output-contract.md</code> &nbsp;·&nbsp; <strong>1 scripts</strong>: <code>init_audit_workspace.py</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/codebase-truth-audit">source → plugins/proofpunk/skills/codebase-truth-audit/</a></p>
+  </div>
+
+  <div class="panel" id="end-user-testing">
+    <div class="ptitle">03 / END-USER-TESTING &nbsp;·&nbsp; PROOF</div>
+    <p>The proof standard for end-user testing: every completion claim is proven by driving the real system as the end user, with run-scoped fresh evidence (timestamped, sequential, non-empty, never reused across runs), full-path citations describing what is SEEN, personally examined proof before any task is marked done, cache-clearing before final passes, and refusal to PASS without cited artifacts. Includes the fresh_evidence.py helper enforcing init-run / next-step / seal / validate. Use when a verdict is about to be written, when capturing end-user test evidence, when marking tasks complete, or when the user says &#x27;end-user test this&#x27;, &#x27;capture evidence&#x27;, &#x27;fresh screenshot&#x27;, &#x27;produce a verdict&#x27;, or &#x27;prove it&#x27;s done&#x27;. Not for writing test suites (use stack-testing) or visual/UX review (use visual-inspection or ui-experience-audit).</p>
+    <p style="font-size:13px">Bundled — <strong>1 scripts</strong>: <code>fresh_evidence.py</code> &nbsp;·&nbsp; <strong>1 assets</strong>: <code>verdict-template.md</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/end-user-testing">source → plugins/proofpunk/skills/end-user-testing/</a></p>
+  </div>
+
+  <div class="panel" id="full-functional-audit">
+    <div class="ptitle">04 / FULL-FUNCTIONAL-AUDIT &nbsp;·&nbsp; PROOF</div>
+    <p>App-wide functional audit of a live site or app that inventories EVERY user interaction — every screen, page, button, form, link, endpoint, and flow — then clicks through everything and validates each one against the real running system, remediates failures immediately, and revalidates until clean. Five phases: Explore (interaction inventory), Plan, Execute (fresh evidence per interaction), Remediate (fix the real system, never defer FAILs), Verdict (coverage statement). Use when asked to &#x27;audit the whole app&#x27;, &#x27;click through everything&#x27;, &#x27;find bugs on this site/URL&#x27; &#x27;test everything&#x27;, &#x27;full QA sweep&#x27;, or for pre-release hardening. Not for single-feature checks (drive the real system per the shared runbooks), per-screen UX review (use ui-experience-audit), or one known bug (use root-cause-debugging).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/full-functional-audit">source → plugins/proofpunk/skills/full-functional-audit/</a></p>
+  </div>
+
+  <div class="panel" id="implement">
+    <div class="ptitle">05 / IMPLEMENT &nbsp;·&nbsp; ORCHESTRATION</div>
+    <p>The single write path: scouts the real codebase (mandatory, subagents) distills TRUE success criteria, mines past sessions (session-intent) forges the build prompt (prompt-forge), decomposes into a task graph where every task carries a proof obligation, then runs the execution loop — implement a task, drive the finished feature as the end user immediately record the proof — until every criterion is proven. End-user validation is an inline phase of every task, not an optional skill: the real runtime gets driven as the end user, always, with fresh run-scoped evidence. Never writes test files; validation is the completed user job. Flags: --parallel (executable lane contracts), --auto (never stops until proven), --mine --fast. Use when asked to &#x27;implement X&#x27;, &#x27;build X end to end&#x27;, &#x27;ship X&#x27; &#x27;make X work&#x27;, &#x27;use all the skills to ship this&#x27;, or to execute a plan against a real codebase. Not for planning without building (use validation-plan) or ideation (use brainstorm).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/implement">source → plugins/proofpunk/skills/implement/</a></p>
+  </div>
+
+  <div class="panel" id="mobile-validation-runner">
+    <div class="ptitle">06 / MOBILE-VALIDATION-RUNNER &nbsp;·&nbsp; EXECUTION</div>
+    <p>Drive and validate iOS apps end-to-end on real simulators — five-phase SETUP, RECORD, ACT, COLLECT, VERIFY protocol with video recording, log streaming, and screenshot evidence; three-facet validation checkpoints (simulator + backend + log analysis); xcrun simctl device control; XC-MCP accessibility-first UI automation; Expo/React Native simulator workflows; preflight environment checks. Use when validating an iOS or Expo feature marking any mobile task complete, booting/controlling simulators capturing mobile UI evidence, or debugging Metro/simulator issues. Unexecuted mobile validation is UNVERIFIED, never done. Not for web, desktop, or API validation (the shared runbooks) or non-iOS test suites (use stack-testing).</p>
+    <p style="font-size:13px">Bundled — <strong>22 references</strong>: <code>expo-e2e-testing-workflow.md</code>, <code>expo-testing-workflow.md</code>, <code>ios-simulator-control.md</code>, <code>ios-validation-gate.md</code>, <code>ios-validation-runner.md</code>, <code>preflight.md</code>, <code>simctl-command-reference.md</code>, <code>xc-mcp-accessibility-patterns.md</code> +14 more &nbsp;·&nbsp; <strong>4 scripts</strong>: <code>example.sh</code>, <code>simulator.sh</code>, <code>validate.sh</code>, <code>xc_mcp_wrapper.sh</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/mobile-validation-runner">source → plugins/proofpunk/skills/mobile-validation-runner/</a></p>
+  </div>
+
+  <div class="panel" id="plan-hardening">
+    <div class="ptitle">07 / PLAN-HARDENING &nbsp;·&nbsp; PROMPT &amp; PLAN</div>
+    <p>Second-pass plan strengthening: red-teams a draft plan through multiple adversarial lenses, scores confidence gaps, researches weak sections injects or strengthens proof obligations, and surgically remediates findings while preserving the original intent. Also converts arbitrary prompts or plans into proof-carrying versions using the standard proof block. Use when a plan exists but may be shallow, overconfident, missing failure modes, or lacking proof obligations — &#x27;harden this plan&#x27;, &#x27;deepen this plan&#x27;, &#x27;red-team my plan&#x27;, &#x27;stress-test this design&#x27;, &#x27;add proof obligations to this prompt&#x27; — or before executing any high-stakes multi-phase plan. Not for authoring a plan from scratch (use validation-plan) or executing one (use implement).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/plan-hardening">source → plugins/proofpunk/skills/plan-hardening/</a></p>
+  </div>
+
+  <div class="panel" id="production-readiness">
+    <div class="ptitle">08 / PRODUCTION-READINESS &nbsp;·&nbsp; DEEP ANALYSIS</div>
+    <p>Take a codebase from &#x27;works on my machine&#x27; to shippable — systematic 8-phase production-readiness audit (risk-based cleanup waves, dead code documentation drift, zero-regression enforcement), spec-vs-implementation compliance audits that find COVERED/INCOMPLETE/MISSING gaps, and dependency supply-chain health (CVEs, CVSS, lockfile hygiene, license compliance). Use when preparing a first release, open-sourcing, doing a major version bump, auditing whether a spec was fully implemented reviewing dependency risk, or after rapid prototyping leaves the repo in unknown shape. Not for runtime feature QA (drive the real system per the shared runbooks), screenshot review (use visual-inspection), or intent provenance (use session-intent).</p>
+    <p style="font-size:13px">Bundled — <strong>3 references</strong>: <code>dependency-health.md</code>, <code>production-readiness-audit.md</code>, <code>spec-compliance.md</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/production-readiness">source → plugins/proofpunk/skills/production-readiness/</a></p>
+  </div>
+
+  <div class="panel" id="prompt-forge">
+    <div class="ptitle">09 / PROMPT-FORGE &nbsp;·&nbsp; PROMPT &amp; PLAN</div>
+    <p>Prompt engineering, rating, and pipeline design: authors high-quality prompts on the canonical XML tag skeleton, rates any prompt against a quantitative rubric with test cases and metrics, optimizes weak prompts against real failure evidence, and builds multi-stage meta-prompt pipelines (.prompts/ directories, dependency-aware stages, each with a SUMMARY.md). Always-on workflow: sequential thinking, todo tracking authorization engine, file-output contract; flags --in-place --report-only, --ship-below-threshold, --out, --evidence, --depth, --dir; unknown flags rejected. Use when writing, rating, improving, or debugging a prompt; designing a system prompt; forcing structured output; managing long context; or when model output is unreliable and the prompt is the suspect. Not for executing build plans (use implement) or adversarial plan review (use plan-hardening/red-team-eval).</p>
+    <p style="font-size:13px">Bundled — <strong>7 references</strong>: <code>context-management.md</code>, <code>evaluation-frameworks.md</code>, <code>prompt-optimization.md</code>, <code>prompt-patterns.md</code>, <code>remediation-sample.md</code>, <code>structured-outputs.md</code>, <code>system-prompts.md</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/prompt-forge">source → plugins/proofpunk/skills/prompt-forge/</a></p>
+  </div>
+
+  <div class="panel" id="proofpunk">
+    <div class="ptitle">10 / PROOFPUNK &nbsp;·&nbsp; </div>
+    <p>Router and entry point for the proofpunk plugin&#x27;s 17 delivery skills — reads a request, names the single best-fit skill (or short ordered chain for compound asks), and hands off without repeating that skill&#x27;s own doctrine. Covers the full arc: brainstorm a design, plan or harden a multi-phase build, implement it end to end, audit a repo or a running app, chase a bug to its root, red-team an artifact, and prove any of it against the real system (web, API, CLI, iOS, TUI). Use when unsure which proofpunk skill applies, when a request spans more than one skill&#x27;s scope, or when you want a map of the whole plugin before picking a skill yourself. Not a substitute for any listed skill&#x27;s own workflow — it only routes.</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/proofpunk">source → plugins/proofpunk/skills/proofpunk/</a></p>
+  </div>
+
+  <div class="panel" id="red-team-eval">
+    <div class="ptitle">11 / RED-TEAM-EVAL &nbsp;·&nbsp; DEEP ANALYSIS</div>
+    <p>Attack your own plans, prompts, and outputs before reality does — 4-lens hostile review (security, scope-creep, evidence-rigor, failure-modes) against plans/prompts/artifacts, formal eval-driven development (EDD) scoring agent sessions against rubrics, QA cycling loops (test, verify fix, repeat until goal met), and agent evaluation with scoring rubrics and benchmarks. Use when a plan or prompt needs adversarial stress beyond a friendly review, when you want measurable quality scores for agent output across runs, when a fix-verify loop must not stop at &#x27;looks done&#x27;, or when regression-testing prompt changes against real failure cases. Not for finding a bug&#x27;s root cause (use root-cause-debugging) or pre-execution plan strengthening (use plan-hardening).</p>
+    <p style="font-size:13px">Bundled — <strong>4 references</strong>: <code>agent-eval-strands.md</code>, <code>eval-harness.md</code>, <code>red-team.md</code>, <code>ultraqa.md</code> &nbsp;·&nbsp; <strong>2 assets</strong>: <code>evals.json</code>, <code>trigger-eval.json</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/red-team-eval">source → plugins/proofpunk/skills/red-team-eval/</a></p>
+  </div>
+
+  <div class="panel" id="root-cause-debugging">
+    <div class="ptitle">12 / ROOT-CAUSE-DEBUGGING &nbsp;·&nbsp; DEEP ANALYSIS</div>
+    <p>Find and fix the real cause of bugs, never the symptom — disciplined reproduce-minimize-hypothesize-instrument loops for hard bugs and performance regressions, backward call-stack tracing to the original trigger, test-pollution bisection with a find-polluter script, expert investigation protocols, and competing-hypothesis tracing lanes. Use when a bug&#x27;s cause is unclear, errors surface far from their origin, fixes keep not sticking, tests pollute each other, or you&#x27;re tempted to patch a symptom or add a retry. Iron Rule: no fix without reproduction, no claim without evidence. Not for full-site bug hunts (use full-functional-audit) flaky-test discipline (use stack-testing), or pre-release audits (use production-readiness).</p>
+    <p style="font-size:13px">Bundled — <strong>9 references</strong>: <code>debug-like-expert.md</code>, <code>diagnose.md</code>, <code>expert-debugging-mindset.md</code>, <code>expert-hypothesis-testing.md</code>, <code>expert-investigation-techniques.md</code>, <code>expert-verification-patterns.md</code>, <code>expert-when-to-research.md</code>, <code>root-cause-tracing.md</code> +1 more &nbsp;·&nbsp; <strong>2 scripts</strong>: <code>find-polluter.sh</code>, <code>hitl-loop.template.sh</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/root-cause-debugging">source → plugins/proofpunk/skills/root-cause-debugging/</a></p>
+  </div>
+
+  <div class="panel" id="session-intent">
+    <div class="ptitle">13 / SESSION-INTENT &nbsp;·&nbsp; DEEP ANALYSIS</div>
+    <p>Reconstruct what was actually ASKED from the sessions themselves — parses Claude Code JSONL transcripts into a per-session intent matrix (first user prompt = stated intent, subsequent prompts = steering, tool calls, files touched, commits made), aligns sessions to git history, and builds intent-vs-implementation matrices where every row cites its session intent source or is marked intent-unrecoverable. Use when auditing what a codebase was supposed to become versus what it became; when session summaries, CLAUDE.md, or commit messages are the only stated rationale; when building commit-to-intent provenance; or when asked &#x27;why was this change made&#x27; and the answer must come from evidence, not memory. Not for live repo audits (use codebase-truth-audit) or planning future work (use validation-plan).</p>
+    <p style="font-size:13px">Bundled — <strong>5 references</strong>: <code>claude-code-analyzer.md</code>, <code>analyze-claude-md.sh</code>, <code>analyze.sh</code>, <code>fetch-features.sh</code>, <code>github-discovery.sh</code> &nbsp;·&nbsp; <strong>1 scripts</strong>: <code>session_intent.py</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/session-intent">source → plugins/proofpunk/skills/session-intent/</a></p>
+  </div>
+
+  <div class="panel" id="stack-testing">
+    <div class="ptitle">14 / STACK-TESTING &nbsp;·&nbsp; EXECUTION</div>
+    <p>Real-system test discipline per stack — pytest/Go/C++/Django/Spring Boot gotchas that cause flaky CI, FastAPI HTTP/SSE testing with curl Playwright browser automation with server lifecycle management, and condition-based waiting to kill timing flakes. Use when writing debugging, or deflaking test suites in Python, Go, C++, Django, Spring Boot, or FastAPI projects; when tests pass locally but fail in CI; when browser e2e needs a dev server managed; or when any test uses sleep()/arbitrary timeouts. Iron Rule: mocks chapters in references are for understanding existing suites only; new tests run against the real system. Not for end-user proof of a finished feature (use end-user-testing) or single-bug root causes (use root-cause-debugging).</p>
+    <p style="font-size:13px">Bundled — <strong>10 references</strong>: <code>condition-based-waiting.md</code>, <code>cpp-testing-gtest.md</code>, <code>django-testing-gotchas.md</code>, <code>fastapi-backend-testing.md</code>, <code>go-testing-gotchas.md</code>, <code>playwright-api-reference.md</code>, <code>playwright-browser-automation.md</code>, <code>pytest-gotchas.md</code> +2 more &nbsp;·&nbsp; <strong>4 scripts</strong>: <code>helpers.js</code>, <code>package.json</code>, <code>run.js</code>, <code>with_server.py</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/stack-testing">source → plugins/proofpunk/skills/stack-testing/</a></p>
+  </div>
+
+  <div class="panel" id="tui-testing">
+    <div class="ptitle">15 / TUI-TESTING &nbsp;·&nbsp; PROOF</div>
+    <p>End-user proof for terminal UIs (Ink, blessed, textual, ratatui, curses): drive the real TUI in a real PTY as the end user with observe-then-act discipline, matched-assertion waits, three-facet evidence (screen + disk + logs), and pixel proof for visual claims. Codifies the measured lessons of driving agent-tty against a live Ink application: TTY guards, runtime floors, daemon PATH inheritance, cold-boot budgets, key-mount races transport-envelope traps, and per-run secret scans. Use when validating a TUI/CLI-interactive feature, when a gate drives a terminal app, or when &#x27;prove the TUI works&#x27; is the ask. Not for web UIs (use web-validation via the implement validation phase) or non-interactive CLIs (use `references/cli-validation.md`).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/tui-testing">source → plugins/proofpunk/skills/tui-testing/</a></p>
+  </div>
+
+  <div class="panel" id="ui-experience-audit">
+    <div class="ptitle">16 / UI-EXPERIENCE-AUDIT &nbsp;·&nbsp; PROOF</div>
+    <p>Deep end-to-end audit of any UI screen across four dimensions — visual defects, interactive elements, content quality, and UX heuristics — ending in one severity-classified report. Inventories every action item (button link, field, gesture), verifies each is discoverable and reachable, audits prose / code-block / diagram / data-viz rendering, and evaluates against Nielsen&#x27;s 10 heuristics plus affordance theory. Modes: identify-and-delegate (screenshot only) or drive-interaction (drive the live system as an end user — preferred). Use when reviewing a UI screen page, or flow — &#x27;review this screen&#x27;, &#x27;audit this page&#x27;, &#x27;QA this view&#x27; &#x27;is this UI good&#x27; — iOS, web, or cross-platform. Not for pixel-checklist screenshot QA (use visual-inspection) or app-wide functional sweeps (use full-functional-audit).</p>
+    <p style="font-size:13px">Bundled — <strong>4 references</strong>: <code>content-quality-checklist.md</code>, <code>interactive-element-audit.md</code>, <code>responsive-audit.md</code>, <code>ux-heuristics-checklist.md</code> &nbsp;·&nbsp; <strong>1 assets</strong>: <code>audit-report-template.md</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/ui-experience-audit">source → plugins/proofpunk/skills/ui-experience-audit/</a></p>
+  </div>
+
+  <div class="panel" id="validation-plan">
+    <div class="ptitle">17 / VALIDATION-PLAN &nbsp;·&nbsp; PROMPT &amp; PLAN</div>
+    <p>Authors multi-phase project plans where every phase carries blocking cumulative proof obligations — BRIEF, ROADMAP, per-phase PLAN, SUMMARY + VALIDATION with run-scoped evidence. Proofs are cumulative: phase N&#x27;s validation re-verifies phases 1..N-1, so a regression in earlier work blocks advancement. Use when asked to plan a multi-phase build, create a validation plan, structure a project roadmap, break a feature into proven phases, write a BRIEF/ROADMAP, or when an autonomous runner needs phases it cannot advance past without proof. Not for executing the plan (use implement or implement) or hardening an existing draft (use plan-hardening).</p>
+    <p style="font-size:13px">Bundled — <strong>1 references</strong>: <code>task-file-format.md</code></p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/validation-plan">source → plugins/proofpunk/skills/validation-plan/</a></p>
+  </div>
+
+  <div class="panel" id="visual-inspection">
+    <div class="ptitle">18 / VISUAL-INSPECTION &nbsp;·&nbsp; PROOF</div>
+    <p>Mandatory visual QA protocol for UI screenshots — iOS (Apple HIG), web (WCAG 2.2), and cross-platform. Evaluates layout, overflow, spacing typography, contrast, touch targets, dark mode, and visual hierarchy against universal and platform-specific checklists, with severity classification and a defect-pattern database. Use when reviewing simulator captures, browser screenshots, or design-implementation evidence, and before marking ANY screenshot as PASS — even when the user just says &#x27;check this screenshot&#x27;, &#x27;does this look right&#x27;, or attaches a UI image. Not for interactive UX flow audits (use ui-experience-audit) or driving running features (the shared runbooks).</p>
+    <p style="font-size:13px">Single-file skill — doctrine loaded on demand from shared references.</p>
+    <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/tree/main/plugins/proofpunk/skills/visual-inspection">source → plugins/proofpunk/skills/visual-inspection/</a></p>
+  </div>
+
 </section>
 
+</main>
+  <div class="statusline"><span><b>SKILLS</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
-<div class="statusline"><span><b>SKILLS</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
-<footer><div class="wrap">
-  PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.
-  · <a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a> · plugin v2.0.1 · MIT license
-</div></footer>
-
-<script>
-document.querySelectorAll('.cmdline, pre').forEach(function(el){
-  if (el.querySelector('.copybtn')) return;
-  var b = document.createElement('button');
-  b.className = 'copybtn'; b.type = 'button'; b.textContent = 'COPY';
-  b.addEventListener('click', function(){
-    var txt = el.innerText.replace(/^COPY\n?/, '').replace(/^COPIED ✓\n?/, '');
-    navigator.clipboard.writeText(txt).then(function(){
-      b.textContent = 'COPIED ✓'; b.classList.add('copied');
-      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); }, 1400);
-    });
-  });
-  el.appendChild(b);
-});
-</script>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
 </body>
 </html>

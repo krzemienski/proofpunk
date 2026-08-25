@@ -17,9 +17,9 @@
     <span class="brand">PROOFPUNK</span><span class="sep">│</span>
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
-    <span class="meta"><span class="led ok"></span>17 skills</span>
-    <span class="meta"><span class="led ok"></span>7+7 commands</span>
-    <span class="meta"><span class="led warn"></span>9 doctrine refs</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -33,29 +33,29 @@
 <h2 id="severity-levels">Severity Levels</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Severity</th>
 <th>Definition</th>
 <th>Action</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>CRITICAL</td>
 <td>Content unreadable or missing, overlapping text, crash state, broken interaction (false affordance), unrecoverable error, accessibility blocker, lorem ipsum / placeholder in production-looking UI</td>
 <td>Fix immediately, blocks completion</td>
 </tr>
-<tr class="even">
+<tr>
 <td>HIGH</td>
 <td>Broken layout, misaligned elements, illegible content (e.g. failing code-block contrast), heuristic violation causing user confusion, undersized or overlapping touch targets</td>
 <td>Fix before commit</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>MEDIUM</td>
 <td>Inconsistent spacing, weak signifier, redundant content, minor heuristic drift, suspect contrast</td>
 <td>Fix in same session</td>
 </tr>
-<tr class="even">
+<tr>
 <td>LOW</td>
 <td>Cosmetic polish, subtle alignment drift, edge-case rendering</td>
 <td>Log for future pass</td>
@@ -66,33 +66,33 @@
 <h2 id="verdict-rules">Verdict Rules</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Verdict</th>
 <th>Condition</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>FAIL</td>
 <td>Any CRITICAL finding in any phase</td>
 </tr>
-<tr class="even">
+<tr>
 <td>PASS WITH ISSUES</td>
 <td>Zero CRITICAL, but &gt;= 1 HIGH or accumulated MEDIUM; shippable only if HIGH issues are tracked and remediation scheduled</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>PASS (LIMITED COVERAGE)</td>
 <td>Zero CRITICAL and zero HIGH, but coverage is single-axis (only light mode, only desktop, only happy path); the audited slice passes but a global PASS is not earned</td>
 </tr>
-<tr class="even">
+<tr>
 <td>BLOCKED</td>
 <td>Runtime target unreachable or evidence capture impossible — never convert a BLOCKED into a PASS by simulating</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>UNVERIFIED</td>
 <td>Validation steps were not actually executed by the AI as the end user — never report unexecuted validation as done</td>
 </tr>
-<tr class="even">
+<tr>
 <td>PASS</td>
 <td>Zero CRITICAL, zero HIGH, full coverage represented, AND every behavioral criterion was verified by the AI driving the real system as the end user (see <code>end-user-actor.md</code>)</td>
 </tr>
@@ -119,7 +119,7 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>REF:SEVERITY-MODEL</b></span><span>v2.0.1 · ⑂ main · 17 skills · 7+7 commands · 9 refs · generated 2026-08-13</span></div>
+  <div class="statusline"><span><b>REF:SEVERITY-MODEL</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

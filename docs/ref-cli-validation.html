@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLI Application Validation Reference — proofpunk doctrine</title>
+<meta name="description" content="- [Prerequisites](#prerequisites)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / CLI-VALIDATION</div>
+  <div class="doc">
+<h1 id="cli-application-validation-reference">CLI Application Validation Reference</h1>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#language-detection">Language Detection</a></li>
+<li><a href="#the-validation-pattern-compiled-languages">The Validation Pattern (Compiled Languages)</a></li>
+<li><a href="#the-validation-pattern-python-cli-tools">The Validation Pattern (Python CLI Tools)</a></li>
+<li><a href="#what-pass-looks-like-not-just-it-ran">What PASS Looks Like (Not Just "It Ran")</a></li>
+<li><a href="#failure-troubleshooting">Failure Troubleshooting</a></li>
+<li><a href="#never-do">Never Do</a></li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>Rust</strong>: <code>cargo --version</code> (install via <code>rustup</code> if missing)</li>
+<li><strong>Go</strong>: <code>go version</code> (install via <code>brew install go</code> if missing)</li>
+<li><strong>Node</strong>: <code>node --version</code> (for JS/TS CLIs compiled with <code>pkg</code> or run with <code>npx</code>)</li>
+<li><strong>Python</strong>: <code>python3 --version</code> (check specific version if project requires it, e.g., <code>python3.12</code>)</li>
+</ul>
+<p>Only the toolchain for YOUR project's language is needed.</p>
+<h2 id="language-detection">Language Detection</h2>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Language</th>
+<th>Build Command</th>
+<th>Binary / Entry Point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cargo.toml</code></td>
+<td>Rust</td>
+<td><code>cargo build --release</code></td>
+<td><code>./target/release/&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td><code>go.mod</code></td>
+<td>Go</td>
+<td><code>go build -o ./bin/app</code></td>
+<td><code>./bin/app</code></td>
+</tr>
+<tr>
+<td><code>package.json</code> with <code>bin</code></td>
+<td>Node</td>
+<td><code>npm run build</code></td>
+<td><code>npx &lt;name&gt;</code> or <code>./dist/&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td><code>pyproject.toml</code> with <code>[project.scripts]</code></td>
+<td>Python</td>
+<td><code>pip install -e .</code></td>
+<td>Entry point name from scripts table</td>
+</tr>
+<tr>
+<td><code>pyproject.toml</code> with <code>__main__.py</code></td>
+<td>Python</td>
+<td><code>pip install -e .</code></td>
+<td><code>python3 -m &lt;module_name&gt;</code></td>
+</tr>
+<tr>
+<td><code>setup.py</code> / <code>setup.cfg</code></td>
+<td>Python (legacy)</td>
+<td><code>pip install -e .</code></td>
+<td>Check <code>console_scripts</code> in setup</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-validation-pattern-compiled-languages">The Validation Pattern (Compiled Languages)</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build → Execute → Capture → Verify (always this order)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">BUILD_CMD</span><span class="op">=</span><span class="st">&quot;cargo build --release&quot;</span>  <span class="co"># or: go build -o ./bin/app, npm run build</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">BINARY</span><span class="op">=</span><span class="st">&quot;./target/release/myapp&quot;</span>    <span class="co"># adjust for language</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Build and verify binary exists</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$BUILD_CMD</span> <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">tee</span> build.log</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="va">$?</span> <span class="ot">-ne</span> 0 <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;BUILD FAILED&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> build.log <span class="kw">&amp;&amp;</span> <span class="bu">exit</span> 1</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Verify binary is executable</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">!</span> <span class="ot">-x</span> <span class="st">&quot;</span><span class="va">$BINARY</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;Binary not found at </span><span class="va">$BINARY</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">exit</span> 1</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="va">$BINARY</span> <span class="at">--version</span>  <span class="co"># Smoke test</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Execute with real input, capture everything</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">$BINARY</span> process input.json <span class="op">&gt;</span> stdout.txt <span class="dv">2</span><span class="op">&gt;</span> stderr.txt</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="va">EXIT_CODE</span><span class="op">=</span><span class="va">$?</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Verify</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Exit code: </span><span class="va">$EXIT_CODE</span><span class="st">&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== STDOUT ===&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> stdout.txt</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== STDERR ===&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> stderr.txt</span></code></pre></div>
+<h2 id="the-validation-pattern-python-cli-tools">The Validation Pattern (Python CLI Tools)</h2>
+<p>Python CLIs are NOT just scripts — they must be installed and invoked as an end user would.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install → Verify Entry Point → Execute → Capture → Verify</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Install in editable mode (creates real entry points)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> . <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">tee</span> install.log</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="va">$?</span> <span class="ot">-ne</span> 0 <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;INSTALL FAILED&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> install.log <span class="kw">&amp;&amp;</span> <span class="bu">exit</span> 1</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Verify the entry point exists and is callable</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    Option A: If pyproject.toml defines [project.scripts]</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> my-tool  <span class="co"># Must resolve to a real path, not &quot;not found&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">my-tool</span> <span class="at">--help</span> <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    Option B: If the project uses __main__.py (python -m invocation)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> my_module <span class="at">--help</span> <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Execute with real input AS AN </span><span class="re">END</span><span class="co"> USER WOULD</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ex">my-tool</span> run input.json <span class="op">&gt;</span> stdout.txt <span class="dv">2</span><span class="op">&gt;</span> stderr.txt</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OR: python3 -m my_module run input.json &gt; stdout.txt 2&gt; stderr.txt</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="va">EXIT_CODE</span><span class="op">=</span><span class="va">$?</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Verify</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Exit code: </span><span class="va">$EXIT_CODE</span><span class="st">&quot;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== STDOUT ===&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> stdout.txt</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=== STDERR ===&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">cat</span> stderr.txt</span></code></pre></div>
+<h3 id="python-specific-gotchas">Python-Specific Gotchas</h3>
+<table>
+<thead>
+<tr>
+<th>Gotcha</th>
+<th>Why It Breaks</th>
+<th>What To Do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Running <code>python3 script.py</code> directly</td>
+<td>Bypasses entry points, <code>__main__.py</code>, and package imports. User won't invoke it this way.</td>
+<td>Use <code>pip install -e .</code> then invoke the entry point or <code>python3 -m module</code></td>
+</tr>
+<tr>
+<td>Forgetting <code>pip install -e .</code> after changes</td>
+<td>Old code is still installed. Your edits aren't running.</td>
+<td>Re-run <code>pip install -e .</code> after ANY code change, or use editable install which picks up changes automatically for pure Python</td>
+</tr>
+<tr>
+<td>Wrong Python version</td>
+<td><code>python3</code> might be 3.9 while project needs 3.12. Entry point shebang may differ.</td>
+<td>Use explicit version: <code>python3.12 -m module</code>. Check <code>python3 --version</code>.</td>
+</tr>
+<tr>
+<td>Missing dependencies</td>
+<td><code>pip install -e .</code> failed silently or partially</td>
+<td>Check install log. Run <code>pip install -e ".[dev]"</code> if extras are needed.</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError</code> on import</td>
+<td>Package not installed, or installed in wrong venv</td>
+<td>Verify: <code>pip show &lt;package-name&gt;</code>. Check you're in the right virtualenv.</td>
+</tr>
+<tr>
+<td>Entry point not found after install</td>
+<td><code>[project.scripts]</code> misconfigured in pyproject.toml</td>
+<td>Check <code>pip show -f &lt;package&gt;</code> to list installed files. Verify scripts table.</td>
+</tr>
+<tr>
+<td><code>--dry-run</code> works but real run fails</td>
+<td>Dry-run skips real I/O, network, or file operations</td>
+<td>Always validate with a REAL run, not just <code>--dry-run</code>. Use dry-run only as a smoke test.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-pass-looks-like-not-just-it-ran">What PASS Looks Like (Not Just "It Ran")</h2>
+<table>
+<thead>
+<tr>
+<th>Verification</th>
+<th>Good Evidence</th>
+<th>Bad Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Functionality</td>
+<td>Output contains expected transformed data</td>
+<td><code>exit 0</code> only (proves nothing)</td>
+</tr>
+<tr>
+<td>Error handling</td>
+<td>Invalid input → clear error message + non-zero exit</td>
+<td>Crash/panic/traceback with stack trace</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td><code>Processed 1000 items in 0.8s</code></td>
+<td>No timing information</td>
+</tr>
+<tr>
+<td>Side effects</td>
+<td>Output file exists with correct content</td>
+<td>File exists but empty</td>
+</tr>
+<tr>
+<td>Entry point works</td>
+<td><code>which my-tool</code> returns a path AND <code>my-tool --help</code> prints usage</td>
+<td><code>python3 my_tool/cli.py</code> works (not how users invoke it)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="failure-troubleshooting">Failure Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command not found</code></td>
+<td>Wrong PATH or binary location</td>
+<td>Use absolute path: <code>$(pwd)/target/release/myapp</code></td>
+</tr>
+<tr>
+<td><code>command not found</code> (Python)</td>
+<td>Entry point not installed or not on PATH</td>
+<td>Run <code>pip install -e .</code> and check <code>which &lt;tool-name&gt;</code></td>
+</tr>
+<tr>
+<td><code>Permission denied</code></td>
+<td>Binary not executable</td>
+<td><code>chmod +x $BINARY</code></td>
+</tr>
+<tr>
+<td><code>dyld: Library not loaded</code></td>
+<td>Missing dynamic dependency</td>
+<td>Check <code>otool -L $BINARY</code> (macOS) or <code>ldd</code> (Linux)</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError</code></td>
+<td>Python package not installed or wrong env</td>
+<td><code>pip install -e .</code> in the correct virtualenv</td>
+</tr>
+<tr>
+<td><code>SyntaxError</code> on import</td>
+<td>Wrong Python version running the code</td>
+<td>Check shebang, use explicit <code>python3.12 -m module</code></td>
+</tr>
+<tr>
+<td>Non-zero exit with no stderr</td>
+<td>Error swallowed or written to log file</td>
+<td>Check for log files in working directory</td>
+</tr>
+<tr>
+<td>Works locally, fails in CI</td>
+<td>Different working directory or env vars</td>
+<td>Use absolute paths; check <code>$HOME</code>, <code>$PATH</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="never-do">Never Do</h2>
+<ul>
+<li><strong>NEVER use <code>cargo test</code> / <code>go test</code> / <code>npm test</code> / <code>pytest</code> for validation</strong> — those test abstractions, not the real binary or installed tool</li>
+<li><strong>NEVER run <code>python3 script.py</code> instead of the installed entry point</strong> — users don't run raw scripts, they run <code>my-tool</code> or <code>python3 -m my_module</code></li>
+<li><strong>NEVER mock file system operations</strong> — use real files, verify real output</li>
+<li><strong>NEVER create test fixtures</strong> — generate real input data or use existing data</li>
+<li><strong>NEVER add <code>#[cfg(test)]</code> / <code>if TEST_MODE</code> / <code>if __name__ == "__main__"</code> test paths</strong> — there is one code path: production</li>
+<li><strong>NEVER skip <code>pip install -e .</code></strong> — importing from source without installing misses entry points, package metadata, and dependency resolution</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/cli-validation.md">source → plugins/proofpunk/references/cli-validation.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:CLI-VALIDATION</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

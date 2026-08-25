@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Frontend Validation Reference — proofpunk doctrine</title>
+<meta name="description" content="- **Playwright**: `npx playwright install chromium` (if `chromium.launch()` fails with &quot;executable doesn&#x27;t exist&quot;)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / WEB-VALIDATION</div>
+  <div class="doc">
+<h1 id="web-frontend-validation-reference">Web Frontend Validation Reference</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>Playwright</strong>: <code>npx playwright install chromium</code> (if <code>chromium.launch()</code> fails with "executable doesn't exist")</li>
+<li><strong>Dev server</strong>: Your frontend must be running (<code>npm run dev</code>, <code>yarn dev</code>, etc.) before Playwright connects</li>
+<li><strong>Node 18+</strong>: Required for Playwright. Check with <code>node --version</code>.</li>
+</ul>
+<h2 id="the-validation-pattern">The Validation Pattern</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// validate.mjs — Playwright (recommended)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { chromium } <span class="im">from</span> <span class="st">&#39;playwright&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { mkdir } <span class="im">from</span> <span class="st">&#39;fs/promises&#39;</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> EVIDENCE <span class="op">=</span> <span class="st">&#39;./evidence/web&#39;</span><span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> <span class="fu">mkdir</span>(EVIDENCE<span class="op">,</span> { <span class="dt">recursive</span><span class="op">:</span> <span class="kw">true</span> })<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> browser <span class="op">=</span> <span class="cf">await</span> chromium<span class="op">.</span><span class="fu">launch</span>({ <span class="dt">headless</span><span class="op">:</span> <span class="kw">false</span> })<span class="op">;</span> <span class="co">// headed = see what&#39;s happening</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> page <span class="op">=</span> <span class="cf">await</span> browser<span class="op">.</span><span class="fu">newPage</span>({ <span class="dt">viewport</span><span class="op">:</span> { <span class="dt">width</span><span class="op">:</span> <span class="dv">1280</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">720</span> } })<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1. Navigate and screenshot initial state</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">goto</span>(<span class="st">&#39;http://localhost:5173&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">path</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span>EVIDENCE<span class="sc">}</span><span class="vs">/01-home.png`</span><span class="op">,</span> <span class="dt">fullPage</span><span class="op">:</span> <span class="kw">true</span> })<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2. Interact through real UI</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">fill</span>(<span class="st">&#39;[name=&quot;email&quot;]&#39;</span><span class="op">,</span> <span class="st">&#39;user@example.com&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">click</span>(<span class="st">&#39;button[type=&quot;submit&quot;]&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">waitForURL</span>(<span class="st">&#39;**/dashboard&#39;</span><span class="op">,</span> { <span class="dt">timeout</span><span class="op">:</span> <span class="dv">10000</span> })<span class="op">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">path</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span>EVIDENCE<span class="sc">}</span><span class="vs">/02-dashboard.png`</span><span class="op">,</span> <span class="dt">fullPage</span><span class="op">:</span> <span class="kw">true</span> })<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 3. Verify content (not just page load)</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> text <span class="op">=</span> <span class="cf">await</span> page<span class="op">.</span><span class="fu">textContent</span>(<span class="st">&#39;h1&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Dashboard heading: </span><span class="sc">${</span>text<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>} <span class="cf">catch</span> (err) {</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">path</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span>EVIDENCE<span class="sc">}</span><span class="vs">/error-state.png`</span> })<span class="op">;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&#39;Validation failed:&#39;</span><span class="op">,</span> err<span class="op">.</span><span class="at">message</span>)<span class="op">;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>} <span class="cf">finally</span> {</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> browser<span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="what-pass-looks-like">What PASS Looks Like</h2>
+<table>
+<thead>
+<tr>
+<th>Verification</th>
+<th>Good Evidence</th>
+<th>Bad Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Page loads</td>
+<td>Screenshot showing real content and layout</td>
+<td><code>200 OK</code> from curl (proves HTML served, not rendered)</td>
+</tr>
+<tr>
+<td>Form works</td>
+<td>Screenshot of filled form + success state</td>
+<td>Console log saying "form submitted"</td>
+</tr>
+<tr>
+<td>Navigation</td>
+<td>Screenshot of destination page with correct URL</td>
+<td><code>page.goto</code> didn't throw</td>
+</tr>
+<tr>
+<td>Error states</td>
+<td>Screenshot showing user-friendly error message</td>
+<td>Console showing error caught</td>
+</tr>
+<tr>
+<td>Responsive</td>
+<td>Screenshots at 375px, 768px, 1920px widths</td>
+<td>Only testing at one viewport</td>
+</tr>
+</tbody>
+</table>
+<h2 id="failure-troubleshooting">Failure Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blank page in screenshot</td>
+<td>JS bundle failed to load or render error</td>
+<td>Check browser console: <code>page.on('console', msg =&gt; ...)</code></td>
+</tr>
+<tr>
+<td>Element not found</td>
+<td>Wrong selector or element hasn't rendered</td>
+<td>Use <code>waitForSelector</code> with timeout; check actual HTML</td>
+</tr>
+<tr>
+<td>Timeout waiting for navigation</td>
+<td>Navigation never happened (form validation error?)</td>
+<td>Screenshot BEFORE the expected navigation</td>
+</tr>
+<tr>
+<td>CORS/network errors</td>
+<td>Backend not running or wrong URL</td>
+<td>Start backend first; check proxy config</td>
+</tr>
+<tr>
+<td>Stale data</td>
+<td>Browser cache or service worker</td>
+<td>Use fresh context: <code>browser.newContext()</code></td>
+</tr>
+<tr>
+<td>Different rendering in CI</td>
+<td>Headless browser renders differently</td>
+<td>Use <code>headless: false</code> for debugging; check viewport size</td>
+</tr>
+</tbody>
+</table>
+<h2 id="responsive-validation">Responsive Validation</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> viewports <span class="op">=</span> [</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;mobile&#39;</span><span class="op">,</span> <span class="dt">width</span><span class="op">:</span> <span class="dv">375</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">667</span> }<span class="op">,</span>   <span class="co">// iPhone SE</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;tablet&#39;</span><span class="op">,</span> <span class="dt">width</span><span class="op">:</span> <span class="dv">768</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">1024</span> }<span class="op">,</span>   <span class="co">// iPad</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;desktop&#39;</span><span class="op">,</span> <span class="dt">width</span><span class="op">:</span> <span class="dv">1920</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">1080</span> }<span class="op">,</span> <span class="co">// Desktop</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> vp <span class="kw">of</span> viewports) {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">setViewportSize</span>({ <span class="dt">width</span><span class="op">:</span> vp<span class="op">.</span><span class="at">width</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> vp<span class="op">.</span><span class="at">height</span> })<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">goto</span>(<span class="st">&#39;http://localhost:5173&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> page<span class="op">.</span><span class="fu">screenshot</span>({ <span class="dt">path</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span>EVIDENCE<span class="sc">}</span><span class="vs">/</span><span class="sc">${</span>vp<span class="op">.</span><span class="at">name</span><span class="sc">}</span><span class="vs">-home.png`</span><span class="op">,</span> <span class="dt">fullPage</span><span class="op">:</span> <span class="kw">true</span> })<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="never-do">Never Do</h2>
+<ul>
+<li><strong>NEVER use jsdom or happy-dom</strong> — they don't render CSS, run JS inconsistently, and miss real browser behavior</li>
+<li><strong>NEVER mock fetch/axios</strong> — mocked responses diverge from real API over time</li>
+<li><strong>NEVER render components in isolation</strong> (Testing Library) — a component alone proves nothing about the integrated app</li>
+<li><strong>NEVER use snapshot testing as validation</strong> — snapshots compare structure, not visual correctness</li>
+<li><strong>NEVER skip visual verification</strong> — READ the screenshots, don't just check they exist</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/web-validation.md">source → plugins/proofpunk/references/web-validation.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:WEB-VALIDATION</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

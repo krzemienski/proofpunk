@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backend API Validation Reference — proofpunk doctrine</title>
+<meta name="description" content="- **curl**: Pre-installed on macOS/Linux. Verify: `curl --version`">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / API-VALIDATION</div>
+  <div class="doc">
+<h1 id="backend-api-validation-reference">Backend API Validation Reference</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>curl</strong>: Pre-installed on macOS/Linux. Verify: <code>curl --version</code></li>
+<li><strong>jq</strong>: <code>brew install jq</code> (if <code>jq</code> not found — needed for JSON response verification)</li>
+<li><strong>Database</strong>: Start your real database before the server. Check with <code>pg_isready</code> (Postgres) or <code>mysqladmin ping</code> (MySQL).</li>
+</ul>
+<h2 id="the-validation-pattern">The Validation Pattern</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start → Wait → Request → Verify (always this order)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">SERVER_PID</span><span class="op">=</span><span class="st">&quot;&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">trap</span> <span class="st">&quot;kill </span><span class="va">$SERVER_PID</span><span class="st"> 2&gt;/dev/null&quot;</span> EXIT</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Start the real server</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">PORT</span><span class="op">=</span>8080 <span class="ex">cargo</span> run <span class="kw">&amp;</span>  <span class="co"># or: go run ., npm start, uvicorn main:app</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">SERVER_PID</span><span class="op">=</span><span class="va">$!</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Wait for healthy (poll, don&#39;t guess timing)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$(</span><span class="fu">seq</span> 1 60<span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">curl</span> <span class="at">-sf</span> <span class="st">&quot;http://localhost:</span><span class="va">$PORT</span><span class="st">/health&quot;</span> <span class="op">&gt;</span> /dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span> <span class="ot">-eq</span> 60 <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;Server failed to start&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">exit</span> 1</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sleep</span> 1</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Make real requests, capture responses</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="st">&quot;http://localhost:</span><span class="va">$PORT</span><span class="st">/api/v1/endpoint&quot;</span> <span class="kw">|</span> <span class="fu">tee</span> response.json <span class="kw">|</span> <span class="ex">jq</span> .</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="va">HTTP_CODE</span><span class="op">=</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-o</span> /dev/null <span class="at">-w</span> <span class="st">&quot;%{http_code}&quot;</span> <span class="st">&quot;http://localhost:</span><span class="va">$PORT</span><span class="st">/api/v1/endpoint&quot;</span><span class="va">)</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Verify response content (not just status code)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ex">jq</span> <span class="at">-e</span> <span class="st">&#39;.data | length &gt; 0&#39;</span> response.json <span class="op">&gt;</span> /dev/null <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;FAIL: No data in response&quot;</span></span></code></pre></div>
+<h2 id="what-pass-looks-like-not-just-200-ok">What PASS Looks Like (Not Just "200 OK")</h2>
+<table>
+<thead>
+<tr>
+<th>Verification</th>
+<th>Good Evidence</th>
+<th>Bad Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Endpoint works</td>
+<td>Response JSON with correct data structure + values</td>
+<td><code>200 OK</code> (proves endpoint exists, not correctness)</td>
+</tr>
+<tr>
+<td>Error handling</td>
+<td><code>{"error": "Not found"}</code> with 404 status</td>
+<td>500 with stack trace</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td>401 without token, 200 with valid token</td>
+<td>Only testing the happy path</td>
+</tr>
+<tr>
+<td>Pagination</td>
+<td>Response includes <code>total</code>, <code>page</code>, <code>limit</code> fields</td>
+<td>Only checking first page</td>
+</tr>
+<tr>
+<td>Data integrity</td>
+<td>Created item retrievable via GET with correct fields</td>
+<td>POST returns 201 without verifying retrieval</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-curl-patterns">Common curl Patterns</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capture status + body + timing in one call</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-w</span> <span class="st">&quot;\nHTTP:%{http_code} TIME:%{time_total}s\n&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;http://localhost:</span><span class="va">$PORT</span><span class="st">/api/v1/resource&quot;</span> <span class="kw">|</span> <span class="fu">tee</span> evidence.json</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify JSON field exists and has value</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">jq</span> <span class="at">-e</span> <span class="st">&#39;.items | length &gt; 0&#39;</span> evidence.json <span class="op">&gt;</span> /dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;FAIL: empty items&quot;</span></span></code></pre></div>
+<h2 id="failure-troubleshooting">Failure Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connection refused</td>
+<td>Server not running or wrong port</td>
+<td>Check with <code>lsof -i :$PORT</code></td>
+</tr>
+<tr>
+<td>404 on valid endpoint</td>
+<td>Wrong API prefix (e.g., missing <code>/api/v1</code>)</td>
+<td>Check server route definitions</td>
+</tr>
+<tr>
+<td>500 Internal Server Error</td>
+<td>Server-side exception</td>
+<td>Read server stderr/logs for stack trace</td>
+</tr>
+<tr>
+<td>Empty response body</td>
+<td>Route returns before query completes</td>
+<td>Check for missing <code>await</code> or async issues</td>
+</tr>
+<tr>
+<td>CORS error (from browser)</td>
+<td>Missing CORS headers</td>
+<td>Add CORS middleware; or use curl (no CORS enforcement)</td>
+</tr>
+<tr>
+<td>Wrong data format</td>
+<td>Backend changed JSON keys</td>
+<td>Compare curl response with expected schema</td>
+</tr>
+</tbody>
+</table>
+<h2 id="never-do">Never Do</h2>
+<ul>
+<li><strong>NEVER use <code>supertest</code>, <code>httptest</code>, or mock servers</strong> — test the REAL running server</li>
+<li><strong>NEVER use in-memory databases</strong> — they skip migrations and have different SQL behavior</li>
+<li><strong>NEVER test against a "test" configuration</strong> — use production config with test data</li>
+<li><strong>NEVER skip authentication testing</strong> — test both with and without valid credentials</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/api-validation.md">source → plugins/proofpunk/references/api-validation.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:API-VALIDATION</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

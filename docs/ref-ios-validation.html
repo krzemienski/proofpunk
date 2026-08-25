@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iOS/macOS Validation Reference — proofpunk doctrine</title>
+<meta name="description" content="- **Xcode CLI tools**: `xcode-select --install` (if `xcodebuild` not found)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / IOS-VALIDATION</div>
+  <div class="doc">
+<h1 id="iosmacos-validation-reference">iOS/macOS Validation Reference</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>Xcode CLI tools</strong>: <code>xcode-select --install</code> (if <code>xcodebuild</code> not found)</li>
+<li><strong>idb</strong>: <code>brew install idb-companion</code> (if <code>idb_describe</code> / <code>idb_tap</code> fail)</li>
+<li><strong>Simulator</strong>: Must be booted — <code>xcrun simctl boot &lt;UDID&gt;</code> (get UDIDs with <code>xcrun simctl list devices available</code>)</li>
+</ul>
+<h2 id="decision-tree-what-to-validate">Decision Tree: What To Validate</h2>
+<p>Before capturing evidence, decide WHAT proves the feature works:</p>
+<table>
+<thead>
+<tr>
+<th>Feature Type</th>
+<th>What PASS Looks Like</th>
+<th>What to Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New screen</td>
+<td>Correct layout, real data displayed, no placeholder text</td>
+<td>Full screen with data loaded</td>
+</tr>
+<tr>
+<td>Data display</td>
+<td>Correct count, correct formatting, correct sorting</td>
+<td>The specific data element (badge, list, chart)</td>
+</tr>
+<tr>
+<td>Navigation</td>
+<td>Correct destination, back button works, state preserved</td>
+<td>Before nav, after nav, after back</td>
+</tr>
+<tr>
+<td>Error handling</td>
+<td>Graceful error UI, no crash, correct message</td>
+<td>Error state with readable message</td>
+</tr>
+<tr>
+<td>API integration</td>
+<td>Data from backend appears in UI, correct transformation</td>
+<td>Screen showing backend data + curl of API endpoint</td>
+</tr>
+</tbody>
+</table>
+<h2 id="build--install--launch-sequence">Build → Install → Launch Sequence</h2>
+<p>The order is non-negotiable. Skip a step and you get stale binaries or ghost state:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Build (capture the .app path)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">xcodebuild</span> <span class="at">-scheme</span> <span class="op">&lt;</span>Scheme<span class="op">&gt;</span> -destination <span class="st">&#39;id=&lt;UDID&gt;&#39;</span> <span class="at">-quiet</span> <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-5</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">APP_PATH</span><span class="op">=</span><span class="va">$(</span><span class="fu">find</span> ~/Library/Developer/Xcode/DerivedData/<span class="op">&lt;</span>Project<span class="op">&gt;</span>-<span class="pp">*</span>/Build/Products/Debug-iphonesimulator/<span class="pp">*</span>.app <span class="at">-maxdepth</span> 0 <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span><span class="va">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Terminate existing (stale state causes false results)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">xcrun</span> simctl terminate <span class="st">&quot;</span><span class="va">$UDID</span><span class="st">&quot;</span> <span class="op">&lt;</span>bundle-id<span class="op">&gt;</span> 2<span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Install fresh</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">xcrun</span> simctl install <span class="st">&quot;</span><span class="va">$UDID</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$APP_PATH</span><span class="st">&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Launch</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ex">xcrun</span> simctl launch <span class="st">&quot;</span><span class="va">$UDID</span><span class="st">&quot;</span> <span class="op">&lt;</span>bundle-id<span class="op">&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Wait for render (3s minimum, 5s for data-heavy screens)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 3</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Screenshot</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ex">xcrun</span> simctl io <span class="st">&quot;</span><span class="va">$UDID</span><span class="st">&quot;</span> screenshot evidence/01-screen.png</span></code></pre></div>
+<p><strong>Critical</strong>: Step 1 builds to DerivedData (<code>~/Library/Developer/Xcode/DerivedData/</code>), NOT to a local <code>build/</code> directory. The <code>find</code> command above gets the correct path. Verify with <code>stat</code> that the binary timestamp matches your build time.</p>
+<h2 id="ui-interaction-methods-ranked-by-reliability">UI Interaction Methods (Ranked by Reliability)</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Reliability</th>
+<th>When to Use</th>
+<th>Limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deep links (<code>openurl</code>)</td>
+<td>High</td>
+<td>Navigate to specific screens</td>
+<td>UUIDs must be lowercase; shows "Open in?" dialog if app not foregrounded</td>
+</tr>
+<tr>
+<td><code>idb_describe</code> + <code>idb_tap</code></td>
+<td>High</td>
+<td>Tap specific UI elements</td>
+<td>Can't reach SwiftUI toolbar buttons; need accessibility tree first</td>
+</tr>
+<tr>
+<td>Swipe gestures (<code>idb ui swipe</code>)</td>
+<td>Medium</td>
+<td>Open sidebars, pull-to-refresh</td>
+<td>Coordinates are logical points, not pixels; timing-sensitive</td>
+</tr>
+<tr>
+<td>Modify <code>@State</code> defaults</td>
+<td>High</td>
+<td>Force-show specific screens for screenshots</td>
+<td>Requires rebuild; must revert after capture</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The <code>idb_describe</code> pattern</strong> (most reliable for taps):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the accessibility tree with exact coordinates</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">idb_describe</span> operation:all</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the element you need, note its centerX/centerY</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Tap those exact coordinates</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">idb_tap</span> <span class="op">&lt;</span>centerX<span class="op">&gt;</span> <span class="op">&lt;</span>centerY<span class="op">&gt;</span></span></code></pre></div>
+<h2 id="failure-troubleshooting">Failure Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Black screenshot</td>
+<td>App hasn't rendered yet</td>
+<td>Increase sleep to 5s; check if app is actually in foreground</td>
+</tr>
+<tr>
+<td>Shows onboarding/setup</td>
+<td>Backend not running</td>
+<td>Start backend, verify with <code>curl -sf http://localhost:PORT/health</code></td>
+</tr>
+<tr>
+<td>Shows previous screen</td>
+<td>Navigation hasn't completed</td>
+<td>Increase sleep after deep link/tap; verify URL scheme</td>
+</tr>
+<tr>
+<td>White flash in dark mode</td>
+<td><code>preferredColorScheme(.dark)</code> not set</td>
+<td>Add to root view or scene</td>
+</tr>
+<tr>
+<td>"Open in App?" dialog</td>
+<td>App not foregrounded before <code>openurl</code></td>
+<td>Launch app first, then <code>openurl</code></td>
+</tr>
+<tr>
+<td>Screenshot shows other app</td>
+<td>Wrong UDID or <code>booted</code> resolves to wrong simulator</td>
+<td>Use explicit UDID, not <code>booted</code></td>
+</tr>
+<tr>
+<td>Data shows but wrong count</td>
+<td>API pagination — showing page size not total</td>
+<td>Check API response includes total field; verify UI reads it</td>
+</tr>
+<tr>
+<td>Crash on launch</td>
+<td>Missing environment object, backend dependency</td>
+<td>Check crash report <code>.ips</code> files; start backend first</td>
+</tr>
+</tbody>
+</table>
+<h2 id="never-do">Never Do</h2>
+<ul>
+<li><strong>NEVER use <code>booted</code> in multi-agent environments</strong> — resolves to a random booted simulator</li>
+<li><strong>NEVER trust the <code>build/</code> directory</strong> — Xcode builds to DerivedData, not local</li>
+<li><strong>NEVER skip terminate before install</strong> — stale state produces false positive/negative results</li>
+<li><strong>NEVER guess tap coordinates from screenshots</strong> — use <code>idb_describe</code> for exact accessibility coordinates</li>
+<li><strong>NEVER use XCTest/XCUITest for validation</strong> — that's CI, not user-perspective testing</li>
+</ul>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/ios-validation.md">source → plugins/proofpunk/references/ios-validation.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:IOS-VALIDATION</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.0.1 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>
