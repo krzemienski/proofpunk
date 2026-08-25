@@ -2,7 +2,7 @@
 """Generate the proofpunk GitHub Pages site into proofpunk-main/docs/."""
 import os, re, glob, json, html, subprocess, datetime
 
-ROOT = "/tmp/build/proofpunk/proofpunk-main"
+ROOT = os.environ.get("PROOFPUNK_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs")
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(OUT + "/assets", exist_ok=True)
@@ -135,7 +135,8 @@ enforces = {}
 skills_section = re.search(r"## The skills\n(.*?)\n## ", readme, re.S).group(1)
 for m in re.finditer(r"\| `([a-z-]+)` \| ([^|]+) \|", skills_section):
     enforces[m.group(1)] = m.group(2).strip()
-assert len(enforces) == 19, f"expected 19 skill-table rows, got {len(enforces)}"
+SKILL_DIRS = len([d for d in glob.glob(os.path.join(ROOT, "plugins/proofpunk/skills/*")) if os.path.isdir(d)])
+assert len(enforces) == SKILL_DIRS, f"README skill table has {len(enforces)} rows but {SKILL_DIRS} skill dirs exist"
 
 # skill layers, from README "skill stack" mermaid (codebase-truth-audit added to Deep analysis,
 # per README: "the code-truth lane to session-intent's intent lane")
@@ -332,7 +333,7 @@ index_main = f"""
 """
 write("index.html", chrome(
     "proofpunk — done means proven by end-user testing",
-    "Proofpunk — execution-first delivery plugin for Claude Code, OMP, and OpenCode. 19 skills where end-user testing is the only PASS.",
+    "Proofpunk — execution-first delivery plugin for Claude Code, OMP, and OpenCode. 18 skills where end-user testing is the only PASS.",
     "overview", index_main, "OVERVIEW"))
 
 # ---------------- skills.html ----------------
@@ -516,7 +517,7 @@ docs_main = f"""
 </section>
 """
 write("docs.html", chrome("docs — architecture & doctrine — proofpunk",
-                          "Proofpunk architecture, usage guide, consolidation decisions, validation results, and the 9 ruling doctrine references.",
+                          "Proofpunk architecture, usage guide, consolidation decisions, validation results, and the 13 ruling doctrine references.",
                           "docs", docs_main, "DOCS"))
 
 # ---------------- install.html ----------------

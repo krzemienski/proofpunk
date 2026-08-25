@@ -43,7 +43,7 @@ OPENCODE_SUBPATH="plugins/proofpunk/opencode"
 EXTENSIONS_SUBPATH="plugins/proofpunk/extensions"
 DOCTRINE_DIRNAME="proofpunk-doctrine"
 
-ALL_SKILLS="brainstorm codebase-truth-audit end-user-testing full-functional-audit implement mobile-validation-runner plan-hardening production-readiness prompt-forge red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
+ALL_SKILLS="brainstorm codebase-truth-audit end-user-testing full-functional-audit implement mobile-validation-runner plan-hardening production-readiness prompt-forge proofpunk red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
 
 # ------------------------------------------------------------------- utils --
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }
@@ -274,20 +274,34 @@ for skill in $SELECTED; do
     find "$dst" -name '*.bak' -delete
     # Depth normalization: files INSIDE the skill's references/ dir cite
     # bundled siblings by bare name (they live in the same directory).
+    # Only rewrite the 'references/' path segment itself — never a '../'
+    # prefix, which already points at the sibling and would be mangled.
     if [ -d "$dst/references" ]; then
       find "$dst/references" -name '*.md' -exec sed -i.bak \
-        -e 's|references/\([A-Za-z0-9._-]*\)|\1|g' {} \;
+        -e 's|\(\.\./\)*references/\([A-Za-z0-9._-]*\)|\2|g' {} \;
       find "$dst/references" -name '*.bak' -delete
     fi
     if [ -d "$REFS_SRC" ]; then
       mkdir -p "$dst/references"
-      for ref in "$REFS_SRC"/*; do
-        name="$(basename "$ref")"
-        # match citations at any depth: 'references/<name>', '../references/<name>',
-        # or a bare '<name>' (already depth-normalized inside references/ files)
-        if grep -rqE "\`(\./)*(\.\./)*(references/)?$name\`" "$dst" --include='*.md'; then
-          [ -f "$dst/references/$name" ] || cp "$ref" "$dst/references/$name"
-        fi
+      # Bundle to a FIXED POINT: a bundled reference may itself cite other
+      # shared doctrine (e.g. evidence-contract.md -> end-user-actor.md), so
+      # one pass is not enough — keep sweeping until nothing new is copied.
+      while :; do
+        added=0
+        for ref in "$REFS_SRC"/*; do
+          name="$(basename "$ref")"
+          [ -f "$dst/references/$name" ] && continue
+          # Match citations at any depth, backticked OR bare prose:
+          # 'references/<name>', '../references/<name>', or a bare '<name>'
+          # (already depth-normalized inside references/ files). Backticks are
+          # NOT required — un-backticked prose citations are real citations and
+          # were silently dropped before, shipping unresolvable doctrine refs.
+          if grep -rqE "(^|[^A-Za-z0-9._/-])(\./)*(\.\./)*(references/)?$name" "$dst" --include='*.md'; then
+            cp "$ref" "$dst/references/$name"
+            added=$((added+1))
+          fi
+        done
+        [ "$added" -eq 0 ] && break
       done
     fi
   fi
@@ -550,16 +564,30 @@ def find_bad(root):
             p = os.path.join(dp, fn)
             src = open(p, encoding='utf-8').read()
             # explicit relative citations: references/X, ../references/X, …
-            for m in re.finditer(r'`((?:\.\./)*(?:references|scripts|assets|examples)/[^`\s]+)`', src):
-                t = m.group(1).split('#')[0]
+            # Backticked OR bare prose — an un-backticked citation is still a
+            # citation, and treating it as invisible is what let broken refs
+            # ship while verify printed "all skills pass".
+            for m in re.finditer(
+                    r'(?:^|[^A-Za-z0-9._/-])((?:\.\./)*(?:references|scripts|assets|examples)/[^\s`)\]]+)',
+                    src, re.M):
+                t = m.group(1).split('#')[0].rstrip('.,;:')
                 if '<' in t or '{' in t or '*' in t:
                     continue
-                if not os.path.exists(os.path.normpath(os.path.join(dp, t))):
+                # A bare 'scripts/x' inside references/ may resolve EITHER as a
+                # sibling (references/scripts/x) or as a runnable command from
+                # the skill root (`bash scripts/validate.sh`). Both are valid
+                # authoring styles, so accept either before reporting broken.
+                cands = [os.path.join(dp, t)]
+                if (os.path.basename(dp) == 'references'
+                        and not t.startswith('..')
+                        and not t.startswith('references/')):
+                    cands.append(os.path.join(os.path.dirname(dp), t))
+                if not any(os.path.exists(os.path.normpath(c)) for c in cands):
                     bad.append((fn, t, dp))
             # bare-name citations of shared doctrine files (depth-normalized
             # inside references/) must resolve to a bundled sibling
             if os.path.basename(dp) == 'references' and os.path.isdir(refs_src):
-                for m in re.finditer(r'`([a-z0-9][a-z0-9._-]*\.md)`', src):
+                for m in re.finditer(r'(?:^|[^A-Za-z0-9._/-])([a-z0-9][a-z0-9._-]*\.md)', src, re.M):
                     t = m.group(1)
                     if os.path.exists(os.path.join(refs_src, t)) and not os.path.exists(os.path.join(dp, t)):
                         bad.append((fn, t, dp))

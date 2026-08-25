@@ -14,9 +14,14 @@ for f in "$HOOKS"/*.sh; do
   if bash -n "$f" 2>/dev/null; then case_ok "syntax $(basename "$f")"; else case_fail "syntax $(basename "$f")"; fi
 done
 
-echo "== session-start.sh emits doctrine context"
+echo "== session-start.sh emits valid JSON with doctrine context"
 out=$(sh "$HOOKS/session-start.sh" 2>/dev/null)
-if printf '%s' "$out" | grep -q "additionalContext" && printf '%s' "$out" | grep -q "end-user testing is the only PASS"; then
+if printf '%s' "$out" | python3 -c '
+import json, sys
+d = json.load(sys.stdin)["hookSpecificOutput"]
+assert d["hookEventName"] == "SessionStart", "wrong hookEventName"
+assert "end-user testing is the only PASS" in d["additionalContext"], "doctrine missing"
+' 2>/dev/null; then
   case_ok "session-start doctrine context"
 else
   case_fail "session-start doctrine context — got: $out"
