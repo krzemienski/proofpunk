@@ -31,7 +31,7 @@ Scoped end-user test: only the named flow is driven, but every step still requir
 /proofpunk:implement "stripe webhook handler"
 /proofpunk:verify "deliver a test webhook and confirm idempotent processing"
 ```
-Cook builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.
+Implement builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.
 
 **4. Scoped — everything you can select**
 

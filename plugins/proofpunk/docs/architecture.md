@@ -1,4 +1,4 @@
-# Proofpunk Architecture — How the 19 Skills Execute as One System
+# Proofpunk Architecture — How the 18 Skills Execute as One System
 
 This is the authoritative map of how the skills work **with one another**: who
 owns each method, who calls whom, in what order, and why nothing is
@@ -6,7 +6,7 @@ duplicated. If you only read one doc, read this one.
 
 ## 1. The mental model
 
-The 17 skills are **not** 19 independent procedures. They form a **directed
+The 18 skills are **not** 18 independent procedures. They form a **directed
 acyclic delegation graph**:
 
 - **A method lives in exactly one skill** (its *owner*). Every other skill
@@ -20,11 +20,12 @@ acyclic delegation graph**:
   change. Depth = how far a skill sits from the leaf owners:
 
 ```
-depth 6  implement                     (the orchestrator — calls 9 skills)
-depth 5  production-readiness
-depth 4  codebase-truth-audit, full-functional-audit, plan-hardening, stack-testing
-depth 3  mobile-validation-runner, red-team-eval, root-cause-debugging, ui-experience-audit
-depth 1  validation-plan, visual-inspection
+depth 5  proofpunk                     (the router head — calls all 17, called by none)
+depth 4  production-readiness
+depth 3  full-functional-audit
+depth 2  codebase-truth-audit, implement, mobile-validation-runner, plan-hardening,
+         stack-testing, ui-experience-audit
+depth 1  red-team-eval, root-cause-debugging, validation-plan, visual-inspection
 depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing   (leaf owners — call nothing)
 ```
 
@@ -54,6 +55,23 @@ verbatim Actor Mandate went from **12 copies → 1 owner + one-line deferrals**.
 ```mermaid
 graph TD
   n0["end-user-testing"]
+  proofpunk --> implement
+  proofpunk --> brainstorm
+  proofpunk --> validation-plan
+  proofpunk --> plan-hardening
+  proofpunk --> codebase-truth-audit
+  proofpunk --> full-functional-audit
+  proofpunk --> production-readiness
+  proofpunk --> ui-experience-audit
+  proofpunk --> root-cause-debugging
+  proofpunk --> red-team-eval
+  proofpunk --> stack-testing
+  proofpunk --> mobile-validation-runner
+  proofpunk --> n0
+  proofpunk --> visual-inspection
+  proofpunk --> tui-testing
+  proofpunk --> session-intent
+  proofpunk --> prompt-forge
   implement --> session-intent
   implement --> brainstorm
   implement --> prompt-forge

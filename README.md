@@ -1,7 +1,7 @@
 # Proofpunk
 
 An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCode**:
-17 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
+18 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
 
@@ -58,6 +58,7 @@ for the other surfaces you run beside it.
 
 | Skill | What it enforces |
 |-------|------------------|
+| `proofpunk` | Entry router: classifies the request and hands off to the shortest ordered chain across the 17 delivery skills |
 | `brainstorm` | Scout-first, exact-requirements, present-before-asking discipline; no code before an approved design |
 | `prompt-forge` | Prompt AUTHOR / RATE (7-dimension /100 rubric) / OPTIMIZE / PIPELINE modes with a scored quality bar |
 | `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations |
@@ -106,7 +107,7 @@ skill's own Related Skills / delegation contract.
 | `fresh_evidence.py init-run\|next-step\|seal\|validate` | `end-user-testing` | none (leaf tool) |
 | `with_server.py --server ... --port ... -- <check>` | `stack-testing` | none (leaf tool) |
 | `/proofpunk:install [--clobber] [--no-rules]` | project memory installer (command) | writes CLAUDE.md + `.claude/rules/` from `assets/` |
-| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 17 skills + doctrine |
+| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 18 skills + doctrine |
 
 ---
 
@@ -349,7 +350,7 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 | `--target claude-code\|omp` | which agent's skills dir to install into |
 | `--dir PATH` | explicit skills dir (overrides --target) |
 | `--source github\|local` / `--source-dir PATH` / `--ref REF` | where the skills come from: GitHub at a ref, or a local checkout |
-| `--only a,b,c` | surgical subset instead of all 17 |
+| `--only a,b,c` | surgical subset instead of all 18 |
 | `--list` | show what would be installed, then exit |
 | `--override` | consent to REPLACE same-name skills (timestamped `.bak` backups) |
 | `--backup` / `--no-backup` | backup control when overriding |
@@ -363,8 +364,8 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 
 | Invocation | What happens |
 |------------|--------------|
-| `proofpunk-install.sh --target claude-code` | first-time: all 17 skills + doctrine + verify, from GitHub |
-| `--target omp --themes --plugins` | 17 skills + 20 themes + doctrine-guard extension for oh-my-pi |
+| `proofpunk-install.sh --target claude-code` | first-time: all 18 skills + doctrine + verify, from GitHub |
+| `--target omp --themes --plugins` | 18 skills + 20 themes + doctrine-guard extension for oh-my-pi |
 | `--only prompt-forge,implement --override` | surgical refresh of two skills, backups taken |
 | `--source local --source-dir /path/to/repo --no-verify` | offline install from a checkout, self-check skipped |
 | `--inject-claude-md ~/.claude/CLAUDE.md` | rules block appended once; re-running leaves it unchanged (idempotent) |
@@ -406,8 +407,8 @@ graph TD
     M --> P["plugins/proofpunk<br/>the plugin"]
     M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
-    P --> S["skills/ — 17 skills"]
-    P --> R["references/ — 9 shared doctrine files"]
+    P --> S["skills/ — 18 skills"]
+    P --> R["references/ — 13 shared doctrine files"]
     P --> D["docs/ — consolidation + validation records"]
     R -.->|cited by| S
 ```
@@ -597,7 +598,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/proofpunk/              the plugin (17 skills + references + docs)
+plugins/proofpunk/              the plugin (18 skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 
