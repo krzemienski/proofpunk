@@ -1,0 +1,82 @@
+[
+  {
+    "page": "index.html",
+    "badge": "18",
+    "h1": "“Done” means proven\nby end-user testing",
+    "len": 9373,
+    "stale17": false,
+    "title": "proofpunk — done means proven by end-user testing"
+  },
+  {
+    "page": "skills.html",
+    "badge": "18",
+    "h1": "18 skills",
+    "len": 21482,
+    "stale17": false,
+    "title": "skills — 18 skills — proofpunk"
+  },
+  {
+    "page": "commands.html",
+    "badge": "18",
+    "h1": "6 slash commands",
+    "len": 14106,
+    "stale17": false,
+    "title": "commands — 6+6 commands — proofpunk"
+  },
+  {
+    "page": "docs.html",
+    "badge": "18",
+    "h1": "Architecture & decisions",
+    "len": 2585,
+    "stale17": false,
+    "title": "docs — architecture & doctrine — proofpunk"
+  },
+  {
+    "page": "install.html",
+    "badge": "18",
+    "h1": "Install proofpunk",
+    "len": 2785,
+    "stale17": false,
+    "title": "install — proofpunk"
+  },
+  {
+    "page": "ref-api-validation.html",
+    "badge": "18",
+    "h1": "Backend API Validation Reference",
+    "len": 3491,
+    "stale17": false,
+    "title": "Backend API Validation Reference — proofpunk doctrine"
+  },
+  {
+    "page": "ref-ci-gates.html",
+    "badge": "18",
+    "h1": "CI / Pre-Commit Quality Gates (shared)",
+    "len": 2011,
+    "stale17": false,
+    "title": "CI / Pre-Commit Quality Gates (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-cli-validation.html",
+    "badge": "18",
+    "h1": "CLI Application Validation Reference",
+    "len": 6626,
+    "stale17": false,
+    "title": "CLI Application Validation Reference — proofpunk doctrine"
+  },
+  {
+    "page": "ref-defect-pattern-database.html",
+    "badge": "18",
+    "h1": "UI Defect Pattern Database",
+    "len": 15320,
+    "stale17": false,
+    "title": "UI Defect Pattern Database — proofpunk doctrine"
+  },
+  {
+    "page": "ref-end-user-actor.html",
+    "badge": "18",
+    "h1": "End-User Actor Mandate (shared)",
+    "len": 5843,
+    "stale17": false,
+    "title": "End-User Actor Mandate (shared) — proofpunk doctrine"
+  }
+]

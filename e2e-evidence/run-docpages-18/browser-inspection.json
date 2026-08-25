@@ -1,0 +1,30 @@
+[
+  {
+    "page": "doc-architecture.html",
+    "badge": "18",
+    "h1": "Proofpunk Architecture — How the 19 Skills Execute as One System",
+    "hasRouter": true,
+    "stale17": false
+  },
+  {
+    "page": "doc-usage-guide.html",
+    "badge": "18",
+    "h1": "Proofpunk Usage Guide — Claude Code, oh-my-pi, and OpenCode",
+    "hasRouter": false,
+    "stale17": false
+  },
+  {
+    "page": "doc-invocation-contracts.html",
+    "badge": "18",
+    "h1": "Invocation Contracts — how skills, hooks, agents, and plugins actually fire",
+    "hasRouter": false,
+    "stale17": false
+  },
+  {
+    "page": "doc-hooks-and-init-design.html",
+    "badge": "18",
+    "h1": "Design — proofpunk v1.10.0: deterministic hook enforcement + /proofpunk:install",
+    "hasRouter": false,
+    "stale17": false
+  }
+]

@@ -1,0 +1,42 @@
+== Proofpunk installer ==
+target dir : /tmp/pp-baseline-20260824T164928/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 17 skill(s)
+  INSTALL brainstorm
+  INSTALL codebase-truth-audit
+  INSTALL end-user-testing
+  INSTALL full-functional-audit
+  INSTALL implement
+  INSTALL mobile-validation-runner
+  INSTALL plan-hardening
+  INSTALL production-readiness
+  INSTALL prompt-forge
+  INSTALL red-team-eval
+  INSTALL root-cause-debugging
+  INSTALL session-intent
+  INSTALL stack-testing
+  INSTALL tui-testing
+  INSTALL ui-experience-audit
+  INSTALL validation-plan
+  INSTALL visual-inspection
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✓ end-user-testing
+  ✓ full-functional-audit
+  ✓ implement
+  ✓ mobile-validation-runner
+  ✓ plan-hardening
+  ✓ production-readiness (auto-fixed 1 broken ref(s))
+  ✓ prompt-forge
+  ✓ red-team-eval
+  ✓ root-cause-debugging (auto-fixed 1 broken ref(s))
+  ✓ session-intent (auto-fixed 1 broken ref(s))
+  ✓ stack-testing
+  ✓ tui-testing
+  ✓ ui-experience-audit
+  ✓ validation-plan
+  ✓ visual-inspection
+verify     : all skills pass (see ✓ lines above)
+== summary: 17 installed, 0 replaced, 0 skipped (collision), 0 missing ==

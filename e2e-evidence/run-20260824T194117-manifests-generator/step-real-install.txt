@@ -1,0 +1,17 @@
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✓ end-user-testing
+  ✓ full-functional-audit
+  ✓ implement
+  ✓ mobile-validation-runner
+  ✓ plan-hardening
+  ✓ production-readiness
+  ✓ prompt-forge
+  ✓ red-team-eval
+  ✓ root-cause-debugging
+  ✓ session-intent
+  ✓ stack-testing
+  ✓ tui-testing
+  ✓ ui-experience-audit
+  ✓ validation-plan
+  ✓ visual-inspection

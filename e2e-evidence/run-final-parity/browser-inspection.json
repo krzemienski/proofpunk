@@ -1,0 +1,34 @@
+[
+  {
+    "page": "index.html",
+    "archDocs": "6",
+    "h1": "“Done” means proven\nby end-user testing",
+    "refs": "13",
+    "skills": "18",
+    "zeroDocs": false
+  },
+  {
+    "page": "docs.html",
+    "archDocs": null,
+    "h1": "Architecture & decisions",
+    "refs": "13",
+    "skills": "18",
+    "zeroDocs": false
+  },
+  {
+    "page": "doc-validation-results.html",
+    "archDocs": null,
+    "h1": "Validation Results — Proofpunk v1.0.0",
+    "refs": "13",
+    "skills": "18",
+    "zeroDocs": false
+  },
+  {
+    "page": "doc-consolidation-decisions.html",
+    "archDocs": null,
+    "h1": "Consolidation Decisions — Proofpunk",
+    "refs": "13",
+    "skills": "18",
+    "zeroDocs": false
+  }
+]

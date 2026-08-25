@@ -1,0 +1,1 @@
+{"phase":"docs-counts","files":4,"cap":5,"trio":{"test_hooks":0,"dry_run":0,"verify_orchestration":0},"install_rc":0,"installed_dirs":18,"deferred_phases":["manifests(4 files)","site-generator(2 files)"]}

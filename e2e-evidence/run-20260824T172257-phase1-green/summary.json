@@ -1,0 +1,24 @@
+{
+  "run": "20260824T172257",
+  "phase1": {
+    "skill_dirs": 17,
+    "test-hooks": 0,
+    "dry-run-install": 0,
+    "verify-orchestration": 0,
+    "install_rc": 0,
+    "citations": 79,
+    "unresolved": 0,
+    "installed": 17,
+    "transitive_expected": [
+      "end-user-actor.md",
+      "evidence-contract.md",
+      "severity-model.md"
+    ],
+    "transitive_bundled": [
+      "end-user-actor.md",
+      "evidence-contract.md",
+      "severity-model.md"
+    ],
+    "transitive_missing": []
+  }
+}

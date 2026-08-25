@@ -1,0 +1,13 @@
+ .claude-plugin/marketplace.json              |  2 +-
+ .omp-plugin/marketplace.json                 |  2 +-
+ README.md                                    |  2 +-
+ plugins/proofpunk/.claude-plugin/plugin.json |  2 +-
+ plugins/proofpunk/.omp-plugin/plugin.json    |  2 +-
+ plugins/proofpunk/commands/verify.md         |  2 +-
+ plugins/proofpunk/docs/usage-guide.md        |  4 +--
+ plugins/proofpunk/hooks/session-start.sh     |  2 +-
+ tools/INSTALL.md                             | 16 ++++-----
+ tools/build-site.py                          |  9 ++---
+ tools/proofpunk-install.sh                   | 52 +++++++++++++++++++++-------
+ tools/test-hooks.sh                          |  9 +++--
+ 12 files changed, 69 insertions(+), 35 deletions(-)

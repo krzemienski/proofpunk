@@ -1,0 +1,22 @@
+{
+  "run": "20260824T170248",
+  "total": 76,
+  "unresolved": 3,
+  "items": [
+    {
+      "file": "production-readiness/references/evidence-contract.md",
+      "line": 7,
+      "citation": "end-user-actor.md"
+    },
+    {
+      "file": "root-cause-debugging/references/evidence-contract.md",
+      "line": 7,
+      "citation": "end-user-actor.md"
+    },
+    {
+      "file": "session-intent/references/evidence-contract.md",
+      "line": 7,
+      "citation": "end-user-actor.md"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+== fixture: existing project with package.json + existing CLAUDE.md
+== step 1 detect
+  PASS: detected node stack
+  PASS: detected TUI (ink)
+== step 2 merge CLAUDE.md from template
+  PASS: markers present
+  PASS: user content preserved
+  PASS: CLAUDE.md ≤ 200 lines (      24)
+  PASS: detected test command substituted
+  PASS: no template placeholders left
+== step 3 scoped rules
+  PASS: proof-obligations rule written
+  PASS: evidence-contract rule written
+  PASS: tui-driving rule written (TUI detected)
+  PASS: evidence-contract has paths scoping
+== step 4 verify block (as the command prints it)
+      24 /tmp/pp-init-fixture/CLAUDE.md
+      15 /tmp/pp-init-fixture/.claude/rules/evidence-contract.md
+      16 /tmp/pp-init-fixture/.claude/rules/proof-obligations.md
+      19 /tmp/pp-init-fixture/.claude/rules/tui-driving.md
+      74 total
+1
+---
+description: Task-level proof contract — every task ends with an end-user test artifact or is reported UNVERIFIED
+---
+
+== opencode target: AGENTS.md + .opencode/rules
+  PASS: opencode AGENTS.md marker present
+  PASS: AGENTS.md carries the no-@-imports instruction
+  PASS: AGENTS.md has no Claude-only @-imports
+  PASS: opencode rules dir written
+  PASS: AGENTS.md placeholders substituted
+
+INSTALL DRY-RUN FAILS: 0

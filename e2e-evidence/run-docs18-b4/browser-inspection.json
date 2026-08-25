@@ -1,0 +1,20 @@
+[
+  {
+    "page": "ref-severity-model.html",
+    "badge": "18",
+    "h1": "Severity Model (shared)",
+    "stale17": false
+  },
+  {
+    "page": "ref-web-validation.html",
+    "badge": "18",
+    "h1": "Web Frontend Validation Reference",
+    "stale17": false
+  },
+  {
+    "page": "ref-web-wcag-checklist.html",
+    "badge": "18",
+    "h1": "Web Visual Inspection — WCAG 2.2 & Responsive Checklist",
+    "stale17": false
+  }
+]

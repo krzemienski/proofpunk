@@ -1,0 +1,14 @@
+docs/commands.html
+docs/docs.html
+docs/index.html
+docs/install.html
+docs/ref-ci-gates.html
+docs/ref-defect-pattern-database.html
+docs/ref-end-user-actor.html
+docs/ref-evidence-contract.html
+docs/ref-ios-hig-checklist.html
+docs/ref-platform-routing.html
+docs/ref-preflight-checks.html
+docs/ref-severity-model.html
+docs/ref-web-wcag-checklist.html
+docs/skills.html

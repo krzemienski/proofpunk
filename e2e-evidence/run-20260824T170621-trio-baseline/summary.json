@@ -1,0 +1,8 @@
+{
+  "run": "20260824T170621",
+  "results": {
+    "test-hooks": 0,
+    "dry-run-install": 0,
+    "verify-orchestration": 0
+  }
+}

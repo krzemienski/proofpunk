@@ -1,0 +1,22 @@
+[
+  {
+    "page": "ref-ios-hig-checklist.html",
+    "badge": "18",
+    "stale17": false
+  },
+  {
+    "page": "ref-ios-validation.html",
+    "badge": "18",
+    "stale17": false
+  },
+  {
+    "page": "ref-platform-routing.html",
+    "badge": "18",
+    "stale17": false
+  },
+  {
+    "page": "ref-preflight-checks.html",
+    "badge": "18",
+    "stale17": false
+  }
+]

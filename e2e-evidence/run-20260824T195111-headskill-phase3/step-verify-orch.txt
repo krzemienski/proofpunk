@@ -1,0 +1,155 @@
+CHECK 1-2: parse '## Skill calls' tables, closure, no self-calls
+  [PASS] brainstorm: has Skill calls section
+  [PASS] codebase-truth-audit: has Skill calls section
+  [PASS] codebase-truth-audit: table parsed (3 edges)
+  [PASS] codebase-truth-audit -> session-intent: callee exists
+  [PASS] codebase-truth-audit: no self-call
+  [PASS] codebase-truth-audit -> end-user-testing: callee exists
+  [PASS] codebase-truth-audit: no self-call
+  [PASS] codebase-truth-audit -> root-cause-debugging: callee exists
+  [PASS] codebase-truth-audit: no self-call
+  [PASS] end-user-testing: has Skill calls section
+  [PASS] full-functional-audit: has Skill calls section
+  [PASS] full-functional-audit: table parsed (4 edges)
+  [PASS] full-functional-audit -> end-user-testing: callee exists
+  [PASS] full-functional-audit: no self-call
+  [PASS] full-functional-audit -> ui-experience-audit: callee exists
+  [PASS] full-functional-audit: no self-call
+  [PASS] full-functional-audit -> root-cause-debugging: callee exists
+  [PASS] full-functional-audit: no self-call
+  [PASS] full-functional-audit -> tui-testing: callee exists
+  [PASS] full-functional-audit: no self-call
+  [PASS] implement: has Skill calls section
+  [PASS] implement: table parsed (7 edges)
+  [PASS] implement -> session-intent: callee exists
+  [PASS] implement: no self-call
+  [PASS] implement -> brainstorm: callee exists
+  [PASS] implement: no self-call
+  [PASS] implement -> prompt-forge: callee exists
+  [PASS] implement: no self-call
+  [PASS] implement -> validation-plan: callee exists
+  [PASS] implement: no self-call
+  [PASS] implement -> end-user-testing: callee exists
+  [PASS] implement: no self-call
+  [PASS] implement -> tui-testing: callee exists
+  [PASS] implement: no self-call
+  [PASS] implement -> root-cause-debugging: callee exists
+  [PASS] implement: no self-call
+  [PASS] mobile-validation-runner: has Skill calls section
+  [PASS] mobile-validation-runner: table parsed (2 edges)
+  [PASS] mobile-validation-runner -> end-user-testing: callee exists
+  [PASS] mobile-validation-runner: no self-call
+  [PASS] mobile-validation-runner -> visual-inspection: callee exists
+  [PASS] mobile-validation-runner: no self-call
+  [PASS] plan-hardening: has Skill calls section
+  [PASS] plan-hardening: table parsed (3 edges)
+  [PASS] plan-hardening -> red-team-eval: callee exists
+  [PASS] plan-hardening: no self-call
+  [PASS] plan-hardening -> validation-plan: callee exists
+  [PASS] plan-hardening: no self-call
+  [PASS] plan-hardening -> end-user-testing: callee exists
+  [PASS] plan-hardening: no self-call
+  [PASS] production-readiness: has Skill calls section
+  [PASS] production-readiness: table parsed (4 edges)
+  [PASS] production-readiness -> codebase-truth-audit: callee exists
+  [PASS] production-readiness: no self-call
+  [PASS] production-readiness -> full-functional-audit: callee exists
+  [PASS] production-readiness: no self-call
+  [PASS] production-readiness -> stack-testing: callee exists
+  [PASS] production-readiness: no self-call
+  [PASS] production-readiness -> end-user-testing: callee exists
+  [PASS] production-readiness: no self-call
+  [PASS] prompt-forge: has Skill calls section
+  [PASS] proofpunk: has Skill calls section
+  [PASS] proofpunk: table parsed (12 edges)
+  [PASS] proofpunk -> brainstorm: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> implement: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> validation-plan: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> plan-hardening: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> codebase-truth-audit: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> full-functional-audit: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> production-readiness: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> ui-experience-audit: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> root-cause-debugging: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> red-team-eval: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> stack-testing: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] proofpunk -> mobile-validation-runner: callee exists
+  [PASS] proofpunk: no self-call
+  [PASS] red-team-eval: has Skill calls section
+  [PASS] red-team-eval: table parsed (1 edges)
+  [PASS] red-team-eval -> end-user-testing: callee exists
+  [PASS] red-team-eval: no self-call
+  [PASS] root-cause-debugging: has Skill calls section
+  [PASS] root-cause-debugging: table parsed (1 edges)
+  [PASS] root-cause-debugging -> end-user-testing: callee exists
+  [PASS] root-cause-debugging: no self-call
+  [PASS] session-intent: has Skill calls section
+  [PASS] stack-testing: has Skill calls section
+  [PASS] stack-testing: table parsed (1 edges)
+  [PASS] stack-testing -> root-cause-debugging: callee exists
+  [PASS] stack-testing: no self-call
+  [PASS] tui-testing: has Skill calls section
+  [PASS] ui-experience-audit: has Skill calls section
+  [PASS] ui-experience-audit: table parsed (2 edges)
+  [PASS] ui-experience-audit -> visual-inspection: callee exists
+  [PASS] ui-experience-audit: no self-call
+  [PASS] ui-experience-audit -> end-user-testing: callee exists
+  [PASS] ui-experience-audit: no self-call
+  [PASS] validation-plan: has Skill calls section
+  [PASS] validation-plan: table parsed (1 edges)
+  [PASS] validation-plan -> end-user-testing: callee exists
+  [PASS] validation-plan: no self-call
+  [PASS] visual-inspection: has Skill calls section
+  [PASS] visual-inspection: table parsed (1 edges)
+  [PASS] visual-inspection -> end-user-testing: callee exists
+  [PASS] visual-inspection: no self-call
+CHECK 3: acyclicity + topological depth
+  [PASS] graph is acyclic (DAG)
+  depth map: proofpunk=5, production-readiness=4, full-functional-audit=3, codebase-truth-audit=2, ui-experience-audit=2, implement=2, mobile-validation-runner=2, plan-hardening=2, stack-testing=2, root-cause-debugging=1, visual-inspection=1, validation-plan=1, red-team-eval=1, brainstorm=0, session-intent=0, end-user-testing=0, tui-testing=0, prompt-forge=0
+  [PASS] leaf owners are the canonical-method skills — sinks=['brainstorm', 'end-user-testing', 'prompt-forge', 'session-intent', 'tui-testing']
+CHECK 4: 'Called by' lines match real edges
+  [PASS] brainstorm: called-by claims == real edges — claimed=['implement', 'proofpunk'] real=['implement', 'proofpunk']
+  [PASS] codebase-truth-audit: called-by claims == real edges — claimed=['production-readiness', 'proofpunk'] real=['production-readiness', 'proofpunk']
+  [PASS] end-user-testing: called-by claims == real edges — claimed=['codebase-truth-audit', 'full-functional-audit', 'implement', 'mobile-validation-runner', 'plan-hardening', 'production-readiness', 'red-team-eval', 'root-cause-debugging', 'ui-experience-audit', 'validation-plan', 'visual-inspection'] real=['codebase-truth-audit', 'full-functional-audit', 'implement', 'mobile-validation-runner', 'plan-hardening', 'production-readiness', 'red-team-eval', 'root-cause-debugging', 'ui-experience-audit', 'validation-plan', 'visual-inspection']
+  [PASS] full-functional-audit: called-by claims == real edges — claimed=['production-readiness', 'proofpunk'] real=['production-readiness', 'proofpunk']
+  [PASS] implement: called-by claims == real edges — claimed=['proofpunk'] real=['proofpunk']
+  [PASS] mobile-validation-runner: called-by claims == real edges — claimed=['proofpunk'] real=['proofpunk']
+  [PASS] plan-hardening: called-by claims == real edges — claimed=['proofpunk'] real=['proofpunk']
+  [PASS] production-readiness: called-by claims == real edges — claimed=['proofpunk'] real=['proofpunk']
+  [PASS] prompt-forge: called-by claims == real edges — claimed=['implement'] real=['implement']
+  [PASS] proofpunk: called-by claims == real edges — claimed=[] real=[]
+  [PASS] red-team-eval: called-by claims == real edges — claimed=['plan-hardening', 'proofpunk'] real=['plan-hardening', 'proofpunk']
+  [PASS] root-cause-debugging: called-by claims == real edges — claimed=['codebase-truth-audit', 'full-functional-audit', 'implement', 'proofpunk', 'stack-testing'] real=['codebase-truth-audit', 'full-functional-audit', 'implement', 'proofpunk', 'stack-testing']
+  [PASS] session-intent: called-by claims == real edges — claimed=['codebase-truth-audit', 'implement'] real=['codebase-truth-audit', 'implement']
+  [PASS] stack-testing: called-by claims == real edges — claimed=['production-readiness', 'proofpunk'] real=['production-readiness', 'proofpunk']
+  [PASS] tui-testing: called-by claims == real edges — claimed=['full-functional-audit', 'implement'] real=['full-functional-audit', 'implement']
+  [PASS] ui-experience-audit: called-by claims == real edges — claimed=['full-functional-audit', 'proofpunk'] real=['full-functional-audit', 'proofpunk']
+  [PASS] validation-plan: called-by claims == real edges — claimed=['implement', 'plan-hardening', 'proofpunk'] real=['implement', 'plan-hardening', 'proofpunk']
+  [PASS] visual-inspection: called-by claims == real edges — claimed=['mobile-validation-runner', 'ui-experience-audit'] real=['mobile-validation-runner', 'ui-experience-audit']
+CHECK 5: implement's stages invoke skills in DAG order
+  [PASS] implement Stage 1 invokes `session-intent`
+  [PASS] implement Stage 2 invokes `brainstorm`
+  [PASS] implement Stage 3 invokes `prompt-forge`
+  [PASS] implement Stage 4 invokes `validation-plan`
+  [PASS] implement Stage 5 invokes `end-user-testing`
+  [PASS] implement Stage 6 invokes `root-cause-debugging`
+  [PASS] stage sections appear in declared order — order=[0, 1, 2, 3, 4, 5, 6, 7]
+  [PASS] regression posture declared (existing suites stay green, never proof)
+CHECK 6: duplication sweep
+  [PASS] shared 12-word shingles below threshold — 87 <= 200
+  [PASS] verbatim Actor Mandate only in its owner — copies=[]
+  [PASS] end-user-testing carries the canonical mandate section
+
+VERDICT: PASS — the 17 skills execute as one delegation DAG, in the
+documented order, with methods owned exactly once.

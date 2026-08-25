@@ -1,0 +1,86 @@
+[
+  {
+    "page": "index.html",
+    "len": 9373,
+    "stale": false,
+    "title": "proofpunk — done means proven by end-user testing"
+  },
+  {
+    "page": "commands.html",
+    "len": 14106,
+    "stale": false,
+    "title": "commands — 6+6 commands — proofpunk"
+  },
+  {
+    "page": "docs.html",
+    "len": 2585,
+    "stale": false,
+    "title": "docs — architecture & doctrine — proofpunk"
+  },
+  {
+    "page": "install.html",
+    "len": 2785,
+    "stale": false,
+    "title": "install — proofpunk"
+  },
+  {
+    "page": "skills.html",
+    "len": 20501,
+    "stale": false,
+    "title": "skills — 17 skills — proofpunk"
+  },
+  {
+    "page": "ref-ci-gates.html",
+    "len": 2011,
+    "stale": false,
+    "title": "CI / Pre-Commit Quality Gates (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-defect-pattern-database.html",
+    "len": 15320,
+    "stale": false,
+    "title": "UI Defect Pattern Database — proofpunk doctrine"
+  },
+  {
+    "page": "ref-end-user-actor.html",
+    "len": 5843,
+    "stale": false,
+    "title": "End-User Actor Mandate (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-evidence-contract.html",
+    "len": 5964,
+    "stale": false,
+    "title": "Evidence Contract (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-ios-hig-checklist.html",
+    "len": 5436,
+    "stale": false,
+    "title": "iOS & macOS Visual Inspection — Apple HIG Checklist — proofpunk doctrine"
+  },
+  {
+    "page": "ref-platform-routing.html",
+    "len": 3764,
+    "stale": false,
+    "title": "Platform Routing (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-preflight-checks.html",
+    "len": 3051,
+    "stale": false,
+    "title": "Preflight Checks (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-severity-model.html",
+    "len": 3400,
+    "stale": false,
+    "title": "Severity Model (shared) — proofpunk doctrine"
+  },
+  {
+    "page": "ref-web-wcag-checklist.html",
+    "len": 7375,
+    "stale": false,
+    "title": "Web Visual Inspection — WCAG 2.2 & Responsive Checklist — proofpunk doctrine"
+  }
+]

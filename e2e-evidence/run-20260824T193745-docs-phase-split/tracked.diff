@@ -1,0 +1,207 @@
+diff --git a/README.md b/README.md
+index bf5f62e..c1bdb13 100644
+--- a/README.md
++++ b/README.md
+@@ -407,7 +407,7 @@ graph TD
+     M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
+     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
+     P --> S["skills/ — 17 skills"]
+-    P --> R["references/ — 9 shared doctrine files"]
++    P --> R["references/ — 13 shared doctrine files"]
+     P --> D["docs/ — consolidation + validation records"]
+     R -.->|cited by| S
+ ```
+diff --git a/plugins/proofpunk/commands/verify.md b/plugins/proofpunk/commands/verify.md
+index 2283657..fa3f760 100644
+--- a/plugins/proofpunk/commands/verify.md
++++ b/plugins/proofpunk/commands/verify.md
+@@ -31,7 +31,7 @@ Scoped end-user test: only the named flow is driven, but every step still requir
+ /proofpunk:implement "stripe webhook handler"
+ /proofpunk:verify "deliver a test webhook and confirm idempotent processing"
+ ```
+-Cook builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.
++Implement builds and proves per task; verify independently re-proves the user-visible outcome before sign-off.
+ 
+ **4. Scoped — everything you can select**
+ 
+diff --git a/plugins/proofpunk/hooks/session-start.sh b/plugins/proofpunk/hooks/session-start.sh
+index c7ca80e..c897624 100755
+--- a/plugins/proofpunk/hooks/session-start.sh
++++ b/plugins/proofpunk/hooks/session-start.sh
+@@ -3,7 +3,7 @@
+ cat <<'JSON'
+ {
+   "hookSpecificOutput": {
+-    "hookEventName": "SessionStart"
++    "hookEventName": "SessionStart",
+     "additionalContext": "Proofpunk is installed. Doctrine: execution logic over gate logic — decompose into tasks and execute each to completion; end-user testing is the only PASS (unexecuted checks are UNVERIFIED); no mocks or stubs; malformed input must fail clearly and safely. Commands: /proofpunk:implement, /proofpunk:verify, /proofpunk:install, /proofpunk:truth-audit, /proofpunk:rate-prompt, /proofpunk:forge-prompt."
+   }
+ }
+diff --git a/tools/INSTALL.md b/tools/INSTALL.md
+index e58ff56..a785ae4 100644
+--- a/tools/INSTALL.md
++++ b/tools/INSTALL.md
+@@ -1,6 +1,6 @@
+ # Proofpunk installer — usage, options, and why they exist
+ 
+-`tools/proofpunk-install.sh` installs the 19 Proofpunk skills as **plain
++`tools/proofpunk-install.sh` installs the 17 Proofpunk skills as **plain
+ skills** (not a plugin, not a marketplace) into the skills directory of your
+ choice, injects the ruling doctrine alongside them, and verifies the result.
+ Everything below was executed against the real script before shipping — the
+@@ -39,7 +39,7 @@ bash proofpunk-install.sh --source-dir /path/to/proofpunk --target opencode \
+ 
+ ```
+ <target>/
+-├── brainstorm/            # 19 skill dirs, each SELF-CONTAINED:
++├── brainstorm/            # 17 skill dirs, each SELF-CONTAINED:
+ │   ├── SKILL.md           #    citations rewritten to references/X
+ │   └── references/        #    cited doctrine bundled inside the skill
+ │   ...
+@@ -48,7 +48,7 @@ bash proofpunk-install.sh --source-dir /path/to/proofpunk --target opencode \
+     ├── README.md          #   Iron Rule / End-User Actor / remediation / evidence
+     ├── end-user-actor.md  #   incl. "test runners are never validation"
+     ├── evidence-contract.md
+-    └── ... (9 ruling references)
++    └── ... (13 ruling references)
+ ```
+ 
+ **Why self-contained copies:** the repo's plugin layout cites shared doctrine
+@@ -80,7 +80,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
+ 
+ | Option | Effect | Why it exists |
+ |---|---|---|
+-| `--only a,b,c` | Installs just those skills (default: all 18) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
++| `--only a,b,c` | Installs just those skills (default: all 17) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
+ | `--list` | Prints skills in the source and exits | Answer "what would I get?" without touching anything |
+ | `--skip-skills` | Installs no skills (doctrine is skipped too) | Themes-only or plugins-only runs — `--skip-skills --themes` touches nothing but theme directories |
+ 
+@@ -122,12 +122,12 @@ bad upgrade is one `mv` away from undone.
+ ## Literal examples, with what happens
+ 
+ ```bash
+-# 1) First-time Claude Code install — 18 skills + doctrine, verified:
++# 1) First-time Claude Code install — 17 skills + doctrine, verified:
+ bash proofpunk-install.sh --target claude-code
+ #   INSTALL brainstorm … INSTALL visual-inspection
+ #   doctrine   : ~/.claude/skills/proofpunk-doctrine
+ #   verify     : all installed skills pass frontmatter + reference checks
+-#   == summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
++#   == summary: 17 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+ 
+ # 2) oh-my-pi, look before you leap — nothing is written:
+ bash proofpunk-install.sh --target omp --themes --plugins --dry-run
+@@ -144,8 +144,8 @@ bash proofpunk-install.sh --target claude-code --only session-intent
+ 
+ # 5) Re-run after a full install — everything collides, everything skips:
+ bash proofpunk-install.sh --target claude-code
+-#   SKIP brainstorm (already exists; use --override to replace) ×17
+-#   == summary: 0 installed, 0 replaced, 18 skipped (collision), 0 missing ==
++#   SKIP brainstorm (already exists; use --override to replace) ×16
++#   == summary: 0 installed, 0 replaced, 17 skipped (collision), 0 missing ==
+ 
+ # 6) Offline / dev loop — install your local edits:
+ git clone https://github.com/krzemienski/proofpunk && cd Proofpunk
+diff --git a/tools/proofpunk-install.sh b/tools/proofpunk-install.sh
+index b8ac8ee..7a278e1 100644
+--- a/tools/proofpunk-install.sh
++++ b/tools/proofpunk-install.sh
+@@ -274,20 +274,34 @@ for skill in $SELECTED; do
+     find "$dst" -name '*.bak' -delete
+     # Depth normalization: files INSIDE the skill's references/ dir cite
+     # bundled siblings by bare name (they live in the same directory).
++    # Only rewrite the 'references/' path segment itself — never a '../'
++    # prefix, which already points at the sibling and would be mangled.
+     if [ -d "$dst/references" ]; then
+       find "$dst/references" -name '*.md' -exec sed -i.bak \
+-        -e 's|references/\([A-Za-z0-9._-]*\)|\1|g' {} \;
++        -e 's|\(\.\./\)*references/\([A-Za-z0-9._-]*\)|\2|g' {} \;
+       find "$dst/references" -name '*.bak' -delete
+     fi
+     if [ -d "$REFS_SRC" ]; then
+       mkdir -p "$dst/references"
+-      for ref in "$REFS_SRC"/*; do
+-        name="$(basename "$ref")"
+-        # match citations at any depth: 'references/<name>', '../references/<name>',
+-        # or a bare '<name>' (already depth-normalized inside references/ files)
+-        if grep -rqE "\`(\./)*(\.\./)*(references/)?$name\`" "$dst" --include='*.md'; then
+-          [ -f "$dst/references/$name" ] || cp "$ref" "$dst/references/$name"
+-        fi
++      # Bundle to a FIXED POINT: a bundled reference may itself cite other
++      # shared doctrine (e.g. evidence-contract.md -> end-user-actor.md), so
++      # one pass is not enough — keep sweeping until nothing new is copied.
++      while :; do
++        added=0
++        for ref in "$REFS_SRC"/*; do
++          name="$(basename "$ref")"
++          [ -f "$dst/references/$name" ] && continue
++          # Match citations at any depth, backticked OR bare prose:
++          # 'references/<name>', '../references/<name>', or a bare '<name>'
++          # (already depth-normalized inside references/ files). Backticks are
++          # NOT required — un-backticked prose citations are real citations and
++          # were silently dropped before, shipping unresolvable doctrine refs.
++          if grep -rqE "(^|[^A-Za-z0-9._/-])(\./)*(\.\./)*(references/)?$name" "$dst" --include='*.md'; then
++            cp "$ref" "$dst/references/$name"
++            added=$((added+1))
++          fi
++        done
++        [ "$added" -eq 0 ] && break
+       done
+     fi
+   fi
+@@ -550,16 +564,30 @@ def find_bad(root):
+             p = os.path.join(dp, fn)
+             src = open(p, encoding='utf-8').read()
+             # explicit relative citations: references/X, ../references/X, …
+-            for m in re.finditer(r'`((?:\.\./)*(?:references|scripts|assets|examples)/[^`\s]+)`', src):
+-                t = m.group(1).split('#')[0]
++            # Backticked OR bare prose — an un-backticked citation is still a
++            # citation, and treating it as invisible is what let broken refs
++            # ship while verify printed "all skills pass".
++            for m in re.finditer(
++                    r'(?:^|[^A-Za-z0-9._/-])((?:\.\./)*(?:references|scripts|assets|examples)/[^\s`)\]]+)',
++                    src, re.M):
++                t = m.group(1).split('#')[0].rstrip('.,;:')
+                 if '<' in t or '{' in t or '*' in t:
+                     continue
+-                if not os.path.exists(os.path.normpath(os.path.join(dp, t))):
++                # A bare 'scripts/x' inside references/ may resolve EITHER as a
++                # sibling (references/scripts/x) or as a runnable command from
++                # the skill root (`bash scripts/validate.sh`). Both are valid
++                # authoring styles, so accept either before reporting broken.
++                cands = [os.path.join(dp, t)]
++                if (os.path.basename(dp) == 'references'
++                        and not t.startswith('..')
++                        and not t.startswith('references/')):
++                    cands.append(os.path.join(os.path.dirname(dp), t))
++                if not any(os.path.exists(os.path.normpath(c)) for c in cands):
+                     bad.append((fn, t, dp))
+             # bare-name citations of shared doctrine files (depth-normalized
+             # inside references/) must resolve to a bundled sibling
+             if os.path.basename(dp) == 'references' and os.path.isdir(refs_src):
+-                for m in re.finditer(r'`([a-z0-9][a-z0-9._-]*\.md)`', src):
++                for m in re.finditer(r'(?:^|[^A-Za-z0-9._/-])([a-z0-9][a-z0-9._-]*\.md)', src, re.M):
+                     t = m.group(1)
+                     if os.path.exists(os.path.join(refs_src, t)) and not os.path.exists(os.path.join(dp, t)):
+                         bad.append((fn, t, dp))
+diff --git a/tools/test-hooks.sh b/tools/test-hooks.sh
+index 30dd4fd..b64e5d1 100755
+--- a/tools/test-hooks.sh
++++ b/tools/test-hooks.sh
+@@ -14,9 +14,14 @@ for f in "$HOOKS"/*.sh; do
+   if bash -n "$f" 2>/dev/null; then case_ok "syntax $(basename "$f")"; else case_fail "syntax $(basename "$f")"; fi
+ done
+ 
+-echo "== session-start.sh emits doctrine context"
++echo "== session-start.sh emits valid JSON with doctrine context"
+ out=$(sh "$HOOKS/session-start.sh" 2>/dev/null)
+-if printf '%s' "$out" | grep -q "additionalContext" && printf '%s' "$out" | grep -q "end-user testing is the only PASS"; then
++if printf '%s' "$out" | python3 -c '
++import json, sys
++d = json.load(sys.stdin)["hookSpecificOutput"]
++assert d["hookEventName"] == "SessionStart", "wrong hookEventName"
++assert "end-user testing is the only PASS" in d["additionalContext"], "doctrine missing"
++' 2>/dev/null; then
+   case_ok "session-start doctrine context"
+ else
+   case_fail "session-start doctrine context — got: $out"

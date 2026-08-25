@@ -1,0 +1,36 @@
+{
+  "run": "20260824T164928",
+  "dest": "/tmp/pp-baseline-20260824T164928/skills",
+  "total_citations": 80,
+  "unresolved": 4,
+  "items": [
+    {
+      "skill": "full-functional-audit",
+      "file": "full-functional-audit/SKILL.md",
+      "line": 129,
+      "citation": "references/severity-model.md",
+      "backticked": false
+    },
+    {
+      "skill": "mobile-validation-runner",
+      "file": "mobile-validation-runner/references/ios-validation-gate.md",
+      "line": 57,
+      "citation": "cli-validation.md",
+      "backticked": false
+    },
+    {
+      "skill": "mobile-validation-runner",
+      "file": "mobile-validation-runner/references/ios-validation-gate.md",
+      "line": 346,
+      "citation": "cli-validation.md",
+      "backticked": false
+    },
+    {
+      "skill": "validation-plan",
+      "file": "validation-plan/references/task-file-format.md",
+      "line": 60,
+      "citation": "`../end-user-actor.md`",
+      "backticked": true
+    }
+  ]
+}

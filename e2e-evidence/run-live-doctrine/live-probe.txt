@@ -1,0 +1,15 @@
+Yes — injected.
+
+**Injection 1 — SessionStart:startup hook.** First sentence verbatim:
+
+> Session startup.
+
+Followed by `"Project: single-repo | Plan naming: {date}-{issue}-{slug}"`, then an "AgentKit Session State" block (branch `main`, modified-file list, previous-session handoff) and an Agent Team notice (`session-1766c153`).
+
+**Injection 2 — SessionStart hook additional context.** First sentence verbatim:
+
+> Proofpunk is installed.
+
+Then doctrine text (execution logic over gate logic, end-user testing only PASS, no mocks/stubs, malformed input fails clearly) and command list. Injected twice, near-identical, second copy lists `/proofpunk:cook` and omits `/proofpunk:install`.
+
+Separate from these: UserPromptSubmit hooks fired on this turn (skill-activation forced-eval, prompt-improver eval, dev-rules/session context) — per-prompt, not session start.
