@@ -1,0 +1,4 @@
+ERR: Claude Code returned an error result: Reached maximum number of turns (4) (exit code: 1)
+tools: []
+hooks: ['SessionStart', 'Stop', 'UserPromptSubmit']
+exists: False

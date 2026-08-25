@@ -1,0 +1,6 @@
+A no-tools-arg               : ['Task', 'ListAgents', 'SendMessage', 'Skill', 'TaskStop', 'Workflow']
+B allowed_tools only         : ['Task', 'ListAgents', 'SendMessage', 'Skill', 'TaskStop', 'Workflow']
+C setting_sources=['user']   : ['Task', 'ListAgents', 'SendMessage', 'Skill', 'TaskStop', 'Workflow']
+an error occurred during closing of asynchronous generator <async_generator object InternalClient._process_query_inner at 0x108142a70>
+asyncgen: <async_generator object InternalClient._process_query_inner at 0x108142a70>
+RuntimeError: aclose(): asynchronous generator is already running

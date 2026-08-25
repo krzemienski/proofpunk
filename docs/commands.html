@@ -171,7 +171,7 @@
     <div class="ptitle">04 / /proofpunk:rate-prompt</div>
     <p><strong>Rate a prompt file against the 100-point rubric and apply remediations to file</strong></p>
     <div class="cmdline" style="margin:12px 0">
-      <div><span class="p">~$</span> <span class="c">/proofpunk:rate-prompt &lt;prompt-file.md&gt; [--in-place] [--report-only] [--out PATH]</span></div>
+      <div><span class="p">~$</span> <span class="c">/proofpunk:rate-prompt &lt;prompt-file.md&gt; [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]</span></div>
     </div>
     <div class="doc"><p>Activate the <code>prompt-forge</code> skill and run its RATE workflow on:</p>
 <p>$ARGUMENTS</p>
@@ -189,7 +189,7 @@
 <p>Rate the revision, then end-user-test the behavioral difference with executed evidence — no vibes-based prompt reviews.</p>
 <p><strong>5. Full command — every option selected</strong></p>
 <pre><code>/proofpunk:rate-prompt .planning/pg17.prompt.md --report-only --out .planning/pg17.rating.md</code></pre>
-<p>Scores against the 7-dimension /100 rubric and writes the report to file without touching the prompt. Note: <code>--in-place</code> and <code>--out</code> are exclusive (same-file edit vs. separate output); <code>--report-only</code> composes with <code>--out</code>.</p>
+<p>Scores against the 7-dimension /100 rubric and writes the report to file without touching the prompt. Note: <code>--in-place</code> and <code>--out</code> are exclusive (same-file edit vs. separate output); <code>--report-only</code> composes with <code>--out</code>. <code>--ship-below-threshold</code> finalizes even if the result grades needs-work/rewrite; omit it to require a passing score before shipping.</p>
 </div>
   </div>
 
@@ -197,7 +197,7 @@
     <div class="ptitle">05 / /proofpunk:truth-audit</div>
     <p><strong>Run a repo-wide intent-vs-code truth audit with evidence-backed findings</strong></p>
     <div class="cmdline" style="margin:12px 0">
-      <div><span class="p">~$</span> <span class="c">/proofpunk:truth-audit &lt;repo-path&gt; [--since DATE] [--until DATE] [--label NAME]</span></div>
+      <div><span class="p">~$</span> <span class="c">/proofpunk:truth-audit &lt;repo-path&gt; [--start DATE] [--end DATE] [--label NAME]</span></div>
     </div>
     <div class="doc"><p>Activate the <code>codebase-truth-audit</code> skill and audit:</p>
 <p>$ARGUMENTS</p>
@@ -207,14 +207,14 @@
 <pre><code>/proofpunk:truth-audit .</code></pre>
 <p>Full intent-vs-implementation audit with evidence-backed findings; pauses before any behavior change.</p>
 <p><strong>2. With flags — bound the window</strong></p>
-<pre><code>/proofpunk:truth-audit . --since 2026-06-01 --label pre-release</code></pre>
+<pre><code>/proofpunk:truth-audit . --start 2026-06-01 --label pre-release</code></pre>
 <p>Audits only the June-forward window and tags all evidence with the <code>pre-release</code> label.</p>
 <p><strong>3. Composed — audit, then harden what the audit surfaces</strong></p>
 <pre><code>/proofpunk:truth-audit . --label q3
 /proofpunk:implement &quot;remediate the 3 HIGH findings from the q3 truth audit&quot;</code></pre>
 <p>The audit produces the findings; implement executes the approved remediation to end-user proof.</p>
 <p><strong>5. Full command — every option selected</strong></p>
-<pre><code>/proofpunk:truth-audit . --since 2026-01-01 --until 2026-08-13 --label fy26-h2-audit</code></pre>
+<pre><code>/proofpunk:truth-audit . --start 2026-01-01 --end 2026-08-13 --label fy26-h2-audit</code></pre>
 <p>Windowed session-intent alignment across the whole repo, every commit in the window mapped to its transcript intent or marked unrecoverable, labeled evidence pack under <code>.planning/audits/fy26-h2-audit/</code>.</p>
 </div>
   </div>

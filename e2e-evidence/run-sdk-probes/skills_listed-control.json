@@ -1,0 +1,55 @@
+{
+  "probe": "skills_listed",
+  "why": "plugin skills must load from the plugin, not a same-named local copy",
+  "plugin_loaded": false,
+  "elapsed_s": 33.2,
+  "reply": "**The skill did not load** \u2014 `Skill(proofpunk:end-user-testing)` returned `Unknown skill`, and so did the bare `end-user-testing`; the proofpunk plugin's skills aren't registered in this session (only `/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/{1.10.0,1.10.1}` exists on disk, with no active install entry). So I can't state anything on the authority of a loaded skill.\n\nWhat ",
+  "hook_events": [],
+  "tools_used": [
+    "Bash",
+    "Skill"
+  ],
+  "tool_calls": [
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"proofpunk:end-user-testing\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls ~/.claude/skills/ 2>/dev/null; ls ~/.claude/plugins 2>/dev/null; find ~/.claude -maxdepth 4 -iname \\\"*proofpunk*\\\" -o -maxdepth 4 -iname \\\"*end-user-testing*\\\" 2>/dev/null | head -20\","
+    },
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"end-user-testing\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/ 2>/dev/null; echo \\\"---\\\"; ls /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/skills 2>/dev/null; e"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"grep -rniE \\\"only acceptable form of proof|acceptable proof|only proof\\\" /Users/nick/.claude/skills/end-user-testing/ 2>/dev/null | head -20\", \"description\": \"Search skill file for proof "
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls -la /Users/nick/.claude/skills/end-user-testing/; echo \\\"===\\\"; sed -n '1,60p' /Users/nick/.claude/skills/end-user-testing/SKILL.md 2>/dev/null\", \"description\": \"Show end-user-testing "
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"grep -rniE \\\"only|proof is\\\" /Users/nick/.claude/skills/end-user-testing/references/evidence-contract.md 2>/dev/null | head -20\", \"description\": \"Grep evidence contract for the proof stat"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 8,
+    "cost_usd": 0.3436905
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": true,
+    "tool_arg_matches": true,
+    "tool_succeeded": false
+  },
+  "expect_text": "end-user",
+  "pass": false
+}

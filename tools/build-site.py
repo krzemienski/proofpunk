@@ -1,12 +1,36 @@
 #!/usr/bin/env python3
 """Generate the proofpunk GitHub Pages site into proofpunk-main/docs/."""
-import os, re, glob, json, html, subprocess, datetime
+import os, re, glob, json, html, subprocess, datetime, shutil, sys
+
+def _preflight():
+    """Fail loudly, with install instructions, if an external dependency is missing.
+
+    This script depends on two things that are not stdlib and not vendored:
+      - PyYAML (`import yaml`), used by fm_parse() to read skill frontmatter.
+      - the `pandoc` binary, invoked via subprocess to render markdown to HTML.
+    Neither failure mode (ImportError / FileNotFoundError from subprocess) names
+    the missing dependency or how to fix it, so we check both up front instead.
+    """
+    missing = []
+    try:
+        import yaml  # noqa: F401
+    except ImportError:
+        missing.append(("PyYAML", "used to parse skill frontmatter (fm_parse)", "pip install pyyaml"))
+    if shutil.which("pandoc") is None:
+        missing.append(("pandoc", "used to render markdown docs to HTML (pandoc())", "brew install pandoc  (see https://pandoc.org/installing.html)"))
+    if missing:
+        print("build-site.py: missing required dependencies:", file=sys.stderr)
+        for name, why, install in missing:
+            print(f"  - {name}: {why}", file=sys.stderr)
+            print(f"      install: {install}", file=sys.stderr)
+        sys.exit(1)
+
+_preflight()
 
 ROOT = os.environ.get("PROOFPUNK_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs")
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(OUT + "/assets", exist_ok=True)
-
 TODAY = datetime.date.today().isoformat()
 
 def esc(s):

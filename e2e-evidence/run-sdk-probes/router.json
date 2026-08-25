@@ -1,0 +1,36 @@
+{
+  "probe": "router",
+  "why": "the router is the plugin's only entry point; it must actually load",
+  "plugin_loaded": true,
+  "elapsed_s": 8.5,
+  "reply": "I'll invoke the skill.Skill loaded. First row of 'Skill calls' table, verbatim:\n\n| `brainstorm` | idea unclear, options untested, no plan exists yet | the raw ask, unfiltered |",
+  "hook_events": [
+    "PostToolUse",
+    "PreToolUse",
+    "SessionStart",
+    "Stop",
+    "UserPromptSubmit"
+  ],
+  "tools_used": [
+    "Skill"
+  ],
+  "tool_calls": [
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"proofpunk\"}"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 3,
+    "cost_usd": 1.5078152500000002
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": true,
+    "tool_arg_matches": true,
+    "tool_succeeded": true
+  },
+  "expect_text": "brainstorm",
+  "pass": true
+}

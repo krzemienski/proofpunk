@@ -1,0 +1,20 @@
+{
+  "probe": "doctrine",
+  "why": "SessionStart hook must place doctrine in the live session",
+  "plugin_loaded": true,
+  "elapsed_s": 5.6,
+  "reply": "Proofpunk is installed. Doctrine: execution logic",
+  "hook_events": [
+    "SessionStart",
+    "Stop",
+    "UserPromptSubmit"
+  ],
+  "tools_used": [],
+  "result": {
+    "is_error": false,
+    "num_turns": 1,
+    "cost_usd": 0.87935
+  },
+  "expect_text": "Proofpunk is installed",
+  "pass": true
+}

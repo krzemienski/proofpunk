@@ -1,0 +1,20 @@
+{
+  "probe": "doctrine",
+  "why": "SessionStart hook must place doctrine in the live session",
+  "plugin_loaded": false,
+  "elapsed_s": 3.4,
+  "reply": "NO_SUCH_BLOCK",
+  "hook_events": [],
+  "tools_used": [],
+  "tool_calls": [],
+  "result": {
+    "is_error": false,
+    "num_turns": 1,
+    "cost_usd": 0.1016745
+  },
+  "checks": {
+    "text_matches": false
+  },
+  "expect_text": "Proofpunk is installed",
+  "pass": false
+}

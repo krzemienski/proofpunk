@@ -1,0 +1,42 @@
+{
+  "probe": "router",
+  "why": "the router is the plugin's only entry point; it must actually load",
+  "plugin_loaded": false,
+  "elapsed_s": 32.1,
+  "reply": "I don't see a skill named `proofpunk` in the available skills list, so I can't invoke it. Let me verify it's not registered somewhere on disk before concluding.Proofpunk artifacts exist on disk. Let me check what skill names they actually expose.No skill named exactly `proofpunk` is registered. Let me check the nearest matches for the table you're asking about.I couldn't do what you asked, and I w",
+  "hook_events": [],
+  "tools_used": [
+    "Bash"
+  ],
+  "tool_calls": [
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"find ~/.claude /Users/*/.claude -maxdepth 4 -iname \\\"*proofpunk*\\\" 2>/dev/null; echo \\\"---plugins/project---\\\"; find . -maxdepth 5 -ipath \\\"*skills*\\\" -iname \\\"*proofpunk*\\\" 2>/dev/null; "
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk 2>/dev/null; echo \\\"=== skills dirs ===\\\"; ls /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/skills"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls -d /Users/nick/.claude/skills/proofpunk* 2>/dev/null; echo \\\"=== version dirs ===\\\"; ls /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/1.10.1 2>/dev/null; echo \\\"==="
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"grep -rl \\\"Skill calls\\\" /Users/nick/.claude/skills/proofpunk-doctrine/ /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/1.10.1/ 2>/dev/null | head -20\", \"description\": \""
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 5,
+    "cost_usd": 0.15776600000000002
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": false,
+    "tool_arg_matches": false,
+    "tool_succeeded": false
+  },
+  "expect_text": "brainstorm",
+  "pass": false
+}

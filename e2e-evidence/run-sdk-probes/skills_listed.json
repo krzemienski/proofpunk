@@ -1,0 +1,36 @@
+{
+  "probe": "skills_listed",
+  "why": "plugin skills must load from the plugin, not a same-named local copy",
+  "plugin_loaded": true,
+  "elapsed_s": 12.8,
+  "reply": "Skill eval: only `proofpunk:end-user-testing` \u2014 YES, user named it. All others NO.Skill loaded. Only acceptable proof: **AI itself driving the real system as the end user, producing fresh run-scoped, non-empty, personally-examined artifacts cited by full path \u2014 unexecuted = UNVERIFIED, never PASS.**",
+  "hook_events": [
+    "PostToolUse",
+    "PreToolUse",
+    "SessionStart",
+    "Stop",
+    "UserPromptSubmit"
+  ],
+  "tools_used": [
+    "Skill"
+  ],
+  "tool_calls": [
+    {
+      "name": "Skill",
+      "input": "{\"skill\": \"proofpunk:end-user-testing\"}"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 3,
+    "cost_usd": 1.522904
+  },
+  "checks": {
+    "text_matches": true,
+    "tool_invoked": true,
+    "tool_arg_matches": true,
+    "tool_succeeded": true
+  },
+  "expect_text": "end-user",
+  "pass": true
+}

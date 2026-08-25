@@ -189,6 +189,11 @@ bash tools/proofpunk-install.sh --source-dir . --target opencode --themes --plug
 `python3` is optional and used only by `--verify`'s reference-resolution
 check; without it the frontmatter checks still run.
 
+`tools/build-site.py` (regenerating `docs/*.html`, not part of install)
+additionally requires **PyYAML** (`pip install pyyaml`) and the **pandoc**
+binary (`brew install pandoc`) on `PATH`. It checks both up front and exits
+with an actionable message naming whichever is missing.
+
 ## After install: using the skills
 
 Invoke as `/skill-name <positional> --flag` in Claude Code — e.g.
