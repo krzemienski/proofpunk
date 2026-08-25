@@ -134,7 +134,10 @@ PROBES = {
 # argument matches AND whose tool result came back successful.
 for _sk in ("implement", "validation-plan", "root-cause-debugging",
             "full-functional-audit", "red-team-eval", "visual-inspection",
-            "production-readiness", "codebase-truth-audit"):
+            "production-readiness", "codebase-truth-audit",
+            "brainstorm", "mobile-validation-runner", "plan-hardening",
+            "prompt-forge", "session-intent", "stack-testing",
+            "tui-testing", "ui-experience-audit"):
     PROBES[f"skill_{_sk.replace('-', '_')}"] = dict(
         prompt=(f"Invoke the skill named exactly 'proofpunk:{_sk}' using the "
                 "Skill tool, then state in one line what it is for."),
