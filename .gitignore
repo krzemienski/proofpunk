@@ -10,3 +10,6 @@ instance/
 
 # Mnemopi memory runtime database (generated, never edited)
 banks/
+
+# Lane B planning state — BLOCKED verdict awaiting operator token, local only
+.planning/
