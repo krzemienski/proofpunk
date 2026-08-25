@@ -108,4 +108,4 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 |-------|------|--------------------|
 | `end-user-testing` | evidence of reproduction + fix | fresh-evidence standard |
 
-Called by: `codebase-truth-audit`, `full-functional-audit`, `implement`, `stack-testing`.
+Called by: `codebase-truth-audit`, `full-functional-audit`, `implement`, `stack-testing`, `proofpunk`.

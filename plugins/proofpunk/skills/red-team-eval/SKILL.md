@@ -84,4 +84,4 @@ scores instead of impressions. Findings carry severities per
 |-------|------|--------------------|
 | `end-user-testing` | QA cycling loops | evidence standard for test-verify-fix iterations |
 
-Called by: `plan-hardening`.
+Called by: `plan-hardening`, `proofpunk`.

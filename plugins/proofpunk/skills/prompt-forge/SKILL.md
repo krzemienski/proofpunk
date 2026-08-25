@@ -358,4 +358,4 @@ Build multi-stage prompt pipelines under `.prompts/`:
 
 Leaf skill — owns canonical methods; calls nothing.
 
-Called by: `implement`.
+Called by: `implement`, `proofpunk`.

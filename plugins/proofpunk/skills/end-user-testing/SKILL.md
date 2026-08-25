@@ -226,4 +226,4 @@ would I show them?" No citations -> NOT complete.
 
 Leaf skill — owns canonical methods; calls nothing.
 
-Called by: `codebase-truth-audit`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`, `validation-plan`, `visual-inspection`.
+Called by: `codebase-truth-audit`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`, `validation-plan`, `visual-inspection`, `proofpunk`.

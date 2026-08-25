@@ -242,5 +242,4 @@ re-enters the loop.
 The platform runbooks (`api/web/cli/ios-validation.md`) are shared doctrine
 in `references/`, not a skill — Stage 5 loads them directly.
 
-Called by: nothing — the top of the write path.
-skill defers to it; nothing defers into it.
+Called by: `proofpunk`.

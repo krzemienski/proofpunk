@@ -128,5 +128,5 @@ driver + version, runtime floor probed, boot wait used, facet checklist
 ## Skill calls
 
 Leaf skill — owns canonical methods; calls nothing.
-Called by: `implement`, `full-functional-audit`.
+Called by: `implement`, `full-functional-audit`, `proofpunk`.
 Pairs with `end-user-testing` (proof standard) and the shared runbooks (`references/*-validation.md`) (platform routing).

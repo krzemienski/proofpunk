@@ -167,4 +167,4 @@ end the session. Implementation belongs to `implement` — after a plan exists.
 
 Leaf skill — owns canonical methods; calls nothing.
 
-Called by: `implement`.
+Called by: `implement`, `proofpunk`.

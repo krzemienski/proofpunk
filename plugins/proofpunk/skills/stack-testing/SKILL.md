@@ -110,4 +110,4 @@ patterns from the source skills.
 |-------|------|--------------------|
 | `root-cause-debugging` | flakes that survive condition-based waiting | root cause, never a retry |
 
-Called by: `production-readiness`.
+Called by: `production-readiness`, `proofpunk`.

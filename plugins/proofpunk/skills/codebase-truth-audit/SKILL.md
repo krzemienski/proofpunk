@@ -219,4 +219,4 @@ Read `references/output-contract.md` before producing the first audit artifact o
 | `end-user-testing` | Stage 5 runtime validation | evidence for runtime behavior claims |
 | `root-cause-debugging` | when verification fails | root cause of drift/failures found |
 
-Called by: `production-readiness`.
+Called by: `production-readiness`, `proofpunk`.

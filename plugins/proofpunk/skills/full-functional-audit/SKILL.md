@@ -170,4 +170,4 @@ never assumed PASS.
 | `root-cause-debugging` | Phase 4 REMEDIATE | root cause of every FAIL before fixing |
 | `tui-testing` | auditing TUI apps | PTY driving discipline |
 
-Called by: `production-readiness`.
+Called by: `production-readiness`, `proofpunk`.

@@ -157,4 +157,4 @@ Cumulative re-verification:
 |-------|------|--------------------|
 | `end-user-testing` | every VALIDATION gate | run-scoped evidence the gates cite |
 
-Called by: `implement`, `plan-hardening`.
+Called by: `implement`, `plan-hardening`, `proofpunk`.

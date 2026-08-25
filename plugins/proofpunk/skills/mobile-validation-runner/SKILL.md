@@ -101,3 +101,5 @@ Seal the evidence directory with the `end-user-testing` skill's
 |-------|------|--------------------|
 | `end-user-testing` | COLLECT/VERIFY sealing | fresh-evidence sealing of the run directory |
 | `visual-inspection` | every captured screenshot | audit before trusting it |
+
+Called by: `proofpunk`.

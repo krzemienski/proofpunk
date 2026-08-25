@@ -159,4 +159,4 @@ root causes and fix patterns across iOS, web, and cross-platform projects.
 |-------|------|--------------------|
 | `end-user-testing` | evidence standard | Actor Mandate applied to screenshot review |
 
-Called by: `mobile-validation-runner`, `ui-experience-audit`.
+Called by: `mobile-validation-runner`, `ui-experience-audit`, `proofpunk`.

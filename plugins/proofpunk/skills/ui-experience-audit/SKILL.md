@@ -209,4 +209,4 @@ Hand-offs: wiring doubts -> the shared runbooks (`references/*-validation.md`); 
 | `visual-inspection` | Phase 1 visual defects | the checklist protocol for screenshots |
 | `end-user-testing` | evidence capture | run-scoped evidence rules |
 
-Called by: `full-functional-audit`.
+Called by: `full-functional-audit`, `proofpunk`.

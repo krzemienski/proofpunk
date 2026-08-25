@@ -152,3 +152,5 @@ prove it with fresh evidence".
 | `red-team-eval` | Stage 4 red-team dispatch | the four adversarial lenses |
 | `validation-plan` | Stage 6 proof-obligation injection | the PO format being injected |
 | `end-user-testing` | injected proofs | the proof standard obligations must satisfy |
+
+Called by: `proofpunk`.

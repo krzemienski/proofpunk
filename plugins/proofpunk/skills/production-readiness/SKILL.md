@@ -88,3 +88,5 @@ cites the command output, file, or audit artifact that proves it.
 | `full-functional-audit` | functional lens | app-wide interaction validation pre-release |
 | `stack-testing` | zero-regression enforcement | regression rail per stack |
 | `end-user-testing` | all evidence | fresh-evidence sealing |
+
+Called by: `proofpunk`.

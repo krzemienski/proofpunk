@@ -124,4 +124,4 @@ Run these discovery scripts (from the skill directory) instead of hand-writing t
 
 Leaf skill — owns canonical methods; calls nothing.
 
-Called by: `codebase-truth-audit`, `implement`.
+Called by: `codebase-truth-audit`, `implement`, `proofpunk`.
