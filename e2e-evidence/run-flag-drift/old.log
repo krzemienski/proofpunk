@@ -1,0 +1,4 @@
+usage: init_audit_workspace.py [-h] --repo REPO [--label LABEL]
+                               [--start START] [--end END]
+                               [--output-root OUTPUT_ROOT]
+init_audit_workspace.py: error: unrecognized arguments: --since 2026-01-01
