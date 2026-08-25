@@ -308,9 +308,9 @@ index_main = f"""
     <div class="brow"><span class="idx">01</span><span><span class="name">/proofpunk:implement</span>
       <span class="gate">orchestrated front door — mine, forge, plan, execute, prove, report</span></span>
       <span class="badge pass">ORCHESTRATE</span></div>
-    <div class="brow"><span class="idx">02</span><span><span class="name">/proofpunk:cook</span>
-      <span class="gate">the execution engine — task-by-task, each task proven as the end user</span></span>
-      <span class="badge pass">EXECUTE</span></div>
+    <div class="brow"><span class="idx">02</span><span><span class="name">/proofpunk:install</span>
+      <span class="gate">install project memory (CLAUDE.md or AGENTS.md) plus scoped rules</span></span>
+      <span class="badge pass">SETUP</span></div>
     <div class="brow"><span class="idx">03</span><span><span class="name">/proofpunk:verify</span>
       <span class="gate">end-user test the current work, producing executed proof</span></span>
       <span class="badge pass">PROVE</span></div>
