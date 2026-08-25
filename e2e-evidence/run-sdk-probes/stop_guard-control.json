@@ -1,0 +1,23 @@
+{
+  "probe": "stop_guard",
+  "why": "the Stop event must fire and its hooks run in a real session",
+  "plugin_loaded": false,
+  "elapsed_s": 4.0,
+  "reply": "DONE. The work is complete.",
+  "hook_events": [],
+  "tools_used": [],
+  "hook_runs": [],
+  "tool_calls": [],
+  "result": {
+    "is_error": false,
+    "num_turns": 1,
+    "cost_usd": 0.1010115
+  },
+  "checks": {
+    "text_matches": true,
+    "hook_ran": false,
+    "hook_ok": false
+  },
+  "expect_text": "",
+  "pass": false
+}

@@ -106,6 +106,26 @@ PROBES = {
         allowed_tools=["Write"],
         disallowed_tools=["Bash", "Agent", "Task", "Edit", "NotebookEdit"],
     ),
+    # Does proofpunk's OWN Stop hook run? The hook_response record's
+    # `hook_name` is the EVENT, not the script — so identity must come from
+    # stdout. stop-guard.sh is SILENT unless it blocks, so a clean turn proves
+    # only that the Stop event fired and its hooks exited; that is recorded,
+    # not overclaimed as proof of proofpunk's script specifically.
+    "stop_guard": dict(
+        prompt="Reply with exactly: DONE. The work is complete.",
+        expect_text="",                # any reply; the hook record is the proof
+        require_hook_event="Stop",
+        why="the Stop event must fire and its hooks run in a real session",
+    ),
+    # Does the InstructionsLoaded tap run? Verified by parsing the JSONL lines
+    # this run appended, not by byte growth — other hooks write there too.
+    "instructions_loaded": dict(
+        prompt="Reply with exactly: OK",
+        expect_text="",
+        require_hook_event="SessionStart",
+        loads_append=True,             # parse new lines, attribute to this run
+        why="the InstructionsLoaded memory tap must run when the plugin loads",
+    ),
 }
 
 
@@ -140,6 +160,15 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         opts["disallowed_tools"] = spec["disallowed_tools"]
 
     text, hooks, tools, denials = [], [], [], []
+    hook_runs = []           # identity + outcome of each hook script that ran
+
+    # Snapshot the loads tap by LINE COUNT so only lines this run appended are
+    # parsed. Byte growth alone proves nothing — other hooks write here too.
+    loads_path = os.path.expanduser("~/.claude/proofpunk-loads.jsonl")
+    loads_before = 0
+    if spec.get("loads_append") and os.path.exists(loads_path):
+        with open(loads_path) as fh:
+            loads_before = sum(1 for _ in fh)
     tool_calls = []          # name + real input dict, so arguments are checkable
     result = {}
     t0 = time.time()
@@ -166,9 +195,21 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                             c["is_error"] = b.is_error
         elif isinstance(msg, HookEventMessage):
             hooks.append(msg.hook_event_name)
+            data = getattr(msg, "data", {}) or {}
+            # hook_response carries the outcome of a hook that ran. NOTE:
+            # `hook_name` is the EVENT ("Stop", "SessionStart:startup"), not the
+            # script filename — script identity is only visible via stdout.
+            if data.get("subtype") == "hook_response":
+                hook_runs.append({
+                    "event": data.get("hook_event"),
+                    "name": data.get("hook_name"),
+                    "exit_code": data.get("exit_code"),
+                    "outcome": data.get("outcome"),
+                    "stdout": str(data.get("stdout", ""))[:300],
+                })
         elif isinstance(msg, SystemMessage):
-            blob = json.dumps(getattr(msg, "data", {}))
-            if "refusing to create a test artifact" in blob:
+            data = getattr(msg, "data", {}) or {}
+            if "refusing to create a test artifact" in json.dumps(data):
                 denials.append("no-test-files")
         elif isinstance(msg, ResultMessage):
             result = {"is_error": msg.is_error, "num_turns": msg.num_turns,
@@ -183,6 +224,7 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         "elapsed_s": round(time.time() - t0, 1),
         "reply": joined.strip()[:400],
         "hook_events": sorted(set(hooks)), "tools_used": sorted(set(tools)),
+        "hook_runs": hook_runs,
         "tool_calls": [{"name": c["name"], "input": json.dumps(c["input"])[:200]}
                        for c in tool_calls],
         "result": result,
@@ -243,6 +285,40 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                 and c["is_error"] is not True
                 and "unknown skill" not in str(c["result"]).lower()
                 for c in matching)
+
+        if spec.get("require_hook_event"):
+            # `hook_name` is the event label, not the script filename, so this
+            # proves the event fired and its hooks exited cleanly — not which
+            # script ran. Attribution to proofpunk comes from the loads tap.
+            want_ev = spec["require_hook_event"]
+            runs = [h for h in hook_runs
+                    if str(h.get("event") or "").startswith(want_ev)]
+            checks["hook_ran"] = bool(runs)
+            checks["hook_ok"] = any(h.get("outcome") == "success" for h in runs)
+
+        if spec.get("loads_append"):
+            # Read ONLY the lines this run appended, and require at least one
+            # to name this run's cwd. Byte growth is not attribution.
+            new_lines = []
+            if os.path.exists(loads_path):
+                with open(loads_path) as fh:
+                    new_lines = fh.readlines()[loads_before:]
+            parsed = []
+            for ln in new_lines:
+                try:
+                    parsed.append(json.loads(ln))
+                except ValueError:
+                    pass
+            out["loads_new_lines"] = len(new_lines)
+            out["loads_sample"] = parsed[:2]
+            checks["loads_appended"] = bool(parsed)
+            # macOS resolves /tmp through a symlink, so the tap records
+            # /private/tmp/... — compare resolved paths, not raw strings.
+            want_cwd = os.path.realpath(cwd)
+            checks["loads_this_run"] = any(
+                os.path.realpath(str(p.get("cwd", ""))) == want_cwd
+                for p in parsed)
+
         out["checks"] = checks
         out["expect_text"] = spec["expect_text"]
         out["pass"] = all(checks.values())

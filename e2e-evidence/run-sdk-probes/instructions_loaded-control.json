@@ -1,0 +1,27 @@
+{
+  "probe": "instructions_loaded",
+  "why": "the InstructionsLoaded memory tap must run when the plugin loads",
+  "plugin_loaded": false,
+  "elapsed_s": 3.8,
+  "reply": "OK",
+  "hook_events": [],
+  "tools_used": [],
+  "hook_runs": [],
+  "tool_calls": [],
+  "result": {
+    "is_error": false,
+    "num_turns": 1,
+    "cost_usd": 0.1007395
+  },
+  "loads_new_lines": 0,
+  "loads_sample": [],
+  "checks": {
+    "text_matches": true,
+    "hook_ran": false,
+    "hook_ok": false,
+    "loads_appended": false,
+    "loads_this_run": false
+  },
+  "expect_text": "",
+  "pass": false
+}

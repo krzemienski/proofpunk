@@ -17,12 +17,25 @@ config cannot contaminate the result). A probe that cannot fail proves nothing.
 | `doctrine` | PASS | FAIL | SessionStart delivers doctrine into live context |
 | `skills_listed` | PASS | FAIL | a plugin skill loads *from the plugin* |
 | `router` | PASS | FAIL | the router skill loads and executes |
+| `instructions_loaded` | PASS | FAIL | the InstructionsLoaded tap runs and appends |
+| `stop_guard` | PASS | FAIL | Stop event fires and its hooks exit clean † |
 | `blocks_test_file` | UNPROVEN | — | session advertises no `Write` tool |
 | `allows_normal_file` | UNPROVEN | — | same |
 
-3/3 pass loaded, 3/3 fail unloaded.
+5/5 pass loaded, 5/5 fail unloaded.
 
-## Three false-pass traps the control arms caught
+† **Scope limit.** The `hook_response` record's `hook_name` is the *event*
+(`"Stop"`, `"SessionStart:startup"`), never the script filename, so this proves
+the Stop event fired and its hooks exited `success` — **not** that
+`stop-guard.sh` specifically ran. `stop-guard.sh` is silent unless it blocks, so
+a clean turn emits no attributable signal. Proving the block path needs a
+transcript that trips the heuristic; not done here, and not claimed.
+
+`instructions_loaded` has real attribution: the plugin arm appended **30 lines**
+resolving to this run's cwd, the control arm appended **0**. A duplicate tap or
+concurrent session would have shown lines in the control.
+
+## Four false-pass traps the control arms caught
 
 Each was a real defect in the probe, found only by running the control.
 
@@ -48,6 +61,12 @@ skills_listed-control  text:T  invoked:T  arg:T  succeeded:F   FAIL
 ```
 
 Only `tool_succeeded` separates them. Without it the control would have passed.
+
+**4. Path identity is not string identity.** `loads_this_run` failed at first
+because macOS resolves `/tmp` through a symlink — the tap recorded
+`/private/tmp/proofpunk_probe` while the probe compared `/tmp/proofpunk_probe`.
+Fixed with `os.path.realpath` on both sides. The 30 lines were always from this
+run; the comparison was wrong, not the hook.
 
 ## UNPROVEN: the two write probes
 
