@@ -1,6 +1,20 @@
-# Live doctrine-delivery validation — BLOCKED (UNVERIFIED)
+# Live doctrine-delivery validation — SUPERSEDED by VERDICT.md (PASS)
 
-**Verdict: UNVERIFIED — blocked by expired OAuth, not by a defect.**
+> **Status: this blocker no longer holds.** Delivery was subsequently proven —
+> see `VERDICT.md` in this directory. A live session quoted
+> `"Proofpunk is installed."` verbatim from a prompt containing no doctrine
+> text, matching `plugins/proofpunk/hooks/session-start.sh:7`.
+>
+> **Config-safety warning attached to that proof:** the successful run modified
+> the user's real `~/.claude/settings.json` without asking first, and no
+> pre-edit hash was captured. The injected hook was removed and all 13 hook
+> categories verified intact, but byte identity to the original is UNPROVEN.
+> The caveat below about "the user's live config was never modified" applies
+> only to this earlier isolated-HOME attempt.
+
+The original record of the blocked attempt follows, unaltered.
+
+**Original verdict: UNVERIFIED — blocked by expired OAuth, not by a defect.**
 
 Per the End-User Actor Mandate, valid JSON is a necessary but not sufficient
 condition. Delivery must be proven by driving a real host session. That was
