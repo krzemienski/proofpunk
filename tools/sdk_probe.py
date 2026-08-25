@@ -144,6 +144,29 @@ for _sk in ("implement", "validation-plan", "root-cause-debugging",
         why=f"'{_sk}' must load from the plugin, not a same-named local copy",
     )
 
+# Command-surface probes. These drive the SLASH COMMANDS a user actually types,
+# not the scripts underneath — the command file is the user-facing contract, so
+# a doc fix is only end-user proven if the loaded surface carries it.
+PROBES["cmd_truth_audit_flags"] = dict(
+    prompt=("Invoke the skill named exactly 'proofpunk:codebase-truth-audit' "
+            "using the Skill tool. Then state, in one line, the exact flag "
+            "names its bundled init script accepts for bounding history."),
+    expect_text="--start",
+    require_tool="Skill",
+    require_tool_arg="proofpunk:codebase-truth-audit",
+    forbid_text="--since",
+    why="the loaded skill must carry --start/--end, not the rejected --since",
+)
+PROBES["cmd_rate_prompt_flag"] = dict(
+    prompt=("Invoke the skill named exactly 'proofpunk:prompt-forge' using the "
+            "Skill tool. Then state, in one line, the flag that ships a prompt "
+            "scoring below threshold."),
+    expect_text="--ship-below-threshold",
+    require_tool="Skill",
+    require_tool_arg="proofpunk:prompt-forge",
+    why="the flag documented in rate-prompt must exist in the loaded skill",
+)
+
 
 async def run(name: str, cwd: str, use_plugin: bool) -> dict:
     spec = PROBES[name]
