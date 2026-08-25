@@ -1,0 +1,3 @@
+build-site.py: missing required dependencies:
+  - pandoc: used to render markdown docs to HTML (pandoc())
+      install: brew install pandoc  (see https://pandoc.org/installing.html)
