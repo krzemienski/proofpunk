@@ -32,8 +32,7 @@ Consolidated from a curated review of a 445-skill archive. See
 | `brainstorm` | Decide the approach: scout-first ideation, trade-off analysis, brutal honesty, approved design before any code |
 | `validation-plan` | Author BRIEF -> ROADMAP -> per-phase plans with blocking cumulative proof obligations |
 | `plan-hardening` | Red-team a draft plan (4 lenses), score confidence gaps, inject proof obligations, strengthen prompts |
-| `cook` | Implement features/plans with review gates, side-effect-proofing, and end-user verification |
-| `functional-validation` | Validate a feature against the REAL system through REAL interfaces — no mocks |
+| `implement` | Implement features/plans with review gates, side-effect-proofing, and end-user verification |
 | `full-functional-audit` | Audit EVERY interaction in an app: Explore -> Plan -> Execute -> Remediate -> Verdict |
 | `end-user-testing` | Fresh run-scoped evidence, cache clearing, citation discipline, phase verdicts |
 | `visual-inspection` | Mandatory visual QA for screenshots (iOS HIG, WCAG 2.2, defect database) |
@@ -83,7 +82,7 @@ Verify: `/plugin` should list `Proofpunk` with 16 skills.
 
 ```
 Validate the login flow end-to-end.
-→ functional-validation: defines PASS criteria, starts the dev server,
+→ end-user-testing: defines PASS criteria, starts the dev server,
   drives the browser as an end user (fill form, submit, observe dashboard),
   captures e2e-evidence/run-.../step-NN-*.png, verdict with full-path citations.
 ```
@@ -125,9 +124,9 @@ Harden .planning/phases/02-sync/02-01-PLAN.md before we execute it.
 **Implement after approval**
 
 ```
-Cook the notifications plan.
-→ cook: scout, exact requirements, plan review gate, implementation,
-  code review + 100% tests, end-user drive of the finished feature, report.
+Implement the notifications plan.
+→ implement: scout, exact requirements, plan review gate, implementation,
+  code review, end-user drive of the finished feature, report.
 ```
 
 **Author or rate a prompt**
@@ -151,9 +150,9 @@ python3 skills/end-user-testing/scripts/fresh_evidence.py validate
 ## Typical Pipeline
 
 ```
-brainstorm → validation-plan → plan-hardening → cook
+brainstorm → validation-plan → plan-hardening → implement
      → stack-testing (per-stack suites, deflaking)
-     → functional-validation / full-functional-audit
+     → full-functional-audit
      → mobile-validation-runner (iOS features)
      → ui-experience-audit / visual-inspection
      → end-user-testing verdicts at every phase boundary

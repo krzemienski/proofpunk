@@ -96,7 +96,7 @@ to driving. Do not fabricate a verdict from a screenshot alone.
 
 This mandate applies across ALL Proofpunk skills:
 
-- `functional-validation` / `full-functional-audit` — every interaction in
+- `full-functional-audit` — every interaction in
   the inventory is driven, not inspected
 - `end-user-testing` — gate evidence must come from an AI-driven session
 - `visual-inspection` / `ui-experience-audit` — screenshots are captured
@@ -104,5 +104,5 @@ This mandate applies across ALL Proofpunk skills:
   drive mode when tools exist
 - `validation-plan` / `plan-hardening` — gate blocks must specify driven
   end-user actions, not passive checks
-- `cook` — implementation is verified by driving the finished feature as an
-  end user before finalize
+- `implement` — implementation is verified by driving the finished feature as
+  an end user before finalize

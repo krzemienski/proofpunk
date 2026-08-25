@@ -74,7 +74,7 @@ Report all findings before proceeding. If any critical check fails, fix it befor
 
 ## When NOT to Use
 
-- Validating feature functionality after implementation (use `functional-validation`)
-- Running structured end-to-end validation flows (use `e2e-validate`)
-- Verifying completion evidence (use `gate-validation-discipline`)
-- Debugging specific build errors (use `build-fixer` agent)
+- Validating feature functionality after implementation (use `end-user-testing`)
+- Running structured end-to-end validation flows (use `full-functional-audit`)
+- Verifying completion evidence (use `end-user-testing`)
+- Debugging specific build errors (use `root-cause-debugging`)

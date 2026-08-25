@@ -165,10 +165,10 @@ assert len(enforces) == SKILL_DIRS, f"README skill table has {len(enforces)} row
 # skill layers, from README "skill stack" mermaid (codebase-truth-audit added to Deep analysis,
 # per README: "the code-truth lane to session-intent's intent lane")
 LAYERS = [
-    ("ORCHESTRATION", ["implement"]),
+    ("ORCHESTRATION", ["proofpunk", "implement"]),
     ("PROMPT & PLAN", ["prompt-forge", "brainstorm", "validation-plan", "plan-hardening"]),
-    ("EXECUTION", ["cook", "stack-testing", "mobile-validation-runner"]),
-    ("PROOF", ["functional-validation", "end-user-testing", "visual-inspection",
+    ("EXECUTION", ["stack-testing", "mobile-validation-runner"]),
+    ("PROOF", ["end-user-testing", "visual-inspection",
                "ui-experience-audit", "full-functional-audit", "tui-testing"]),
     ("DEEP ANALYSIS", ["root-cause-debugging", "red-team-eval", "production-readiness",
                        "session-intent", "codebase-truth-audit"]),
@@ -456,7 +456,7 @@ commands_main = f"""
 """
 write("commands.html", chrome(
     f"commands — {N_CMDS}+{N_OPCMDS} commands — proofpunk",
-    "Proofpunk slash command reference: implement, cook, verify, forge-prompt, rate-prompt, truth-audit — plus OpenCode variants.",
+    "Proofpunk slash command reference: implement, install, verify, forge-prompt, rate-prompt, truth-audit",
     "commands", commands_main, "COMMANDS"))
 
 # ---------------- docs.html + doc/ref subpages ----------------

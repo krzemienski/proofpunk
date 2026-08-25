@@ -123,12 +123,12 @@ You only have screenshots. Functional verification is impossible from an image. 
 ```
 ## Functional verification needed
 
-### functional-validation
+### end-user-testing
 - Tap "Continue" button (id 2) — verify navigation to next screen
 - Submit empty form — verify validation message appears
 - Tap search icon (id 1) — verify search overlay opens
 
-### ios-validation-runner
+### mobile-validation-runner
 - Verify tab bar bottom-inset on iPhone 14 Pro (notch device)
 - Verify swipe-to-delete on list rows in Settings
 
