@@ -13,6 +13,30 @@ eliminate it: the control still emits `SessionStart`, so some host-level hooks
 run regardless. Claims are scoped accordingly. A probe that cannot fail proves
 nothing.
 
+## Two different claims — do not conflate them
+
+**Delivery validation** (this document): does the installed plugin actually
+reach a live session? 12 probes answer yes. Loading 8 skills proves the
+delivery path works; it does **not** mean 8 things were improved.
+
+**Defects fixed** (the separate claim): 8 changes, listed below. Only some have
+end-user proof; the rest are verified at script, install, or doc level.
+
+| # | Defect fixed | Proof level |
+|---|---|---|
+| 1 | hook emitted invalid JSON, host dropped doctrine | **end-user** (`doctrine`) |
+| 2 | no entry point — orchestration graph had zero roots | **end-user** (`router`) |
+| 3 | harness grepped instead of parsing; passed on the broken hook | script (mutation → rc=1) |
+| 4 | installer resolved citations single-pass; verifier shared the blind spot | install (4 → 0/79) |
+| 5 | skill count wrong across manifests and docs | doc (18 everywhere) |
+| 6 | `truth-audit.md` documented `--since/--until`; script takes `--start/--end` | doc (argparse quoted) |
+| 7 | `rate-prompt.md` omitted `--ship-below-threshold` | doc (skill quoted) |
+| 8 | `build-site.py` had undeclared PyYAML/pandoc deps | script (both paths exit 1) |
+
+**2 of 8 fixes carry end-user proof.** The target of ≥10 measured improvements
+with end-user evidence is **not met**. What is met: 12 components proven to
+deliver in live sessions, and 8 defects fixed at the levels shown.
+
 ## Results
 
 | Probe | Plugin | Control | Proves |
