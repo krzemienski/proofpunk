@@ -1,0 +1,5 @@
+== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.yW4PRQ4dpA/.claude/skills  (claude-code)
+source     : github tarball (ref: e890bc527e9a8a8845bfb8ec40c3927a6238c86d)
+curl: (56) The requested URL returned error: 404
+ERROR: download failed (check --ref e890bc527e9a8a8845bfb8ec40c3927a6238c86d)

@@ -1,0 +1,12 @@
+rc=0
+== Proofpunk installer ==
+target dir : /tmp/pp-before-tar/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 18 skill(s)
+  INSTALL brainstorm
+/Users/nick/proofpunk/tools/proofpunk-install.sh: line 266: tar: command not found
+/Users/nick/proofpunk/tools/proofpunk-install.sh: line 266: tar: command not found
+
+dirs_created=1
+with_SKILLmd=0

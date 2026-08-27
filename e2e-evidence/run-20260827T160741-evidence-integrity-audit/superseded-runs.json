@@ -1,0 +1,21 @@
+{
+ "note": "Captures are read-only (evidence/AGENTS.md:22). These runs are left untouched; this manifest records that they are superseded.",
+ "superseded": [
+  {
+   "run": "run-20260827T160943-before-arms-recaptured",
+   "reason": "old-code arm was produced by regex surgery that left a dangling FM_ERR reference; the script died with 'unbound variable' after printing the tick, so rc=0 is contaminated.",
+   "superseded_by": "run-20260827T161126-verify-arm-gitorig/verdict.json"
+  },
+  {
+   "run": "run-20260827T161107-verify-arm-clean",
+   "reason": "block-boundary reconstruction produced a bash syntax error (rc=2); verify never ran, so the arm is non-discriminating.",
+   "superseded_by": "run-20260827T161126-verify-arm-gitorig/verdict.json"
+  },
+  {
+   "run": "run-20260827T151935-ref-differential",
+   "reason": "old arm was a regex reconstruction (/tmp/pp-old-installer.sh), not the committed installer; two other reconstructions this session failed silently (unbound variable, syntax error), so reconstructed arms are not trusted.",
+   "superseded_by": "run-20260827T162405-ref-differential-pristine/verdict.json"
+  }
+ ],
+ "authoritative": "run-20260827T161126-verify-arm-gitorig \u2014 old code is the pristine committed installer via `git show e890bc5`, syntax-valid, no FM_ERR, no unbound variable."
+}

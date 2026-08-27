@@ -1,0 +1,5 @@
+$ python3 tools/verify-orchestration.py | tail -3
+rc=0
+
+VERDICT: PASS — the 18 skills execute as one delegation DAG, in the
+documented order, with methods owned exactly once.

@@ -1,0 +1,450 @@
+[
+ {
+  "ts": "2026-08-25T00:11:21.825Z",
+  "sid": "a5b69f26",
+  "events": 25,
+  "intent": "Reply with exactly: AUTH_OK",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:11:38.774Z",
+  "sid": "8f70f9c4",
+  "events": 27,
+  "intent": "What additional context, if any, was injected into this session at session start by a hook? If any was injected, quote its first sentence verbatim. If none was injected, reply exactly: NONE_INJECTED",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:53:12.946Z",
+  "sid": "54fc2c49",
+  "events": 25,
+  "intent": "Search your session context for a block that begins with the word 'Proofpunk'. If you find one, reply with its first six words verbatim and nothing else. If there is no such block, reply exactly NO_SUCH_BLOCK.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:53:24.708Z",
+  "sid": "0282862d",
+  "events": 25,
+  "intent": "Search your session context for a block that begins with the word 'Proofpunk'. If you find one, reply with its first six words verbatim and nothing else. If there is no such block, reply exactly NO_SUCH_BLOCK.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:54:23.071Z",
+  "sid": "10c44fbc",
+  "events": 26,
+  "intent": "Create a file at /tmp/proofpunk_probe/test_example.py containing exactly: def test_x(): assert True",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:54:38.547Z",
+  "sid": "4f323885",
+  "events": 49,
+  "intent": "Create a file at /tmp/proofpunk_probe/notes.md containing exactly: hello",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:56:10.698Z",
+  "sid": "e6cd2ddf",
+  "events": 25,
+  "intent": "Use the Write tool, and only the Write tool, to create the file /tmp/proofpunk_probe/test_example.py with exactly this content: def test_x(): assert True",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:56:23.842Z",
+  "sid": "d480445a",
+  "events": 33,
+  "intent": "Use the Write tool, and only the Write tool, to create the file /tmp/proofpunk_probe/notes.md with exactly this content: hello",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:56:55.043Z",
+  "sid": "51348e8b",
+  "events": 45,
+  "intent": "Use the Write tool, and only the Write tool, to create the file /tmp/proofpunk_probe/test_example.py with exactly this content: def test_x(): assert True",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:57:25.234Z",
+  "sid": "f15589e1",
+  "events": 45,
+  "intent": "Use the Write tool, and only the Write tool, to create the file /tmp/proofpunk_probe/notes.md with exactly this content: hello",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:58:09.913Z",
+  "sid": "67e01276",
+  "events": 68,
+  "intent": "Use the Write tool, and only the Write tool, to create the file /tmp/proofpunk_probe/test_example.py with exactly this content: def test_x(): assert True",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T00:59:30.325Z",
+  "sid": "c088ebfa",
+  "events": 68,
+  "intent": "Use the Write tool, and only the Write tool, to create the file /tmp/proofpunk_probe/notes.md with exactly this content: hello",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:01:51.060Z",
+  "sid": "14a29559",
+  "events": 36,
+  "intent": "Write the file /tmp/proofpunk_probe/notes.md containing: hello",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:02:22.950Z",
+  "sid": "e402d100",
+  "events": 54,
+  "intent": "Write /tmp/proofpunk_probe/notes.md with content: hello",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:02:53.245Z",
+  "sid": "fb490bc4",
+  "events": 25,
+  "intent": "Search your session context for a block that begins with the word 'Proofpunk'. If you find one, reply with its first six words verbatim and nothing else. If there is no such block, reply exactly NO_SUCH_BLOCK.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:02:59.126Z",
+  "sid": "9b34a221",
+  "events": 25,
+  "intent": "List the names of every skill available to you whose name is exactly one of: end-user-testing, root-cause-debugging, visual-inspection. Reply with just the names you actually have, comma separated, or NONE.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:03:01.593Z",
+  "sid": "43cef969",
+  "events": 16,
+  "intent": "hi",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:03:04.849Z",
+  "sid": "9a9e3c09",
+  "events": 36,
+  "intent": "Do you have a skill named exactly 'proofpunk'? If yes, reply with the single word YES followed by how many other skills its 'Skill calls' table names. If no, reply NO.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:03:19.062Z",
+  "sid": "023436ab",
+  "events": 25,
+  "intent": "hi",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:03:21.751Z",
+  "sid": "1ac1bd9f",
+  "events": 19,
+  "intent": "hi",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:03:24.455Z",
+  "sid": "3c53b2c7",
+  "events": 18,
+  "intent": "hi",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:03:52.916Z",
+  "sid": "56aed309",
+  "events": 35,
+  "intent": "Do you have a skill named exactly 'proofpunk'? If yes, reply with the single word YES followed by how many other skills its 'Skill calls' table names. If no, reply NO.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:09:06.240Z",
+  "sid": "06c7e4d4",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk' using the Skill tool. After it loads, quote verbatim the first row of its 'Skill calls' table.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:09:27.237Z",
+  "sid": "7ef8f501",
+  "events": 36,
+  "intent": "Invoke the skill named exactly 'proofpunk' using the Skill tool. After it loads, quote verbatim the first row of its 'Skill calls' table.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:09:42.027Z",
+  "sid": "62b1e5d3",
+  "events": 31,
+  "intent": "Invoke the skill named exactly 'proofpunk' using the Skill tool. After it loads, quote verbatim the first row of its 'Skill calls' table.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:10:23.704Z",
+  "sid": "221b88d7",
+  "events": 15,
+  "intent": "Search your session context for a block that begins with the word 'Proofpunk'. If you find one, reply with its first six words verbatim and nothing else. If there is no such block, reply exactly NO_SUCH_BLOCK.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:10:27.493Z",
+  "sid": "dfb08738",
+  "events": 15,
+  "intent": "List the names of every skill available to you whose name is exactly one of: end-user-testing, root-cause-debugging, visual-inspection. Reply with just the names you actually have, comma separated, or NONE.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:11:13.427Z",
+  "sid": "c76543db",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'end-user-testing' using the Skill tool. After it loads, state in one line what it says the only acceptable form of proof is.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:11:22.811Z",
+  "sid": "5295d45b",
+  "events": 39,
+  "intent": "Invoke the skill named exactly 'end-user-testing' using the Skill tool. After it loads, state in one line what it says the only acceptable form of proof is.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:13:40.584Z",
+  "sid": "fc8ea6cc",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:end-user-testing' using the Skill tool. After it loads, state in one line what it says the only acceptable form of proof is.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:13:53.966Z",
+  "sid": "d088a4da",
+  "events": 44,
+  "intent": "Invoke the skill named exactly 'proofpunk:end-user-testing' using the Skill tool. After it loads, state in one line what it says the only acceptable form of proof is.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:14:35.563Z",
+  "sid": "ddc05cc4",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk' using the Skill tool. After it loads, quote verbatim the first row of its 'Skill calls' table.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:14:44.161Z",
+  "sid": "631ce68c",
+  "events": 34,
+  "intent": "Invoke the skill named exactly 'proofpunk' using the Skill tool. After it loads, quote verbatim the first row of its 'Skill calls' table.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:18:39.622Z",
+  "sid": "379d363d",
+  "events": 25,
+  "intent": "Reply with exactly: DONE. The work is complete.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:19:15.301Z",
+  "sid": "3bfb3a57",
+  "events": 25,
+  "intent": "Reply with exactly: DONE. The work is complete.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:19:28.899Z",
+  "sid": "69b85ee4",
+  "events": 25,
+  "intent": "Reply with exactly: OK",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:20:36.035Z",
+  "sid": "edf9e377",
+  "events": 25,
+  "intent": "Reply with exactly: DONE. The work is complete.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:20:42.178Z",
+  "sid": "69a21428",
+  "events": 25,
+  "intent": "Reply with exactly: OK",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:21:00.619Z",
+  "sid": "7d85f692",
+  "events": 25,
+  "intent": "Reply with exactly: OK",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:21:06.487Z",
+  "sid": "5bdc0dc2",
+  "events": 15,
+  "intent": "Reply with exactly: OK",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:21:18.489Z",
+  "sid": "f0778218",
+  "events": 25,
+  "intent": "Reply with exactly: DONE. The work is complete.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:21:23.948Z",
+  "sid": "8004d2e4",
+  "events": 15,
+  "intent": "Reply with exactly: DONE. The work is complete.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:23:59.010Z",
+  "sid": "4e881401",
+  "events": 37,
+  "intent": "Invoke the skill named exactly 'proofpunk:implement' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:24:18.341Z",
+  "sid": "7a5161bc",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:validation-plan' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:24:28.633Z",
+  "sid": "74b158b1",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:root-cause-debugging' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:24:38.550Z",
+  "sid": "fafa830c",
+  "events": 36,
+  "intent": "Invoke the skill named exactly 'proofpunk:full-functional-audit' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:24:53.523Z",
+  "sid": "904935b3",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:red-team-eval' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:25:04.426Z",
+  "sid": "418ba96d",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:visual-inspection' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:25:14.740Z",
+  "sid": "d093c802",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:production-readiness' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:25:25.394Z",
+  "sid": "49a8a884",
+  "events": 36,
+  "intent": "Invoke the skill named exactly 'proofpunk:codebase-truth-audit' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:25:40.926Z",
+  "sid": "04f68d96",
+  "events": 40,
+  "intent": "Invoke the skill named exactly 'proofpunk:implement' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:26:05.768Z",
+  "sid": "6a02318f",
+  "events": 37,
+  "intent": "Invoke the skill named exactly 'proofpunk:red-team-eval' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:26:34.618Z",
+  "sid": "2c25aabf",
+  "events": 21,
+  "intent": "Invoke the skill named exactly 'proofpunk:codebase-truth-audit' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:36:39.846Z",
+  "sid": "b6416b41",
+  "events": 49,
+  "intent": "Skill \"/proofpunk:truth-audit\" is available for workers.\nDescription: Run a repo-wide intent-vs-code truth audit with evidence-backed findings\n\nInstruct a worker to use this skill by including \"Use the /proofpunk:truth-audit skill\" in your Agent prompt. The worker has access to the Skill tool and will receive the skill's content and permissions when it invokes it.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:48:51.236Z",
+  "sid": "4ee7e2c4",
+  "events": 26,
+  "intent": "List every skill available to you whose name starts with \"proofpunk:\". Reply with the count first, then the names, comma separated.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:51:13.083Z",
+  "sid": "a0397888",
+  "events": 26,
+  "intent": "List every skill available to you whose name begins 'proofpunk:'. Reply with the exact count, then the names comma separated. Include the router if present.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:52:17.824Z",
+  "sid": "36a4393c",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:brainstorm' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:52:27.778Z",
+  "sid": "163e6d2c",
+  "events": 36,
+  "intent": "Invoke the skill named exactly 'proofpunk:mobile-validation-runner' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:52:38.881Z",
+  "sid": "c8aa4d57",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:plan-hardening' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:52:55.281Z",
+  "sid": "8187aa30",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:prompt-forge' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:53:10.585Z",
+  "sid": "9d356973",
+  "events": 36,
+  "intent": "Invoke the skill named exactly 'proofpunk:session-intent' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:53:21.402Z",
+  "sid": "d41c50f7",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:stack-testing' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:53:32.036Z",
+  "sid": "ed1d58f0",
+  "events": 35,
+  "intent": "Invoke the skill named exactly 'proofpunk:tui-testing' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ },
+ {
+  "ts": "2026-08-25T01:53:46.249Z",
+  "sid": "afb8d1e4",
+  "events": 36,
+  "intent": "Invoke the skill named exactly 'proofpunk:ui-experience-audit' using the Skill tool, then state in one line what it is for.",
+  "touched": []
+ }
+]

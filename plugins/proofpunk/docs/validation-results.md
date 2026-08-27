@@ -383,7 +383,9 @@ New skill `skills/implement/SKILL.md` — the orchestrator (conductor) to
 cook's execution engine (player), resolving the overlap question
 explicitly in both directions:
 
-- **Command surface**: `implement "<goal>" [--parallel] [--auto] [--mine]
+- **Command surface** *(as of that release; `--no-test` and `--tdd` were
+  later removed, and `cook` was merged into `implement` — see
+  `improvements.md`)*: `implement "<goal>" [--parallel] [--auto] [--mine]
   [--fast] [--no-test] [--tdd]` and `implement mine [--project] [--since]
   [--until] [--json]`, each flag with a why-it-exists column.
 - **Phase 0 — TRUE success criteria distillation**: observable, end-user
@@ -420,6 +422,11 @@ permutation with why / what happens / what you end up with, which skills
 execute per invocation, and system architecture diagrams.
 
 Delivered in README.md (629 lines, +550):
+
+> **Historical record.** This section describes the surface *as shipped in
+> that release*. `cook` and `functional-validation` were later merged into
+> `implement`, and the `--tdd` / `--no-test` flags were removed. For the
+> current surface see `usage-guide.md` and `improvements.md`.
 
 1. **Dispatch-at-a-glance table** — invocation -> skill fired -> delegation.
 2. **§1-8 command references** for every argumented surface: implement

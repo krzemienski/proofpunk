@@ -1,0 +1,60 @@
+rc=0
+== Proofpunk installer ==
+target dir : /tmp/pp-final-home/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 18 skill(s)
+  INSTALL brainstorm
+  INSTALL codebase-truth-audit
+  INSTALL end-user-testing
+  INSTALL full-functional-audit
+  INSTALL implement
+  INSTALL mobile-validation-runner
+  INSTALL plan-hardening
+  INSTALL production-readiness
+  INSTALL prompt-forge
+  INSTALL proofpunk
+  INSTALL red-team-eval
+  INSTALL root-cause-debugging
+  INSTALL session-intent
+  INSTALL stack-testing
+  INSTALL tui-testing
+  INSTALL ui-experience-audit
+  INSTALL validation-plan
+  INSTALL visual-inspection
+themes     : 20 flat-black cyberpunk themes
+  OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml
+  OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json
+  Hyper    -> ~/.config/proofpunk/hyper-themes (20 .js modules)
+           activate: require one from a local plugin, or merge its COLORS into ~/.hyper.js
+plugins    : platform glue
+  OMP extension      -> ~/.omp/agent/extensions/proofpunk.ts
+  OMP full plugin    : omp plugin marketplace add krzemienski/proofpunk && omp plugin install proofpunk@proofpunk
+  OpenCode plugin    -> ~/.config/opencode/plugin/proofpunk.ts (+6 commands, 1 agent)
+  OpenCode skills    : shared from ~/.claude/skills — re-run with --target claude-code if missing
+  Claude Code plugin : /plugin marketplace add krzemienski/proofpunk && /plugin install proofpunk@proofpunk-marketplace
+doctrine   : /tmp/pp-final-home/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✓ end-user-testing
+  ✓ full-functional-audit
+  ✓ implement
+  ✓ mobile-validation-runner
+  ✓ plan-hardening
+  ✓ production-readiness
+  ✓ prompt-forge
+  ✓ proofpunk
+  ✓ red-team-eval
+  ✓ root-cause-debugging
+  ✓ session-intent
+  ✓ stack-testing
+  ✓ tui-testing
+  ✓ ui-experience-audit
+  ✓ validation-plan
+  ✓ visual-inspection
+verify     : all skills pass (see ✓ lines above)
+== summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+
+skills=18
+unresolved_refs=[]

@@ -1,0 +1,17 @@
+UNPIPED via subprocess.run (argv list, no shell) — rc is the installer's own
+OLD CODE = git show e890bc5:tools/proofpunk-install.sh (pristine, not regex-edited)
+$ bash /tmp/pp-git-orig.sh --source-dir /tmp/pp-broken-src2 --only brainstorm   [PATH without python3]
+rc=0
+{"rc": 0, "false_tick": true, "cross": false, "unbound": false, "syntax_error": false}
+
+== Proofpunk installer ==
+target dir : /tmp/pp-g-old/.claude/skills  (claude-code)
+source     : local checkout /tmp/pp-broken-src2
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL brainstorm
+doctrine   : /tmp/pp-g-old/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm (frontmatter only — python3 unavailable for ref checks)
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==

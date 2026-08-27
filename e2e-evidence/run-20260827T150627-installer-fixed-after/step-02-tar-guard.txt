@@ -1,0 +1,5 @@
+$ bash /Users/nick/proofpunk/tools/proofpunk-install.sh --target claude-code --source-dir /Users/nick/proofpunk 2>&1|tail -4
+rc=0
+== Proofpunk installer ==
+target dir : /tmp/step-02-tar-guard.txt-home/.claude/skills  (claude-code)
+ERROR: tar required (used to copy skills and doctrine)

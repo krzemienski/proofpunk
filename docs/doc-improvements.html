@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ten Improvements — measured, not asserted — proofpunk docs</title>
+<meta name="description" content="Every row below came from walking the real tree this session (six scout">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>13 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOC / IMPROVEMENTS</div>
+  <div class="doc">
+<h1 id="ten-improvements--measured-not-asserted">Ten Improvements — measured, not asserted</h1>
+<p>Every row below came from walking the real tree this session (six scout subagents across skills, hooks, installer, and the command/manifest surface) and from reproducing each defect against the real installer before changing a line. No item here is a guess about what "could be better"; each names a defect that was observed, the measurement that proves it, and the threshold that decides success.</p>
+<p>The organising discovery: <strong>all three published gates were green while the installer was broken.</strong> That is the shape of every problem below — the measuring instrument agreed with itself and disagreed with reality.</p>
+<hr />
+<h2 id="1-give-the-installer-an-actual-harness-critical">1. Give the installer an actual harness (CRITICAL)</h2>
+<p><code>tools/AGENTS.md:16</code> called <code>dry-run-install.sh</code> the "Installer dry-run harness — run before any installer change." It never invokes <code>tools/proofpunk-install.sh</code>. It exercises the <code>/proofpunk:install</code> slash-command template merge — a different artifact entirely.</p>
+<ul>
+<li><strong>Before-arm</strong>: <code>grep -c proofpunk-install tools/dry-run-install.sh</code> → <code>0</code></li>
+<li><strong>Fix</strong>: add <code>tools/test-installer.sh</code>, which runs the real installer; correct the <code>AGENTS.md</code> row so neither file is mislabelled.</li>
+<li><strong>Measure</strong>: the harness invokes the installer by path and asserts on exit codes plus real filesystem state.</li>
+<li><strong>Threshold</strong>: a deliberately malformed skill makes the harness FAIL. A harness that cannot fail is not a harness.</li>
+</ul>
+<h2 id="2-stop-the-verifier-certifying-broken-skills-high">2. Stop the verifier certifying broken skills (HIGH)</h2>
+<p><code>proofpunk-install.sh:621-623</code> printed <code>✓ $skill (frontmatter only …)</code> without performing any check when <code>python3</code> was absent.</p>
+<ul>
+<li><strong>Before-arm</strong>: the <strong>pristine committed installer</strong> (<code>git show e890bc5:tools/proofpunk-install.sh</code> — syntax-valid, not regex-edited) installing a <code>SKILL.md</code> with no frontmatter at all, <code>python3</code> absent: <code>rc=0</code>, printing <code>✓ brainstorm</code> and <code>all skills pass</code>. Unpiped. (<code>e2e-evidence/run-20260827T161126-verify-arm-gitorig/verdict.json</code>)</li>
+<li><strong>Fix</strong>: validate in plain shell on that branch — first line <code>---</code>, plus <code>name:</code> and <code>description:</code> — and set <code>FAIL=1</code> on violation.</li>
+<li><strong>Measure</strong>: install the same malformed skill again.</li>
+<li><strong>Threshold</strong>: non-zero exit and a <code>✗</code> line naming the skill.</li>
+</ul>
+<h2 id="3-make---ref-reach-tags-and-commits-high--partially-verified">3. Make <code>--ref</code> reach tags and commits (HIGH — partially verified)</h2>
+<p><code>REPO_TARBALL</code> hardcoded <code>…/tar.gz/refs/heads</code> (line 38), so every <code>--ref</code> resolved as a branch — while <code>--help</code> and <code>INSTALL.md:162</code> advertised tags, using <code>--ref v1.8.0</code> as the documented example.</p>
+<ul>
+<li><p><strong>Before-arm</strong> (differential, both arms unpiped): the original <code>v2.0.1</code> capture proved nothing — that tag does not exist upstream, so it 404s under old <em>and</em> new code. Replaced with a <strong>real commit SHA</strong> (<code>e890bc52…</code>) driven against both versions of the installer:</p>
+<table>
+<thead>
+<tr>
+<th>Arm</th>
+<th>rc</th>
+<th>installed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old code (<code>refs/heads</code> hardcoded, single curl)</td>
+<td><strong>1</strong></td>
+<td>no</td>
+</tr>
+<tr>
+<td>new code (3-form fallback)</td>
+<td><strong>0</strong></td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p><code>e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json</code></p></li>
+<li><p><strong>Fix</strong>: try <code>refs/heads/$REF</code>, then <code>refs/tags/$REF</code>, then bare <code>$REF</code>.</p></li>
+<li><p><strong>Measure</strong>: install pinned to a branch, a bare SHA, and a tag.</p></li>
+<li><p><strong>Threshold</strong>: exit 0 with skills present for each form.</p></li>
+<li><p><strong>Result</strong>: branch <strong>PASS</strong>, bare SHA <strong>PASS</strong> (differentially proven), unknown ref fails honestly rc=1. The <code>refs/tags/</code> arm stays <strong>UNVERIFIED</strong> — <code>git ls-remote --tags</code> upstream returns nothing, so no real tag exists to drive.</p></li>
+</ul>
+<h2 id="4-never-leave-hooks-half-registered-high">4. Never leave hooks half-registered (HIGH)</h2>
+<p><code>--hooks</code> copies and <code>chmod +x</code>s the hook scripts, then calls bare <code>python3</code> to merge <code>settings.json</code>. Without <code>python3</code> the files land executable but unregistered — enforcement silently does not exist, which is the worst failure mode in a plugin whose entire value is enforcement.</p>
+<ul>
+<li><strong>Before-arm</strong> (measured, worse than first described): with <code>python3</code> off <code>PATH</code>, five hook scripts landed in <code>~/.proofpunk/hooks/</code>, <code>settings.json</code> was never created, <code>python3: command not found</code> printed raw — and the installer still <strong>exited 0</strong>. The user is told the install succeeded while enforcement does not exist. <code>e2e-evidence/run-20260827T141645-installer-defects-before/step-05-hooks-without-python3.txt</code></li>
+<li><strong>Measure</strong>: run <code>--hooks</code> with <code>python3</code> off <code>PATH</code>.</li>
+<li><strong>Threshold</strong>: non-zero exit, failing <em>before</em> writing anything, naming the dependency.</li>
+</ul>
+<h2 id="5-check-tar-for-local-installs-too-high">5. Check <code>tar</code> for local installs too (HIGH)</h2>
+<p>The <code>curl</code>/<code>tar</code> guard sits inside the <code>SOURCE = github</code> branch, but the per-skill copy (<code>:266</code>) and doctrine copy (<code>:438</code>) use <code>tar</code> pipes on every real run — so the documented offline path dies mid-loop with a raw pipefail error and a partial install.</p>
+<ul>
+<li><strong>Before-arm</strong> (measured): with <code>tar</code> off <code>PATH</code>, a <code>--source-dir</code> install created an empty <code>brainstorm/</code> directory containing <strong>no SKILL.md</strong>, printed <code>tar: command not found</code>, and <strong>exited 0</strong> — a silent partial install reported as success. <code>e2e-evidence/run-20260827T141645-installer-defects-before/step-06-local-install-without-tar.txt</code></li>
+<li><strong>Measure</strong>: <code>--source-dir</code> install with <code>tar</code> unavailable.</li>
+<li><strong>Threshold</strong>: non-zero exit, one clear <code>die</code> before the loop, no partial tree left behind.</li>
+</ul>
+<h2 id="6-derive-the-skill-count-instead-of-typing-it-recurring">6. Derive the skill count instead of typing it (recurring)</h2>
+<p>Count drift has shipped <strong>four</strong> times (17→19→18; commits <code>2953547</code>, <code>c39a0f0</code>, <code>f95ba9d</code>, and this session). Prose cannot hold a number that changes.</p>
+<ul>
+<li><strong>Before-arm</strong>: <code>verify-orchestration.py:144</code> printed "the 17 skills" while validating 18.</li>
+<li><strong>Fix</strong>: <code>f"…the {len(skills)} skills…"</code>, derived from the globbed list.</li>
+<li><strong>Measure</strong>: run the gate.</li>
+<li><strong>Threshold</strong>: prints 18 today and the true number after any change — verified: <code>VERDICT: PASS — the 18 skills …</code></li>
+</ul>
+<h2 id="7-one-truth-about-the-flag-surface-high">7. One truth about the flag surface (HIGH)</h2>
+<p><code>README.md</code> documented <code>--no-test</code> and <code>--tdd</code> with invented semantics at line 117 and in two tables, while line 235 of the same file said those flags do not exist — and <code>implement/SKILL.md:65-68</code> had removed them.</p>
+<ul>
+<li><strong>Measure</strong>: grep the README for live advertisements.</li>
+<li><strong>Threshold</strong>: zero, with only the negative statement remaining. ✓</li>
+</ul>
+<h2 id="8-delete-the-ghost-trees-last-references">8. Delete the ghost tree's last references</h2>
+<p><code>plugins/truth-forge/</code> no longer exists, but two example files still cited it — one pointing at a <code>fresh_evidence.py</code> path that is gone.</p>
+<ul>
+<li><strong>Measure</strong>: grep <code>truth-forge</code> outside generated <code>docs/</code>.</li>
+<li><strong>Threshold</strong>: zero hits, and any replacement path must exist on disk. ✓ (<code>plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py</code> confirmed present before it was cited.)</li>
+</ul>
+<h2 id="9-test-the-branches-that-guard-not-just-the-ones-that-pass">9. Test the branches that guard, not just the ones that pass</h2>
+<p>Scout mapped every hook's block/silent condition. Real gaps: the <code>GENERIC_SECRET</code> fallback in <code>evidence-guard.sh</code> is never exercised, and <code>no-test-files.sh</code>'s empty-path branch has no case. A guard whose blocking path is untested is a guard nobody has seen fire.</p>
+<ul>
+<li><strong>Measure</strong>: per hook, a case for the blocking path <em>and</em> the silent one.</li>
+<li><strong>Threshold</strong>: both present for all six hooks (currently 4 of 6).</li>
+</ul>
+<h2 id="10-protect-what-the-docs-promise-to-protect">10. Protect what the docs promise to protect</h2>
+<p>Skills get SKIP/<code>--override</code>/backup handling; themes and plugins are plain <code>cp</code> with no existence check, so user edits vanish silently. <code>--override</code> also accumulates unbounded <code>.bak-TIMESTAMP</code> directories with no pruning and no mention in the docs.</p>
+<ul>
+<li><strong>Measure</strong>: install themes over a locally edited theme file.</li>
+<li><strong>Threshold</strong>: either preserved and reported, or the overwrite is documented as intended behaviour. Silence is the defect.</li>
+</ul>
+<hr />
+<h2 id="after-arms--measured-results">After-arms — measured results</h2>
+<p>Authoritative verdicts cited below are unpiped, so each exit code is the command's own. Five captures elsewhere in <code>e2e-evidence/</code> are piped and their <code>rc</code> fields are invalid; they are listed, with superseding artifacts, in <code>e2e-evidence/run-20260827T160741-evidence-integrity-audit/</code>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Before</th>
+<th>After</th>
+<th>Artifact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>harness never called the installer (<code>grep -c</code> = 0)</td>
+<td><code>test-installer.sh</code> runs it; 7 groups; <code>INSTALLER TEST FAILS: 0</code></td>
+<td><code>e2e-evidence/run-20260827T150627-installer-fixed-after/final-test-installer.txt</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>pristine old code</strong> (<code>git show e890bc5</code>), unpiped: malformed <code>SKILL.md</code> → <code>✓ brainstorm</code>, rc=<strong>0</strong></td>
+<td><strong>current code, same input</strong>: rc=<strong>1</strong>, <code>✗ brainstorm</code>, no false tick</td>
+<td><code>e2e-evidence/run-20260827T161126-verify-arm-gitorig/verdict.json</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>pristine old code</strong> (<code>git show e890bc5</code>, sha256-matched, syntax-checked) on a real SHA: rc=<strong>1</strong>, not installed — unpiped</td>
+<td>current code, same SHA: rc=<strong>0</strong>, installed. Branch form also PASS. <strong><code>refs/tags/</code> UNVERIFIED — no upstream tags exist</strong></td>
+<td><code>e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>rc=<strong>0</strong>, 5 hook scripts orphaned, no <code>settings.json</code></td>
+<td>rc=<strong>1</strong>, <code>hook_dir_exists: false</code> — not even the directory is created (guard moved above <code>mkdir</code> after an audit found it ran first)</td>
+<td><code>e2e-evidence/run-20260827T160133-hooks-guard-mkdir/verdict.json</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>rc=<strong>0</strong>, empty skill dir, no <code>SKILL.md</code></td>
+<td>rc=<strong>1</strong>, <code>skill_dirs: 0</code> — no partial tree</td>
+<td><code>e2e-evidence/run-20260827T150627-installer-fixed-after/step-03-verdicts.json</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>verdict printed "the 17 skills"; <code>--help</code> said "all 17"</td>
+<td>installed product: <code>--help</code> contains no <code>17</code>, installer reports <code>18 installed</code>, gate prints <code>the 18 skills</code></td>
+<td><code>e2e-evidence/run-20260827T151017-items-9-10/step-04-rows-6-8-installed.txt</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>README + <code>usage-guide.md:55</code> advertised <code>--no-test</code> / <code>--tdd</code></td>
+<td>post-edit check: installed <code>implement/SKILL.md</code> <strong>and</strong> <code>usage-guide.md</code> both carry zero advertisements</td>
+<td><code>e2e-evidence/run-20260827T151613-row7-postedit/step-01-row7-postedit.txt</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>two <code>truth-forge</code> ghost paths</td>
+<td>installed tree: 0 files mention <code>truth-forge</code>, 0 unresolved head references</td>
+<td><code>e2e-evidence/run-20260827T151017-items-9-10/step-04-rows-6-8-installed.txt</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>GENERIC_SECRET</code> + empty-path branches had no harness case</td>
+<td>2 cases added, 24 PASS; <strong>mutation-tested in a sandbox copy</strong> — disabling the generic-secret branch takes the harness to rc=<strong>1</strong>/23 PASS with the case failing by name, and restoring it returns rc=0/24</td>
+<td><code>e2e-evidence/run-20260827T160908-hook-mutation/verdict.json</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>theme edit destroyed silently (the only "collision" in output was the skills summary <code>0 skipped</code>)</td>
+<td><code>WARN: ! overwriting locally modified theme: /tmp/pp-theme-after/.omp/agent/themes/acid-rain.json</code></td>
+<td><code>e2e-evidence/run-20260827T151017-items-9-10/step-02-theme-warning-after.txt</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidence-integrity-audit-adversarial-sweep">Evidence-integrity audit (adversarial sweep)</h3>
+<p>An independent read-only audit swept <strong>every</strong> <code>.txt</code> in <code>e2e-evidence/</code> for piped command captures. It found <strong>5</strong> files whose <code>rc=</code> header records the exit code of <code>tail</code>, not of the command under test — where this session had admitted only 1. Two were <em>after-arms</em> printing <code>ERROR:</code> above <code>rc=0</code>.</p>
+<p>The captures themselves are <strong>left untouched</strong>. <code>evidence/AGENTS.md:22</code> makes captures read-only — "a modified capture is a fabricated claim" — so the invalidation is recorded in a separate manifest, <code>e2e-evidence/run-20260827T160741-evidence-integrity-audit/invalid-rc-captures.json</code>, which lists each file, its sha256, and the unpiped artifact that supersedes it. (An earlier pass annotated these files in place; that was a violation of the same rule and has been reverted byte-for-byte.)</p>
+<p>Authoritative exit codes live in the <code>verdict.json</code> files. Each was captured by an unpiped invocation with the exit code read directly from the command itself — never through a pipeline, so no <code>rc</code> belongs to a downstream stage.</p>
+<p>The audit also found <code>step-03-verify-green-on-malformed-skill.txt</code> shows only a degraded-mode note rather than a malformed skill passing verify, and that <code>step-04-after-verdict-count-derived.txt</code> is a <code>verify-orchestration.py</code> PASS snippet misfiled into a <code>-before-</code> run. Both are discredited as proof. Improvement 2's claim rests on the <strong>pristine-installer arm</strong> (<code>run-20260827T161126-verify-arm-gitorig/verdict.json</code>) and improvement 3's on the <strong>pristine SHA differential</strong> (<code>run-20260827T162405-ref-differential-pristine/verdict.json</code>). Both old-code arms are the committed installer extracted verbatim via <code>git show e890bc5:tools/proofpunk-install.sh</code> — sha256-matched against <code>git show</code> output and <code>bash -n</code> syntax-checked before use. Neither is a reconstruction. Both are unpiped.</p>
+<p>This matters because two earlier attempts in this session <em>did</em> reconstruct old code by editing the current script, and both failed silently: one left a dangling <code>FM_ERR</code> reference and died with <code>unbound variable</code> after printing the very tick it was meant to demonstrate; the other produced a <code>bash</code> syntax error and never reached the code under test. Reconstructed arms are therefore not accepted as evidence here — the committed file is.</p>
+<p>Before-arm provenance by row: rows 1, 4, 5 draw on <code>e2e-evidence/run-20260827T141645-installer-defects-before/</code>; rows 2 and 3 draw on the two differential runs named above, which supersede the corresponding captures in that directory.</p>
+<p>Regression posture after every change: <code>test-hooks</code> 24 PASS (was 19 — two new guard cases), <code>test-installer</code> 0 fails, <code>dry-run-install</code> 0 fails, <code>verify-orchestration</code> PASS at 18, and a clean-HOME install of 18 skills with 0 unresolved references.</p>
+<hr />
+<h2 id="how-success-is-measured-overall">How success is measured overall</h2>
+<p><strong>Status: 9 of 10 proven, 1 partially verified.</strong> Nine improvements carry a before-arm that reproduced the defect and an after-arm that shows it fixed, each captured from an unpiped run of the real installer or harness.</p>
+<p>Improvement 3 is the exception. Its branch and bare-SHA arms pass, but its stated threshold — "install pinned to a real tag" — cannot be met from this repository: upstream has no tags. That arm is <strong>UNVERIFIED</strong>, so the set is not claimed as 10/10 and criterion C3 is not graded PASS. Writing the code and driving it are different things, and only the second counts.</p>
+<p>A trap worth recording: piping the installer through <code>tail</code> reports the pipe's exit code, not the installer's. An adversarial sweep of every capture found <strong>five</strong> files recorded that way, and two of them were <em>after-arms</em> printing <code>ERROR:</code> above <code>rc=0</code>. Their <code>rc</code> fields are invalid. The originals are immutable and remain untouched (<code>evidence/AGENTS.md:22</code>); authoritative unpiped verdicts supersede them, and each is listed with its hash and superseding artifact in <code>e2e-evidence/run-20260827T160741-evidence-integrity-audit/invalid-rc-captures.json</code>. Every verdict cited in the table above comes from an unpiped invocation whose exit code was read directly from the command under test.</p>
+<p>Item 9 is the strongest of the set: rather than asserting the new cases pass, the guard was deliberately broken and the harness was shown to fail because of it. A case that cannot fail proves nothing.</p>
+<p>The three existing gates remain a regression concern only. They were green throughout the period the installer was broken, which is precisely why they are not accepted as proof here.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/improvements.md">source → plugins/proofpunk/docs/improvements.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>DOC:IMPROVEMENTS</b></span><span>v2.1.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.1.0 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

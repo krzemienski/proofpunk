@@ -1,0 +1,15 @@
+UNPIPED via subprocess.run (argv list, no shell) — rc is the installer's own
+$ bash /tmp/pp-oldverify2.sh --source-dir /tmp/pp-broken-src2 --only brainstorm   [PATH without python3]
+rc=0
+false_tick=False
+cross=False
+unbound_variable=False
+
+== Proofpunk installer ==
+target dir : /tmp/pp-bv-old2/.claude/skills  (claude-code)
+source     : local checkout /tmp/pp-broken-src2
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL brainstorm
+doctrine   : /tmp/pp-bv-old2/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+/tmp/pp-oldverify2.sh: line 660: syntax error near unexpected token `fi'

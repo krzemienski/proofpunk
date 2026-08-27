@@ -1,0 +1,12 @@
+UNPIPED | PATH without python3
+rc=1
+{"rc": 1, "hook_dir_exists": false, "hook_files": [], "settings_exists": false}
+
+== Proofpunk installer ==
+target dir : /tmp/pp-hookguard/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL proofpunk
+hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)
+ERROR: --hooks requires python3 to merge hook entries into settings.json

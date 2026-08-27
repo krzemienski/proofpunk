@@ -1,6 +1,6 @@
 # Sealed evidence: run-20260808T202017-mood-ring
 
-19 artifacts, sealed by `plugins/truth-forge/skills/evidence-gates/scripts/fresh_evidence.py`
+19 artifacts, sealed by `plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py`
 (`validate OK`). Steps 02 and 16 were deliberately skipped (see
 `.planning/phases/02-mood-ring-build/VALIDATION.md` for the skip rationale).
 

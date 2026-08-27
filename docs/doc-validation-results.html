@@ -384,7 +384,7 @@
 <h3 id="implement-skill-quick_validate-pass">implement skill (quick_validate: PASS)</h3>
 <p>New skill <code>skills/implement/SKILL.md</code> — the orchestrator (conductor) to cook's execution engine (player), resolving the overlap question explicitly in both directions:</p>
 <ul>
-<li><strong>Command surface</strong>: <code>implement "&lt;goal&gt;" [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]</code> and <code>implement mine [--project] [--since] [--until] [--json]</code>, each flag with a why-it-exists column.</li>
+<li><strong>Command surface</strong> <em>(as of that release; <code>--no-test</code> and <code>--tdd</code> were later removed, and <code>cook</code> was merged into <code>implement</code> — see <code>improvements.md</code>)</em>: <code>implement "&lt;goal&gt;" [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]</code> and <code>implement mine [--project] [--since] [--until] [--json]</code>, each flag with a why-it-exists column.</li>
 <li><strong>Phase 0 — TRUE success criteria distillation</strong>: observable, end-user provable, measurable; approval gate when the goal is not clearly laid out or not understood — the one mandatory stop under <code>--auto</code>.</li>
 <li><strong>Phase 1 — MINE</strong> via session-intent: past implementation sessions as an intent matrix (prompts, tools, files, commits) feeding exploration and forging; <code>implement mine</code> alone is a reconnaissance-only pass.</li>
 <li><strong>Phase 2 — EXPLORE</strong> with parallel scout agents (structure, patterns, contracts, history); contradictions resolved against the code.</li>
@@ -398,6 +398,9 @@
 <h2 id="17-readme-command-reference--architecture-diagrams-v151-2026-08-11--pass">17. README Command Reference + Architecture Diagrams (v1.5.1, 2026-08-11) — PASS</h2>
 <p>Directive: the README must lay out every example with every argument — including positional arguments inside skill commands — every meaningful permutation with why / what happens / what you end up with, which skills execute per invocation, and system architecture diagrams.</p>
 <p>Delivered in README.md (629 lines, +550):</p>
+<blockquote>
+<p><strong>Historical record.</strong> This section describes the surface <em>as shipped in that release</em>. <code>cook</code> and <code>functional-validation</code> were later merged into <code>implement</code>, and the <code>--tdd</code> / <code>--no-test</code> flags were removed. For the current surface see <code>usage-guide.md</code> and <code>improvements.md</code>.</p>
+</blockquote>
 <ol type="1">
 <li><strong>Dispatch-at-a-glance table</strong> — invocation -&gt; skill fired -&gt; delegation.</li>
 <li><strong>§1-8 command references</strong> for every argumented surface: implement (positionals <code>&lt;goal&gt;</code>/<code>mine</code>, 8 flags, 14 permutations), prompt-forge (positionals per subcommand, 7 flags, 9 permutations, conflict rules), cook (positionals <code>&lt;goal&gt;</code>/<code>&lt;plan-path&gt;</code>, 5 modes, full mode × --tdd 12-permutation table), functional-validation (8 flags composing analyze-&gt;plan-&gt;execute-&gt;fix-&gt;report), session-intent (5 args with defaults, filter/output permutations, exit 2), end-user-testing (positional <code>&lt;slug&gt;</code>, lifecycle as the only valid composition, exit codes), stack-testing (<code>--server</code>/<code>--port</code>/trailing positional), installer (13 flags + canonical permutations + conflicts + exit codes). Every row answers why / what happens / what you end up with, and names the skills executed downstream.</li>
@@ -423,13 +426,13 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:VALIDATION-RESULTS</b></span><span>v2.0.1 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-24</span></div>
+  <div class="statusline"><span><b>DOC:VALIDATION-RESULTS</b></span><span>v2.1.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v2.0.1 · MIT license
+    &nbsp;· plugin v2.1.0 · MIT license
   </div>
 </footer>
 </div>

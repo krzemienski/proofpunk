@@ -66,6 +66,16 @@ EOF
 rc=$?
 if [ "$rc" -eq 2 ]; then case_ok "evidence-guard denies secret into evidence"; else case_fail "evidence-guard secret deny — rc=$rc out=$out"; fi
 
+# Case 5b: a credential that matches NO vendor prefix, only the generic
+# assignment fallback. Without this the GENERIC_SECRET branch could be
+# deleted and every other case would still pass.
+out=$(sh "$HOOKS/evidence-guard.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"e2e-evidence/run-x/config.txt","content":"access_token = Zm9vYmFyYmF6cXV4MTIzNDU2Nzg5"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "evidence-guard denies generic credential assignment"; else case_fail "evidence-guard generic-secret deny — rc=$rc out=$out"; fi
+
 # Case 6: clean content into evidence dir → allowed (exit 0)
 out=$(sh "$HOOKS/evidence-guard.sh" 2>&1 <<'EOF'
 {"tool_name":"Write","tool_input":{"file_path":"e2e-evidence/run-x/step-01-note.txt","content":"wait matched TASKS at 110x32"}}
@@ -106,6 +116,16 @@ EOF
 )
 rc=$?
 if [ "$rc" -eq 0 ]; then case_ok "no-test-files allows production code"; else case_fail "no-test-files production write — rc=$rc"; fi
+
+# Case 11b: empty file_path → fail open (exit 0), never a spurious block.
+# This branch had no case, so a regression turning it into a deny would
+# have blocked unrelated tool calls with nothing catching it.
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"content":"no path at all"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ]; then case_ok "no-test-files fails open on empty path"; else case_fail "no-test-files empty path — rc=$rc out=$out"; fi
 
 echo "== post-write-walkthrough.sh"
 # Case 12: production change → walkthrough reminder

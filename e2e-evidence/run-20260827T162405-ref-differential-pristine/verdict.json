@@ -1,0 +1,13 @@
+{
+  "sha": "e890bc527e9a8a8845bfb8ec40c3927a6238c86d",
+  "old_arm_source": "git show e890bc5:tools/proofpunk-install.sh",
+  "old_arm_sha256": "d39b31b40811f022de6a2c66e58db2b6376ad2f9ce6fbc1532741f3a5e4f2998",
+  "old_arm_sha256_matches_git_show": true,
+  "old_arm_syntax_check": "bash -n → SYNTAX_OK",
+  "old_arm_is_reconstruction": false,
+  "before": {"rc": 1, "installed": false},
+  "after": {"rc": 0, "installed": true},
+  "discriminating": true,
+  "capture_method": "unpiped; stdout+stderr redirected to file, rc read from $? immediately after the command (no pipeline)",
+  "note": "Supersedes run-20260827T151935-ref-differential, whose old arm was a regex reconstruction (/tmp/pp-old-installer.sh). Two earlier reconstructions in this session produced an unbound-variable death and a bash syntax error, so reconstructed arms are not trusted as evidence."
+}

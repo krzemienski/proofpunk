@@ -58,4 +58,26 @@ the one lookup before the 17 file reads.
 | `session-intent` | reconstructing why a past change happened | the commit or session in question |
 | `prompt-forge` | authoring, rating, or optimizing a prompt itself | the prompt draft or goal |
 
+## Shared doctrine — what every skill defers to
+
+Routing names a skill; these files are the rules that skill obeys. The
+installer rewrites these citations to self-contained copies, so they
+resolve both in this repo and in an installed tree.
+
+| Reference | Owns |
+|-----------|------|
+| `../../references/end-user-actor.md` | the Actor Mandate — who drives the system |
+| `../../references/evidence-contract.md` | run-scoped, sealed, non-empty evidence |
+| `../../references/platform-routing.md` | which runbook a target maps to |
+| `../../references/api-validation.md` | backend/API proof |
+| `../../references/web-validation.md` | browser proof |
+| `../../references/cli-validation.md` | CLI proof |
+| `../../references/ios-validation.md` | simulator proof |
+| `../../references/severity-model.md` | how findings are ranked |
+| `../../references/defect-pattern-database.md` | known defect shapes |
+| `../../references/preflight-checks.md` | what must hold before a run |
+| `../../references/ci-gates.md` | regression posture in CI |
+| `../../references/web-wcag-checklist.md` | accessibility criteria |
+| `../../references/ios-hig-checklist.md` | iOS interface criteria |
+
 Called by: nothing — the entry point for the whole plugin.

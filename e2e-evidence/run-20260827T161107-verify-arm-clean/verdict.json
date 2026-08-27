@@ -1,0 +1,16 @@
+{
+ "before": {
+  "rc": 0,
+  "false_tick": false,
+  "cross": false,
+  "unbound": false
+ },
+ "after": {
+  "rc": 1,
+  "false_tick": false,
+  "cross": true,
+  "unbound": false
+ },
+ "before_clean_exit": true,
+ "discriminating": false
+}

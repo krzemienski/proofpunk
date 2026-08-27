@@ -1,0 +1,37 @@
+{
+ "finding": "5 captures record tail's exit code, not the command under test",
+ "rule_honored": "evidence/AGENTS.md:22 - captures are read-only; originals restored verbatim",
+ "invalid_rc_captures": [
+  {
+   "file": "run-20260827T141645-installer-defects-before/step-02-ref-tag-fails.txt",
+   "sha256_16": "a4b8fda03f0dc6e0",
+   "recorded_rc": "0 (tail's, not the command's)",
+   "authoritative_source": "run-20260827T151935-ref-differential/verdict.json (old_rc=1, new_rc=0)"
+  },
+  {
+   "file": "run-20260827T141645-installer-defects-before/step-03-verify-green-on-malformed-skill.txt",
+   "sha256_16": "a0331b3da44c7822",
+   "recorded_rc": "0 (tail's, not the command's)",
+   "authoritative_source": "run-20260827T150627-installer-fixed-after/step-03-verdicts.json (A2 rc=1)"
+  },
+  {
+   "file": "run-20260827T141645-installer-defects-before/step-04-after-verdict-count-derived.txt",
+   "sha256_16": "b5c3c48f5f77a686",
+   "recorded_rc": "0 (tail's, not the command's)",
+   "authoritative_source": "n/a - misfiled verify-orchestration PASS snippet, not a defect capture"
+  },
+  {
+   "file": "run-20260827T150627-installer-fixed-after/step-01-hooks-guard.txt",
+   "sha256_16": "e617fd0ce77066ed",
+   "recorded_rc": "0 (tail's, not the command's)",
+   "authoritative_source": "run-20260827T160133-hooks-guard-mkdir/verdict.json (rc=1, dir absent)"
+  },
+  {
+   "file": "run-20260827T150627-installer-fixed-after/step-02-tar-guard.txt",
+   "sha256_16": "3c1079f734b9073a",
+   "recorded_rc": "0 (tail's, not the command's)",
+   "authoritative_source": "run-20260827T150627-installer-fixed-after/step-03-verdicts.json (A5 rc=1)"
+  }
+ ],
+ "note": "An earlier in-place annotation of these files was improper and has been reverted; this manifest is the record."
+}

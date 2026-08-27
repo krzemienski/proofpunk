@@ -1,0 +1,7 @@
+$ grep -c 'proofpunk-install' tools/dry-run-install.sh; echo "exit=$?"
+rc=0
+--- stdout ---
+0
+exit=1
+
+--- stderr ---

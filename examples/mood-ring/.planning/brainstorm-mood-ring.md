@@ -1,6 +1,6 @@
 # Brainstorm — "Mood Ring" for Flaskr
 
-Skill: `brainstorm` (truth-forge). Gates honored: scout-first ✓, exact-requirements ✓,
+Skill: `brainstorm` (proofpunk). Gates honored: scout-first ✓, exact-requirements ✓,
 present-before-asking ✓ (options below), no implementation before approval ✓ (cook comes later).
 
 ## Codebase-context summary (scout findings)

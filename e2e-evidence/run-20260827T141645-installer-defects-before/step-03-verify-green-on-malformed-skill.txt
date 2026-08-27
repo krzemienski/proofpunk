@@ -1,0 +1,16 @@
+$ bash /Users/nick/proofpunk/tools/proofpunk-install.sh --target claude-code --source-dir /tmp/pp-broken-src --only brainstorm 2>&1 | tail -12
+rc=0
+--- stdout ---
+== Proofpunk installer ==
+target dir : /tmp/pp-before-verify/.claude/skills  (claude-code)
+source     : local checkout /tmp/pp-broken-src
+version    : installed=none → source=unknown (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL brainstorm
+doctrine   : /tmp/pp-before-verify/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm (frontmatter only — python3 unavailable for ref checks)
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+
+--- stderr ---

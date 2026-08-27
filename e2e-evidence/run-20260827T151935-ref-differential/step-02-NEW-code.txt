@@ -1,0 +1,15 @@
+UNPIPED
+$ /Users/nick/proofpunk/tools/proofpunk-install.sh --source github --ref e890bc527e9a8a8845bfb8ec40c3927a6238c86d --only proofpunk
+rc=0
+installed=True
+== Proofpunk installer ==
+target dir : /tmp/pp-arm-02-NEW-code/.claude/skills  (claude-code)
+source     : github tarball (ref: e890bc527e9a8a8845bfb8ec40c3927a6238c86d)
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL proofpunk
+doctrine   : /tmp/pp-arm-02-NEW-code/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ proofpunk
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==

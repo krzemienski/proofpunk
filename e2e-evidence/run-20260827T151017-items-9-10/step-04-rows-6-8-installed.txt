@@ -1,0 +1,23 @@
+install rc=0
+== summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+
+{
+ "row6": {
+  "help_says_17": false,
+  "installed_skills": 18,
+  "installer_summary": "== summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==",
+  "verdict": "PASS"
+ },
+ "row7": {
+  "installed_advertisements": [],
+  "verdict": "PASS"
+ },
+ "row8": {
+  "ghost_files": [],
+  "unresolved_head_refs": [],
+  "verdict": "PASS"
+ }
+}
+
+--- installed --help (grep 17) ---
+  --only a,b,c           install just these skills (default: every skill)

@@ -1,0 +1,6 @@
+$ bash /Users/nick/proofpunk/tools/proofpunk-install.sh --target claude-code --source-dir /Users/nick/proofpunk --skip-skills --hooks 2>&1|tail -4
+rc=0
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : no skills (--skip-skills)
+hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)
+ERROR: --hooks requires python3 to merge hook entries into settings.json

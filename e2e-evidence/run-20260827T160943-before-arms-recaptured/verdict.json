@@ -1,0 +1,13 @@
+{
+ "before": {
+  "rc": 0,
+  "false_tick": true,
+  "cross": false
+ },
+ "after": {
+  "rc": 1,
+  "false_tick": false,
+  "cross": true
+ },
+ "discriminating": true
+}

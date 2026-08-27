@@ -1,0 +1,3 @@
+unpiped rc=1 (installer)
+stderr=ERROR: download failed: 'definitely-not-a-real-ref' not found as a branch, tag, or commit
+piped-through-tail rc=0 (tail's exit — explains the earlier rc=0 reading)

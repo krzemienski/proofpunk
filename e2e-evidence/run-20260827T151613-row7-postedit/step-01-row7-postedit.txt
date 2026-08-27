@@ -1,0 +1,11 @@
+captured AFTER usage-guide.md:55 edit
+install rc=0
+{
+ "installed_skill_advertisements": [],
+ "usage_guide_advertisements": [],
+ "install_rc": 0,
+ "verdict": "PASS"
+}
+
+usage-guide.md:55 now reads:
+/implement <goal> [--parallel] [--auto] [--mine] [--fast]

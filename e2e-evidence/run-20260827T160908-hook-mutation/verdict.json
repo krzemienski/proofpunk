@@ -1,0 +1,8 @@
+{
+ "baseline_rc": 0,
+ "mutated_rc": 1,
+ "restored_rc": 0,
+ "mutation_actually_applied": true,
+ "harness_detects_mutation": true,
+ "real_hooks_untouched": true
+}

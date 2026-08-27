@@ -1,0 +1,6 @@
+baseline rc=0
+mutated rc=0
+restored rc=0
+
+--- mutated failures ---
+HOOK TEST FAILS: 0

@@ -1,0 +1,10 @@
+$ bash tools/proofpunk-install.sh --target claude-code --source github --ref v2.0.1 --only proofpunk 2>&1 | tail -5
+rc=0
+--- stdout ---
+== Proofpunk installer ==
+target dir : /tmp/pp-before-ref/.claude/skills  (claude-code)
+source     : github tarball (ref: v2.0.1)
+curl: (56) The requested URL returned error: 404
+ERROR: download failed (check --ref v2.0.1)
+
+--- stderr ---

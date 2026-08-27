@@ -1,0 +1,16 @@
+{
+ "A4": {
+  "rc": 1,
+  "hook_files": [],
+  "settings": false
+ },
+ "A5": {
+  "rc": 1,
+  "skill_dirs": 0
+ },
+ "A2": {
+  "rc": 1,
+  "has_x": true,
+  "false_tick": false
+ }
+}

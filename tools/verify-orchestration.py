@@ -141,5 +141,5 @@ print()
 if FAILS:
     print(f"VERDICT: FAIL — {len(FAILS)} check(s) failed: {FAILS}")
     sys.exit(1)
-print("VERDICT: PASS — the 17 skills execute as one delegation DAG, in the")
+print(f"VERDICT: PASS — the {len(skills)} skills execute as one delegation DAG, in the")
 print("documented order, with methods owned exactly once.")

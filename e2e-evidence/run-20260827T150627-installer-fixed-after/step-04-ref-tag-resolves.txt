@@ -1,0 +1,8 @@
+$ --source github --ref v2.0.1 --only proofpunk
+rc=0
+== Proofpunk installer ==
+target dir : /tmp/pp-ref-after/.claude/skills  (claude-code)
+source     : github tarball (ref: v2.0.1)
+ERROR: download failed: 'v2.0.1' not found as a branch, tag, or commit
+
+installed=False

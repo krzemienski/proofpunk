@@ -52,9 +52,9 @@ PROBES = {
         expect_text="Proofpunk is installed",
         why="SessionStart hook must place doctrine in the live session",
     ),
-    # Are the plugin's skills actually loadable FROM THE PLUGIN? Every one of
-    # the 17 also exists standalone in ~/.claude/skills on this host, so a bare
-    # name proves nothing — the control arm loaded `end-user-testing` with the
+    # Are the plugin's skills actually loadable FROM THE PLUGIN? All delivery
+    # skills also exist standalone in ~/.claude/skills on this host,
+    # so a bare name proves nothing — the control arm loaded `end-user-testing` with the
     # plugin absent. Only the namespaced `proofpunk:` form is unambiguous.
     "skills_listed": dict(
         prompt=("Invoke the skill named exactly 'proofpunk:end-user-testing' "
@@ -128,7 +128,7 @@ PROBES = {
     ),
 }
 
-# Parameterized namespaced skill-load probes. Every one of the 17 skills also
+# Parameterized namespaced skill-load probes. Each listed delivery skill also
 # exists standalone in ~/.claude/skills on this host, so only the `proofpunk:`
 # form is attributable to the plugin. Each requires an observed Skill call whose
 # argument matches AND whose tool result came back successful.

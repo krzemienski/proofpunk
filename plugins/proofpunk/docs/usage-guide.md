@@ -52,7 +52,7 @@ and because OpenCode reads `~/.claude/skills` too, one
 ### `/implement` — the front door (execution loop)
 
 ```
-/implement <goal> [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]
+/implement <goal> [--parallel] [--auto] [--mine] [--fast]
 /implement mine [--project DIR] [--since DATE] [--until DATE]
 ```
 

@@ -1,0 +1,10 @@
+rc=0
+target dir : /tmp/pp-before-hooks/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : no skills (--skip-skills)
+hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)
+/Users/nick/proofpunk/tools/proofpunk-install.sh: line 378: python3: command not found
+
+hook_files_on_disk=['evidence-guard.sh', 'instructions-loaded.sh', 'no-test-files.sh', 'post-write-walkthrough.sh', 'stop-guard.sh']
+settings_registered=False

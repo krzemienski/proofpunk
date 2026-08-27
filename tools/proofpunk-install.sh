@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# proofpunk-install.sh — install the 17 Proofpunk skills as PLAIN skills
+# proofpunk-install.sh — install the Proofpunk skills as PLAIN skills
 # (not a plugin/marketplace) into a target skills directory of your choice,
 # with collision safety, doctrine injection, and post-install verification.
 # Optionally also installs the 20-theme flat-black cyberpunk pack and the
@@ -35,7 +35,7 @@ SKIP_SKILLS=0                   # themes/plugins only
 WITH_THEMES=0                   # install the 20-theme pack into detected TUIs
 WITH_PLUGINS=0                  # install OMP extension + OpenCode plugin glue
 
-REPO_TARBALL="https://codeload.github.com/krzemienski/proofpunk/tar.gz/refs/heads"
+REPO_TARBALL="https://codeload.github.com/krzemienski/proofpunk/tar.gz"
 SKILLS_SUBPATH="plugins/proofpunk/skills"
 REFS_SUBPATH="plugins/proofpunk/references"
 THEMES_SUBPATH="plugins/proofpunk/themes"
@@ -72,7 +72,7 @@ SOURCE (where skills come from):
   --source-dir PATH      local Proofpunk checkout (offline / dev)
 
 SELECTION:
-  --only a,b,c           install just these skills (default: all 17)
+  --only a,b,c           install just these skills (default: every skill)
   --skip-skills          install no skills (use with --themes/--plugins)
   --list                 print skills available in the source, then exit
 
@@ -172,13 +172,22 @@ WORK=""
 cleanup() { if [ -n "$WORK" ]; then rm -rf "$WORK"; fi; return 0; }
 trap cleanup EXIT
 
+# tar is used by the per-skill copy and the doctrine copy on EVERY real
+# install, not just the github path — check it before either branch.
+command -v tar >/dev/null || die "tar required (used to copy skills and doctrine)"
+
 if [ "$SOURCE" = "github" ]; then
   command -v curl >/dev/null || die "curl required for --source github (or use --source-dir)"
-  command -v tar  >/dev/null || die "tar required for --source github (or use --source-dir)"
   WORK="$(mktemp -d)"
   say "source     : github tarball (ref: $REF)"
   if [ "$DRY_RUN" -eq 0 ]; then
-    curl -fsSL "$REPO_TARBALL/$REF" -o "$WORK/repo.tar.gz" || die "download failed (check --ref $REF)"
+    DOWNLOADED=0
+    for REF_FORM in "refs/heads/$REF" "refs/tags/$REF" "$REF"; do
+      if curl -fsSL "$REPO_TARBALL/$REF_FORM" -o "$WORK/repo.tar.gz" 2>/dev/null; then
+        DOWNLOADED=1; break
+      fi
+    done
+    [ "$DOWNLOADED" -eq 1 ] || die "download failed: '$REF' not found as a branch, tag, or commit"
     tar -xzf "$WORK/repo.tar.gz" -C "$WORK"
     # GitHub codeload tarballs contain exactly one top-level directory named
     # <repo>-<ref>: the repo name lowercased, tag refs lose their leading 'v',
@@ -317,22 +326,37 @@ if [ "$WITH_THEMES" -eq 1 ]; then
   if [ "$DRY_RUN" -eq 0 ] && [ ! -d "$THEMES_SRC/omp" ]; then
     die "themes not found at $THEMES_SRC (bad source?)"
   fi
+  # Themes are copied unconditionally. Skills get collision protection but
+  # themes never did, so a locally edited theme vanished silently. Report
+  # any file whose content differs from source before overwriting it.
+  warn_modified_themes() {
+    _src="$1"; _dst="$2"
+    [ -d "$_dst" ] || return 0
+    for _f in "$_src"/*; do
+      [ -f "$_f" ] || continue
+      _t="$_dst/$(basename "$_f")"
+      if [ -f "$_t" ] && ! cmp -s "$_f" "$_t"; then
+        warn "  ! overwriting locally modified theme: $_t"
+      fi
+    done
+  }
+
   say "themes     : 20 flat-black cyberpunk themes"
   # oh-my-pi: detected by ~/.omp or an omp binary on PATH
   if [ -d "$HOME/.omp" ] || command -v omp >/dev/null 2>&1 || [ "$TARGET" = "omp" ]; then
     run "mkdir -p '$HOME/.omp/agent/themes'"
-    if [ "$DRY_RUN" -eq 0 ]; then cp "$THEMES_SRC/omp/"*.json "$HOME/.omp/agent/themes/"; fi
+    if [ "$DRY_RUN" -eq 0 ]; then warn_modified_themes "$THEMES_SRC/omp" "$HOME/.omp/agent/themes"; cp "$THEMES_SRC/omp/"*.json "$HOME/.omp/agent/themes/"; fi
     say "  OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml"
   fi
   # OpenCode: detected by ~/.config/opencode or an opencode binary on PATH
   if [ -d "$HOME/.config/opencode" ] || command -v opencode >/dev/null 2>&1 || [ "$TARGET" = "opencode" ]; then
     run "mkdir -p '$HOME/.config/opencode/themes'"
-    if [ "$DRY_RUN" -eq 0 ]; then cp "$THEMES_SRC/opencode/"*.json "$HOME/.config/opencode/themes/"; fi
+    if [ "$DRY_RUN" -eq 0 ]; then warn_modified_themes "$THEMES_SRC/opencode" "$HOME/.config/opencode/themes"; cp "$THEMES_SRC/opencode/"*.json "$HOME/.config/opencode/themes/"; fi
     say "  OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json"
   fi
   # Hyper terminal modules: copy + show how to activate (Hyper has no theme dir)
   run "mkdir -p '$HOME/.config/proofpunk/hyper-themes'"
-  if [ "$DRY_RUN" -eq 0 ]; then cp "$THEMES_SRC/hyper/"*.js "$HOME/.config/proofpunk/hyper-themes/"; fi
+  if [ "$DRY_RUN" -eq 0 ]; then warn_modified_themes "$THEMES_SRC/hyper" "$HOME/.config/proofpunk/hyper-themes"; cp "$THEMES_SRC/hyper/"*.js "$HOME/.config/proofpunk/hyper-themes/"; fi
   say "  Hyper    -> ~/.config/proofpunk/hyper-themes (20 .js modules)"
   say "           activate: require one from a local plugin, or merge its COLORS into ~/.hyper.js"
 fi
@@ -368,6 +392,10 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
   HOOK_HOME="$HOME/.proofpunk/hooks"
   say "hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)"
   if [ "$TARGET" = "claude-code" ] || [ "$TARGET" = "omp" ] || [ "$TARGET" = "agents" ]; then
+    # python3 performs the settings.json merge that actually REGISTERS these
+    # hooks. Without it the scripts would land executable but unwired, so the
+    # guard fires before anything is written -- including the hook directory.
+    command -v python3 >/dev/null 2>&1 || die "--hooks requires python3 to merge hook entries into settings.json"
     run "mkdir -p '$HOOK_HOME'"
     if [ "$DRY_RUN" -eq 0 ]; then
       cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOKS_SRC/no-test-files.sh" "$HOOKS_SRC/post-write-walkthrough.sh" "$HOOK_HOME/"
@@ -619,7 +647,23 @@ if not ok:
 PYEOF
       [ $? -eq 0 ] || FAIL=1
     else
-      say "  ✓ $skill (frontmatter only — python3 unavailable for ref checks)"
+      # No python3: reference resolution is genuinely out of reach, but the
+      # frontmatter checks are plain text work. Doing them here is what makes
+      # the ✓ below mean something — the old code printed it unconditionally.
+      SM="$dst/SKILL.md"
+      FM_ERR=""
+      [ "$(sed -n 1p "$SM")" = "---" ] || FM_ERR="missing opening --- frontmatter delimiter"
+      if [ -z "$FM_ERR" ] && ! grep -qE '^name:[[:space:]]*[^[:space:]]' "$SM"; then
+        FM_ERR="no name: field in frontmatter"
+      fi
+      if [ -z "$FM_ERR" ] && ! grep -qE '^description:' "$SM"; then
+        FM_ERR="no description: field in frontmatter"
+      fi
+      if [ -n "$FM_ERR" ]; then
+        warn "  ✗ $skill: $FM_ERR"; FAIL=1
+      else
+        say "  ✓ $skill (frontmatter only — python3 unavailable for ref checks)"
+      fi
     fi
   done
   [ "$FAIL" -eq 0 ] && say "verify     : all skills pass (see ✓ lines above)" \

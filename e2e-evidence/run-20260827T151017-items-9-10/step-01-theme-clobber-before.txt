@@ -1,0 +1,19 @@
+run1 rc=0 themes=20
+victim=acid-rain.json
+run2 rc=0
+clobbered=True
+warned=True
+--- run2 output ---
+== Proofpunk installer ==
+target dir : /tmp/pp-theme-clobber/.omp/agent/skills  (omp)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.0.1 (source is always the newest main)
+installing : no skills (--skip-skills)
+themes     : 20 flat-black cyberpunk themes
+  OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml
+  OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json
+  Hyper    -> ~/.config/proofpunk/hyper-themes (20 .js modules)
+           activate: require one from a local plugin, or merge its COLORS into ~/.hyper.js
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+verify     : all skills pass (see ✓ lines above)
+== summary: 0 installed, 0 replaced, 0 skipped (collision), 0 missing ==

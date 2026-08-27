@@ -185,9 +185,11 @@ bash tools/proofpunk-install.sh --source-dir . --target opencode --themes --plug
 
 ## Requirements
 
-`bash`, plus `curl` and `tar` (only for `--source github` — the default).
-`python3` is optional and used only by `--verify`'s reference-resolution
-check; without it the frontmatter checks still run.
+`bash`, plus `curl` (only for `--source github` — the default) and `tar`
+(required for all real installs — local copies use tar pipes too).
+`python3` is required by `--hooks` (settings.json merge) and otherwise
+optional; without it the frontmatter checks in `--verify` still run, but
+reference-resolution checks are skipped.
 
 `tools/build-site.py` (regenerating `docs/*.html`, not part of install)
 additionally requires **PyYAML** (`pip install pyyaml`) and the **pandoc**

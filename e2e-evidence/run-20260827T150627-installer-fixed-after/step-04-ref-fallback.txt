@@ -1,0 +1,18 @@
+NOTE: upstream repo has NO tags (git ls-remote --tags returned empty),
+so --ref v2.0.1 correctly reports not-found. Fallback chain proven via:
+
+[branch] rc=0 installed=True
+doctrine   : /tmp/pp-ref-branch/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ proofpunk
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+
+
+[bare SHA] rc=0 installed=True
+doctrine   : /tmp/pp-ref-sha/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ proofpunk
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+

@@ -58,7 +58,7 @@ for the other surfaces you run beside it.
 
 | Skill | What it enforces |
 |-------|------------------|
-| `proofpunk` | Entry router: classifies the request and hands off to the shortest ordered chain across the 17 delivery skills |
+| `proofpunk` | Entry router: classifies the request and hands off to the shortest ordered chain across the 17 delivery skills it routes to |
 | `brainstorm` | Scout-first, exact-requirements, present-before-asking discipline; no code before an approved design |
 | `prompt-forge` | Prompt AUTHOR / RATE (7-dimension /100 rubric) / OPTIMIZE / PIPELINE modes with a scored quality bar |
 | `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations |
@@ -114,7 +114,7 @@ skill's own Related Skills / delegation contract.
 ### 1. `implement` — orchestrated implementation
 
 ```
-implement <goal> [--parallel] [--auto] [--mine] [--fast] [--no-test] [--tdd]
+implement <goal> [--parallel] [--auto] [--mine] [--fast]
 implement mine [--project DIR] [--since DATE] [--until DATE]
 ```
 
@@ -133,8 +133,6 @@ implement mine [--project DIR] [--since DATE] [--until DATE]
 | `--auto` | unattended runs with a real finish line | no stopping until every success criterion is proven as the end user; the ONLY mandatory stop is Phase 0 approval when criteria aren't clearly laid out; destructive ops, out-of-scope edits, below-threshold shipping still stop for consent |
 | `--mine` | you've implemented similar things before | Phase 1 runs session-intent: past sessions become an intent matrix (prompts, tools, files, commits) that feeds exploration and forging |
 | `--fast` | known territory, known stack | planning's research sub-step skipped (implement --fast semantics) |
-| `--no-test` | no runnable suite in this environment | the regression rail downgrades to a warning you must explicitly accept; end-user testing is never downgraded |
-| `--tdd` | refactor-heavy goals | tests for current behavior written before the change, re-verified after |
 | `--project DIR` (mine) | scope mining to one project | substring filter on project dir slug / cwd |
 | `--since DATE` / `--until DATE` (mine) | time-box the mining | transcript events outside the window are excluded |
 
@@ -151,8 +149,6 @@ implement mine [--project DIR] [--since DATE] [--until DATE]
 | `... --parallel --mine` | supervised but fast and informed | parallel scouts ALSO receive the mined touchpoint list as their History lane assignment | session-intent → parallel scouts → parallel pipeline → supervised implement | combined artifacts, human checkpoints intact |
 | `... --parallel --auto --mine` | "full send" | every stage maximally delegated; the run stops only for criteria confirmation (if needed) and authorization-boundary consents | session-intent → parallel scouts → prompt-forge PIPELINE → parallel implement lanes → root-cause-debugging loop → end-user proof layer | everything above; the complete trail from mined intent to sealed evidence |
 | any of the above `+ --fast` | you know the codebase cold | research sub-step skipped everywhere planning happens | same chains, research elided | same artifacts, faster planning |
-| any of the above `+ --no-test` | environment can't run suites | the regression rail becomes a warning requiring your explicit acceptance; end-user testing still mandatory | same chains | report carries the accepted warning verbatim |
-| any of the above `+ --tdd` | refactoring existing behavior | characterization tests written first per phase, re-verified after | same chains | + characterization test suite |
 | `implement mine` | "show me how we built things" | mining only, prints the matrix to stdout, exits | session-intent | previous-implementations matrix |
 | `implement mine --project shop --since 2026-07-01` | scoped recon | AND-composed filters: only July+ sessions in the shop project | session-intent | filtered matrix |
 
