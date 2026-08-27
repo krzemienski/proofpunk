@@ -7,13 +7,13 @@
       "file": "test-hooks.txt",
       "command": "bash tools/test-hooks.sh",
       "rc": 0,
-      "asserts": "29 PASS, HOOK TEST FAILS: 0 — includes 4 new capture-guard cases"
+      "asserts": "29 PASS, HOOK TEST FAILS: 0 \u2014 includes 4 new capture-guard cases"
     },
     {
       "file": "test-installer.txt",
       "command": "bash tools/test-installer.sh",
       "rc": 0,
-      "asserts": "23 PASS, INSTALLER TEST FAILS: 0 — includes new group 8 (--hooks registration + idempotency)"
+      "asserts": "23 PASS, INSTALLER TEST FAILS: 0 \u2014 includes new group 8 (--hooks registration + idempotency)"
     },
     {
       "file": "dry-run-install.txt",
@@ -36,9 +36,9 @@
     }
   ],
   "ships": {
-    "capture-guard.sh": "New PreToolUse hook enforcing evidence/AGENTS.md:22 — denies modification of existing raw captures under evidence dirs; permits new captures and authored .md/.json sidecars.",
+    "capture-guard.sh": "New PreToolUse hook enforcing evidence/AGENTS.md:22 \u2014 denies modification of existing raw captures under evidence dirs; permits new captures and authored .md/.json sidecars.",
     "installer_hook_registration": "Fixes a PRE-EXISTING defect: per-event idempotency meant only the first .proofpunk/hooks command per event was registered, so evidence-guard.sh has shipped dead in every --hooks install since it was written. Exposed, not introduced, by adding a third PreToolUse hook.",
-    "installer_group_8": "tools/test-installer.sh now drives --hooks and reads the produced settings.json — the only vantage point from which a copied-but-unregistered hook is visible."
+    "installer_group_8": "tools/test-installer.sh now drives --hooks and reads the produced settings.json \u2014 the only vantage point from which a copied-but-unregistered hook is visible."
   },
   "evidence": {
     "improvement_11": "e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json",
@@ -52,5 +52,18 @@
   "authorization": {
     "state": "GRANTED",
     "detail": "Feature was built after an inferred consent error: the agent read a timing instruction ('commit and push new version whenever you feel 100% completed') as an answer to 'Want me to build that guard?'. Work was halted, nothing unapproved was committed, and the user then explicitly authorized option 1 (keep and ship)."
+  },
+  "shipped": {
+    "commit": "99c72fbe72690bcd382163abd24ce97d4d89ee70",
+    "tag": "v2.2.0",
+    "tag_points_at": "99c72fbe72690bcd382163abd24ce97d4d89ee70",
+    "remote_main": "99c72fbe72690bcd382163abd24ce97d4d89ee70",
+    "verified": "git ls-remote after fetch; local HEAD, remote main, and the tag all resolve to the same commit",
+    "prior_tag_untouched": "v2.1.0 still points at 5e5150b",
+    "post_release_drive": {
+      "command": "HOME=$(mktemp -d) bash tools/proofpunk-install.sh --target claude-code --source github --ref v2.2.0 --only proofpunk --hooks",
+      "rc": 0,
+      "asserts": "installed from the PUBLISHED tag, not the working tree; settings.json PreToolUse = [no-test-files.sh, evidence-guard.sh, capture-guard.sh]"
+    }
   }
 }
