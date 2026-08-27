@@ -48,7 +48,7 @@
 <li><strong>Measure</strong>: install the same malformed skill again.</li>
 <li><strong>Threshold</strong>: non-zero exit and a <code>✗</code> line naming the skill.</li>
 </ul>
-<h2 id="3-make---ref-reach-tags-and-commits-high--partially-verified">3. Make <code>--ref</code> reach tags and commits (HIGH — partially verified)</h2>
+<h2 id="3-make---ref-reach-tags-and-commits-high">3. Make <code>--ref</code> reach tags and commits (HIGH)</h2>
 <p><code>REPO_TARBALL</code> hardcoded <code>…/tar.gz/refs/heads</code> (line 38), so every <code>--ref</code> resolved as a branch — while <code>--help</code> and <code>INSTALL.md:162</code> advertised tags, using <code>--ref v1.8.0</code> as the documented example.</p>
 <ul>
 <li><p><strong>Before-arm</strong> (differential, both arms unpiped): the original <code>v2.0.1</code> capture proved nothing — that tag does not exist upstream, so it 404s under old <em>and</em> new code. Replaced with a <strong>real commit SHA</strong> (<code>e890bc52…</code>) driven against both versions of the installer:</p>
@@ -77,7 +77,7 @@
 <li><p><strong>Fix</strong>: try <code>refs/heads/$REF</code>, then <code>refs/tags/$REF</code>, then bare <code>$REF</code>.</p></li>
 <li><p><strong>Measure</strong>: install pinned to a branch, a bare SHA, and a tag.</p></li>
 <li><p><strong>Threshold</strong>: exit 0 with skills present for each form.</p></li>
-<li><p><strong>Result</strong>: branch <strong>PASS</strong>, bare SHA <strong>PASS</strong> (differentially proven), unknown ref fails honestly rc=1. The <code>refs/tags/</code> arm stays <strong>UNVERIFIED</strong> — <code>git ls-remote --tags</code> upstream returns nothing, so no real tag exists to drive.</p></li>
+<li><p><strong>Result</strong>: all three forms <strong>PASS</strong>. Branch and bare SHA were proven differentially (<code>e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json</code>). The <code>refs/tags/</code> arm was <strong>UNVERIFIED at the time of the fix</strong> — upstream had zero tags to drive — and was reported as such rather than assumed. Cutting the <code>v2.1.0</code> release tag made it drivable: <code>--ref v2.1.0</code> resolves and installs, rc=0, unpiped (<code>e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json</code>). Unknown refs still fail honestly with rc=1.</p></li>
 </ul>
 <h2 id="4-never-leave-hooks-half-registered-high">4. Never leave hooks half-registered (HIGH)</h2>
 <p><code>--hooks</code> copies and <code>chmod +x</code>s the hook scripts, then calls bare <code>python3</code> to merge <code>settings.json</code>. Without <code>python3</code> the files land executable but unregistered — enforcement silently does not exist, which is the worst failure mode in a plugin whose entire value is enforcement.</p>
@@ -153,7 +153,7 @@
 <tr>
 <td>3</td>
 <td><strong>pristine old code</strong> (<code>git show e890bc5</code>, sha256-matched, syntax-checked) on a real SHA: rc=<strong>1</strong>, not installed — unpiped</td>
-<td>current code, same SHA: rc=<strong>0</strong>, installed. Branch form also PASS. <strong><code>refs/tags/</code> UNVERIFIED — no upstream tags exist</strong></td>
+<td>current code, same SHA: rc=<strong>0</strong>, installed. Branch form also PASS. <code>refs/tags/</code> <strong>PASS</strong> against the real <code>v2.1.0</code> tag (<code>e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json</code>)</td>
 <td><code>e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json</code></td>
 </tr>
 <tr>
@@ -210,8 +210,8 @@
 <p>Regression posture after every change: <code>test-hooks</code> 24 PASS (was 19 — two new guard cases), <code>test-installer</code> 0 fails, <code>dry-run-install</code> 0 fails, <code>verify-orchestration</code> PASS at 18, and a clean-HOME install of 18 skills with 0 unresolved references.</p>
 <hr />
 <h2 id="how-success-is-measured-overall">How success is measured overall</h2>
-<p><strong>Status: 9 of 10 proven, 1 partially verified.</strong> Nine improvements carry a before-arm that reproduced the defect and an after-arm that shows it fixed, each captured from an unpiped run of the real installer or harness.</p>
-<p>Improvement 3 is the exception. Its branch and bare-SHA arms pass, but its stated threshold — "install pinned to a real tag" — cannot be met from this repository: upstream has no tags. That arm is <strong>UNVERIFIED</strong>, so the set is not claimed as 10/10 and criterion C3 is not graded PASS. Writing the code and driving it are different things, and only the second counts.</p>
+<p><strong>Status: 10 of 10 proven.</strong> All ten improvements carry a before-arm that reproduced the defect and an after-arm that shows it fixed, each captured from an unpiped run of the real installer or harness.</p>
+<p>Improvement 3 was the last exception. Its branch and bare-SHA arms passed, but its stated threshold — "install pinned to a real tag" — could not be met while upstream had no tags, so it was reported <strong>UNVERIFIED</strong> rather than PASS. Cutting the <code>v2.1.0</code> release tag made the arm drivable and it now resolves (<code>e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json</code>). Writing the code and driving it are different things; only the second counts, which is why this was not graded PASS until a real tag existed. The tag points at the product commit; this closure evidence lands in the follow-up commit, which is why the two are separate.</p>
 <p>A trap worth recording: piping the installer through <code>tail</code> reports the pipe's exit code, not the installer's. An adversarial sweep of every capture found <strong>five</strong> files recorded that way, and two of them were <em>after-arms</em> printing <code>ERROR:</code> above <code>rc=0</code>. Their <code>rc</code> fields are invalid. The originals are immutable and remain untouched (<code>evidence/AGENTS.md:22</code>); authoritative unpiped verdicts supersede them, and each is listed with its hash and superseding artifact in <code>e2e-evidence/run-20260827T160741-evidence-integrity-audit/invalid-rc-captures.json</code>. Every verdict cited in the table above comes from an unpiped invocation whose exit code was read directly from the command under test.</p>
 <p>Item 9 is the strongest of the set: rather than asserting the new cases pass, the guard was deliberately broken and the harness was shown to fail because of it. A case that cannot fail proves nothing.</p>
 <p>The three existing gates remain a regression concern only. They were green throughout the period the installer was broken, which is precisely why they are not accepted as proof here.</p>

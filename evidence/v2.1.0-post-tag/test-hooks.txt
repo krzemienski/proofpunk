@@ -1,0 +1,34 @@
+== bash -n syntax check
+  PASS: syntax evidence-guard.sh
+  PASS: syntax instructions-loaded.sh
+  PASS: syntax no-test-files.sh
+  PASS: syntax post-write-walkthrough.sh
+  PASS: syntax session-start.sh
+  PASS: syntax stop-guard.sh
+== session-start.sh emits valid JSON with doctrine context
+  PASS: session-start doctrine context
+== stop-guard.sh
+  PASS: stop-guard blocks unproven claim
+  PASS: stop-guard silent on proven claim
+  PASS: stop-guard silent on non-claim
+  PASS: stop-guard silent on missing transcript
+== evidence-guard.sh
+  PASS: evidence-guard denies secret into evidence
+  PASS: evidence-guard denies generic credential assignment
+  PASS: evidence-guard allows clean evidence write
+  PASS: evidence-guard ignores non-evidence paths
+== no-test-files.sh
+  PASS: no-test-files blocks *.test.* creation
+  PASS: no-test-files blocks __tests__ dir
+  PASS: no-test-files allows production code
+  PASS: no-test-files fails open on empty path
+== post-write-walkthrough.sh
+  PASS: post-write walkthrough reminder on production change
+  PASS: post-write silent on evidence writes
+== stop-guard scout requirement
+  PASS: stop-guard blocks claim+proof without scout record
+  PASS: stop-guard silent on claim+proof+scout
+== instructions-loaded.sh
+  PASS: instructions-loaded logs load event
+
+HOOK TEST FAILS: 0

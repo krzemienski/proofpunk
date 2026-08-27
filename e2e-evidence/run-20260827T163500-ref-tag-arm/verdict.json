@@ -1,0 +1,18 @@
+{
+  "arm": "refs/tags/ resolution — previously UNVERIFIED",
+  "ref": "v2.1.0",
+  "source": "github",
+  "command": "bash tools/proofpunk-install.sh --target claude-code --source github --ref v2.1.0 --only proofpunk",
+  "home": "fresh mktemp -d",
+  "remote_tags_before": 0,
+  "remote_tags_after": 1,
+  "rc": 0,
+  "installed": true,
+  "capture_method": "unpiped; stdout+stderr redirected to file, rc read from $? immediately after the command (no pipeline)",
+  "significance": "Closes the last open arm of improvement 3. Before this release the upstream repository had zero tags, so the refs/tags/ code path could be written but not driven, and the arm was reported UNVERIFIED rather than PASS. Cutting the v2.1.0 release tag made it drivable, and it resolves.",
+  "all_three_ref_forms": {
+    "branch": "PASS",
+    "bare_sha": "PASS — run-20260827T162405-ref-differential-pristine",
+    "tag": "PASS — this run"
+  }
+}

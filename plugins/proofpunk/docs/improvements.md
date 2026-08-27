@@ -43,7 +43,7 @@ without performing any check when `python3` was absent.
 - **Measure**: install the same malformed skill again.
 - **Threshold**: non-zero exit and a `✗` line naming the skill.
 
-## 3. Make `--ref` reach tags and commits  (HIGH — partially verified)
+## 3. Make `--ref` reach tags and commits  (HIGH)
 
 `REPO_TARBALL` hardcoded `…/tar.gz/refs/heads` (line 38), so every `--ref`
 resolved as a branch — while `--help` and `INSTALL.md:162` advertised
@@ -63,10 +63,12 @@ tags, using `--ref v1.8.0` as the documented example.
 - **Fix**: try `refs/heads/$REF`, then `refs/tags/$REF`, then bare `$REF`.
 - **Measure**: install pinned to a branch, a bare SHA, and a tag.
 - **Threshold**: exit 0 with skills present for each form.
-- **Result**: branch **PASS**, bare SHA **PASS** (differentially proven),
-  unknown ref fails honestly rc=1. The `refs/tags/` arm stays
-  **UNVERIFIED** — `git ls-remote --tags` upstream returns nothing, so no
-  real tag exists to drive.
+- **Result**: all three forms **PASS**. Branch and bare SHA were proven
+  differentially (`e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json`). The `refs/tags/` arm was **UNVERIFIED at the
+  time of the fix** — upstream had zero tags to drive — and was reported as
+  such rather than assumed. Cutting the `v2.1.0` release tag made it
+  drivable: `--ref v2.1.0` resolves and installs, rc=0, unpiped
+  (`e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json`). Unknown refs still fail honestly with rc=1.
 
 ## 4. Never leave hooks half-registered  (HIGH)
 
@@ -168,7 +170,7 @@ in `e2e-evidence/run-20260827T160741-evidence-integrity-audit/`.
 |---|--------|-------|----------|
 | 1 | harness never called the installer (`grep -c` = 0) | `test-installer.sh` runs it; 7 groups; `INSTALLER TEST FAILS: 0` | `e2e-evidence/run-20260827T150627-installer-fixed-after/final-test-installer.txt` |
 | 2 | **pristine old code** (`git show e890bc5`), unpiped: malformed `SKILL.md` → `✓ brainstorm`, rc=**0** | **current code, same input**: rc=**1**, `✗ brainstorm`, no false tick | `e2e-evidence/run-20260827T161126-verify-arm-gitorig/verdict.json` |
-| 3 | **pristine old code** (`git show e890bc5`, sha256-matched, syntax-checked) on a real SHA: rc=**1**, not installed — unpiped | current code, same SHA: rc=**0**, installed. Branch form also PASS. **`refs/tags/` UNVERIFIED — no upstream tags exist** | `e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json` |
+| 3 | **pristine old code** (`git show e890bc5`, sha256-matched, syntax-checked) on a real SHA: rc=**1**, not installed — unpiped | current code, same SHA: rc=**0**, installed. Branch form also PASS. `refs/tags/` **PASS** against the real `v2.1.0` tag (`e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json`) | `e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json` |
 | 4 | rc=**0**, 5 hook scripts orphaned, no `settings.json` | rc=**1**, `hook_dir_exists: false` — not even the directory is created (guard moved above `mkdir` after an audit found it ran first) | `e2e-evidence/run-20260827T160133-hooks-guard-mkdir/verdict.json` |
 | 5 | rc=**0**, empty skill dir, no `SKILL.md` | rc=**1**, `skill_dirs: 0` — no partial tree | `e2e-evidence/run-20260827T150627-installer-fixed-after/step-03-verdicts.json` |
 | 6 | verdict printed "the 17 skills"; `--help` said "all 17" | installed product: `--help` contains no `17`, installer reports `18 installed`, gate prints `the 18 skills` | `e2e-evidence/run-20260827T151017-items-9-10/step-04-rows-6-8-installed.txt` |
@@ -231,15 +233,18 @@ with 0 unresolved references.
 
 ## How success is measured overall
 
-**Status: 9 of 10 proven, 1 partially verified.** Nine improvements carry
-a before-arm that reproduced the defect and an after-arm that shows it
-fixed, each captured from an unpiped run of the real installer or harness.
+**Status: 10 of 10 proven.** All ten improvements carry a before-arm that
+reproduced the defect and an after-arm that shows it fixed, each captured
+from an unpiped run of the real installer or harness.
 
-Improvement 3 is the exception. Its branch and bare-SHA arms pass, but its
-stated threshold — "install pinned to a real tag" — cannot be met from
-this repository: upstream has no tags. That arm is **UNVERIFIED**, so the
-set is not claimed as 10/10 and criterion C3 is not graded PASS. Writing
-the code and driving it are different things, and only the second counts.
+Improvement 3 was the last exception. Its branch and bare-SHA arms passed,
+but its stated threshold — "install pinned to a real tag" — could not be met
+while upstream had no tags, so it was reported **UNVERIFIED** rather than
+PASS. Cutting the `v2.1.0` release tag made the arm drivable and it now
+resolves (`e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json`). Writing the code and driving it are different things;
+only the second counts, which is why this was not graded PASS until a real
+tag existed. The tag points at the product commit; this closure evidence
+lands in the follow-up commit, which is why the two are separate.
 
 A trap worth recording: piping the installer through `tail` reports the
 pipe's exit code, not the installer's. An adversarial sweep of every

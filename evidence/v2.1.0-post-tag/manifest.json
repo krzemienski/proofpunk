@@ -1,0 +1,32 @@
+{
+  "release": "v2.1.0",
+  "phase": "post-tag",
+  "purpose": "Close improvement 3's refs/tags/ arm, undrivable before a real upstream tag existed.",
+  "immutability_note": "evidence/v2.1.0-release/ holds the product-commit captures (5e5150b). It was overwritten in error during this run and restored from HEAD. Captures are read-only per evidence/AGENTS.md:22; this is a separate run, not an edit.",
+  "commands": [
+    {"capture": "test-hooks.txt", "command": "bash tools/test-hooks.sh", "rc": 0},
+    {"capture": "dry-run-install.txt", "command": "bash tools/dry-run-install.sh", "rc": 0},
+    {"capture": "verify-orchestration.txt", "command": "python3 tools/verify-orchestration.py", "rc": 0},
+    {"capture": "test-installer.txt", "command": "bash tools/test-installer.sh", "rc": 0},
+    {"capture": "full-install.txt", "command": "HOME=$(mktemp -d) bash tools/proofpunk-install.sh --target claude-code --source-dir /Users/nick/proofpunk", "rc": 0},
+    {"capture": "tag-install.txt", "command": "HOME=$(mktemp -d) bash tools/proofpunk-install.sh --target claude-code --source github --ref v2.1.0 --only proofpunk", "rc": 0}
+  ],
+  "tag_arm_assertions_from_raw_capture": {
+    "installed_none_before": true,
+    "install_proofpunk_lines": 1,
+    "skip_lines": 0,
+    "summary_line": "1 installed, 0 replaced, 0 skipped (collision), 0 missing",
+    "verify_line": "all skills pass",
+    "skill_file_present_checked_at_runtime": true,
+    "skill_file_caveat": "HOME was a temp-dir shell variable, unrecoverable after the run, so that check is not re-verifiable from disk. The INSTALL and summary lines are, and establish the same fact."
+  },
+  "separate_homes": "full-install and tag-install each ran under their own mktemp -d, so neither could collide with or observe the other.",
+  "compound_wrapper_note": "The shell invocation producing the install captures exited 1 overall. That exit belongs to its final `grep -c SKIP`, which returns 1 on no matches — the desired result. It is not the installer's rc. Each installer rc was read from $? immediately after its own command, with no pipeline.",
+  "closes": {
+    "criterion": "C3",
+    "from": "PARTIAL (9/10)",
+    "to": "PASS (10/10)",
+    "e2e_verdict": "e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json"
+  },
+  "tag_placement": "v2.1.0 points at the product commit, not this evidence commit. Moving a published tag is risky once consumers may have fetched it, so the tag stays and the closure evidence lands in the follow-up commit."
+}

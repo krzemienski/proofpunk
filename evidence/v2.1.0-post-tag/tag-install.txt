@@ -1,0 +1,11 @@
+== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.eSDnVlNskB/.claude/skills  (claude-code)
+source     : github tarball (ref: v2.1.0)
+version    : installed=none → source=2.1.0 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL proofpunk
+doctrine   : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.eSDnVlNskB/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ proofpunk
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==
