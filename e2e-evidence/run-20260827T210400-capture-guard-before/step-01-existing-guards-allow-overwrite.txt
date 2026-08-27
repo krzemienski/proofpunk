@@ -1,0 +1,4 @@
+evidence-guard rc=0
+no-test-files rc=0
+capture-guard ABSENT (defect: no guard protects captures)
+sha_before=608a04589b409db3760de07dd6420337f24e38a66518405b91da6545a4c59ac4

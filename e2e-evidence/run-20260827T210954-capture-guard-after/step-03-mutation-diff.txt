@@ -1,0 +1,8 @@
+22c22
+<   PASS: capture-guard denies edit of existing evidence capture
+---
+>   FAIL: capture-guard existing-capture deny — rc=0 out=Proofpunk: refusing to modify an existing evidence capture — a modified capture is a fabricated claim (see evidence/AGENTS.md:22). Captures are read-only once written; write a NEW run directory instead of editing or overwriting this file.
+40c40
+< HOOK TEST FAILS: 0
+---
+> HOOK TEST FAILS: 1

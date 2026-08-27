@@ -1,0 +1,56 @@
+{
+  "release": "v2.2.0",
+  "captured_utc": "2026-08-27T21:40:00Z",
+  "note": "Raw captures record stdout/stderr only; exit codes live here. Each rc was read from $? immediately after the command, never through a pipeline (a pipe reports the LAST stage's exit code, which silently invalidated five captures in the v2.1.0 cycle).",
+  "gates": [
+    {
+      "file": "test-hooks.txt",
+      "command": "bash tools/test-hooks.sh",
+      "rc": 0,
+      "asserts": "29 PASS, HOOK TEST FAILS: 0 — includes 4 new capture-guard cases"
+    },
+    {
+      "file": "test-installer.txt",
+      "command": "bash tools/test-installer.sh",
+      "rc": 0,
+      "asserts": "23 PASS, INSTALLER TEST FAILS: 0 — includes new group 8 (--hooks registration + idempotency)"
+    },
+    {
+      "file": "dry-run-install.txt",
+      "command": "bash tools/dry-run-install.sh",
+      "rc": 0,
+      "asserts": "slash-command template/rules merge logic; does NOT invoke the installer"
+    },
+    {
+      "file": "verify-orchestration.txt",
+      "command": "python3 tools/verify-orchestration.py",
+      "rc": 0,
+      "asserts": "18 skills green, proofpunk router as sole root"
+    },
+    {
+      "file": "full-install.txt",
+      "command": "HOME=$(mktemp -d) bash tools/proofpunk-install.sh --target claude-code --source-dir /Users/nick/proofpunk --hooks",
+      "rc": 0,
+      "asserts": "6 hook scripts installed; settings.json PreToolUse = [no-test-files.sh, evidence-guard.sh, capture-guard.sh]",
+      "isolation": "own mktemp -d HOME; the real ~/.claude was never touched"
+    }
+  ],
+  "ships": {
+    "capture-guard.sh": "New PreToolUse hook enforcing evidence/AGENTS.md:22 — denies modification of existing raw captures under evidence dirs; permits new captures and authored .md/.json sidecars.",
+    "installer_hook_registration": "Fixes a PRE-EXISTING defect: per-event idempotency meant only the first .proofpunk/hooks command per event was registered, so evidence-guard.sh has shipped dead in every --hooks install since it was written. Exposed, not introduced, by adding a third PreToolUse hook.",
+    "installer_group_8": "tools/test-installer.sh now drives --hooks and reads the produced settings.json — the only vantage point from which a copied-but-unregistered hook is visible."
+  },
+  "evidence": {
+    "improvement_11": "e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json",
+    "improvement_12": "e2e-evidence/run-20260827T210954-capture-guard-after/verdict.json",
+    "capture_guard_before_arm": "e2e-evidence/run-20260827T210400-capture-guard-before/"
+  },
+  "mutation_tested": [
+    "capture-guard deny branch (exit 2 -> exit 0): harness rc 0 -> 1, one case flips by name, restored byte-identical",
+    "installer per-command idempotency reverted to per-event: harness rc 0 -> 3, three registration cases fail by name, restored to 23 PASS"
+  ],
+  "authorization": {
+    "state": "GRANTED",
+    "detail": "Feature was built after an inferred consent error: the agent read a timing instruction ('commit and push new version whenever you feel 100% completed') as an answer to 'Want me to build that guard?'. Work was halted, nothing unapproved was committed, and the user then explicitly authorized option 1 (keep and ship)."
+  }
+}

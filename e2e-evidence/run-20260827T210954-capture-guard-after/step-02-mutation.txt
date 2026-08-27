@@ -1,0 +1,14 @@
+== baseline ==
+rc=0
+pass_count=0
+
+== mutate: neuter deny branch (exit 2 -> exit 0) ==
+mutation_applied=YES
+rc=1
+pass_count=0
+(no FAIL lines - harness did NOT catch mutation)
+
+== restore ==
+rc=0
+pass_count=0
+restored_identical=YES

@@ -170,5 +170,42 @@ else
 fi
 
 echo
+echo "== group 8: --hooks registers EVERY proofpunk hook in settings.json"
+H8="$TMP/hooks-home"
+mkdir -p "$H8"
+OUT8=$(HOME="$H8" bash "$(dirname "$0")/proofpunk-install.sh" --target claude-code \
+  --source-dir "$REPO_ROOT" --only proofpunk --hooks 2>&1)
+RC8=$?
+S8="$H8/.claude/settings.json"
+if [ "$RC8" -eq 0 ] && [ -f "$S8" ]; then
+  ok "--hooks install succeeded (rc=0) and wrote $S8"
+else
+  bad "--hooks install failed: rc=$RC8, settings exists=$([ -f "$S8" ] && echo yes || echo no)"
+fi
+for HOOK in no-test-files evidence-guard capture-guard; do
+  if [ -f "$H8/.proofpunk/hooks/$HOOK.sh" ]; then
+    ok "$HOOK.sh copied to the hook home"
+  else
+    bad "$HOOK.sh was NOT copied to $H8/.proofpunk/hooks/"
+  fi
+  # Registration is the part plugin-side tests cannot see: a script on disk
+  # that settings.json never invokes is a guard that silently never fires.
+  if [ -f "$S8" ] && grep -q "$HOOK.sh" "$S8"; then
+    ok "$HOOK.sh is REGISTERED in settings.json (not just copied)"
+  else
+    bad "$HOOK.sh is on disk but absent from settings.json — dead guard"
+  fi
+done
+OUT8B=$(HOME="$H8" bash "$(dirname "$0")/proofpunk-install.sh" --target claude-code \
+  --source-dir "$REPO_ROOT" --only proofpunk --hooks 2>&1)
+RC8B=$?
+N8=$(grep -c 'capture-guard.sh' "$S8" 2>/dev/null || echo 0)
+if [ "$RC8B" -eq 0 ] && [ "$N8" -eq 1 ]; then
+  ok "second --hooks run is idempotent: capture-guard.sh appears exactly once"
+else
+  bad "re-running --hooks was not idempotent: rc=$RC8B, capture-guard.sh occurrences=$N8"
+fi
+
+echo
 echo "INSTALLER TEST FAILS: $FAILS"
 exit "$FAILS"

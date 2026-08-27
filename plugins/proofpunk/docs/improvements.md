@@ -1,4 +1,4 @@
-# Ten Improvements — measured, not asserted
+# Twelve Improvements — measured, not asserted
 
 Every row below came from walking the real tree this session (six scout
 subagents across skills, hooks, installer, and the command/manifest
@@ -156,6 +156,39 @@ and no mention in the docs.
 - **Threshold**: either preserved and reported, or the overwrite is
   documented as intended behaviour. Silence is the defect.
 
+## 11. Ship the guard, not just the file (v2.2.0)
+
+`--hooks` copied hook scripts to `~/.proofpunk/hooks` and then registered
+only the first one per event. The idempotency check matched any command
+containing `.proofpunk/hooks` within the same event, so once
+`no-test-files.sh` landed in `PreToolUse`, every sibling returned "already
+present" and was silently skipped. `evidence-guard.sh` has therefore been
+on disk but never invoked in every `--hooks` install since it was written.
+
+A hook that is copied but unregistered is indistinguishable, from the
+plugin side, from one that works — which is why plugin-side tests never
+caught it.
+
+- **Measure**: drive `--hooks` into a scratch `HOME`; read the installed
+  `settings.json`, not the source tree.
+- **Threshold**: every hook both copied AND registered; re-running produces
+  no duplicates.
+
+## 12. Immutable captures, enforced (v2.2.0)
+
+`evidence/AGENTS.md:22` says a modified capture is a fabricated claim. That
+rule was prose-only, and it was violated twice in one session — once by
+prepending banners to five `.txt` captures, once by overwriting committed
+ones during a re-run. Both were caught by review, not by the tooling.
+
+`capture-guard.sh` denies `Write|Edit` to an existing raw capture under an
+evidence directory, while allowing new captures and authored `.md`/`.json`
+sidecars.
+
+- **Measure**: replay the exact payload from the first violation.
+- **Threshold**: denied (rc=2) with the capture's checksum unchanged, and
+  legitimate sidecar edits still permitted.
+
 
 ---
 
@@ -178,6 +211,8 @@ in `e2e-evidence/run-20260827T160741-evidence-integrity-audit/`.
 | 8 | two `truth-forge` ghost paths | installed tree: 0 files mention `truth-forge`, 0 unresolved head references | `e2e-evidence/run-20260827T151017-items-9-10/step-04-rows-6-8-installed.txt` |
 | 9 | `GENERIC_SECRET` + empty-path branches had no harness case | 2 cases added, 24 PASS; **mutation-tested in a sandbox copy** — disabling the generic-secret branch takes the harness to rc=**1**/23 PASS with the case failing by name, and restoring it returns rc=0/24 | `e2e-evidence/run-20260827T160908-hook-mutation/verdict.json` |
 | 10 | theme edit destroyed silently (the only "collision" in output was the skills summary `0 skipped`) | `WARN: ! overwriting locally modified theme: /tmp/pp-theme-after/.omp/agent/themes/acid-rain.json` | `e2e-evidence/run-20260827T151017-items-9-10/step-02-theme-warning-after.txt` |
+| 11 | **pristine HEAD installer** (`git show HEAD`, sha256-matched, `bash -n` clean): `--hooks` copies 5 scripts, `settings.json` `PreToolUse` = `['no-test-files.sh']` only — `evidence-guard` dead since it was written | fixed installer, same drive: 6 copied, `PreToolUse` = `['no-test-files.sh', 'evidence-guard.sh', 'capture-guard.sh']`; second run byte-identical. **Mutation-tested**: reverting the per-command check takes `test-installer.sh` to rc=**3** with all three registration cases failing by name, restored to 23 PASS | `e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json` |
+| 12 | both shipped guards return rc=**0** on a banner-overwrite of an existing `.txt` capture — the exact payload from the session's own violation | `capture-guard.sh` returns rc=**2**, sha256 unchanged; sidecar `.json`, new captures, and non-evidence paths still rc=0. **Mutation-tested**: neutering the deny branch flips exactly one case and `HOOK TEST FAILS: 0 → 1` | `e2e-evidence/run-20260827T210954-capture-guard-after/verdict.json` |
 
 
 ### Evidence-integrity audit (adversarial sweep)
@@ -233,9 +268,12 @@ with 0 unresolved references.
 
 ## How success is measured overall
 
-**Status: 10 of 10 proven.** All ten improvements carry a before-arm that
+**Status: 12 of 12 proven.** All twelve improvements carry a before-arm that
 reproduced the defect and an after-arm that shows it fixed, each captured
-from an unpiped run of the real installer or harness.
+from an unpiped run of the real installer or harness. Items 11 and 12
+(v2.2.0) additionally carry mutation tests proving their harness cases can
+fail: reverting either fix turns the relevant gate red with the specific
+case named, and restoring it returns the gate to green byte-identically.
 
 Improvement 3 was the last exception. Its branch and bare-SHA arms passed,
 but its stated threshold — "install pinned to a real tag" — could not be met

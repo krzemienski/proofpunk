@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ten Improvements — measured, not asserted — proofpunk docs</title>
+<title>Twelve Improvements — measured, not asserted — proofpunk docs</title>
 <meta name="description" content="Every row below came from walking the real tree this session (six scout">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,7 @@
 <section>
   <div class="marker">DOC / IMPROVEMENTS</div>
   <div class="doc">
-<h1 id="ten-improvements--measured-not-asserted">Ten Improvements — measured, not asserted</h1>
+<h1 id="twelve-improvements--measured-not-asserted">Twelve Improvements — measured, not asserted</h1>
 <p>Every row below came from walking the real tree this session (six scout subagents across skills, hooks, installer, and the command/manifest surface) and from reproducing each defect against the real installer before changing a line. No item here is a guess about what "could be better"; each names a defect that was observed, the measurement that proves it, and the threshold that decides success.</p>
 <p>The organising discovery: <strong>all three published gates were green while the installer was broken.</strong> That is the shape of every problem below — the measuring instrument agreed with itself and disagreed with reality.</p>
 <hr />
@@ -125,6 +125,20 @@
 <li><strong>Measure</strong>: install themes over a locally edited theme file.</li>
 <li><strong>Threshold</strong>: either preserved and reported, or the overwrite is documented as intended behaviour. Silence is the defect.</li>
 </ul>
+<h2 id="11-ship-the-guard-not-just-the-file-v220">11. Ship the guard, not just the file (v2.2.0)</h2>
+<p><code>--hooks</code> copied hook scripts to <code>~/.proofpunk/hooks</code> and then registered only the first one per event. The idempotency check matched any command containing <code>.proofpunk/hooks</code> within the same event, so once <code>no-test-files.sh</code> landed in <code>PreToolUse</code>, every sibling returned "already present" and was silently skipped. <code>evidence-guard.sh</code> has therefore been on disk but never invoked in every <code>--hooks</code> install since it was written.</p>
+<p>A hook that is copied but unregistered is indistinguishable, from the plugin side, from one that works — which is why plugin-side tests never caught it.</p>
+<ul>
+<li><strong>Measure</strong>: drive <code>--hooks</code> into a scratch <code>HOME</code>; read the installed <code>settings.json</code>, not the source tree.</li>
+<li><strong>Threshold</strong>: every hook both copied AND registered; re-running produces no duplicates.</li>
+</ul>
+<h2 id="12-immutable-captures-enforced-v220">12. Immutable captures, enforced (v2.2.0)</h2>
+<p><code>evidence/AGENTS.md:22</code> says a modified capture is a fabricated claim. That rule was prose-only, and it was violated twice in one session — once by prepending banners to five <code>.txt</code> captures, once by overwriting committed ones during a re-run. Both were caught by review, not by the tooling.</p>
+<p><code>capture-guard.sh</code> denies <code>Write|Edit</code> to an existing raw capture under an evidence directory, while allowing new captures and authored <code>.md</code>/<code>.json</code> sidecars.</p>
+<ul>
+<li><strong>Measure</strong>: replay the exact payload from the first violation.</li>
+<li><strong>Threshold</strong>: denied (rc=2) with the capture's checksum unchanged, and legitimate sidecar edits still permitted.</li>
+</ul>
 <hr />
 <h2 id="after-arms--measured-results">After-arms — measured results</h2>
 <p>Authoritative verdicts cited below are unpiped, so each exit code is the command's own. Five captures elsewhere in <code>e2e-evidence/</code> are piped and their <code>rc</code> fields are invalid; they are listed, with superseding artifacts, in <code>e2e-evidence/run-20260827T160741-evidence-integrity-audit/</code>.</p>
@@ -198,6 +212,18 @@
 <td><code>WARN: ! overwriting locally modified theme: /tmp/pp-theme-after/.omp/agent/themes/acid-rain.json</code></td>
 <td><code>e2e-evidence/run-20260827T151017-items-9-10/step-02-theme-warning-after.txt</code></td>
 </tr>
+<tr>
+<td>11</td>
+<td><strong>pristine HEAD installer</strong> (<code>git show HEAD</code>, sha256-matched, <code>bash -n</code> clean): <code>--hooks</code> copies 5 scripts, <code>settings.json</code> <code>PreToolUse</code> = <code>['no-test-files.sh']</code> only — <code>evidence-guard</code> dead since it was written</td>
+<td>fixed installer, same drive: 6 copied, <code>PreToolUse</code> = <code>['no-test-files.sh', 'evidence-guard.sh', 'capture-guard.sh']</code>; second run byte-identical. <strong>Mutation-tested</strong>: reverting the per-command check takes <code>test-installer.sh</code> to rc=<strong>3</strong> with all three registration cases failing by name, restored to 23 PASS</td>
+<td><code>e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>both shipped guards return rc=<strong>0</strong> on a banner-overwrite of an existing <code>.txt</code> capture — the exact payload from the session's own violation</td>
+<td><code>capture-guard.sh</code> returns rc=<strong>2</strong>, sha256 unchanged; sidecar <code>.json</code>, new captures, and non-evidence paths still rc=0. <strong>Mutation-tested</strong>: neutering the deny branch flips exactly one case and <code>HOOK TEST FAILS: 0 → 1</code></td>
+<td><code>e2e-evidence/run-20260827T210954-capture-guard-after/verdict.json</code></td>
+</tr>
 </tbody>
 </table>
 <h3 id="evidence-integrity-audit-adversarial-sweep">Evidence-integrity audit (adversarial sweep)</h3>
@@ -210,7 +236,7 @@
 <p>Regression posture after every change: <code>test-hooks</code> 24 PASS (was 19 — two new guard cases), <code>test-installer</code> 0 fails, <code>dry-run-install</code> 0 fails, <code>verify-orchestration</code> PASS at 18, and a clean-HOME install of 18 skills with 0 unresolved references.</p>
 <hr />
 <h2 id="how-success-is-measured-overall">How success is measured overall</h2>
-<p><strong>Status: 10 of 10 proven.</strong> All ten improvements carry a before-arm that reproduced the defect and an after-arm that shows it fixed, each captured from an unpiped run of the real installer or harness.</p>
+<p><strong>Status: 12 of 12 proven.</strong> All twelve improvements carry a before-arm that reproduced the defect and an after-arm that shows it fixed, each captured from an unpiped run of the real installer or harness. Items 11 and 12 (v2.2.0) additionally carry mutation tests proving their harness cases can fail: reverting either fix turns the relevant gate red with the specific case named, and restoring it returns the gate to green byte-identically.</p>
 <p>Improvement 3 was the last exception. Its branch and bare-SHA arms passed, but its stated threshold — "install pinned to a real tag" — could not be met while upstream had no tags, so it was reported <strong>UNVERIFIED</strong> rather than PASS. Cutting the <code>v2.1.0</code> release tag made the arm drivable and it now resolves (<code>e2e-evidence/run-20260827T163500-ref-tag-arm/verdict.json</code>). Writing the code and driving it are different things; only the second counts, which is why this was not graded PASS until a real tag existed. The tag points at the product commit; this closure evidence lands in the follow-up commit, which is why the two are separate.</p>
 <p>A trap worth recording: piping the installer through <code>tail</code> reports the pipe's exit code, not the installer's. An adversarial sweep of every capture found <strong>five</strong> files recorded that way, and two of them were <em>after-arms</em> printing <code>ERROR:</code> above <code>rc=0</code>. Their <code>rc</code> fields are invalid. The originals are immutable and remain untouched (<code>evidence/AGENTS.md:22</code>); authoritative unpiped verdicts supersede them, and each is listed with its hash and superseding artifact in <code>e2e-evidence/run-20260827T160741-evidence-integrity-audit/invalid-rc-captures.json</code>. Every verdict cited in the table above comes from an unpiped invocation whose exit code was read directly from the command under test.</p>
 <p>Item 9 is the strongest of the set: rather than asserting the new cases pass, the guard was deliberately broken and the harness was shown to fail because of it. A case that cannot fail proves nothing.</p>
@@ -221,13 +247,13 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:IMPROVEMENTS</b></span><span>v2.1.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
+  <div class="statusline"><span><b>DOC:IMPROVEMENTS</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v2.1.0 · MIT license
+    &nbsp;· plugin v2.2.0 · MIT license
   </div>
 </footer>
 </div>

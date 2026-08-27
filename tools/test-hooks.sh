@@ -92,6 +92,47 @@ EOF
 rc=$?
 if [ "$rc" -eq 0 ]; then case_ok "evidence-guard ignores non-evidence paths"; else case_fail "evidence-guard non-evidence path — rc=$rc"; fi
 
+echo "== capture-guard.sh"
+# Case 16: existing .txt capture under e2e-evidence/ → denied (exit 2).
+# Modifying a committed capture is a fabricated claim (evidence/AGENTS.md:22).
+mkdir -p "$TMP/e2e-evidence/run-x"
+echo "original capture output" > "$TMP/e2e-evidence/run-x/existing.txt"
+out=$(sh "$HOOKS/capture-guard.sh" 2>&1 <<EOF
+{"tool_name":"Write","tool_input":{"file_path":"$TMP/e2e-evidence/run-x/existing.txt","content":"tampered banner\noriginal capture output"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "capture-guard denies edit of existing evidence capture"; else case_fail "capture-guard existing-capture deny — rc=$rc out=$out"; fi
+
+# Case 16b: existing .json sidecar under e2e-evidence/ → allowed (exit 0).
+# Manifests/verdicts are authored and legitimately revised.
+echo '{"status":"pass"}' > "$TMP/e2e-evidence/run-x/verdict.json"
+out=$(sh "$HOOKS/capture-guard.sh" 2>&1 <<EOF
+{"tool_name":"Write","tool_input":{"file_path":"$TMP/e2e-evidence/run-x/verdict.json","content":"{\"status\":\"pass\",\"note\":\"updated\"}"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ]; then case_ok "capture-guard allows editing existing json sidecar"; else case_fail "capture-guard json sidecar edit — rc=$rc out=$out"; fi
+
+# Case 17: NEW (nonexistent) .txt path under e2e-evidence/ → allowed (exit 0).
+# Creating a fresh capture is normal; only existing captures are protected.
+out=$(sh "$HOOKS/capture-guard.sh" 2>&1 <<EOF
+{"tool_name":"Write","tool_input":{"file_path":"$TMP/e2e-evidence/run-x/new-capture.txt","content":"fresh output"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ]; then case_ok "capture-guard allows new evidence capture"; else case_fail "capture-guard new-capture write — rc=$rc out=$out"; fi
+
+# Case 18: .txt path OUTSIDE any evidence dir → allowed (exit 0, not our lane).
+mkdir -p "$TMP/src"
+echo "not evidence" > "$TMP/src/notes.txt"
+out=$(sh "$HOOKS/capture-guard.sh" 2>&1 <<EOF
+{"tool_name":"Write","tool_input":{"file_path":"$TMP/src/notes.txt","content":"editing outside evidence"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ]; then case_ok "capture-guard ignores non-evidence paths"; else case_fail "capture-guard non-evidence path — rc=$rc"; fi
+
 echo "== no-test-files.sh"
 # Case 9: test file path → denied (exit 2)
 out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'

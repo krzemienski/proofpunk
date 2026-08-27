@@ -104,7 +104,8 @@ HOOKS (deterministic enforcement — plugin installs get them automatically):
   --hooks                copy hook scripts to ~/.proofpunk/hooks and merge them
                          into the platform's settings file (claude-code:
                          ~/.claude/settings.json — Stop/SubagentStop unproven-
-                         claim guard + PreToolUse secrets-in-evidence guard).
+                         claim guard + PreToolUse secrets-in-evidence and
+                         immutable-capture guards).
                          Idempotent; opencode/omp get enforcement via their
                          plugin/extension glue (printed guidance instead).
 
@@ -398,7 +399,7 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
     command -v python3 >/dev/null 2>&1 || die "--hooks requires python3 to merge hook entries into settings.json"
     run "mkdir -p '$HOOK_HOME'"
     if [ "$DRY_RUN" -eq 0 ]; then
-      cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOKS_SRC/no-test-files.sh" "$HOOKS_SRC/post-write-walkthrough.sh" "$HOOK_HOME/"
+      cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/capture-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOKS_SRC/no-test-files.sh" "$HOOKS_SRC/post-write-walkthrough.sh" "$HOOK_HOME/"
       chmod +x "$HOOK_HOME/"*.sh
       # Idempotent settings.json merge (user-level for claude-code).
       SETTINGS="$HOME/.claude/settings.json"
@@ -422,9 +423,14 @@ hooks = settings.setdefault("hooks", {})
 
 def ensure(event, command, matcher=None, timeout=10):
     entries = hooks.setdefault(event, [])
+    # Idempotency is per-COMMAND, not per-event: several proofpunk hooks share
+    # one event (PreToolUse), so matching on the shared ".proofpunk/hooks" path
+    # would make the first one installed suppress every later one.
+    script = command.rsplit("/", 1)[-1]
     for e in entries:
         for h in e.get("hooks", []):
-            if ".proofpunk/hooks" in h.get("command", ""):
+            existing = h.get("command", "")
+            if ".proofpunk/hooks" in existing and existing.rsplit("/", 1)[-1] == script:
                 return "already present"
     entry = {"hooks": [{"type": "command", "command": command, "timeout": timeout}]}
     if matcher is not None:
@@ -437,6 +443,7 @@ results = [
     ("SubagentStop", ensure("SubagentStop", f"sh {hook_home}/stop-guard.sh")),
     ("PreToolUse:no-test-files", ensure("PreToolUse", f"sh {hook_home}/no-test-files.sh", matcher="Write|Edit", timeout=5)),
     ("PreToolUse:evidence-guard", ensure("PreToolUse", f"sh {hook_home}/evidence-guard.sh", matcher="Write|Edit", timeout=5)),
+    ("PreToolUse:capture-guard", ensure("PreToolUse", f"sh {hook_home}/capture-guard.sh", matcher="Write|Edit", timeout=5)),
     ("PostToolUse", ensure("PostToolUse", f"sh {hook_home}/post-write-walkthrough.sh", matcher="Write|Edit", timeout=5)),
 ]
 if os.path.exists(settings_path):
@@ -448,7 +455,7 @@ for ev, r in results:
 print(f"  settings: {settings_path}")
 PYEOF
     else
-      say "  [dry-run] would install 3 hook scripts to $HOOK_HOME and merge Stop/SubagentStop/PreToolUse into the platform settings.json"
+      say "  [dry-run] would install 6 hook scripts to $HOOK_HOME and merge Stop/SubagentStop/PreToolUse/PostToolUse into the platform settings.json"
     fi
   else
     say "  opencode: enforcement lives in the plugin glue (install with --plugins; see opencode/plugin/proofpunk.ts)"

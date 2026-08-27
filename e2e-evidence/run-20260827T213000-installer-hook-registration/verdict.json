@@ -1,0 +1,57 @@
+{
+  "defect_a": "capture-guard.sh never copied or registered by --hooks",
+  "defect_b": "per-event idempotency: first .proofpunk/hooks command in an event suppressed all siblings, so evidence-guard was silently dropped even before capture-guard existed",
+  "pristine_source": "git show HEAD:tools/proofpunk-install.sh",
+  "pristine_sha256": "a5eefbe8c28f1c7c9fc39985796bb5e8d1f03610d2284bda132a70f277977f1e",
+  "before": {
+    "rc": 0,
+    "scripts_installed": 5,
+    "capture_guard_copied": false,
+    "pretooluse_registered": [
+      "no-test-files.sh"
+    ],
+    "capture_guard_registered": false,
+    "evidence_guard_registered": false
+  },
+  "after": {
+    "rc": 0,
+    "scripts_installed": 6,
+    "capture_guard_copied": true,
+    "pretooluse_registered": [
+      "no-test-files.sh",
+      "evidence-guard.sh",
+      "capture-guard.sh"
+    ],
+    "capture_guard_registered": true,
+    "evidence_guard_registered": true
+  },
+  "mutation_test": {
+    "target": "tools/proofpunk-install.sh ensure(): per-command idempotency reverted to per-event",
+    "baseline": {
+      "rc": 0,
+      "pass": 23,
+      "fail": 0
+    },
+    "mutated": {
+      "rc": 3,
+      "pass": 20,
+      "fail": 3,
+      "failing_cases": [
+        "evidence-guard.sh is on disk but absent from settings.json \u2014 dead guard",
+        "capture-guard.sh is on disk but absent from settings.json \u2014 dead guard",
+        "re-running --hooks was not idempotent: rc=0, capture-guard.sh occurrences=0"
+      ]
+    },
+    "restored": {
+      "rc": 0,
+      "pass": 23,
+      "byte_identical": true
+    },
+    "non_vacuous": true
+  },
+  "harness_coverage": {
+    "group": "group 8 in tools/test-installer.sh",
+    "why_plugin_tests_cannot_catch_this": "A hook copied to disk but absent from settings.json is invisible from the plugin side; only driving the installer and reading the produced settings.json distinguishes registered from merely present."
+  },
+  "preexisting_defect_note": "The evidence-guard registration failure predates capture-guard: it has shipped dead in every --hooks install since evidence-guard.sh was written. Exposed, not introduced, by this change."
+}

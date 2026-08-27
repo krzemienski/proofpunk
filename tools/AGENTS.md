@@ -14,7 +14,7 @@ Build, install, and verification toolchain for proofpunk: the multi-platform ins
 | `proofpunk-install.sh` | Multi-platform installer: plain skills into `~/.claude/skills`, OMP, OpenCode, or `~/.agents/skills`; rewrites `../../references/X` citations to self-contained copies; optional themes/plugins/hooks/memory-injection; `--verify` pass auto-repairs broken refs |
 | `test-hooks.sh` | Runs hook assertions and exits nonzero on failures; a successful run ends with `HOOK TEST FAILS: 0` — run before any hooks change |
 | `dry-run-install.sh` | Exercises the `/proofpunk:install` slash-command's template/rules merge logic (CLAUDE.md/AGENTS.md marker injection, scoped `.claude/rules` copy) against a sandbox project — does NOT invoke `proofpunk-install.sh` |
-| `test-installer.sh` | Real harness for `proofpunk-install.sh`: runs the installer against scratch source/target dirs and asserts exit codes + on-disk state for the happy path, collision default, `--override`, `--only`, `--dry-run`, and malformed-skill (no frontmatter) detection; a successful run ends with `INSTALLER TEST FAILS: 0` — run before any installer change |
+| `test-installer.sh` | Real harness for `proofpunk-install.sh`: runs the installer against scratch source/target dirs and asserts exit codes + on-disk state for the happy path, collision default, `--override`, `--only`, `--dry-run`, malformed-skill (no frontmatter) detection, and `--hooks` registration (every hook both copied AND present in `settings.json`, plus idempotent re-runs); a successful run ends with `INSTALLER TEST FAILS: 0` — run before any installer change |
 | `verify-orchestration.py` | Verifies skill orchestration graph (18 skills green, `proofpunk` router as sole root) — run before any skills change |
 | `INSTALL.md` | Authoritative installer usage: every flag, what an install produces, why self-contained copies exist |
 | `build-site.py` | Generates `docs/*.html` (reads markdown sources; pre-renders mermaid via mmdc when present). Edit page sources here, not the HTML |
@@ -30,7 +30,7 @@ Build, install, and verification toolchain for proofpunk: the multi-platform ins
 
 ### Testing Requirements
 
-- Any change here: run `bash test-hooks.sh`, `bash dry-run-install.sh`, `python3 verify-orchestration.py` from this directory, all green, outputs captured under `evidence/<release>/`.
+- Any change here: run `bash test-hooks.sh`, `bash test-installer.sh`, `bash dry-run-install.sh`, `python3 verify-orchestration.py` from this directory, all green, outputs captured under `evidence/<release>/`.
 - Theme pipeline: `python3 generate-themes.py` twice → byte-identical output (determinism check).
 
 ### Common Patterns

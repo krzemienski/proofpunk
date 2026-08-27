@@ -1,0 +1,47 @@
+{
+  "run": "run-20260827T210954-capture-guard-after",
+  "status": "VERIFIED \u2014 authorized for the v2.2.0 release; not yet committed or tagged at time of writing",
+  "authorization": {
+    "state": "GRANTED",
+    "granted_at": "2026-08-27T21:20Z (approx, same session)",
+    "detail": "User explicitly chose option 1 (keep and ship) after the halt.",
+    "history": "Originally WITHHELD. The orchestrator asked 'Want me to build that guard?'; the user replied 'commit and push new version whenever you feel 100% completed' \u2014 a timing instruction, not an answer. Consent was inferred rather than given, the build was halted, and nothing unapproved was committed. The user then authorized explicitly. This history is preserved deliberately: the halt is part of the record, not an embarrassment to erase."
+  },
+  "arms": {
+    "A1_overwrite_existing_txt_capture": {
+      "rc": 2,
+      "verdict": "DENIED",
+      "note": "identical payload returned rc=0 from both pre-existing guards in the before-arm"
+    },
+    "A2_edit_existing_verdict_json": {
+      "rc": 0,
+      "verdict": "ALLOWED",
+      "note": "authored sidecar; legitimate revision preserved"
+    },
+    "A3_new_txt_capture": {
+      "rc": 0,
+      "verdict": "ALLOWED"
+    },
+    "A4_txt_outside_evidence": {
+      "rc": 0,
+      "verdict": "ALLOWED"
+    },
+    "sha256_unchanged": true
+  },
+  "mutation_test": {
+    "target": "capture-guard.sh deny branch, sys.exit(2) -> sys.exit(0)",
+    "mutation_applied": true,
+    "baseline_rc": 0,
+    "mutated_rc": 1,
+    "restored_rc": 0,
+    "restored_byte_identical": true,
+    "discriminating_case": "capture-guard denies edit of existing evidence capture: PASS -> FAIL",
+    "harness_fail_counter": "HOOK TEST FAILS: 0 -> 1",
+    "non_vacuous": true,
+    "correction": "First analysis used grep -c '^PASS' and reported pass_count=0 for every arm. The harness indents its result lines ('  PASS:'), so the anchor matched nothing. The counts were meaningless; the rc transition and the diff are the real evidence."
+  },
+  "unverified_claims": {
+    "resolved": "The subagent's '29 PASS' claim was independently confirmed by the orchestrator (29 PASS / 0 FAIL, all four capture-guard cases named). The doc hook-count sweep left unfinished by the cancelled agent was completed and verified."
+  },
+  "disposition": "Authorized for v2.2.0 as improvement 12. Ship state (commit SHA, tag, remote) is recorded in evidence/v2.2.0-release/manifest.json AFTER the push is verified \u2014 this sidecar deliberately does not claim to be shipped, because at the moment it was written nothing had been."
+}
