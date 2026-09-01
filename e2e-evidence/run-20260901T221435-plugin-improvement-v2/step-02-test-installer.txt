@@ -1,0 +1,40 @@
+== group 1: happy path (clean install of all 18 skills)
+  PASS: clean install exits 0 and reports 18 installed
+  PASS: all 18 skill dirs installed with SKILL.md
+
+== group 2: collision default (second run over same dir does not clobber)
+  PASS: second run over same dir exits 0 and reports all 18 skipped
+  PASS: existing skill dir untouched (canary file survived the second run)
+
+== group 3: --override replaces and reports replaced
+  PASS: --override exits 0 and reports 18 replaced
+  PASS: --override actually replaced brainstorm (canary file gone from live dir)
+  PASS: --override kept a .bak-* backup containing the pre-override skill content
+
+== group 4: --only <name> installs exactly one skill
+  PASS: --only brainstorm installs exactly that one skill dir
+
+== group 5: --only <nonexistent> exits non-zero and reports missing
+  PASS: --only bogus-name exits 3 and warns the skill was not found
+  PASS: --only bogus-name installed nothing (target dir empty or absent)
+
+== group 6: --dry-run creates no files
+  PASS: --dry-run exits 0 and creates no target directory
+
+== group 7: malformed skill (missing frontmatter) fails verify — the D3 regression
+  PASS: malformed SKILL.md (no frontmatter) is caught: run fails (rc=1), not a green tick
+  PASS: install step still copied the malformed SKILL.md before verify caught it (proves the check ran post-copy, not pre-empted)
+  PASS: no false '✓ bad-skill' green tick in verify output
+  PASS: verify step did not claim 'all skills pass'
+
+== group 8: --hooks registers EVERY proofpunk hook in settings.json
+  PASS: --hooks install succeeded (rc=0) and wrote /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.L9fObzxWPs/hooks-home/.claude/settings.json
+  PASS: no-test-files.sh copied to the hook home
+  PASS: no-test-files.sh is REGISTERED in settings.json (not just copied)
+  PASS: evidence-guard.sh copied to the hook home
+  PASS: evidence-guard.sh is REGISTERED in settings.json (not just copied)
+  PASS: capture-guard.sh copied to the hook home
+  PASS: capture-guard.sh is REGISTERED in settings.json (not just copied)
+  PASS: second --hooks run is idempotent: capture-guard.sh appears exactly once
+
+INSTALLER TEST FAILS: 0

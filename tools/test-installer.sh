@@ -207,5 +207,58 @@ else
 fi
 
 echo
+
+echo "== group 9: fresh_evidence.py strict seal/validate contract"
+# Guards the vacuous-pass defect: validate() returned OK on runs with zero
+# artifacts, on unsealed runs, and on same-size content substitution.
+FE="$(cd "$(dirname "$0")/.." && pwd)/plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py"
+EV=$(mktemp -d); ( cd "$EV"
+  python3 "$FE" init-run harness >/dev/null 2>&1
+  python3 "$FE" seal >/dev/null 2>&1; echo "empty_seal_rc=$?"
+  python3 "$FE" validate >/dev/null 2>&1; echo "empty_validate_rc=$?"
+  echo PASSED > "$(python3 "$FE" next-step verdict).txt"
+  python3 "$FE" validate >/dev/null 2>&1; echo "unsealed_rc=$?"
+  python3 "$FE" seal >/dev/null 2>&1
+  python3 "$FE" validate >/dev/null 2>&1; echo "sealed_clean_rc=$?"
+  d=$(ls -d e2e-evidence/run-*); echo FAILED > "$d/step-01-verdict.txt"
+  python3 "$FE" validate >/dev/null 2>&1; echo "samesize_tamper_rc=$?"
+) > "$EV/out.txt" 2>&1
+exp="empty_seal_rc=2 empty_validate_rc=2 unsealed_rc=2 sealed_clean_rc=0 samesize_tamper_rc=2"
+got=$(tr '\n' ' ' < "$EV/out.txt" | sed 's/  */ /g;s/ $//')
+if [ "$got" = "$exp" ]; then ok "fresh_evidence strict contract: empty/unsealed/tamper refused, clean sealed passes"
+else bad "fresh_evidence contract drift — expected [$exp] got [$got]"; fi
+rm -rf "$EV"
+
+
+echo "== group 10: installed tree matches canonical hooks.json"
+# Derive-don't-restate: the installer must install exactly what hooks.json
+# declares. This is the check that would have caught session-start.sh shipping
+# uncopied and SessionStart/InstructionsLoaded shipping unregistered.
+REPO="$(cd "$(dirname "$0")/.." && pwd)"
+PH=$(mktemp -d)
+HOME="$PH" bash "$REPO/tools/proofpunk-install.sh" --source-dir "$REPO" --target claude-code --hooks >/dev/null 2>&1
+irc=$?
+python3 - "$REPO" "$PH" > "$PH/parity.txt" 2>&1 <<'PYP'
+import json, os, re, sys
+repo, home = sys.argv[1], sys.argv[2]
+spec = json.load(open(os.path.join(repo, "plugins/proofpunk/hooks/hooks.json")))
+spec = spec.get("hooks", spec)
+want = {m for a in spec.values() for e in a for h in e.get("hooks", [])
+        for m in re.findall(r"([a-z-]+\.sh)", h["command"])}
+got = set(os.listdir(os.path.join(home, ".proofpunk/hooks")))
+inst = json.load(open(os.path.join(home, ".claude/settings.json")))["hooks"]
+want_regs = sum(len(e.get("hooks", [])) for a in spec.values() for e in a)
+got_regs = sum(len(e.get("hooks", [])) for a in inst.values() for e in a)
+print("scripts", want == got, sorted(want ^ got))
+print("events", set(spec) == set(inst), sorted(set(spec) ^ set(inst)))
+print("regs", want_regs == got_regs, want_regs, got_regs)
+PYP
+if [ "$irc" = "0" ] && ! grep -q "False" "$PH/parity.txt"; then
+  ok "installed tree matches canonical hooks.json (scripts, events, registrations)"
+else
+  bad "canonical hooks.json parity: $(cat "$PH/parity.txt" | tr '\n' ' ')"
+fi
+rm -rf "$PH"
+
 echo "INSTALLER TEST FAILS: $FAILS"
 exit "$FAILS"

@@ -30,6 +30,7 @@
   <div class="doc">
 <h1 id="ci--pre-commit-quality-gates-shared">CI / Pre-Commit Quality Gates (shared)</h1>
 <p>Methodology for layered build-quality gates, condensed from <code>build-quality-gates</code>. Use when a project needs pre-commit hooks or CI gates that catch failures early without slowing the loop.</p>
+<p><strong>Wiring gap (as of this note):</strong> no executing skill loads this file mid-workflow — it is currently cited only descriptively in <code>skills/proofpunk/SKILL.md</code>'s reference table. The natural loader is <code>production-readiness</code>'s codebase-audit lens (its own skill-local production-readiness-audit reference): when that audit finds a project has no pre-commit/CI gates configured, it should load this file to propose a P0→P1→P2 rollout rather than inventing gate criteria ad hoc. That wiring change is not made here — a follow-up lane must add the load instruction to <code>skills/production-readiness/SKILL.md</code>.</p>
 <h2 id="priority-classification">Priority Classification</h2>
 <p>Gates are classified by blast radius and rolled out iteratively:</p>
 <table>
@@ -73,7 +74,7 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>REF:CI-GATES</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
+  <div class="statusline"><span><b>REF:CI-GATES</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-09-01</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

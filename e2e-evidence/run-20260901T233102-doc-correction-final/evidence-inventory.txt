@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-doc-correction.txt 589 ab5fcaa6877ea3230fb7e9688038a86d4eb3b91a4180a8390719faa468d52314
+sealed=2026-09-01T23:31:18Z count=1 total_bytes=589

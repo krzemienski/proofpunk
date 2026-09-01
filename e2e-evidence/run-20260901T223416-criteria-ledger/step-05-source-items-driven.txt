@@ -1,0 +1,22 @@
+# Driving the 4 previously SOURCE-ONLY items against the INSTALLED tree
+
+## #16 ci-gates wired into production-readiness (installed copy)
+  installed SKILL.md cites ci-gates: True
+    `references/ci-gates.md` and propose its P0→P1→P2 rollout rather
+  resolves references/ci-gates.md: True
+  resolves proofpunk-doctrine/ci-gates.md: True
+
+## #7 OpenCode agent count in installed docs source
+  "4 agents" occurrences: 3
+  "1 agent" occurrences  : 0
+  measured opencode agents: 4
+
+## #9 dead-hook upgrade note in README
+  mentions v1.10.0-v2.1.0 window: True
+  names evidence-guard.sh       : True
+  gives remedy (--hooks re-run) : True
+
+## #7b historical report annotated, original row preserved
+  original 3/3/3 row still present: True
+  superseded annotation present  : True
+  states measured 3 / 3 / 4      : True

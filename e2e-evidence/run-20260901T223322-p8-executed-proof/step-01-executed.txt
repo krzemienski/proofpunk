@@ -1,0 +1,15 @@
+# P8 executed proof — each item run now, outcome recorded (not diff presence)
+#1 installer-from-hooks.json: install rc=0 scripts=7/7 events=6/6
+#1b idempotent: diff rc=0 (0=identical)
+#2/#4/#5 stop-guard user-only-claim: expected=SILENT got=SILENT MATCH
+#2/#4/#5 stop-guard user-word-spoof: expected=BLOCK got=BLOCK MATCH
+#2/#4/#5 stop-guard bare-keyword: expected=BLOCK got=BLOCK MATCH
+#2/#4/#5 stop-guard real-cited-file: expected=SILENT got=SILENT MATCH
+#2/#4/#5 stop-guard nonexistent-path: expected=BLOCK got=BLOCK MATCH
+#2/#4/#5 stop-guard prose-only-scout: expected=BLOCK got=BLOCK MATCH
+#2/#4/#5 stop-guard scout-real-path: expected=SILENT got=SILENT MATCH
+#2/#4/#5 stop-guard path-traversal: expected=BLOCK got=BLOCK MATCH
+#NEW fresh_evidence empty-seal: rc=2 (expect 2)
+#NEW unsealed-validate: rc=2 (expect 2)
+#NEW sealed-clean: rc=0 (expect 0)
+#NEW samesize-tamper: rc=2 (expect 2)

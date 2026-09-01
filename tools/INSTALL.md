@@ -15,7 +15,7 @@ bash proofpunk-install.sh --target claude-code
 # oh-my-pi user — skills, 20 themes, and the doctrine-guard extension:
 bash proofpunk-install.sh --target omp --themes --plugins
 
-# OpenCode user — skills, 20 themes, plugin + commands + agent:
+# OpenCode user — skills, 20 themes, plugin + commands + 4 agents:
 bash proofpunk-install.sh --target opencode --themes --plugins
 
 # Themes only, no skills:
@@ -89,7 +89,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 | Option | Effect | Why it exists |
 |---|---|---|
 | `--themes` | Copies the 20 flat-black cyberpunk themes into every detected platform: `~/.omp/agent/themes/` (oh-my-pi), `~/.config/opencode/themes/` (OpenCode), and the Hyper modules into `~/.config/proofpunk/hyper-themes/` | One command themes every TUI you run; detection = the platform's config dir exists, its binary is on PATH, or it is the `--target` |
-| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/proofpunk.ts`; OpenCode plugin + 6 commands + 1 agent into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/proofpunk/extensions/`, `plugins/proofpunk/opencode/`); this copies them to the auto-discovery locations |
+| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/proofpunk.ts`; OpenCode plugin + 6 commands + 4 agents into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/proofpunk/extensions/`, `plugins/proofpunk/opencode/`); this copies them to the auto-discovery locations |
 
 ## Collision options — same-name skill already exists
 
@@ -171,7 +171,7 @@ bash proofpunk-install.sh --skip-skills --themes
 # 10) Full OpenCode setup from a local checkout:
 bash tools/proofpunk-install.sh --source-dir . --target opencode --themes --plugins
 #   skills + doctrine into ~/.config/opencode/skills, 20 themes,
-#   plugin/proofpunk.ts + 6 commands + 1 agent into ~/.config/opencode/
+#   plugin/proofpunk.ts + 6 commands + 4 agents into ~/.config/opencode/
 ```
 
 ## Exit codes

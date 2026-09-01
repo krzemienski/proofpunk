@@ -42,7 +42,8 @@ cat > "$TMP/t2.jsonl" <<'EOF'
 {"role":"assistant","text":"Scout context summary: entry points src/main.ts, touchpoints src/cart.ts"}
 {"role":"assistant","text":"All done — complete. Evidence in e2e-evidence/run-2026-x/step-03-shot.png"}
 EOF
-out=$(printf '{"session_id":"s2","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t2.jsonl" | sh "$HOOKS/stop-guard.sh")
+mkdir -p "$TMP/e2e-evidence/run-2026-x" && echo shot > "$TMP/e2e-evidence/run-2026-x/step-03-shot.png"
+out=$(printf '{"session_id":"s2","transcript_path":"%s","cwd":"%s"}' "$TMP/t2.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
 if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard false-blocked proven claim — got: $out"; elif [ -n "$out" ]; then case_fail "stop-guard spoke on a proven claim (must be silent) — got: $out"; else case_ok "stop-guard silent on proven claim"; fi
 
 # Case 3: no claim at all → no block
@@ -188,7 +189,8 @@ echo "== stop-guard scout requirement"
 cat > "$TMP/t5.jsonl" <<'EOF'
 {"role":"assistant","text":"All done. Evidence in e2e-evidence/run-x/step-01.png"}
 EOF
-out=$(printf '{"session_id":"s5","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t5.jsonl" | sh "$HOOKS/stop-guard.sh")
+mkdir -p "$TMP/e2e-evidence/run-x" && echo shot > "$TMP/e2e-evidence/run-x/step-01.png"
+out=$(printf '{"session_id":"s5","transcript_path":"%s","cwd":"%s"}' "$TMP/t5.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
 if printf '%s' "$out" | grep -q "scout"; then case_ok "stop-guard blocks claim+proof without scout record"; else case_fail "stop-guard scout requirement — got: $out"; fi
 
 # Case 15: claim + proof + scout → silent
@@ -196,7 +198,8 @@ cat > "$TMP/t6.jsonl" <<'EOF'
 {"role":"assistant","text":"Scout context summary: files touched src/a.ts, touchpoints src/b.ts"}
 {"role":"assistant","text":"All done. Evidence in e2e-evidence/run-x/step-01.png"}
 EOF
-out=$(printf '{"session_id":"s6","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t6.jsonl" | sh "$HOOKS/stop-guard.sh")
+mkdir -p "$TMP/e2e-evidence/run-x" && echo shot > "$TMP/e2e-evidence/run-x/step-01.png"
+out=$(printf '{"session_id":"s6","transcript_path":"%s","cwd":"%s"}' "$TMP/t6.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
 if [ -z "$out" ]; then case_ok "stop-guard silent on claim+proof+scout"; else case_fail "stop-guard spoke on fully-proven claim — got: $out"; fi
 
 echo "== instructions-loaded.sh"
@@ -211,6 +214,55 @@ else
 fi
 
 echo
+
+echo "== bash-write detector (Bash bypass mitigation)"
+BW=$(mktemp -d); mkdir -p "$BW/e2e-evidence/run-1" "$BW/src"
+echo ORIGINAL > "$BW/e2e-evidence/run-1/step-01.txt"; echo x > "$BW/src/a.ts"
+bw_case() {  # id, command, expect NOTICE|SILENT, label
+  printf '{"hook_event_name":"PostToolUse","tool_name":"Bash","cwd":"%s","session_id":"h","tool_use_id":"%s","tool_input":{"command":"c"}}' "$BW" "$1" > "$BW/in.json"
+  sh "$HOOKS/bash-write-snapshot.sh" < "$BW/in.json" >/dev/null 2>&1
+  ( cd "$BW" && eval "$2" ) >/dev/null 2>&1
+  out=$(sh "$HOOKS/bash-write-notice.sh" < "$BW/in.json" 2>&1)
+  got=SILENT; [ -n "$out" ] && got=NOTICE
+  if [ "$got" = "$3" ]; then case_ok "bash-detector $4"; else case_fail "bash-detector $4 — expected $3 got $got"; fi
+}
+bw_case w1 "printf x > src/new.test.ts" NOTICE "test file via Bash is noticed"
+bw_case w2 "printf TAMPERED > e2e-evidence/run-1/step-01.txt" NOTICE "evidence capture tamper is noticed"
+bw_case w3 "rm e2e-evidence/run-1/step-01.txt" NOTICE "evidence deletion is noticed"
+bw_case w4 "cp -p src/a.ts src/b.ts" SILENT "cp -p stays silent (no false deny)"
+bw_case w5 "sed -i -e 's/x/y/' src/a.ts" SILENT "sed -i -e stays silent"
+bw_case w6 "touch -c src/a.ts" SILENT "touch -c stays silent"
+bw_case w7 "true" SILENT "no-op command stays silent"
+bw_case w8 "echo sk-ABCDEFGHIJKLMNOPQRSTUVWXYZ012345 > e2e-evidence/run-1/leak.txt" NOTICE "secret into evidence is noticed"
+
+# failure path: PostToolUseFailure must behave identically and echo its own event name
+printf '{"hook_event_name":"PostToolUseFailure","tool_name":"Bash","cwd":"%s","session_id":"h","tool_use_id":"wf","tool_input":{"command":"c"}}' "$BW" > "$BW/f.json"
+sh "$HOOKS/bash-write-snapshot.sh" < "$BW/f.json" >/dev/null 2>&1
+( cd "$BW" && printf x > src/fail.test.ts ) >/dev/null 2>&1
+fout=$(sh "$HOOKS/bash-write-notice.sh" < "$BW/f.json" 2>&1)
+if printf '%s' "$fout" | grep -q '"hookEventName": "PostToolUseFailure"'; then
+  case_ok "bash-detector failure event echoes PostToolUseFailure"
+else
+  case_fail "bash-detector failure event -- got: $fout"
+fi
+
+# parallel calls: distinct baselines coexist, each consumed by its own call
+printf '{"hook_event_name":"PostToolUse","tool_name":"Bash","cwd":"%s","session_id":"h","tool_use_id":"q1","tool_input":{"command":"c"}}' "$BW" > "$BW/q1.json"
+printf '{"hook_event_name":"PostToolUse","tool_name":"Bash","cwd":"%s","session_id":"h","tool_use_id":"q2","tool_input":{"command":"c"}}' "$BW" > "$BW/q2.json"
+sh "$HOOKS/bash-write-snapshot.sh" < "$BW/q1.json" >/dev/null 2>&1
+sh "$HOOKS/bash-write-snapshot.sh" < "$BW/q2.json" >/dev/null 2>&1
+nbase=$(ls "$HOME/.proofpunk/bash-baselines" 2>/dev/null | wc -l | tr -d ' ')
+( cd "$BW" && printf x > src/par.test.ts ) >/dev/null 2>&1
+p1=$(sh "$HOOKS/bash-write-notice.sh" < "$BW/q1.json" 2>&1)
+p2=$(sh "$HOOKS/bash-write-notice.sh" < "$BW/q2.json" 2>&1)
+left=$(ls "$HOME/.proofpunk/bash-baselines" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$nbase" -ge 2 ] && [ -n "$p1" ] && [ -n "$p2" ] && [ "$left" = "0" ]; then
+  case_ok "bash-detector parallel calls isolated, state consumed"
+else
+  case_fail "bash-detector parallel -- baselines=$nbase leftover=$left"
+fi
+rm -rf "$BW"
+
 echo "HOOK TEST FAILS: $FAILS"
 rm -rf "$TMP"
 exit "$FAILS"

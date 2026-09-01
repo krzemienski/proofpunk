@@ -1,0 +1,112 @@
+# P8 ledger — implemented improvements with their diff proof
+# generated 2026-09-01T22:33:08Z from the live working tree
+
+## working tree (git status --porcelain)
+ M README.md
+ M docs/commands.html
+ M docs/doc-architecture.html
+ M docs/doc-consolidation-decisions.html
+ M docs/doc-hooks-and-init-design.html
+ M docs/doc-improvements.html
+ M docs/doc-invocation-contracts.html
+ M docs/doc-usage-guide.html
+ M docs/doc-validation-results.html
+ M docs/docs.html
+ M docs/index.html
+ M docs/install.html
+ M docs/ref-api-validation.html
+ M docs/ref-ci-gates.html
+ M docs/ref-cli-validation.html
+ M docs/ref-defect-pattern-database.html
+ M docs/ref-end-user-actor.html
+ M docs/ref-evidence-contract.html
+ M docs/ref-ios-hig-checklist.html
+ M docs/ref-ios-validation.html
+ M docs/ref-platform-routing.html
+ M docs/ref-preflight-checks.html
+ M docs/ref-severity-model.html
+ M docs/ref-web-validation.html
+ M docs/ref-web-wcag-checklist.html
+ M docs/skills.html
+ M plugins/proofpunk/README.md
+ M plugins/proofpunk/commands/rate-prompt.md
+ M plugins/proofpunk/docs/architecture.md
+ M plugins/proofpunk/hooks/stop-guard.sh
+ M plugins/proofpunk/opencode/commands/proofpunk-rate-prompt.md
+ M plugins/proofpunk/references/ci-gates.md
+ M plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py
+ M plugins/proofpunk/skills/production-readiness/SKILL.md
+ M plugins/proofpunk/skills/proofpunk/SKILL.md
+ M proofpunk-v2-release-report.md
+ M tools/INSTALL.md
+ M tools/proofpunk-install.sh
+ M tools/test-hooks.sh
+ M tools/test-installer.sh
+?? e2e-evidence/run-20260901T221435-plugin-improvement-v2/
+?? e2e-evidence/run-20260901T221529-per-item-proofs/
+?? e2e-evidence/run-20260901T221607-stopguard-proof/
+?? e2e-evidence/run-20260901T222109-final-verification/
+?? e2e-evidence/run-20260901T222936-commands-render/
+?? e2e-evidence/run-20260901T223022-p12-count-sweep/
+?? e2e-evidence/run-20260901T223106-p12-classification/
+?? e2e-evidence/run-20260901T223253-p8-ledger/
+
+## per-file change size (git diff --stat)
+ README.md                                          |  14 +-
+ docs/commands.html                                 |  10 +-
+ docs/doc-architecture.html                         | 546 ++++++++++++++-----
+ docs/doc-consolidation-decisions.html              |   2 +-
+ docs/doc-hooks-and-init-design.html                |   2 +-
+ docs/doc-improvements.html                         |   2 +-
+ docs/doc-invocation-contracts.html                 |   2 +-
+ docs/doc-usage-guide.html                          |   2 +-
+ docs/doc-validation-results.html                   |   2 +-
+ docs/docs.html                                     |   4 +-
+ docs/index.html                                    |   2 +-
+ docs/install.html                                  |   2 +-
+ docs/ref-api-validation.html                       |   2 +-
+ docs/ref-ci-gates.html                             |   3 +-
+ docs/ref-cli-validation.html                       |   2 +-
+ docs/ref-defect-pattern-database.html              |   2 +-
+ docs/ref-end-user-actor.html                       |   2 +-
+ docs/ref-evidence-contract.html                    |   2 +-
+ docs/ref-ios-hig-checklist.html                    |   2 +-
+ docs/ref-ios-validation.html                       |   2 +-
+ docs/ref-platform-routing.html                     |   2 +-
+ docs/ref-preflight-checks.html                     |   2 +-
+ docs/ref-severity-model.html                       |   2 +-
+ docs/ref-web-validation.html                       |   2 +-
+ docs/ref-web-wcag-checklist.html                   |   2 +-
+ docs/skills.html                                   |   2 +-
+ plugins/proofpunk/README.md                        |   2 +-
+ plugins/proofpunk/commands/rate-prompt.md          |  12 +-
+ plugins/proofpunk/docs/architecture.md             | 603 +++++++++++++++------
+ plugins/proofpunk/hooks/stop-guard.sh              |  98 +++-
+ .../opencode/commands/proofpunk-rate-prompt.md     |  15 +-
+ plugins/proofpunk/references/ci-gates.md           |   9 +
+ .../end-user-testing/scripts/fresh_evidence.py     | 108 +++-
+ .../proofpunk/skills/production-readiness/SKILL.md |   3 +
+ plugins/proofpunk/skills/proofpunk/SKILL.md        |  17 +
+ proofpunk-v2-release-report.md                     |   7 +
+ tools/INSTALL.md                                   |   6 +-
+ tools/proofpunk-install.sh                         |  52 +-
+ tools/test-hooks.sh                                |   9 +-
+ tools/test-installer.sh                            |  22 +
+ 40 files changed, 1204 insertions(+), 378 deletions(-)
+
+## item -> file mapping
+  #1     installer derives hooks from hooks.json                    tools/proofpunk-install.sh  [+39 -13]
+  #2     stop-guard role gate + disk-verified proof/scout           plugins/proofpunk/hooks/stop-guard.sh  [+90 -8]
+  #4/5   same file: PROOF/SCOUT disk checks                         plugins/proofpunk/hooks/stop-guard.sh  [+90 -8]
+  #7     OpenCode agent count 1->4                                  tools/INSTALL.md  [+3 -3]
+  #8     report-only+--out conflict corrected                       plugins/proofpunk/commands/rate-prompt.md  [+7 -5]
+  #12    --ship-below-threshold parity                              plugins/proofpunk/opencode/commands/proofpunk-rate-prompt.md  [+9 -6]
+  #16    ci-gates wired into a real workflow step                   plugins/proofpunk/skills/production-readiness/SKILL.md  [+3 -0]
+  #NEW   fresh_evidence vacuous-pass + sha256 seal                  plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py  [+103 -5]
+  #NEW   persistent evidence regression (group 9)                   tools/test-installer.sh  [+22 -0]
+  #NEW   stop-guard fixtures updated to strict contract             tools/test-hooks.sh  [+6 -3]
+  #NEW   architecture documentation                                 plugins/proofpunk/docs/architecture.md  [+442 -161]
+  #NEW   router chains + routes-to-nothing                          plugins/proofpunk/skills/proofpunk/SKILL.md  [+17 -0]
+  #P12   stale skill count 16->18                                   plugins/proofpunk/README.md  [+1 -1]
+  #9     v1.10.0-v2.1.0 dead-hook upgrade note                      README.md  [+11 -3]
+  #7b    historical report annotated, not rewritten                 proofpunk-v2-release-report.md  [+7 -0]

@@ -1,0 +1,15 @@
+# Doc correction + full gate re-run (postdates architecture.md fix)
+## gates
+  tools/test-hooks.sh rc=0
+  tools/test-installer.sh rc=0
+  tools/dry-run-install.sh rc=0
+  verify-orchestration.py rc=0
+  build-site.py rc=0
+## corrected claims verified in source and rendered site
+  overclaim 'cannot leak state' removed: True
+  state swept only on later detector run: True
+  failed calls consume state via PostToolUseFailure: True
+  cp -p scoped to protected paths: True
+  detection-not-prevention retained: True
+  bypass still described as open: True
+  rendered site carries correction: True

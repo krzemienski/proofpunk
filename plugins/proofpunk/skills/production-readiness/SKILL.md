@@ -38,6 +38,9 @@ cites the command output, file, or audit artifact that proves it.
    passes, dead-code and documentation-drift hunts, validation checkpoints between
    waves, zero-regression enforcement (the suite is green before and after
    every wave — re-run it, don't assume it).
+   When the audit finds no pre-commit or CI gates configured, load
+   `../../references/ci-gates.md` and propose its P0→P1→P2 rollout rather
+   than inventing gate criteria ad hoc.
 2. **Spec compliance** — `references/spec-compliance.md`
    Extract every requirement from the spec, map each to implementation
    evidence, and grade COVERED / INCOMPLETE / MISSING. Missing coverage

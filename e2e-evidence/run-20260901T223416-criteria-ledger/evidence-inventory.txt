@@ -1,0 +1,8 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-router-coverage-installed.txt 920 a60079329ee4ad11ea7fb480feb1fc268bf79dd1747cf6db96f3c2d13f262d77
+step-02-backlog-snapshot.md 8049 91912555d80cc7ff9fb03ded17ba56fcb1e51ba0bec9a03dfdc063c1a3f4fdd4
+step-03-p8-item-map.txt 3112 0941f1830e022f5ade29e5d6db2e8e668abd8d1b6f533476a9548e720f996b3b
+step-04-group9-live.txt 2334 dfe44b0351094fd8a0ec33af5e562adccf8d3105fb0d1f7b42403b5de4aed875
+step-05-source-items-driven.txt 819 ab968d695d96bc716d91d3b671c3db01cf36565bb4e4089984ef91bd57b5235b
+step-06-p8-final-map.txt 3151 fa72995c8b98620d8284c4e9f8ee4a81539c976d0114a0cfcbe2a4587fc936dc
+sealed=2026-09-01T22:36:55Z count=6 total_bytes=18385

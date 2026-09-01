@@ -22,6 +22,13 @@ OpenCode, and OMP (all from official/vendor sources — see
 | Install dry-run | 0 fails | 0 fails (both targets) | `evidence/v2-release/dry-run-install-output.txt` |
 | Orchestration verifier | PASS @ 19 | **PASS @ 17** | `evidence/v2-release/verify-orchestration-output.txt` |
 
+> **Superseded (2026-09-01, historical record — not rewritten):** the plugin-bundled
+> agents row is stale in two ways. The real paths are nested —
+> `plugins/proofpunk/opencode/agents/` and `plugins/proofpunk/omp/agents/`, not
+> top-level — and the OpenCode count is now **4**, not 3: `proofpunk.md` (the router
+> agent) was added after this report shipped. Measured 2026-09-01: 3 / 3 / 4.
+> This report is left intact as the v2.0.0 record.
+
 ## Invocation contract (researched, drives the design)
 
 - **Claude Code**: skills auto-invoke by model judgment over name+description

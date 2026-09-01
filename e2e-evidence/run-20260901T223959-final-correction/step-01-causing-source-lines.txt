@@ -1,0 +1,24 @@
+# P1 causing source lines — HEAD (327f883) vs fixed working tree
+# HEAD copy obtained via: git show HEAD:tools/proofpunk-install.sh
+
+## DEFECT A — hardcoded copy list omits session-start.sh
+  HEAD tools/proofpunk-install.sh:402
+    cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/capture-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOKS_SRC/no-test-files.sh" "$HOOKS_SRC/post-write-walkthroug
+    names 6 scripts; canonical hooks.json names 7
+
+## DEFECT B — hardcoded event registrations, 4 of 6
+  HEAD tools/proofpunk-install.sh:442: ("Stop", ensure("Stop", f"sh {hook_home}/stop-guard.sh")),
+  HEAD tools/proofpunk-install.sh:443: ("SubagentStop", ensure("SubagentStop", f"sh {hook_home}/stop-guard.sh")),
+  HEAD tools/proofpunk-install.sh:444: ("PreToolUse:no-test-files", ensure("PreToolUse", f"sh {hook_home}/no-test-files.sh", matcher="Write|Edit
+  HEAD tools/proofpunk-install.sh:445: ("PreToolUse:evidence-guard", ensure("PreToolUse", f"sh {hook_home}/evidence-guard.sh", matcher="Write|Ed
+  HEAD tools/proofpunk-install.sh:446: ("PreToolUse:capture-guard", ensure("PreToolUse", f"sh {hook_home}/capture-guard.sh", matcher="Write|Edit
+  HEAD tools/proofpunk-install.sh:447: ("PostToolUse", ensure("PostToolUse", f"sh {hook_home}/post-write-walkthrough.sh", matcher="Write|Edit", 
+  'SessionStart' present in HEAD installer      : False
+  'InstructionsLoaded' present in HEAD installer: False
+
+## FIX — both lists now derived from hooks.json
+  /Users/nick/proofpunk/tools/proofpunk-install.sh:402: # hooks.json is the single source of truth for BOTH which scripts get
+  /Users/nick/proofpunk/tools/proofpunk-install.sh:409: with open(os.path.join(src, "hooks.json")) as f:
+  /Users/nick/proofpunk/tools/proofpunk-install.sh:419: sys.exit("hooks.json names scripts that do not exist: " + ", ".join(missing))
+  /Users/nick/proofpunk/tools/proofpunk-install.sh:461: with open(os.path.join(hooks_src, "hooks.json")) as f:
+  /Users/nick/proofpunk/tools/proofpunk-install.sh:484: say "  [dry-run] would install every hook script named in hooks.json to $HOOK_HOME and merge each event it declares

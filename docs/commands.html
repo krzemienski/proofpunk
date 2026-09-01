@@ -187,9 +187,9 @@
 <pre><code>/proofpunk:rate-prompt prompts/v2.prompt.md --out prompts/v2.remediated.md
 /proofpunk:verify &quot;run both prompt versions against the 3 failure cases and diff the outputs&quot;</code></pre>
 <p>Rate the revision, then end-user-test the behavioral difference with executed evidence — no vibes-based prompt reviews.</p>
-<p><strong>5. Full command — every option selected</strong></p>
-<pre><code>/proofpunk:rate-prompt .planning/pg17.prompt.md --report-only --out .planning/pg17.rating.md</code></pre>
-<p>Scores against the 7-dimension /100 rubric and writes the report to file without touching the prompt. Note: <code>--in-place</code> and <code>--out</code> are exclusive (same-file edit vs. separate output); <code>--report-only</code> composes with <code>--out</code>. <code>--ship-below-threshold</code> finalizes even if the result grades needs-work/rewrite; omit it to require a passing score before shipping.</p>
+<p><strong>4. Redirected output — remediate and ship regardless of score</strong></p>
+<pre><code>/proofpunk:rate-prompt .planning/pg17.prompt.md --out .planning/pg17.remediated.md --ship-below-threshold</code></pre>
+<p>Scores against the 7-dimension /100 rubric, remediates, and writes the remediated file to the given path. Note: <code>--in-place</code> and <code>--out</code> are exclusive (same-file edit vs. separate output); <code>--report-only</code> and <code>--out</code> are also exclusive (scorecard-only vs. writing a redirected deliverable) — they conflict and fail fast if combined. <code>--ship-below-threshold</code> finalizes even if the result grades needs-work/rewrite; omit it to require a passing score before shipping.</p>
 </div>
   </div>
 
@@ -255,14 +255,14 @@
     <div class="brow"><span class="idx">OC1</span><span><span class="name">/proofpunk-forge-prompt</span><span class="gate">Author a new high-quality prompt on the canonical XML skeleton — <code>&lt;goal&gt; [--out PATH] [--depth core|advanced]</code></span></span><span class="badge pass">SHIPS</span></div>
     <div class="brow"><span class="idx">OC2</span><span><span class="name">/proofpunk-implement</span><span class="gate">Implement a goal end to end with the Proofpunk orchestrator — <code>&lt;goal&gt; [--parallel] [--auto] [--mine] [--fast]</code></span></span><span class="badge pass">SHIPS</span></div>
     <div class="brow"><span class="idx">OC3</span><span><span class="name">/proofpunk-install</span><span class="gate">Install proofpunk project memory — CLAUDE.md or AGENTS.md (platform-correct, ≤200 lines, merged never clobbered) plus scoped rules — <code>[--platform claude-code|opencode|agents|omp] [--clobber] [--no-rules]</code></span></span><span class="badge pass">SHIPS</span></div>
-    <div class="brow"><span class="idx">OC4</span><span><span class="name">/proofpunk-rate-prompt</span><span class="gate">Rate a prompt file against the 100-point rubric and apply remediations to file — <code>&lt;prompt-file.md&gt; [--in-place] [--report-only] [--out PATH]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC4</span><span><span class="name">/proofpunk-rate-prompt</span><span class="gate">Rate a prompt file against the 100-point rubric and apply remediations to file — <code>&lt;prompt-file.md&gt; [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]</code></span></span><span class="badge pass">SHIPS</span></div>
     <div class="brow"><span class="idx">OC5</span><span><span class="name">/proofpunk-truth-audit</span><span class="gate">Run a repo-wide intent-vs-code truth audit with evidence-backed findings — <code>&lt;repo-path&gt; [--start DATE] [--end DATE] [--label NAME]</code></span></span><span class="badge pass">SHIPS</span></div>
     <div class="brow"><span class="idx">OC6</span><span><span class="name">/proofpunk-verify</span><span class="gate">End-user test the current work as the end user, producing executed proof — <code>[scope-or-entry-point]</code></span></span><span class="badge pass">SHIPS</span></div>
   </div>
 </section>
 
 </main>
-  <div class="statusline"><span><b>COMMANDS</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
+  <div class="statusline"><span><b>COMMANDS</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-09-01</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

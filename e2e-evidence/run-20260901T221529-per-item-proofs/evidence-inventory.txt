@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-installer-endtoend.txt 2324 1277189a696a80edf7711f2ea8cf4c5f95f4fcd1492e0dbe3b9819409fb6e20b
+sealed=2026-09-01T22:15:34Z count=1 total_bytes=2324

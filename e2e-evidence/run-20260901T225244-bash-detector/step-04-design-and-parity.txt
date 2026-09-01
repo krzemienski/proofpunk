@@ -1,0 +1,30 @@
+# Bash write bypass — detection-only mitigation
+
+## Scope, stated honestly
+This does NOT close the bypass. The three PreToolUse guards are registered on
+Write|Edit, so a Bash-authored write never reaches them, and by the time
+detection runs the write has already happened. Detection, not prevention.
+
+## Why not prevention
+A prior attempt parsed shell to decide a deny and falsely blocked cp -p, mv -f,
+touch -c, sed -i -e (1,484 lines, reverted). Detection is by EFFECT: the
+PreToolUse hook hashes protected paths; the PostToolUse hook re-hashes after.
+A command that changes nothing emits nothing regardless of how it looked, so no
+false positive can break a working command. Content hashing (not mtime+size)
+catches cp -p and equal-size substitution.
+
+## Registration, derived by the installer from hooks.json
+  PreToolUse matcher=Bash -> bash-write-snapshot.sh
+  PostToolUse matcher=Bash -> bash-write-notice.sh
+  PostToolUseFailure matcher=Bash -> bash-write-notice.sh
+
+## Permanent coverage added
+  tools/test-hooks.sh     : 10 detector cases (3 NOTICE, 4 SILENT, secret, failure-event, parallel)
+  tools/test-installer.sh : group 10 canonical hooks.json parity
+
+## Artifacts in this run
+  step-01-harness-passing.txt : 10/10 detector cases PASS
+  step-02-mutation-proof.txt  : detector broken -> harness FAILS (non-vacuous)
+  step-03-full-suite.txt      : all five gates rc=0
+  step-05-installer-parity.txt: group 10 PASS
+  step-06-parity-mutation.txt : installer drops one script -> parity FAILS by name

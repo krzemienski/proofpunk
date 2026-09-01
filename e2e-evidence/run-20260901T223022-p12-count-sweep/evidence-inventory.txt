@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-count-sweep.txt 4527 daa3a061de0cd55746e61079409484eac6363166e19c6b636622e52d46992689
+sealed=2026-09-01T22:30:50Z count=1 total_bytes=4527

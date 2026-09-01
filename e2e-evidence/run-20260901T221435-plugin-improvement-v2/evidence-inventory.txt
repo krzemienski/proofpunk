@@ -1,0 +1,7 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-test-hooks.txt 1585 e6d9af91bdd0a908dd12753b68655da8dcf7046c67c2176184985d9ecdd3b651
+step-02-test-installer.txt 2183 0b1344ba54312da9180668b28e7559b57009b9c5d2638de1b2d2764e61d1726d
+step-03-dry-run-install.txt 1268 7508fe75bf02580fadab3afa4ffd1a7767f3a27bd79bf241003d8e90a5b2d306
+step-04-verify-orchestration.txt 10702 d48b80fd85bf20f3ebdb21dc7d6388c15944fc7dd7638ade0a84d3ba15a3e20a
+step-05-full-install.txt 1503 9588d0c52dc6eb8ccba92bebda97b4da91922b80a127dbfa9e855e5ac3b30b1c
+sealed=2026-09-01T22:14:36Z count=5 total_bytes=17241

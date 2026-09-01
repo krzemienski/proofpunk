@@ -22,7 +22,7 @@ omp plugin marketplace add krzemienski/proofpunk
 omp plugin install proofpunk@proofpunk
 ```
 
-**OpenCode** — the installer drops the plugin, commands, agent, and skills into
+**OpenCode** — the installer drops the plugin, commands, 4 agents, and skills into
 `~/.config/opencode/`, or use the full plugin via the same catalog above.
 **Any agent** — plain skills into any directory:
 
@@ -35,6 +35,12 @@ bash tools/proofpunk-install.sh --target agents                 # ~/.agents/skil
 
 Or download `proofpunk-marketplace.tar.gz` from this repo's release artifacts and
 extract it into your marketplaces directory.
+
+**Upgrading from v1.10.0–v2.1.0?** `--hooks` installs on those versions copied
+`evidence-guard.sh` to disk but never registered it in `settings.json` — secrets-in-evidence
+enforcement was silently inert for that hook. Fixed in v2.2.0 (`99c72fb`). Re-run
+`bash tools/proofpunk-install.sh --hooks` to activate it. To check your own state, open
+`settings.json` and confirm `evidence-guard.sh` appears in the `hooks` array, not just on disk.
 
 ## Themes — 20 flat-black cyberpunk variations
 
@@ -200,8 +206,10 @@ prompt-forge pipeline "<goal>" [--dir PATH]
 | `pipeline "onboarding revamp" --dir .prompts/onboarding` | dependency-aware Research/Plan/Do stages authored | `.prompts/onboarding/NN-stage/PROMPT.md` tree |
 
 **Conflicts (rejected, fail fast)**: `--in-place` + `--out` (two
-destinations), `--report-only` + `--out` (nothing to write), `--report-only`
-+ `--in-place` (no output vs edit). Unknown flags rejected with the table.
+destinations), `--report-only` + `--out` (nothing to write). `--in-place` +
+`--report-only` is accepted; `--report-only` suppresses remediation entirely,
+so `--in-place` has no effect in that combination. Unknown flags rejected
+with the table.
 
 A complete worked rating — weak prompt, 34/100 scorecard, remediated file,
 91/100 re-score — lives in `plugins/proofpunk/skills/prompt-forge/references/remediation-sample.md`.

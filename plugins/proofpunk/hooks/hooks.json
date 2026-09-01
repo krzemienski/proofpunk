@@ -55,6 +55,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-snapshot.sh",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "InstructionsLoaded": [
@@ -76,6 +86,28 @@
             "type": "command",
             "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/post-write-walkthrough.sh",
             "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-notice.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-notice.sh",
+            "timeout": 10
           }
         ]
       }

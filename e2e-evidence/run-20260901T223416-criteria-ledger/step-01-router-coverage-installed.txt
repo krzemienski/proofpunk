@@ -1,0 +1,23 @@
+# P5 router coverage measured against the INSTALLED tree: /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.LYIl12kPDE/.claude/skills
+  brainstorm                   ROUTED
+  codebase-truth-audit         ROUTED
+  end-user-testing             ROUTED
+  full-functional-audit        ROUTED
+  implement                    ROUTED
+  mobile-validation-runner     ROUTED
+  plan-hardening               ROUTED
+  production-readiness         ROUTED
+  prompt-forge                 ROUTED
+  red-team-eval                ROUTED
+  root-cause-debugging         ROUTED
+  session-intent               ROUTED
+  stack-testing                ROUTED
+  tui-testing                  ROUTED
+  ui-experience-audit          ROUTED
+  validation-plan              ROUTED
+  visual-inspection            ROUTED
+
+installed skill dirs = 18
+delivery skills (excluding router) = 17
+routed = 17/17   orphans = none
+doctrine reference rows in router = 0

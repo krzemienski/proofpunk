@@ -1,0 +1,13 @@
+# P8 items #8/#12 — commands page rendered in a real browser (omp relay)
+url: http://127.0.0.1:8199/commands.html  (python3 -m http.server 8199 --directory docs)
+method: xd://browser relay tab, tab.goto + tab.evaluate + tab.screenshot
+
+measured from the rendered DOM innerText:
+  claimsComposes (regex /report-only.{0,60}composes.{0,40}--out/i) = false   <- false claim GONE
+  statesExclusive (regex /report-only[\s\S]{0,120}exclusive/i)     = true    <- matches prompt-forge/SKILL.md:174
+  hasShipBelowThreshold                                            = true
+  shipCount (--ship-below-threshold occurrences)                   = 4       <- parity restored
+
+authority: plugins/proofpunk/skills/prompt-forge/SKILL.md:174
+  'Conflicting flags (--in-place + --out, --report-only + --out) fail fast with the conflict named.'
+screenshot: step-01-commands-page.webp (header chips: 18 skills / 6+6 commands / 13 doctrine refs)

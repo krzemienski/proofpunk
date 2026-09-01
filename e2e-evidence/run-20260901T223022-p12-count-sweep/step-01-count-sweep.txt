@@ -1,0 +1,40 @@
+# P12 count sweep — measured from tree
+  measured skills=18
+  measured commands=6
+  measured agents=3
+  measured hooks=7
+  measured references=13
+
+# scanned 134 files
+# STALE CURRENT-STATE CLAIMS REMAINING: 2
+    README.md:587 '10 skills' :: end-to-end by the original 10 skills in series:
+    plugins/proofpunk/docs/architecture.md:455 '4 agents' :: - 3+3+4 agents: `glob plugins/proofpunk/agents/*.md` → 3;
+
+# classified false positives: 27
+    [PER-PLATFORM-CORRECT] README.md:25 '4 agents' :: **OpenCode** — the installer drops the plugin, commands, 4 agent
+    [17-NON-ROUTER-CORRECT] README.md:86 '17 skills' :: `prompt-forge` gained its always-on workflow + command surface i
+    [17-NON-ROUTER-CORRECT] plugins/proofpunk/docs/architecture.md:415 '17 skills' :: "the 17 skills" in prose while the script was actually validatin
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/consolidation-decisions.md:73 '4 references' :: | `ui-experience-audit/SKILL.md` + `references/` + `assets/` | 6
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/consolidation-decisions.md:230 '6 references' :: | `mobile-validation-runner` | `ios-validation-runner` (+ valida
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/consolidation-decisions.md:231 '5 references' :: | `root-cause-debugging` | `diagnose` (+ hitl-loop template), `r
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/improvements.md:112 '17 skills' :: - **Before-arm**: `verify-orchestration.py:144` printed "the 17 
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/improvements.md:207 '5 hook' :: | 4 | rc=**0**, 5 hook scripts orphaned, no `settings.json` | rc
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/improvements.md:209 '17 skills' :: | 6 | verdict printed "the 17 skills"; `--help` said "all 17" | 
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:87 '10 skills' :: Each of the 10 skills was re-read after authoring to verify its 
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:118 '10 skills' :: | All 10 skills | Two anti-pattern rows added to every anti-patt
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:129 '77 reference' :: Post-change verification: structural validator 0 errors (77 refe
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:159 '99 reference' :: - **Structural validator: 0 errors**, 99/99 reference paths reso
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:193 '10 skills' :: - **Final: 10/10 skills "Skill is valid!"** under the official v
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:196 '10 skills' :: Distribution note: the 10 skills share plugin-root `references/`
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:223 '15 skills' :: - **Format**: all 15 skills pass the official skill-creator fron
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:252 '16 skills' :: - **Format**: 16/16 skills pass official skill-creator validatio
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:290 '16 skills' :: `tools/proofpunk-install.sh` installs the 16 skills as plain ski
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:432 '8 command' :: 2. **§1-8 command references** for every argumented surface: imp
+    [HISTORICAL-RECORD] plugins/proofpunk/docs/validation-results.md:455 '17 skill' :: closed, all 17 skill names referenced.
+    [UNRELATED-PROSE] plugins/proofpunk/skills/production-readiness/references/production-readiness-audit.md:61 '5 commands' :: 1. Fresh-install test (clone, follow README, must work in <5 com
+    [UNRELATED-PROSE] plugins/proofpunk/skills/production-readiness/references/production-readiness-audit.md:87 '5 commands' :: - Fresh install works in <5 commands, <10 minutes
+    [17-NON-ROUTER-CORRECT] plugins/proofpunk/skills/proofpunk/SKILL.md:72 '17 skills' :: None of these 17 skills cover every ask — say so instead of forc
+    [UNRELATED-PROSE] plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md:104 '8 hooks' :: Start with: 500-line React component with 15 props, 8 hooks, 3 c
+    [PER-PLATFORM-CORRECT] tools/INSTALL.md:18 '4 agents' :: # OpenCode user — skills, 20 themes, plugin + commands + 4 agent
+    [PER-PLATFORM-CORRECT] tools/INSTALL.md:92 '4 agents' :: | `--plugins` | Installs the platform glue: OMP doctrine-guard e
+    [PER-PLATFORM-CORRECT] tools/INSTALL.md:174 '4 agents' :: #   plugin/proofpunk.ts + 6 commands + 4 agents into ~/.config/o

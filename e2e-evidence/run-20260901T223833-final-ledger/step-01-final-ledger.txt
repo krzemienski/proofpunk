@@ -1,0 +1,33 @@
+# FINAL criteria ledger — /Users/nick/proofpunk
+# generated 2026-09-01T22:38:50Z
+
+## measured state
+  porcelain paths     : 52
+  tracked modified    : 40
+    generated docs/   : 25
+    source            : 15
+  sealed runs         : 12
+
+## criterion  verdict  absolute artifact
+P1  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223749-p1-reproduction/step-01-before-after.txt
+          (HEAD installer: rc=0 but 6/7 scripts, session-start.sh MISSING, 4/6 events)
+P2  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt
+P3  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-02-install.txt
+P4  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt
+P5  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-01-router-coverage-installed.txt
+P6  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-05-router-live.txt
+P7  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-02-backlog-snapshot.md
+P8  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-06-p8-final-map.txt
+P9  PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T221607-stopguard-proof/step-01-stopguard-matrix.txt
+P10 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-02-backlog-snapshot.md
+P11 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-03-docs-render.webp
+P11 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T222936-commands-render/step-01-commands-page.webp
+P12 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223106-p12-classification/step-01-classification.txt
+P13 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-01-harnesses.txt
+P13 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-04-group9-live.txt
+P14 PASS  each cited run carries a v2 sha256 evidence-inventory.txt
+P15 PASS  /Users/nick/proofpunk/e2e-evidence/run-20260901T223833-final-ledger/step-01-final-ledger.txt
+
+## BLOCKED — operator decision
+backlog #3  Bash write bypass: central enforcement required
+Lane 2      token required at /Users/nick/proofpunk/.planning/hardening/05-gated.md:260

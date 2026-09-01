@@ -1,0 +1,7 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-harnesses.txt 242 e24166565a42b22c024d597c3a6cf3d5d424a52cfcc3e3826fb43241edea786a
+step-02-install.txt 416 6d8b3a573c489f2170e01f9e1bfc83f948ee033bd699ce372482fdc813f3d68c
+step-03-docs-render.webp 29420 4cb8ef99e8b3e2decde280ac5e4b8986ebf7aeebfec15f858b74e69ce01388ea
+step-04-docs-render-notes.txt 412 a4c76ffee1e3496643e27352e0edce8624445df5cb219e4b6fdbcdf58e125a5f
+step-05-router-live.txt 685 e0cd8c7d40371284c6038e430fc942a1d58fa38ccfd97e0a0756feb95752a818
+sealed=2026-09-01T22:29:19Z count=5 total_bytes=31175

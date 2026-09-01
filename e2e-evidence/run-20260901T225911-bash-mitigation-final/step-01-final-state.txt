@@ -1,0 +1,12 @@
+# Bash mitigation — final state
+## gates
+  tools/test-hooks.sh rc=0
+  tools/test-installer.sh rc=0
+  tools/dry-run-install.sh rc=0
+  verify-orchestration.py rc=0
+  build-site.py rc=0
+## doc + site carry the honest scope
+  source says detection-not-prevention: True
+  source says bypass remains open     : True
+  rendered site carries it            : True
+  counts corrected to 9/7/11          : True

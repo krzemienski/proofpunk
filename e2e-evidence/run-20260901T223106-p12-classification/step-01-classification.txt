@@ -1,0 +1,27 @@
+# P12 corrected classification — supersedes run-20260901T223022 (immutable, not edited)
+# the prior sweep's classifier lacked rules for these 2 shapes; both are false positives.
+
+measured per-platform agent counts:
+  plugins/proofpunk/agents = 3
+  plugins/proofpunk/omp/agents = 3
+  plugins/proofpunk/opencode/agents = 4
+
+HIT 1 -- README.md:587 '10 skills'
+    A complete live walkthrough on the **Flaskr** tutorial app (from `pallets/flask`, BSD-3):
+    the **Mood Ring** feature (per-post mood emoji 😀🙂😐😢🔥 + filter bar), built and audited
+    end-to-end by the original 10 skills in series:
+  VERDICT: FALSE POSITIVE (historical). Describes the Mood Ring walkthrough
+  performed when the plugin shipped 10 skills. Not a current-state claim.
+
+HIT 2 -- plugins/proofpunk/docs/architecture.md:455 '4 agents'
+    - 3+3+4 agents: `glob plugins/proofpunk/agents/*.md` → 3;
+      `glob plugins/proofpunk/omp/agents/*.md` → 3;
+      `glob plugins/proofpunk/opencode/agents/*.md` → 4 (the extra file is
+      `proofpunk.md`, the router agent, OpenCode-only).
+  VERDICT: FALSE POSITIVE (per-platform). '3+3+4' decomposes to 3/3/4 and
+  every term matches the measured counts above.
+
+FIXED THIS SESSION -- plugins/proofpunk/README.md:77
+    now: Verify: `/plugin` should list `Proofpunk` with 18 skills.
+
+RESULT: 0 stale current-state count claims remain in the tree.

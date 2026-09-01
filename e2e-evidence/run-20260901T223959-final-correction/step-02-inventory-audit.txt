@@ -1,0 +1,16 @@
+# P14 audit — every sealed run from this session, inventory verified
+  run-20260901T221435-plugin-improvement-v2        v2=True artifacts=5 OK
+  run-20260901T221529-per-item-proofs              v2=True artifacts=1 OK
+  run-20260901T221607-stopguard-proof              v2=True artifacts=1 OK
+  run-20260901T222109-final-verification           v2=True artifacts=5 OK
+  run-20260901T222936-commands-render              v2=True artifacts=2 OK
+  run-20260901T223022-p12-count-sweep              v2=True artifacts=1 OK
+  run-20260901T223106-p12-classification           v2=True artifacts=1 OK
+  run-20260901T223253-p8-ledger                    v2=True artifacts=1 OK
+  run-20260901T223322-p8-executed-proof            v2=True artifacts=1 OK
+  run-20260901T223416-criteria-ledger              v2=True artifacts=6 OK
+  run-20260901T223749-p1-reproduction              v2=True artifacts=1 OK
+  run-20260901T223833-final-ledger                 v2=True artifacts=1 OK
+  run-20260901T223959-final-correction             v2=False artifacts=0 ISSUES []
+
+sealed runs audited = 13   fully verified = 12

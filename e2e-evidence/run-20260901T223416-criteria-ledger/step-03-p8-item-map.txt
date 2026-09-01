@@ -1,0 +1,24 @@
+# P8 per-item proof map — one row per implemented item
+# EXECUTED = an artifact shows the behavior running; SOURCE-ONLY = change made, behavior not driven
+
+ITEM   OUTCOME                                        STATUS         ARTIFACT
+#1     installer derives hooks from hooks.json        EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:2
+#1b    second install byte-identical                  EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:3
+#2     stop-guard role gate (user text not credited)  EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:4-5
+#4     PROOF requires resolvable artifact path        EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:6-8
+#5     SCOUT requires concrete file reference         EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:9-10
+#5b    path-traversal citation rejected               EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:11
+NEW-a  fresh_evidence refuses empty/unsealed runs     EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:12-14
+NEW-b  sha256 seal detects same-size tamper           EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:15
+NEW-c  group 9 regression guard in harness            EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-01-harnesses.txt
+#8     report-only+--out false claim removed          EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T222936-commands-render/step-02-commands-render-notes.txt
+#12    --ship-below-threshold parity (4 occurrences)  EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T222936-commands-render/step-02-commands-render-notes.txt
+NEW-d  architecture doc renders, 8 sections           EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-04-docs-render-notes.txt
+NEW-e  router chains routed live 5/5                  EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-05-router-live.txt
+#16    ci-gates wired into production-readiness       SOURCE-ONLY    plugins/proofpunk/skills/production-readiness/SKILL.md:41-43 (installs cleanly; step not driven)
+#7     OpenCode agent count 1->4 in INSTALL.md        SOURCE-ONLY    tools/INSTALL.md:18,92,174
+#7b    v2 report annotated, not rewritten             SOURCE-ONLY    proofpunk-v2-release-report.md:25-30
+#9     dead-hook upgrade note                         SOURCE-ONLY    README.md:39-43
+P12    stale skill count 16->18                       EXECUTED       /Users/nick/proofpunk/e2e-evidence/run-20260901T223106-p12-classification/step-01-classification.txt
+
+EXECUTED outcomes = 14   SOURCE-ONLY = 4   total implemented = 18

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Proofpunk Architecture — How the 18 Skills Execute as One System — proofpunk docs</title>
-<meta name="description" content="This is the authoritative map of how the skills work **with one another**: who">
+<title>Proofpunk Plugin Architecture — proofpunk docs</title>
+<meta name="description" content="This is the map a new contributor reads first: what each layer of the">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -28,187 +28,456 @@
 <section>
   <div class="marker">DOC / ARCHITECTURE</div>
   <div class="doc">
-<h1 id="proofpunk-architecture--how-the-18-skills-execute-as-one-system">Proofpunk Architecture — How the 18 Skills Execute as One System</h1>
-<p>This is the authoritative map of how the skills work <strong>with one another</strong>: who owns each method, who calls whom, in what order, and why nothing is duplicated. If you only read one doc, read this one.</p>
-<h2 id="1-the-mental-model">1. The mental model</h2>
-<p>The 18 skills are <strong>not</strong> 18 independent procedures. They form a <strong>directed acyclic delegation graph</strong>:</p>
-<ul>
-<li><strong>A method lives in exactly one skill</strong> (its <em>owner</em>). Every other skill that needs that method <strong>calls</strong> the owner — it reads the owner's SKILL.md at the invocation point and applies the method verbatim. It never restates the method in its own body.</li>
-<li><strong>Calls are directional.</strong> "A calls B" means: during A's execution, A defers to B's canonical method. Convenience pointers that would create a cycle are deliberately one-way (the stronger direction wins).</li>
-<li><strong>The graph is a DAG</strong>, verified by <code>tools/verify-orchestration.py</code> on every change. Depth = how far a skill sits from the leaf owners:</li>
-</ul>
-<pre><code>depth 5  proofpunk                     (the router head — calls all 17, called by none)
-depth 4  production-readiness
-depth 3  full-functional-audit
-depth 2  codebase-truth-audit, implement, mobile-validation-runner, plan-hardening,
-         stack-testing, ui-experience-audit
-depth 1  red-team-eval, root-cause-debugging, validation-plan, visual-inspection
-depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing   (leaf owners — call nothing)</code></pre>
-<h2 id="2-method-ownership--the-single-source-of-truth">2. Method ownership — the single source of truth</h2>
+<h1 id="proofpunk-plugin-architecture">Proofpunk Plugin Architecture</h1>
+<p>This is the map a new contributor reads first: what each layer of the plugin is for, how a request flows through them, and how the pieces are wired to enforce one non-negotiable rule — <strong>end-user testing is the only PASS</strong>. Every number below was counted from the tree, not remembered; see "How this was measured" at the end.</p>
+<p>This document does not restate <code>hooks-and-init-design.md</code> — that file is the <em>design rationale</em> for the hook set as it existed at v1.10.0 (research citations, the case for command hooks over prompt hooks, the original 4-event/5-script layout). This document describes the <strong>current</strong> system (v2.2.0) as it actually ships, and calls out where the two have diverged.</p>
+<h2 id="1-the-layers-and-what-each-is-for">1. The layers, and what each is for</h2>
+<p>Proofpunk ships as one plugin directory (<code>plugins/proofpunk/</code>) with seven distinct layers. A request — a user typing <code>/proofpunk:implement "add checkout"</code>, or Claude Code loading the plugin at session start — moves through a subset of these layers depending on what kind of request it is.</p>
 <table>
 <thead>
 <tr>
-<th>Method</th>
-<th>Owner</th>
-<th>Consumers (call, never copy)</th>
+<th>Layer</th>
+<th>Location</th>
+<th>Count</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>End-User Actor Mandate + fresh-evidence rules + verdict format</td>
-<td><code>end-user-testing</code></td>
-<td>every validation skill (11 deferrals)</td>
+<td>Skills</td>
+<td><code>skills/*/SKILL.md</code></td>
+<td>18 (17 delivery skills + 1 router)</td>
+<td><code>skills/proofpunk/SKILL.md</code> is the single entry point: it classifies a request's <em>shape</em> and hands off to exactly one (or a short ordered chain of) delivery skills, never re-executing their logic itself (§2). The other 17 are the actual methods — brainstorming, planning, implementing, auditing, debugging, red-teaming, proving — organized as a DAG so each method is owned by exactly one skill (§3).</td>
 </tr>
 <tr>
-<td>Scout-first rule (GATE 2) + exact requirements (GATE 3)</td>
-<td><code>brainstorm</code></td>
-<td><code>implement</code></td>
+<td>Commands</td>
+<td><code>commands/*.md</code></td>
+<td>6 (+6 OpenCode)</td>
+<td>Slash-command surfaces (<code>/proofpunk:implement</code>, <code>:verify</code>, <code>:truth-audit</code>, <code>:rate-prompt</code>, <code>:forge-prompt</code>, <code>:install</code>) that activate a skill with the user's arguments. One-to-one with the OpenCode variants in <code>opencode/commands/proofpunk-*.md</code>, which carry the <code>proofpunk-</code> prefix OpenCode's flat command namespace requires.</td>
 </tr>
 <tr>
-<td>Proof-obligation XML format (<code>&lt;proof_obligation id="PO-N"&gt;</code>)</td>
-<td><code>validation-plan</code></td>
-<td><code>implement</code>, <code>plan-hardening</code></td>
+<td>Agents</td>
+<td><code>agents/*.md</code></td>
+<td>3 Claude Code, 3 OMP (<code>omp/agents/</code>), 4 OpenCode (<code>opencode/agents/</code>)</td>
+<td>Pre-configured subagent personas (<code>implement</code>, <code>scout</code>, <code>end-user-validate</code>) that bundle a skill's doctrine into a spawnable role, so a session can delegate a whole implement-and-prove loop to a dedicated agent instead of running it inline. OpenCode carries one extra agent, <code>proofpunk.md</code> — the router itself, spawnable as a persona there (Claude Code and OMP route through the skill directly).</td>
 </tr>
 <tr>
-<td>Execution-loop contract (task → prove → next)</td>
-<td><code>implement</code></td>
-<td>(top of the write path)</td>
+<td>Hooks</td>
+<td><code>hooks/*.sh</code> + <code>hooks.json</code></td>
+<td>7 scripts, 6 events</td>
+<td>Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, and blocking an unproven completion claim (§4).</td>
 </tr>
 <tr>
-<td>Iron Rule of validation (fix the real system, no mocks)</td>
-<td><code>implement</code> (Stage 5)</td>
-<td><code>full-functional-audit</code> and all drivers</td>
+<td>Shared references</td>
+<td><code>references/*.md</code></td>
+<td>13</td>
+<td>The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, and more. Skills cite these as <code>../../references/X</code>; the installer flattens the citation depth and bundles a self-contained copy per skill (§6).</td>
 </tr>
 <tr>
-<td>Screenshot examination protocol</td>
-<td><code>visual-inspection</code></td>
-<td><code>mobile-validation-runner</code>, <code>ui-experience-audit</code>, <code>implement</code> (Stage 5)</td>
+<td>Assets</td>
+<td><code>assets/</code></td>
+<td>5 files (2 templates + 3 scoped rule files)</td>
+<td><code>claude-md-template.md</code> and <code>agents-md-template.md</code> are the merge templates <code>/proofpunk:install</code> injects into a target project's memory file. <code>rules/{evidence-contract,proof-obligations,tui-driving}.md</code> are <code>paths:</code>-scoped rule fragments for the same install flow.</td>
 </tr>
 <tr>
-<td>Stuck protocol (attempt → root-cause ×3 → split → escalate)</td>
-<td><code>implement</code></td>
-<td>self-invoked per unproven task</td>
-</tr>
-<tr>
-<td>TUI end-user proof (observe-then-act, matched waits, three facets)</td>
-<td><code>tui-testing</code></td>
-<td><code>implement</code>, <code>full-functional-audit</code></td>
-</tr>
-<tr>
-<td>Root-cause method (no fix without reproduction)</td>
-<td><code>root-cause-debugging</code></td>
-<td><code>stack-testing</code>, <code>codebase-truth-audit</code>, <code>full-functional-audit</code></td>
-</tr>
-<tr>
-<td>Four adversarial lenses</td>
-<td><code>red-team-eval</code></td>
-<td><code>plan-hardening</code> (Stage 4 dispatch)</td>
-</tr>
-<tr>
-<td>Prompt skeleton + rating rubric</td>
-<td><code>prompt-forge</code></td>
-<td><code>implement</code> (Stage 3 FORGE)</td>
-</tr>
-<tr>
-<td>Session mining (JSONL → intent matrix)</td>
-<td><code>session-intent</code></td>
-<td><code>implement</code> (Stage 1 MINE), <code>codebase-truth-audit</code> (Stage 2)</td>
+<td>Installer</td>
+<td><code>tools/proofpunk-install.sh</code></td>
+<td>1 script</td>
+<td>The only path that turns this repo into an installed skill set on a user's machine, for four target platforms. Not part of the shipped plugin tree itself — it lives at the repo root under <code>tools/</code> and consumes <code>plugins/proofpunk/</code> as its source (§6).</td>
 </tr>
 </tbody>
 </table>
-<p>Measured deduplication: shared 12-word content blocks across all skill bodies went from <strong>911 → 121 shingles (−87%)</strong> when this ownership was enforced; the verbatim Actor Mandate went from <strong>12 copies → 1 owner + one-line deferrals</strong>.</p>
-<h2 id="3-the-full-call-graph">3. The full call graph</h2>
-<pre class="mermaid"><code>graph TD
-  n0[&quot;end-user-testing&quot;]
-  proofpunk --&gt; implement
-  proofpunk --&gt; brainstorm
-  proofpunk --&gt; validation-plan
-  proofpunk --&gt; plan-hardening
-  proofpunk --&gt; codebase-truth-audit
-  proofpunk --&gt; full-functional-audit
-  proofpunk --&gt; production-readiness
-  proofpunk --&gt; ui-experience-audit
-  proofpunk --&gt; root-cause-debugging
-  proofpunk --&gt; red-team-eval
-  proofpunk --&gt; stack-testing
-  proofpunk --&gt; mobile-validation-runner
-  proofpunk --&gt; n0
-  proofpunk --&gt; visual-inspection
-  proofpunk --&gt; tui-testing
-  proofpunk --&gt; session-intent
-  proofpunk --&gt; prompt-forge
-  implement --&gt; session-intent
-  implement --&gt; brainstorm
-  implement --&gt; prompt-forge
-  implement --&gt; validation-plan
-  implement --&gt; n0
-  implement --&gt; root-cause-debugging
-  implement --&gt; stack-testing
-  implement --&gt; tui-testing
-  production-readiness --&gt; codebase-truth-audit
-  production-readiness --&gt; full-functional-audit
-  production-readiness --&gt; stack-testing
-  production-readiness --&gt; n0
-  codebase-truth-audit --&gt; session-intent
-  codebase-truth-audit --&gt; n0
-  codebase-truth-audit --&gt; root-cause-debugging
-  full-functional-audit --&gt; n0
-  full-functional-audit --&gt; ui-experience-audit
-  full-functional-audit --&gt; root-cause-debugging
-  full-functional-audit --&gt; tui-testing
-  plan-hardening --&gt; red-team-eval
-  plan-hardening --&gt; validation-plan
-  plan-hardening --&gt; n0
-  stack-testing --&gt; root-cause-debugging
-  mobile-validation-runner --&gt; n0
-  mobile-validation-runner --&gt; visual-inspection
-  red-team-eval --&gt; n0
-  root-cause-debugging --&gt; n0
-  ui-experience-audit --&gt; visual-inspection
-  ui-experience-audit --&gt; n0
-  visual-inspection --&gt; n0
-  validation-plan --&gt; n0</code></pre><p class="mmd-note">(diagram source — pre-renderer unavailable)</p>
-<h2 id="4-execution-order-per-entry-point">4. Execution order, per entry point</h2>
-<p>This is the order the skills actually fire in when you run each slash command. The verifier (<code>tools/verify-orchestration.py</code>) re-derives these traces from the SKILL.md files and fails if the docs drift.</p>
-<h3 id="proofpunkimplement-goal--the-full-pipeline"><code>/proofpunk:implement "&lt;goal&gt;"</code> — the full pipeline</h3>
-<pre><code>Stage 0  (implement)     Distill TRUE success criteria
-Stage 1  session-intent  MINE past sessions for prior implementations
-Stage 2  brainstorm      EXPLORE: scout-first + exact-requirements gates
-Stage 3  prompt-forge    FORGE the build prompt (XML skeleton)
-Stage 4  validation-plan DECOMPOSE: task graph, each task gets a PO-N
-Stage 5  (implement)     EXECUTE loop, per task: production code, then INLINE
-           └─ end-user driving        drive the real runtime as the end user
-           └─ end-user-testing        prove it: Six Steps, sealed evidence
-Stage 6  root-cause-debugging   stuck protocol on any unproven task
-Stage 7  (implement)     REPORT from .planning/execution-ledger.json
-+        stack-testing   regression rail: suites run AFTER proof, never AS proof</code></pre>
-<h3 id="proofpunktruth-audit-path--evidence-backed-audit"><code>/proofpunk:truth-audit [path]</code> — evidence-backed audit</h3>
-<pre><code>Stage 2  session-intent     reconstruct what the repo was ASKED to become
-Stage 5  end-user-testing   runtime behavior claims get sealed evidence
-on FAIL  root-cause-debugging  root cause of drift before remediation</code></pre>
-<h3 id="proofpunkverify-claim--prove-something-works"><code>/proofpunk:verify "&lt;claim&gt;"</code> — prove something works</h3>
-<pre><code>(implement Stage 5 inline) detect platform, start the real runtime, drive it
-end-user-testing       fresh evidence + verdict
-visual-inspection      any screenshot evidence is examined, never trusted unread</code></pre>
-<h3 id="proofpunkforge-prompt--proofpunkrate-prompt"><code>/proofpunk:forge-prompt</code> / <code>/proofpunk:rate-prompt</code></h3>
-<pre><code>prompt-forge           author or RATE against the quantitative rubric
-plan-hardening         (optional) harden the resulting prompt</code></pre>
-<h2 id="5-deferral-rules-how-calling-works-in-practice">5. Deferral rules (how "calling" works in practice)</h2>
-<ol type="1">
-<li><strong>At the invocation point, read the callee's SKILL.md</strong> — not the whole plugin. Progressive disclosure keeps this cheap.</li>
-<li><strong>Apply the callee's method verbatim.</strong> Do not paraphrase, summarize, or "adapt" it into the caller's body — that is how duplication regresses.</li>
-<li><strong>One-line pointers are allowed; method content is not.</strong> A caller may say <em>"owned by <code>end-user-testing</code> — apply its Actor Mandate verbatim"</em>; it may not restate the mandate.</li>
-<li><strong>Cycles are forbidden.</strong> If two skills feel mutually dependent, keep the stronger direction and demote the other to a Related-Skills note.</li>
-<li><strong>The DAG is machine-checked.</strong> <code>tools/verify-orchestration.py</code> parses the <code>## Skill calls</code> table in every SKILL.md, asserts closure/acyclicity, traces every entry point, and sweeps for re-emerging duplication.</li>
-</ol>
-<h2 id="6-why-this-order-is-correct-the-dependency-argument">6. Why this order is correct (the dependency argument)</h2>
-<p>Execution order is not convention — it is forced by data dependencies:</p>
+<p><strong>Two other things worth naming alongside these layers, because they gate everything above:</strong> <code>tools/verify-orchestration.py</code> is a script a contributor runs by hand — <code>AGENTS.md</code>'s testing requirement names it, alongside <code>test-hooks.sh</code> and <code>dry-run-install.sh</code>, as the trio to run from the repo root "before claiming any change here done." It proves the 18-skill DAG in §3 is real: it parses every <code>SKILL.md</code>'s <code>## Skill calls</code> table directly and fails if the skill tables themselves — not this document — encode a cycle, an edge to a nonexistent skill, or a <code>Called by</code> line that doesn't match a real edge. It never reads this document or any other prose file: the DAG's source of truth is the <code>SKILL.md</code> tables, and this document is a description of what those tables said when it was written, not an input the verifier checks — so this document, specifically, can still drift from them if a skill's table changes and this file isn't updated to match. §3's call graph below was produced by reading those same 18 tables directly, for that reason. <code>themes/</code> (20 flat-black cyberpunk themes, rendered to OMP/OpenCode/Hyper formats from one <code>palettes.json</code> source of truth) is presentation-only and does not affect any of the above.</p>
+<h3 id="request-flow">Request flow</h3>
+<pre><code>user request
+    │
+    ▼
+router skill (skills/proofpunk/SKILL.md)          — classify, pick one skill or a short chain
+    │
+    ▼
+delivery skill(s)                                  — the actual method runs; may call other
+    │                                                 skills per the DAG (§3), never restates them
+    ▼
+hooks fire on every tool call the skill makes       — PreToolUse/PostToolUse guard the write path;
+    │                                                 Stop/SubagentStop guard the completion claim
+    ▼
+evidence lifecycle (end-user-testing&#39;s helper)      — every proof obligation ends in a sealed,
+    │                                                 run-scoped e2e-evidence/ directory (§5)
+    ▼
+verdict: PASS / FAIL / BLOCKED / UNVERIFIED, cited by full path</code></pre>
+<p>Installation is orthogonal to this flow — it is how the router, skills, hooks, and references get onto a machine in the first place (§6).</p>
+<h2 id="2-the-router">2. The router</h2>
+<p><code>skills/proofpunk/SKILL.md</code> is the plugin's entry point and is called by nothing else in the DAG (<code>Called by: nothing — the entry point for the whole plugin</code>, its own last line). Its contract, read directly from the file:</p>
 <ul>
-<li><strong>Stage 1 MINE before Stage 2 EXPLORE</strong>: past-session intent tells the scouts <em>what to look for</em>; scouting first re-discovers what mining answers in seconds.</li>
-<li><strong>EXPLORE before FORGE</strong>: a build prompt written before scouting encodes assumptions; written after, it encodes the codebase's real patterns.</li>
-<li><strong>DECOMPOSE before EXECUTE</strong>: a task without a written proof obligation cannot be proven — the obligation defines the test before the work starts (test-first at the task level).</li>
-<li><strong>Proof inside the loop, not after it</strong>: end-user testing at the end of a long build localizes nothing; proof per task pins failure to exactly one task's blast radius.</li>
-<li><strong>Regression rail last</strong>: suites protect proven behavior; running them as validation inverts the dependency (a suite can pass while the feature is wrong — the end-user test cannot).</li>
+<li><strong>Run checklist</strong>: classify the request (design / build / audit / bug / proof ask) → pick the single best-fit skill or the shortest ordered chain → hand off by quoting the ask, never restating the target skill's method → say so explicitly if nothing fits, rather than forcing a match.</li>
+<li><strong>Routing rule</strong>: classify by the ask's <em>shape</em>, not by keyword-matching; on ambiguity, prefer the narrower skill over the broader one; a compound ask chains skills left to right, and each named skill still runs its own full workflow — the router never shortcuts a downstream skill's process.</li>
+</ul>
+<p>Its <code>## Skill calls</code> table has 17 rows — one per delivery skill, each with an explicit <strong>When</strong> (the request shape that routes there) and <strong>What it hands over</strong> (exactly what context crosses the handoff, e.g. <code>brainstorm</code> gets "the raw ask, unfiltered"; <code>red-team-eval</code> gets "the artifact to attack"). This is the "explicit handoff column" a contributor should read before anything else in this plugin.</p>
+<p>Below the routing table sits a second table, <strong>Shared doctrine — what every skill defers to</strong>: 13 rows, one per file in <code>references/</code>, each with one line naming what it owns (<code>evidence-contract.md</code> → "run-scoped, sealed, non-empty evidence"; <code>end-user-actor.md</code> → "the Actor Mandate — who drives the system"). This is the doctrine layer from §1 made concrete: routing tells you <em>which</em> skill; this table tells you <em>which rule</em> that skill will apply and where it's canonically defined. The router's own comment on this table is exact: "the installer rewrites these citations to self-contained copies, so they resolve both in this repo and in an installed tree" — see §6.</p>
+<h2 id="3-the-skill-call-graph">3. The skill call graph</h2>
+<p>Method ownership in this plugin is a <strong>DAG, not a document</strong>: a method (the Actor Mandate, the proof-obligation XML format, the scout-first gate, etc.) lives in exactly one skill, and every other skill that needs it <em>calls</em> the owner — reads its <code>SKILL.md</code> at the invocation point and applies the method verbatim, never restating it in its own body. This section is derived directly from every skill's own <code>## Skill calls</code> table (18 files read, not summarized from a prior doc), and <code>tools/verify-orchestration.py</code> is the machine check a contributor runs to confirm this property still holds (parses the same tables, asserts closure, acyclicity, and that "Called by" claims match real edges) — see §1 for why this is a manual, not automatic, gate in this repo.</p>
+<h3 id="call-table-18-skills-47-edges-total-17-from-the-router-to-every-skill-plus-30-among-the-17-delivery-skills">Call table (18 skills, 47 edges total: 17 from the router to every skill, plus 30 among the 17 delivery skills)</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Calls</th>
+<th>Called by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>proofpunk</code></td>
+<td>all 17 other skills</td>
+<td>— (entry point)</td>
+</tr>
+<tr>
+<td><code>implement</code></td>
+<td><code>session-intent</code>, <code>brainstorm</code>, <code>prompt-forge</code>, <code>validation-plan</code>, <code>end-user-testing</code>, <code>tui-testing</code>, <code>root-cause-debugging</code></td>
+<td><code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>production-readiness</code></td>
+<td><code>codebase-truth-audit</code>, <code>full-functional-audit</code>, <code>stack-testing</code>, <code>end-user-testing</code></td>
+<td><code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>full-functional-audit</code></td>
+<td><code>end-user-testing</code>, <code>ui-experience-audit</code>, <code>root-cause-debugging</code>, <code>tui-testing</code></td>
+<td><code>production-readiness</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>codebase-truth-audit</code></td>
+<td><code>session-intent</code>, <code>end-user-testing</code>, <code>root-cause-debugging</code></td>
+<td><code>production-readiness</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>plan-hardening</code></td>
+<td><code>red-team-eval</code>, <code>validation-plan</code>, <code>end-user-testing</code></td>
+<td><code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>mobile-validation-runner</code></td>
+<td><code>end-user-testing</code>, <code>visual-inspection</code></td>
+<td><code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>ui-experience-audit</code></td>
+<td><code>visual-inspection</code>, <code>end-user-testing</code></td>
+<td><code>full-functional-audit</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>stack-testing</code></td>
+<td><code>root-cause-debugging</code></td>
+<td><code>production-readiness</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>validation-plan</code></td>
+<td><code>end-user-testing</code></td>
+<td><code>implement</code>, <code>plan-hardening</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>red-team-eval</code></td>
+<td><code>end-user-testing</code></td>
+<td><code>plan-hardening</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>root-cause-debugging</code></td>
+<td><code>end-user-testing</code></td>
+<td><code>codebase-truth-audit</code>, <code>full-functional-audit</code>, <code>implement</code>, <code>stack-testing</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>visual-inspection</code></td>
+<td><code>end-user-testing</code></td>
+<td><code>mobile-validation-runner</code>, <code>ui-experience-audit</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>brainstorm</code></td>
+<td>— (leaf)</td>
+<td><code>implement</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>end-user-testing</code></td>
+<td>— (leaf)</td>
+<td><code>codebase-truth-audit</code>, <code>full-functional-audit</code>, <code>implement</code>, <code>mobile-validation-runner</code>, <code>plan-hardening</code>, <code>production-readiness</code>, <code>red-team-eval</code>, <code>root-cause-debugging</code>, <code>ui-experience-audit</code>, <code>validation-plan</code>, <code>visual-inspection</code>, <code>proofpunk</code> (12 callers — the most-depended-on skill in the plugin)</td>
+</tr>
+<tr>
+<td><code>prompt-forge</code></td>
+<td>— (leaf)</td>
+<td><code>implement</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>session-intent</code></td>
+<td>— (leaf)</td>
+<td><code>codebase-truth-audit</code>, <code>implement</code>, <code>proofpunk</code></td>
+</tr>
+<tr>
+<td><code>tui-testing</code></td>
+<td>— (leaf)</td>
+<td><code>implement</code>, <code>full-functional-audit</code>, <code>proofpunk</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="method-ownership-what-each-owner-actually-owns">Method ownership (what each owner actually owns)</h3>
+<p>Read straight from the "What it hands over" column of the tables above — this is the doctrine each caller applies verbatim rather than restating:</p>
+<table>
+<thead>
+<tr>
+<th>Owner</th>
+<th>Method it owns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>end-user-testing</code></td>
+<td>The proof standard: the Actor Mandate, fresh-evidence sealing rules, run-scoped evidence directories, the verdict format.</td>
+</tr>
+<tr>
+<td><code>brainstorm</code></td>
+<td>The scout-first gate and exact-requirements gate applied before any design is accepted.</td>
+</tr>
+<tr>
+<td><code>validation-plan</code></td>
+<td>The proof-obligation XML format (one obligation per task, blocking cumulative proof).</td>
+</tr>
+<tr>
+<td><code>prompt-forge</code></td>
+<td>The build-prompt XML skeleton and the prompt-rating rubric.</td>
+</tr>
+<tr>
+<td><code>session-intent</code></td>
+<td>Session mining: turning <code>~/.claude/projects/*.jsonl</code> transcripts into an intent matrix.</td>
+</tr>
+<tr>
+<td><code>root-cause-debugging</code></td>
+<td>The root-cause method — no fix without reproduction, ever.</td>
+</tr>
+<tr>
+<td><code>tui-testing</code></td>
+<td>PTY-driving discipline for terminal apps (observe-then-act, matched waits, three-facet evidence).</td>
+</tr>
+<tr>
+<td><code>visual-inspection</code></td>
+<td>The screenshot examination protocol — a capture is examined, never assumed correct.</td>
+</tr>
+<tr>
+<td><code>red-team-eval</code></td>
+<td>The four adversarial lenses used to attack a plan or artifact before it ships.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="depth-distance-from-the-leaf-owners">Depth (distance from the leaf owners)</h3>
+<p>Computed the same way <code>verify-orchestration.py</code> computes it — <code>depth(u) = 0</code> for a leaf, else <code>1 + max(depth(v) for v called by u)</code>:</p>
+<pre><code>depth 5  proofpunk                                              (entry point; calls all 17)
+depth 4  production-readiness
+depth 3  full-functional-audit
+depth 2  codebase-truth-audit, implement, mobile-validation-runner,
+         plan-hardening, stack-testing, ui-experience-audit
+depth 1  red-team-eval, root-cause-debugging, validation-plan, visual-inspection
+depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing</code></pre>
+<h3 id="a-contradiction-found-while-writing-this-section">A contradiction found while writing this section</h3>
+<p>The previous revision of this file's call graph included the edge <code>implement --&gt; stack-testing</code> in its mermaid diagram. The live <code>implement/SKILL.md</code> "Skill calls" table has <strong>no such row</strong> — a <code>grep</code> for <code>stack-testing</code> inside that file returns zero matches. <code>implement</code>'s real callees are the seven listed above; <code>stack-testing</code> is called only by <code>production-readiness</code> and the router, matching <code>stack-testing/SKILL.md</code>'s own <code>Called by:</code> line. The old doc's <em>prose</em> depth table (which placed <code>implement</code> at depth 2, not the depth 3 the stale edge would force) was actually consistent with the correct graph — only the diagram carried the stale edge. This section was regenerated from the 18 live <code>SKILL.md</code> files rather than edited from the prior version, precisely so this kind of drift cannot survive a rewrite.</p>
+<h2 id="4-the-hook-system">4. The hook system</h2>
+<p>Configuration lives in one file, <code>hooks/hooks.json</code>, read directly for this section. It declares <strong>6 events</strong> and <strong>7 scripts</strong>, wired into <strong>8 registrations</strong> (one event fires 3 scripts under a single matcher):</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Matcher</th>
+<th>Script(s)</th>
+<th>Timeout</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SessionStart</code></td>
+<td><code>startup|resume|clear</code></td>
+<td><code>session-start.sh</code></td>
+<td>5s</td>
+</tr>
+<tr>
+<td><code>Stop</code></td>
+<td>(none)</td>
+<td><code>stop-guard.sh</code></td>
+<td>10s</td>
+</tr>
+<tr>
+<td><code>SubagentStop</code></td>
+<td>(none)</td>
+<td><code>stop-guard.sh</code></td>
+<td>10s</td>
+</tr>
+<tr>
+<td><code>PreToolUse</code></td>
+<td><code>Write|Edit</code></td>
+<td><code>no-test-files.sh</code>, <code>evidence-guard.sh</code>, <code>capture-guard.sh</code></td>
+<td>5s each</td>
+</tr>
+<tr>
+<td><code>InstructionsLoaded</code></td>
+<td>(none)</td>
+<td><code>instructions-loaded.sh</code></td>
+<td>5s</td>
+</tr>
+<tr>
+<td><code>PostToolUse</code></td>
+<td><code>Write|Edit</code></td>
+<td><code>post-write-walkthrough.sh</code></td>
+<td>5s</td>
+</tr>
+</tbody>
+</table>
+<h3 id="decision-surface-per-script">Decision surface per script</h3>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Event</th>
+<th>Deny path</th>
+<th>Otherwise</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session-start.sh</code></td>
+<td>SessionStart</td>
+<td>never denies</td>
+<td>always emits <code>hookSpecificOutput.additionalContext</code> with the one-paragraph doctrine summary and the six command names</td>
+</tr>
+<tr>
+<td><code>stop-guard.sh</code></td>
+<td>Stop, SubagentStop</td>
+<td>scans the last 40 transcript lines, assistant-authored only; emits <code>{"decision":"block","reason":...}</code> if a completion CLAIM appears with no PROOF citation, <strong>or</strong> if CLAIM+PROOF appear with no SCOUT record</td>
+<td>silent — exit 0, no output at all (a stop hook that speaks on every stop is noise across a multi-plugin session)</td>
+</tr>
+<tr>
+<td><code>evidence-guard.sh</code></td>
+<td>PreToolUse</td>
+<td><code>exit 2</code> + stderr if the write targets an evidence directory <strong>and</strong> the payload matches a secret-shaped pattern (API keys, GitHub tokens, AWS keys, private-key headers, or a generic <code>key/secret/token = value</code> assignment)</td>
+<td><code>exit 0</code> (allow) for everything else</td>
+</tr>
+<tr>
+<td><code>capture-guard.sh</code></td>
+<td>PreToolUse</td>
+<td><code>exit 2</code> + stderr if the target is an <strong>already-existing</strong> file, under an evidence directory, with a raw-capture extension (<code>.txt .log .out .err .jsonl .png .har .csv</code>) — captures are immutable once written</td>
+<td><code>exit 0</code> for new files, sidecar <code>.md</code>/<code>.json</code> files, and anything outside evidence directories</td>
+</tr>
+<tr>
+<td><code>no-test-files.sh</code></td>
+<td>PreToolUse</td>
+<td><code>exit 2</code> + stderr if the path matches a test-file shape (<code>*test*</code>, <code>*.spec.*</code>, <code>*.test.*</code>, <code>__tests__/</code>, etc.)</td>
+<td><code>exit 0</code> for everything else</td>
+</tr>
+<tr>
+<td><code>instructions-loaded.sh</code></td>
+<td>InstructionsLoaded</td>
+<td>never denies</td>
+<td>always appends one JSONL line (<code>ts</code>, <code>file_path</code>, <code>load_reason</code>, <code>cwd</code>) to <code>~/.claude/proofpunk-loads.jsonl</code> — this is the measurement tap that proves <code>/proofpunk:install</code>'s memory injection actually loads</td>
+</tr>
+<tr>
+<td><code>post-write-walkthrough.sh</code></td>
+<td>PostToolUse</td>
+<td>never denies</td>
+<td>if the written path is production code (not evidence, docs, <code>.planning/</code>, or config) — emits <code>additionalContext</code> reminding the agent to drive the real system and cite evidence before any completion claim; silent otherwise</td>
+</tr>
+</tbody>
+</table>
+<h3 id="these-hooks-run-in-parallel-not-in-sequence">These hooks run in parallel, not in sequence</h3>
+<p>This is a correction to how the hook set is easy to misdescribe: <strong>all hooks matching a given event and matcher fire in parallel</strong>, per Claude Code's own hook execution model — this is not a proofpunk-specific choice, it's how the host runs any set of matching hooks (proofpunk's own or another installed plugin's on the same event). When more than one hook's result must be reconciled, the host resolves it by precedence: <strong>deny &gt; defer (ask) &gt; allow</strong>. Concretely: the three <code>PreToolUse</code> scripts under the <code>Write|Edit</code> matcher (<code>no-test-files.sh</code>, <code>evidence-guard.sh</code>, <code>capture-guard.sh</code>) are <strong>not</strong> a sequential pipeline where each one only runs if the last one passed — they all run against the same tool call at once, and if <em>any</em> of them exits 2, the write is denied regardless of what the other two return. Do not describe this system as "no-test-files.sh runs, then evidence-guard.sh runs, then capture-guard.sh runs" — that ordering does not exist and is not how the guard actually behaves under a plugin ecosystem where other tools may also be registered on the same event.</p>
+<h3 id="a-known-gap-in-current-matcher-scope">A known gap in current matcher scope</h3>
+<p><code>PreToolUse</code> in <code>hooks.json</code> matches only the tool names <code>Write</code> and <code>Edit</code>. All three guard scripts key off <code>tool_input.file_path</code> (or the Bash-tool-agnostic content field), which a <code>Bash</code> tool invocation (e.g. <code>cat &gt; f &lt;&lt;EOF</code>, <code>tee</code>, <code>sed -i</code>, or a Python one-liner that opens and writes a file) does not populate in the shape these scripts expect. A write performed through the Bash tool therefore currently bypasses <code>no-test-files.sh</code>, <code>evidence-guard.sh</code>, and <code>capture-guard.sh</code> simultaneously — and also bypasses <code>post-write-walkthrough.sh</code>, which matches the same <code>Write|Edit</code> set on <code>PostToolUse</code>. This is a real, currently-open limitation of the matcher's scope as configured, not a bug in any individual script's logic — each script correctly denies what it can see; it simply cannot see a Bash-mediated write.</p>
+<p><strong>Mitigation shipped, and what it is not.</strong> Two hooks now observe Bash writes: <code>bash-write-snapshot.sh</code> (<code>PreToolUse</code>, matcher <code>Bash</code>) hashes protected paths — evidence directories and test-shaped paths — before the command runs, and <code>bash-write-notice.sh</code> (<code>PostToolUse</code> and <code>PostToolUseFailure</code>, matcher <code>Bash</code>) re-hashes them afterward and reports what changed. It reports test files written, evidence captures modified or deleted, and secret-shaped content landing in evidence.</p>
+<p>This is <strong>detection, not prevention</strong>, and the distinction is load-bearing: the write has already happened when the notice fires. Nothing is blocked and nothing is undone. The bypass above remains open.</p>
+<p>It is scoped that way deliberately. An earlier attempt at prevention parsed shell to decide a deny and falsely blocked <code>cp -p</code>, <code>mv -f</code>, <code>touch -c</code>, and <code>sed -i -e</code> — ordinary commands, refused. That version was reverted. Denying on a guess at shell semantics is worse than the gap it closes.</p>
+<p>So detection works by <strong>effect, never by parsing the command</strong>: a diff of content hashes taken before and after. A command that changes nothing emits nothing, whatever it looked like, which means no false positive can interfere with a working command. Content hashing rather than mtime+size is what catches <code>cp -p</code> (which preserves mtime) and equal-size substitution when the target is a protected path — a verdict artifact flipped from <code>PASSED</code> to <code>FAILED</code> keeps its byte count. A <code>cp -p</code> outside the protected set is not watched at all, and stays silent. Baselines are keyed per session and tool-use id, written atomically, and consumed on read, so parallel Bash calls cannot clobber each other. A failed command still consumes its state, because the notice is registered on <code>PostToolUseFailure</code> as well. State abandoned by a killed session is not cleaned immediately: the sweep runs inside the notice hook, so it is removed only once some later detector run fires and finds it older than an hour. When the pre-command scan hits its cap the baseline is marked incomplete and the notice says coverage is off for that call rather than silently reporting nothing.</p>
+<p>Closing the gap properly needs central enforcement that does not depend on reading shell — an operator decision, not something to improvise here.</p>
+<h2 id="5-the-evidence-lifecycle">5. The evidence lifecycle</h2>
+<p>Every proof obligation in this plugin — every <code>end-user-testing</code> call, in practice — is enforced by one small, dependency-free helper: <code>skills/end-user-testing/scripts/fresh_evidence.py</code>. Its docstring states the contract directly: it enforces "the eight fresh-evidence rules from the Proofpunk evidence contract: every validation run owns a run-scoped directory, artifacts are sequentially named, non-empty, fresh (mtime &gt;= run start), cited by full path, and sealed with an inventory."</p>
+<p>All four commands operate against <code>./e2e-evidence/</code> <strong>relative to the current working directory</strong> — there is no global or absolute evidence root. The <strong>active run</strong> is always "the most recently modified <code>run-*</code> subdirectory" (<code>max(runs, key=lambda p: p.stat().st_mtime)</code>) — there is no explicit "current run" pointer; whichever run directory was touched last <em>is</em> the active one for every subsequent command in the same session.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+<th>On success</th>
+<th>On refusal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init-run &lt;slug&gt;</code></td>
+<td>Creates <code>e2e-evidence/run-&lt;ISO8601-compact&gt;-&lt;slug&gt;/</code>, writes an empty <code>evidence-inventory.txt</code> and a <code>.run-meta</code> file stamped with the run's start time</td>
+<td>prints the new <code>run_id</code> to stdout, exit 0</td>
+<td>exit 2 if the slug fails <code>^[A-Za-z0-9_-]+$</code></td>
+</tr>
+<tr>
+<td><code>next-step &lt;slug&gt;</code></td>
+<td>Counts existing <code>step-*</code> entries in the active run and prints the next sequential filename prefix (<code>step-&lt;NN&gt;-&lt;slug&gt;</code>, zero-padded)</td>
+<td>prints the path, exit 0</td>
+<td>exit 2 if no active run exists, or the slug is invalid</td>
+</tr>
+<tr>
+<td><code>seal</code></td>
+<td>Globs every <code>step-*</code> file in the active run, records <code>&lt;name&gt; &lt;size&gt;</code> per line, appends a summary line (<code>sealed=&lt;ISO&gt; count=&lt;N&gt; total_bytes=&lt;N&gt;</code>), and overwrites <code>evidence-inventory.txt</code> with the result</td>
+<td>prints the inventory path, exit 0</td>
+<td>exit 2 if there is no active run</td>
+</tr>
+<tr>
+<td><code>validate</code></td>
+<td>Reads <code>.run-meta</code>'s <code>started=</code> timestamp, then checks every <code>step-*</code> file's mtime against it and its size against zero</td>
+<td>exit 0, printing <code>validate OK: &lt;run_dir&gt;</code>, when no existing <code>step-*</code> file is stale or empty — <strong>a run with zero <code>step-*</code> files also passes</strong>, since the check loop never executes</td>
+<td>exit 2, printing one <code>STALE:</code> or <code>EMPTY:</code> line per offending file to stderr, if any artifact fails either check; also exit 2 if <code>.run-meta</code> is missing or its timestamp is unparseable</td>
+</tr>
+</tbody>
+</table>
+<p>Three properties worth calling out explicitly because they are easy to miss reading the commands in isolation. <strong>Staleness is measured against the run's own recorded start time</strong>, not "now" — an artifact written before <code>init-run</code> ran (a leftover from a prior attempt, copied into the new run directory) is caught as <code>STALE</code> even if its mtime is recent in absolute terms. <strong><code>seal</code> does not validate</strong> — it always overwrites the inventory with whatever <code>step-*</code> files currently exist; <code>validate</code> is a separate, later call, meaning a caller can seal a run and only discover staleness/emptiness on the explicit validate step. And <strong><code>validate</code> is vacuously satisfiable</strong> — its loop is <code>for f in sorted(run_dir.glob( "step-*"))</code>; if that glob matches zero files the loop body never runs, <code>bad</code> stays <code>0</code>, and <code>cmd_validate</code> returns <code>"validate OK: &lt;run_dir&gt;"</code>. A run with <code>.run-meta</code> but no captured <code>step-*</code> artifacts at all — i.e. no evidence was ever captured — still passes <code>validate</code>. The command also never reads <code>evidence-inventory.txt</code>, so it does not check that <code>seal</code> was ever called or that the inventory reflects the files present; <code>validate</code> proves only "every step file that exists is fresh and non-empty," not "evidence was captured" or "the run was sealed." Invalid command/input, a missing active run or <code>.run-meta</code>, stale or empty step files, and an unparseable start timestamp all produce a message on stderr and process exit code 2. <code>cmd_validate</code> raises <code>SystemExit(2)</code> directly for the stale/empty-file case; every other refusal path raises <code>Refusal</code>, which <code>main()</code> catches and converges to the same stderr-plus-exit-2 contract.</p>
+<h2 id="6-installation">6. Installation</h2>
+<p><code>tools/proofpunk-install.sh</code> is the single script that turns this repo into an installed skill set. Read directly, its target resolution is:</p>
+<pre><code>--target claude-code   -&gt;  ~/.claude/skills                          (default)
+--target omp           -&gt;  ${PROOFPUNK_OMP_DIR:-~/.omp/agent/skills}
+--target opencode      -&gt;  ~/.config/opencode/skills
+--target agents        -&gt;  ~/.agents/skills
+--dir PATH             -&gt;  any explicit directory (overrides --target entirely)</code></pre>
+<p>For each of the 18 skills selected (all of them, by default, or a <code>--only a,b,c</code> subset), the installer does more than a file copy: it <strong>tar-copies the skill directory</strong>, then <strong>rewrites doctrine citations</strong> (<code>../../references/X</code> at repo depth becomes <code>references/X</code> at install depth), then runs a <strong>fixed-point sweep</strong> over <code>references/</code> — copying every file cited anywhere inside the skill (backticked or bare prose, any citation depth) into the skill's own bundled <code>references/</code> subdirectory, and repeating that sweep until nothing new gets added. This last step exists because doctrine files cite each other (e.g. <code>evidence-contract.md</code> cites <code>end-user-actor.md</code>) — one pass would leave a dangling reference. The result is what <code>AGENTS.md</code> calls "self- contained copies": an installed skill resolves its own doctrine without ever reaching outside its own directory, in contrast to this repo's layout where skills deliberately cite <code>../../references/</code> and rely on the installer to widen those paths.</p>
+<p>Doctrine also lands as a standalone bundle at <code>$DIR/proofpunk-doctrine/</code> — a full copy of <code>references/</code> plus a generated <code>README.md</code> summarizing the five ruling rules (the Iron Rule, the End-User Actor Mandate, remediation, fresh evidence, severities) in plain prose, independent of any single skill.</p>
+<h3 id="hooks-hooksjson-is-now-the-single-source-of-truth">Hooks: <code>hooks.json</code> is now the single source of truth</h3>
+<p>With <code>--hooks</code> (automatic on plugin installs), the installer no longer hardcodes which scripts to copy or which events to register — both are <strong>derived from <code>hooks/hooks.json</code> at install time</strong>, via a small inline Python step that:</p>
+<ol type="1">
+<li>Parses <code>hooks.json</code>, collects every <code>*.sh</code> filename referenced across every event's every matcher, and hard-fails (<code>sys.exit(...)</code>) if any named script doesn't actually exist on disk — a name mismatch aborts the install rather than silently installing an incomplete set.</li>
+<li>Copies exactly those scripts (and only those) into <code>~/.proofpunk/hooks</code>.</li>
+<li>Merges an idempotent entry into the target platform's <code>settings.json</code> for <strong>every</strong> event/matcher/hook combination <code>hooks.json</code> declares — keyed by <strong>event AND script basename together</strong>, not by event alone.</li>
+</ol>
+<p>That last detail is the fix this change protects against regressing: an earlier version of this merge step matched idempotency on any command containing the substring <code>.proofpunk/hooks</code> within the same event, so once the <em>first</em> <code>PreToolUse</code> script installed, every sibling script sharing that event read as "already present" and was silently skipped — <code>evidence-guard.sh</code> and <code>capture-guard.sh</code> shipped copied-to-disk but never registered in <code>settings.json</code> as a result (see §8). Keying on <code>(event, script_basename)</code> instead means three scripts sharing one event each get their own independent idempotency check and their own entry.</p>
+<p>opencode and omp targets don't get this settings-merge path at all — their enforcement lives in platform-native plugin glue instead (<code>opencode/plugin/proofpunk.ts</code>, <code>extensions/proofpunk.ts</code>), which the installer prints guidance toward rather than trying to merge into a settings file those platforms don't use the same way.</p>
+<p>Collisions default to <strong>skip and report</strong> (<code>SKIP $skill (already exists; use --override to replace)</code>); <code>--override</code> replaces with a <code>.bak-&lt;timestamp&gt;</code> copy unless <code>--no-backup</code> is also given. A <code>--only</code> name that doesn't exist in the source increments a <code>MISSING</code> counter and the script exits <code>3</code> at the end if that counter is nonzero — no partial install is claimed as success.</p>
+<h2 id="7-design-invariants">7. Design invariants</h2>
+<p>The doctrine every layer above exists to enforce, stated once here and cited (never restated) by every skill, hook, and reference:</p>
+<ul>
+<li><strong>The Iron Rule.</strong> If the real system doesn't work, fix the real system. Never mocks, stubs, test doubles, fake endpoints, or test-mode bypasses — enforced mechanically by <code>no-test-files.sh</code> (a <code>PreToolUse</code> denial, not a suggestion) and stated in every skill's doctrine deferral.</li>
+<li><strong>The End-User Actor Mandate.</strong> Validation is driven, never assumed. The AI personally drives the live system as the end user — <code>curl</code> against a running server for JSON/HTTP backends, a real browser for UI, a real simulator for mobile. Test runners are regression tooling that runs <em>after</em> proof, never a substitute <em>for</em> proof.</li>
+<li><strong>Evidence is fresh, run-scoped, sealed, and immutable.</strong> Owned by <code>end-user-testing</code>, mechanically enforced by <code>fresh_evidence.py</code> (§5) and <code>capture-guard.sh</code> (§4) together — one produces the artifacts under the freshness/sealing rules, the other refuses to let anyone edit them afterward. <code>evidence/AGENTS.md</code> states the reason plainly: "a modified capture is a fabricated claim."</li>
+<li><strong>Verdicts are PASS / FAIL / BLOCKED / UNVERIFIED, cited by full path.</strong> An unexecuted check is UNVERIFIED, never PASS. <code>stop-guard.sh</code> is the mechanical backstop for this rule at the session level: it reads the transcript itself and blocks a completion claim that has no cited proof artifact, rather than trusting the claim.</li>
+</ul>
+<h2 id="8-known-drift--and-its-mitigation">8. Known drift — and its mitigation</h2>
+<p>This repo's single most recurring failure mode, visible across its own history: <strong>hand-maintained lists drift from their source of truth.</strong> Two concrete, evidenced instances:</p>
+<ol type="1">
+<li><strong>The skill-count string regressed four times.</strong> <code>docs/improvements.md</code> records it directly: "Count drift has shipped four times (17→19→18; commits <code>2953547</code>, <code>c39a0f0</code>, <code>f95ba9d</code>, and this session)." The before-arm cited there is exact: <code>verify-orchestration.py:144</code> printed "the 17 skills" in prose while the script was actually validating 18 — a literal string that fell out of sync with a <code>glob()</code> result three lines away in the same file.</li>
+<li><strong><code>evidence-guard.sh</code> shipped registered-but-dead.</strong> It was written at v1.10.0 (<code>docs/hooks-and-init-design.md</code>'s own title names that version) alongside <code>no-test-files.sh</code> and <code>capture-guard.sh</code>, all sharing the <code>PreToolUse</code> event — but the installer's settings.json merge step keyed idempotency on the event alone, so once <code>no-test-files.sh</code> installed and matched, every later script sharing that event read as "already present" and was never actually merged into <code>settings.json</code>. The script existed on disk, executable, correct — and never once fired in a real install, from the release it shipped in through v2.1.0 (the version immediately preceding the fix documented in §6). <code>docs/improvements.md</code> names this precisely: "A hook that is copied but unregistered is indistinguishable, from the outside, from a hook that was never written."</li>
+</ol>
+<p><strong>The root cause is the same in both cases</strong>: a number or a check was typed by hand in one place, describing a fact that lived somewhere else and could change independently. <strong>The mitigation this repo has converged on, and the standard this document itself follows, is: derive, don't restate.</strong> <code>verify-orchestration.py</code> now prints <code>f"the {len(skills)} skills"</code>, computed from the same glob that builds the skill list, so the number is correct by construction rather than by discipline. The installer's hook copy and hook registration are now both derived from <code>hooks/hooks.json</code> (§6) instead of a second hardcoded list, for the same reason. This document's own §3 call graph and §1 layer counts were generated by reading the 18 <code>SKILL.md</code> files and running the actual <code>glob</code> patterns listed below — not by editing the previous prose — which is exactly how it caught the <code>implement --&gt; stack-testing</code> drift in §3.</p>
+<h2 id="how-this-was-measured">How this was measured</h2>
+<p>Every count in this document came from one of these, run against the live tree while writing it — re-run any of them to re-verify:</p>
+<ul>
+<li>18 skills: <code>glob plugins/proofpunk/skills/*/SKILL.md</code> → 18 directories, matching <code>ALL_SKILLS</code> in <code>tools/proofpunk-install.sh</code> verbatim.</li>
+<li>6+6 commands: <code>glob plugins/proofpunk/commands/*.md</code> → 6; <code>glob plugins/proofpunk/opencode/commands/*.md</code> → 6.</li>
+<li>3+3+4 agents: <code>glob plugins/proofpunk/agents/*.md</code> → 3; <code>glob plugins/proofpunk/omp/agents/*.md</code> → 3; <code>glob plugins/proofpunk/opencode/agents/*.md</code> → 4 (the extra file is <code>proofpunk.md</code>, the router agent, OpenCode-only).</li>
+<li>9 hook scripts / 7 events / 11 registrations: read <code>plugins/proofpunk/hooks/hooks.json</code> directly and counted the events object's keys and each event's <code>hooks[].hooks[]</code> entries. The count grew from 7/6/8 when <code>bash-write-snapshot.sh</code> (PreToolUse:Bash) and <code>bash-write-notice.sh</code> (PostToolUse:Bash and PostToolUseFailure:Bash) were added as detection-only mitigation for the Bash write bypass (§4).</li>
+<li>13 references: <code>glob plugins/proofpunk/references/*.md</code> → 13.</li>
+<li>5 assets: <code>read plugins/proofpunk/assets/</code> → 2 top-level template files
+<ul>
+<li><code>rules/</code> containing 3 files.</li>
+</ul></li>
+<li>The call graph in §3: <code>grep '## Skill calls'</code> (and the table rows under it) across all 18 <code>SKILL.md</code> files individually — not copied from any prior document.</li>
 </ul>
 
   </div>
@@ -216,7 +485,7 @@ plan-hardening         (optional) harden the resulting prompt</code></pre>
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-08-27</span></div>
+  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-09-01</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">

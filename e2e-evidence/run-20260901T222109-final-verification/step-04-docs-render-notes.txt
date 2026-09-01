@@ -1,0 +1,7 @@
+# P11 docs render — real browser (relay), http://127.0.0.1:8199/doc-architecture.html
+h1: Proofpunk Plugin Architecture
+sections rendered: 8 of 8 (layers, router, call graph, hooks, evidence, install, invariants, known drift)
+site header chips: 18 skills / 6+6 commands / 13 doctrine refs / 20 themes
+hasErrorText: false
+bodyChars: 30087
+screenshot: step-03-docs-render.webp (1024x500 shown, 3456x1688 native)

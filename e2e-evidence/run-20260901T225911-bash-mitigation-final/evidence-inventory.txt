@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-final-state.txt 402 0323782753456c6a05a79d6245c9e69be2e4e11ada3b6bae154767957e761128
+sealed=2026-09-01T22:59:28Z count=1 total_bytes=402

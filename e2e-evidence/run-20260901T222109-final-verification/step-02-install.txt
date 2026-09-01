@@ -1,0 +1,8 @@
+# Clean-HOME install via canonical hooks.json
+install rc=0 (expect 0)
+ls: cannot access '/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.qobsPEhZHg/.claude/skills/proofpunk-doctrine/SKILL.md': No such file or directory
+skills=18 (expect 18)
+hooks=7 (expect 7)
+events= ['InstructionsLoaded', 'PostToolUse', 'PreToolUse', 'SessionStart', 'Stop', 'SubagentStop']
+regs= 8 (expect 8)
+idempotent_diff rc=0 (expect 0)

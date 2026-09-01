@@ -33,12 +33,14 @@ Rates and reports without rewriting: the rating file lands, the prompt is untouc
 ```
 Rate the revision, then end-user-test the behavioral difference with executed evidence — no vibes-based prompt reviews.
 
-**5. Full command — every option selected**
+**4. Redirected output — remediate and ship regardless of score**
 
 ```
-/proofpunk:rate-prompt .planning/pg17.prompt.md --report-only --out .planning/pg17.rating.md
+/proofpunk:rate-prompt .planning/pg17.prompt.md --out .planning/pg17.remediated.md --ship-below-threshold
 ```
-Scores against the 7-dimension /100 rubric and writes the report to file
-without touching the prompt. Note: `--in-place` and `--out` are exclusive
-(same-file edit vs. separate output); `--report-only` composes with `--out`.
+Scores against the 7-dimension /100 rubric, remediates, and writes the
+remediated file to the given path. Note: `--in-place` and `--out` are
+exclusive (same-file edit vs. separate output); `--report-only` and `--out`
+are also exclusive (scorecard-only vs. writing a redirected deliverable) —
+they conflict and fail fast if combined.
 `--ship-below-threshold` finalizes even if the result grades needs-work/rewrite; omit it to require a passing score before shipping.

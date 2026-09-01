@@ -74,7 +74,7 @@ tar -xzf proofpunk-marketplace.tar.gz
 /plugin install proofpunk@proofpunk-marketplace
 ```
 
-Verify: `/plugin` should list `Proofpunk` with 16 skills.
+Verify: `/plugin` should list `Proofpunk` with 18 skills.
 
 ## Representative Usage
 

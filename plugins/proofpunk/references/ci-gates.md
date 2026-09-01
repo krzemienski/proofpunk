@@ -4,6 +4,15 @@ Methodology for layered build-quality gates, condensed from
 `build-quality-gates`. Use when a project needs pre-commit hooks or CI gates
 that catch failures early without slowing the loop.
 
+**Wiring gap (as of this note):** no executing skill loads this file mid-workflow —
+it is currently cited only descriptively in `skills/proofpunk/SKILL.md`'s reference
+table. The natural loader is `production-readiness`'s codebase-audit lens (its own
+skill-local production-readiness-audit reference): when that audit finds a project has no
+pre-commit/CI gates configured, it should load this file to propose a P0→P1→P2
+rollout rather than inventing gate criteria ad hoc. That wiring change is not made
+here — a follow-up lane must add the load instruction to
+`skills/production-readiness/SKILL.md`.
+
 ## Priority Classification
 
 Gates are classified by blast radius and rolled out iteratively:

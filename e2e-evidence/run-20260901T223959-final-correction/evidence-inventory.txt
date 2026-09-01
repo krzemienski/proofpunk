@@ -1,0 +1,4 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-causing-source-lines.txt 2135 22bbdd038489379bdfbece27cd034b0bfba81e2e2cf57d22fd9874cbfc149e45
+step-02-inventory-audit.txt 1089 161b445650c10079e3a8ec879b9c6a711d4b5e310e5ae6ca5f4b1ef177332005
+sealed=2026-09-01T22:40:44Z count=2 total_bytes=3224

@@ -1,0 +1,23 @@
+# P8 per-item proof map (final) — every implemented item has an executed artifact
+ITEM    OUTCOME                                        ARTIFACT
+#1      installer derives hooks from hooks.json        /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:2
+#1b     second install byte-identical                  /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:3
+#2      stop-guard role gate                           /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:4-5
+#4      PROOF requires resolvable path                 /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:6-8
+#5      SCOUT requires file reference                  /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:9-10
+#5b     path-traversal citation rejected               /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:11
+NEW-a   refuses empty/unsealed runs                    /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:12-14
+NEW-b   sha256 detects same-size tamper                /Users/nick/proofpunk/e2e-evidence/run-20260901T223322-p8-executed-proof/step-01-executed.txt:15
+NEW-c   group 9 regression guard passes                /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-04-group9-live.txt
+#8      report-only+--out false claim removed          /Users/nick/proofpunk/e2e-evidence/run-20260901T222936-commands-render/step-02-commands-render-notes.txt
+#12     --ship-below-threshold parity                  /Users/nick/proofpunk/e2e-evidence/run-20260901T222936-commands-render/step-02-commands-render-notes.txt
+NEW-d   architecture doc renders, 8 sections           /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-04-docs-render-notes.txt
+NEW-e   router routed 5/5 live                         /Users/nick/proofpunk/e2e-evidence/run-20260901T222109-final-verification/step-05-router-live.txt
+#16     ci-gates resolves in installed tree            /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-05-source-items-driven.txt
+#7      OpenCode 4 agents, zero '1 agent'              /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-05-source-items-driven.txt
+#9      upgrade note names window+remedy               /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-05-source-items-driven.txt
+#7b     report annotated, original preserved           /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-05-source-items-driven.txt
+P12     stale skill count 16->18                       /Users/nick/proofpunk/e2e-evidence/run-20260901T223106-p12-classification/step-01-classification.txt
+#5c     router 17/17 in installed tree                 /Users/nick/proofpunk/e2e-evidence/run-20260901T223416-criteria-ledger/step-01-router-coverage-installed.txt
+
+19 items, all EXECUTED. SOURCE-ONLY count = 0.

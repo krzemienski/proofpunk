@@ -58,6 +58,23 @@ the one lookup before the 17 file reads.
 | `session-intent` | reconstructing why a past change happened | the commit or session in question |
 | `prompt-forge` | authoring, rating, or optimizing a prompt itself | the prompt draft or goal |
 
+## Compound-ask chains
+
+- Idea unclear, must ship: `brainstorm` → `validation-plan` → `implement`
+- Bug found, must be proven fixed: `root-cause-debugging` → `end-user-testing`
+- Draft plan exists, must survive stress before code: `plan-hardening` → `implement`
+- Old repo, prepping a release: `codebase-truth-audit` → `production-readiness`
+- Screen looks wrong, must work on a real device: `visual-inspection` → `ui-experience-audit` → `mobile-validation-runner`
+- Prompt is broken, blocking a build: `prompt-forge` → `implement`
+
+## Routes to nothing
+
+None of these 17 skills cover every ask — say so instead of forcing a match:
+
+- "Explain what this function does" — plain Q&A, no build/audit/proof
+- "Write our README" — doc authoring, not delivery or verification
+- "Deploy this to production" — infra/release ops, not covered here
+
 ## Shared doctrine — what every skill defers to
 
 Routing names a skill; these files are the rules that skill obeys. The

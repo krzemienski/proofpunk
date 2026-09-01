@@ -22,6 +22,7 @@ artifacts, unparseable run metadata).
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 from datetime import datetime, timezone
@@ -29,7 +30,15 @@ from pathlib import Path
 
 ROOT = Path("./e2e-evidence")
 SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+HEX64_RE = re.compile(r"[0-9a-f]{64}")
 
+
+def sha256_of(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 class Refusal(Exception):
     """A rule violation that must stop the operation."""
@@ -83,12 +92,17 @@ def cmd_next_step(slug: str) -> str:
 def cmd_seal() -> str:
     run_dir = active_run()
     steps = sorted(p for p in run_dir.glob("step-*") if p.is_file())
+    if not steps:
+        raise refuse(f"refusing to seal {run_dir}: it contains zero step-* artifacts")
     count = 0
     total_bytes = 0
-    lines = []
+    lines = ["# fresh-evidence-inventory v2 (name size sha256)"]
     for f in steps:
         size = f.stat().st_size
-        lines.append(f"{f.name} {size}")
+        # Size alone cannot detect an equal-length substitution -- a verdict
+        # artifact flipped from PASSED to FAILED keeps its byte count. The
+        # digest is what makes a sealed inventory a tamper-evident record.
+        lines.append(f"{f.name} {size} {sha256_of(f)}")
         count += 1
         total_bytes += size
     lines.append(f"sealed={iso_now()} count={count} total_bytes={total_bytes}")
@@ -115,9 +129,16 @@ def cmd_validate() -> str:
     except ValueError:
         raise refuse(f"could not parse run-start timestamp: {started_raw}")
     bad = 0
-    for f in sorted(run_dir.glob("step-*")):
-        if not f.is_file():
-            continue
+    steps = [f for f in sorted(run_dir.glob("step-*")) if f.is_file()]
+
+    # A run with no captured artifacts proves nothing. Without this check the
+    # loop below never executes, `bad` stays 0, and validate greens an empty
+    # run -- the vacuous pass that makes every downstream seal claim suspect.
+    if not steps:
+        print(f"NO ARTIFACTS: {run_dir} contains zero step-* files", file=sys.stderr)
+        bad += 1
+
+    for f in steps:
         mtime = f.stat().st_mtime
         if mtime < started_epoch:
             print(f"STALE: {f} (mtime {int(mtime)} < run-start {int(started_epoch)})", file=sys.stderr)
@@ -125,6 +146,83 @@ def cmd_validate() -> str:
         if f.stat().st_size == 0:
             print(f"EMPTY: {f} (zero bytes)", file=sys.stderr)
             bad += 1
+
+    # seal must have run, and the sealed inventory must still describe what is
+    # on disk. An unsealed run, or one whose files changed after sealing, is
+    # not citable evidence.
+    inv = run_dir / "evidence-inventory.txt"
+    if not inv.is_file():
+        print(f"UNSEALED: {run_dir} has no evidence-inventory.txt (run seal)", file=sys.stderr)
+        bad += 1
+    else:
+        inv_lines = [l for l in inv.read_text().splitlines() if l.strip()]
+        sealed_line = next((l for l in inv_lines if l.startswith("sealed=")), None)
+        if sealed_line is None:
+            print(f"UNSEALED: {inv} has no sealed= line (run seal)", file=sys.stderr)
+            bad += 1
+        else:
+            recorded: dict[str, tuple[int, str]] = {}
+            versioned = any(l.startswith("# fresh-evidence-inventory v2") for l in inv_lines)
+            if not versioned:
+                print(
+                    f"LEGACY INVENTORY: {inv} predates digest sealing and cannot prove "
+                    "content integrity. Re-seal the run to make it citable.",
+                    file=sys.stderr,
+                )
+                bad += 1
+            for l in inv_lines:
+                if l.startswith("sealed=") or l.startswith("#"):
+                    continue
+                parts = l.rsplit(" ", 2)
+                if len(parts) != 3 or not parts[1].isdigit() or not HEX64_RE.fullmatch(parts[2]):
+                    print(f"CORRUPT INVENTORY: cannot parse {l!r} in {inv}", file=sys.stderr)
+                    bad += 1
+                    continue
+                name, size_s, digest = parts
+                if name != Path(name).name or not name.startswith("step-"):
+                    print(f"UNSAFE INVENTORY NAME: {name!r} in {inv}", file=sys.stderr)
+                    bad += 1
+                    continue
+                if name in recorded:
+                    print(f"DUPLICATE INVENTORY ROW: {name} appears more than once in {inv}", file=sys.stderr)
+                    bad += 1
+                    continue
+                recorded[name] = (int(size_s), digest)
+
+            on_disk = {f.name: f for f in steps}
+            for name, (size, digest) in sorted(recorded.items()):
+                f = on_disk.get(name)
+                if f is None:
+                    print(f"MISSING: {name} is in the sealed inventory but absent from {run_dir}", file=sys.stderr)
+                    bad += 1
+                    continue
+                actual = f.stat().st_size
+                if actual != size:
+                    print(f"TAMPERED: {name} is {actual} bytes, sealed as {size}", file=sys.stderr)
+                    bad += 1
+                elif sha256_of(f) != digest:
+                    print(f"TAMPERED: {name} matches its sealed size but not its sealed sha256", file=sys.stderr)
+                    bad += 1
+            for name in sorted(set(on_disk) - set(recorded)):
+                print(f"UNSEALED ARTIFACT: {name} was written after seal (re-seal the run)", file=sys.stderr)
+                bad += 1
+
+            # The summary line is part of the seal; if it disagrees with the
+            # rows it summarises, the inventory has been edited by hand.
+            fields = dict(
+                p.split("=", 1) for p in sealed_line.split() if "=" in p
+            )
+            try:
+                if int(fields.get("count", -1)) != len(recorded):
+                    print(f"INVENTORY MISMATCH: sealed count={fields.get('count')} but {len(recorded)} rows", file=sys.stderr)
+                    bad += 1
+                if int(fields.get("total_bytes", -1)) != sum(s for s, _ in recorded.values()):
+                    print(f"INVENTORY MISMATCH: sealed total_bytes={fields.get('total_bytes')} disagrees with rows", file=sys.stderr)
+                    bad += 1
+            except ValueError:
+                print(f"CORRUPT INVENTORY: unparseable sealed= line in {inv}", file=sys.stderr)
+                bad += 1
+
     if bad == 0:
         return f"validate OK: {run_dir}"
     print(f"validate FAIL: {bad} issues", file=sys.stderr)

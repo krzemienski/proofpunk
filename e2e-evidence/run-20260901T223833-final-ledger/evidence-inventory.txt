@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-final-ledger.txt 2337 b392fa46d51086fd629d188d2048582a33e64d7400f990544b93c2bcd70318fc
+sealed=2026-09-01T22:38:50Z count=1 total_bytes=2337

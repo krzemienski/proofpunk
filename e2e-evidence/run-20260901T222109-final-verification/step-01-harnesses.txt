@@ -1,0 +1,6 @@
+# Final verification — proofpunk plugin working tree
+tools/test-hooks.sh rc=0 (expect 0)
+tools/test-installer.sh rc=0 (expect 0)
+tools/dry-run-install.sh rc=0 (expect 0)
+verify-orchestration.py rc=0 (expect 0)
+build-site.py rc=0 (expect 0)

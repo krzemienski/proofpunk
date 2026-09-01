@@ -1,0 +1,18 @@
+# P1 pre-fix reproduction — HEAD (327f883) installer vs fixed working-tree installer
+# HEAD copy extracted via: git show HEAD:tools/proofpunk-install.sh > /tmp/old-install.sh
+
+## BEFORE (HEAD installer)
+  install rc=0
+  hook scripts copied : 6  (canonical hooks.json names 7)
+  session-start.sh    : MISSING
+  events registered   : ['PostToolUse', 'PreToolUse', 'Stop', 'SubagentStop']
+  SessionStart        : NOT REGISTERED
+  InstructionsLoaded  : NOT REGISTERED
+
+## AFTER (working-tree installer)
+  install rc=0
+  hook scripts copied : 7
+  session-start.sh    : present
+  events registered   : ['InstructionsLoaded', 'PostToolUse', 'PreToolUse', 'SessionStart', 'Stop', 'SubagentStop']
+  SessionStart        : registered
+  InstructionsLoaded  : registered

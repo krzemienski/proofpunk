@@ -1,0 +1,4 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-commands-page.webp 22458 3236ce6a92c094ac6d14d342acacfe44a21399b4647d25fc05b74fb2479878c1
+step-02-commands-render-notes.txt 924 1be1eb34a9c956cf5e1ac8eccea2e551d19d812e099237a1632f79dca894e409
+sealed=2026-09-01T22:29:51Z count=2 total_bytes=23382

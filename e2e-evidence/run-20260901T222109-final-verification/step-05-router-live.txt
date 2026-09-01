@@ -1,0 +1,13 @@
+=== RAW ROUTER OUTPUT ===
+1. brainstorm
+2. visual-inspection
+3. root-cause-debugging
+4. tui-testing
+5. session-intent
+=== SCORED ===
+1. ask='I have a vague idea for a feature and no pla' expected=brainstorm got='1. brainstorm' MATCH
+2. ask='This screenshot needs a pass/fail verdict' expected=visual-inspection got='2. visual-inspection' MATCH
+3. ask='One bug, unclear cause, my symptom fixes kee' expected=root-cause-debugging got='3. root-cause-debugging' MATCH
+4. ask='A terminal app needs PTY-driven proof' expected=tui-testing got='4. tui-testing' MATCH
+5. ask='Why was this change made three months ago' expected=session-intent got='5. session-intent' MATCH
+routed_correctly=5/5

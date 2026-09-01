@@ -1,0 +1,8 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-harness-passing.txt 2240 ab85e0d4ad224d7f66570e116b0fe541c0f6985c532a291e79d794e2c64c129f
+step-02-mutation-proof.txt 2344 217a5728edd61906352f63ae6ae780afe176957bd683cec7e2ffece15bc6cb29
+step-03-full-suite.txt 132 e37dc15cc743ffb76fb60a7cc8467209ab3f305d8306a1fa4ec206cb8e986154
+step-04-design-and-parity.txt 1514 04b7350fc2a4fd60e2da813988b00a020cfae8c7c3d212e7699863b4eab31031
+step-05-installer-parity.txt 2476 5ad7311d982a93ce5277bdc022b0900414c73ef1209626d309694d65deeef62f
+step-06-parity-mutation.txt 2492 fba5927d47ccc036198d3fe2f01b627b264d62727d2125fd53a28fe3559af109
+sealed=2026-09-01T22:57:39Z count=6 total_bytes=11198

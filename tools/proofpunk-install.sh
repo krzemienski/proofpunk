@@ -399,15 +399,36 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
     command -v python3 >/dev/null 2>&1 || die "--hooks requires python3 to merge hook entries into settings.json"
     run "mkdir -p '$HOOK_HOME'"
     if [ "$DRY_RUN" -eq 0 ]; then
-      cp "$HOOKS_SRC/stop-guard.sh" "$HOOKS_SRC/evidence-guard.sh" "$HOOKS_SRC/capture-guard.sh" "$HOOKS_SRC/instructions-loaded.sh" "$HOOKS_SRC/no-test-files.sh" "$HOOKS_SRC/post-write-walkthrough.sh" "$HOOK_HOME/"
+      # hooks.json is the single source of truth for BOTH which scripts get
+      # copied and which events get registered. Hardcoding either list here is
+      # how session-start.sh shipped uncopied and SessionStart/InstructionsLoaded
+      # shipped unregistered from v1.10.0 onward.
+      python3 - "$HOOKS_SRC" "$HOOK_HOME" <<'PYCOPY'
+import json, os, re, shutil, sys
+src, dst = sys.argv[1], sys.argv[2]
+with open(os.path.join(src, "hooks.json")) as f:
+    spec = json.load(f)
+events = spec.get("hooks", spec)
+scripts = set()
+for arr in events.values():
+    for matcher in arr:
+        for h in matcher.get("hooks", []):
+            scripts.update(re.findall(r"([A-Za-z0-9_-]+\.sh)", h.get("command", "")))
+missing = [s for s in sorted(scripts) if not os.path.exists(os.path.join(src, s))]
+if missing:
+    sys.exit("hooks.json names scripts that do not exist: " + ", ".join(missing))
+for s in sorted(scripts):
+    shutil.copy2(os.path.join(src, s), os.path.join(dst, s))
+print("  copied: %d hook scripts (%s)" % (len(scripts), ", ".join(sorted(scripts))))
+PYCOPY
       chmod +x "$HOOK_HOME/"*.sh
       # Idempotent settings.json merge (user-level for claude-code).
       SETTINGS="$HOME/.claude/settings.json"
       [ "$TARGET" = "agents" ] && SETTINGS="$HOME/.agents/settings.json"
-      python3 - "$SETTINGS" "$HOOK_HOME" <<'PYEOF'
+      python3 - "$SETTINGS" "$HOOK_HOME" "$HOOKS_SRC" <<'PYEOF'
 import json, os, shutil, sys, time
 
-settings_path, hook_home = sys.argv[1], sys.argv[2]
+settings_path, hook_home, hooks_src = sys.argv[1], sys.argv[2], sys.argv[3]
 os.makedirs(os.path.dirname(settings_path), exist_ok=True)
 settings = {}
 if os.path.exists(settings_path):
@@ -437,15 +458,20 @@ def ensure(event, command, matcher=None, timeout=10):
         entry["matcher"] = matcher
     entries.append(entry)
     return "added"
+with open(os.path.join(hooks_src, "hooks.json")) as f:
+    spec = json.load(f)
 
-results = [
-    ("Stop", ensure("Stop", f"sh {hook_home}/stop-guard.sh")),
-    ("SubagentStop", ensure("SubagentStop", f"sh {hook_home}/stop-guard.sh")),
-    ("PreToolUse:no-test-files", ensure("PreToolUse", f"sh {hook_home}/no-test-files.sh", matcher="Write|Edit", timeout=5)),
-    ("PreToolUse:evidence-guard", ensure("PreToolUse", f"sh {hook_home}/evidence-guard.sh", matcher="Write|Edit", timeout=5)),
-    ("PreToolUse:capture-guard", ensure("PreToolUse", f"sh {hook_home}/capture-guard.sh", matcher="Write|Edit", timeout=5)),
-    ("PostToolUse", ensure("PostToolUse", f"sh {hook_home}/post-write-walkthrough.sh", matcher="Write|Edit", timeout=5)),
-]
+results = []
+for event, arr in (spec.get("hooks", spec)).items():
+    for m in arr:
+        matcher = m.get("matcher")
+        for h in m.get("hooks", []):
+            script = h.get("command", "").rsplit("/", 1)[-1]
+            if not script.endswith(".sh"):
+                continue
+            label = event if len(m.get("hooks", [])) == 1 and len(arr) == 1 else f"{event}:{script[:-3]}"
+            results.append((label, ensure(event, f"sh {hook_home}/{script}",
+                                          matcher=matcher, timeout=h.get("timeout", 10))))
 if os.path.exists(settings_path):
     shutil.copy2(settings_path, settings_path + ".bak")
 with open(settings_path, "w") as f:
@@ -455,7 +481,7 @@ for ev, r in results:
 print(f"  settings: {settings_path}")
 PYEOF
     else
-      say "  [dry-run] would install 6 hook scripts to $HOOK_HOME and merge Stop/SubagentStop/PreToolUse/PostToolUse into the platform settings.json"
+      say "  [dry-run] would install every hook script named in hooks.json to $HOOK_HOME and merge each event it declares into the platform settings.json"
     fi
   else
     say "  opencode: enforcement lives in the plugin glue (install with --plugins; see opencode/plugin/proofpunk.ts)"
