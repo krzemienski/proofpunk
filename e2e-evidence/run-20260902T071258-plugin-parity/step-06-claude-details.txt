@@ -1,0 +1,46 @@
+proofpunk 2.2.0
+  Description: Execution-first delivery pipeline: brainstorm, plan, decompose into proof-carrying tasks, implement, end-user test, and audit — end-user testing is the only PASS, no mocks, executed evidence over assertion. 18 skills: functional validation, full functional audit, validation planning with cumulative proof obligations, plan hardening, prompt engineering/rating with mandatory file-output remediation, sequential thinking and authorization discipline, meta-prompt pipelines, visual inspection, UI experience audit, the single write-path implement orchestrator (mandatory codebase scouting, session mining, parallel scouts/lanes with executable lane contracts, distilled success criteria, stuck protocol, live execution ledger, no-stop --auto mode, inline end-user validation), per-stack real-system testing (pytest/Go/C++/Django/Spring/FastAPI/Playwright), iOS simulator validation, root-cause debugging, production-readiness audits, red-team/eval workflows, session-intent reconstruction, codebase-truth-audit, TUI/terminal end-user testing (tui-testing) — plus slash commands, a doctrine SessionStart hook, and a 20-theme flat-black cyberpunk pack for oh-my-pi (OMP) and OpenCode TUIs and Hyper terminal — in one plugin with a closed Related Skills graph (every referenced skill ships).
+  Source: proofpunk@proofpunk-marketplace
+
+Component inventory
+  Skills (24)  brainstorm, codebase-truth-audit, end-user-testing, forge-prompt, full-functional-audit, implement, implement, install, mobile-validation-runner, plan-hardening, production-readiness, prompt-forge, proofpunk, rate-prompt, red-team-eval, root-cause-debugging, session-intent, stack-testing, truth-audit, tui-testing, ui-experience-audit, validation-plan, verify, visual-inspection
+  Agents (3)  implement, end-user-validate, scout
+  Hooks (7)  SessionStart, Stop, SubagentStop, PreToolUse, InstructionsLoaded, PostToolUse, PostToolUseFailure  (harness-only — no model context cost)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~3,974 tok   added to every session
+
+Per-component (rounded)
+  component                 always-on  on-invoke
+  stack-testing                  ~190      ~1.3k
+  mobile-validation-runner       ~190      ~1.3k
+  plan-hardening                 ~190      ~1.5k
+  brainstorm                     ~210      ~1.6k
+  codebase-truth-audit           ~200      ~3.6k
+  proofpunk                      ~190      ~1.2k
+  ui-experience-audit            ~210      ~2.3k
+  prompt-forge                   ~230      ~4.1k
+  validation-plan                ~170      ~1.5k
+  tui-testing                    ~190      ~1.7k
+  root-cause-debugging           ~190      ~1.3k
+  implement                      ~250      ~2.7k
+  end-user-testing               ~220      ~2.4k
+  session-intent                 ~210      ~1.4k
+  production-readiness           ~190       ~900
+  full-functional-audit          ~210      ~1.6k
+  visual-inspection              ~180      ~1.6k
+  red-team-eval                  ~200       ~800
+  implement                       ~80       ~280
+  end-user-validate               ~70       ~260
+  scout                           ~60       ~210
+  implement                       ~20       ~410
+  forge-prompt                    ~20       ~350
+  truth-audit                     ~20       ~320
+  verify                          ~20       ~370
+  install                         ~40      ~1.1k
+  rate-prompt                     ~30       ~430
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.

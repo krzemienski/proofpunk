@@ -1,0 +1,5 @@
+# Platform wiring — 2026-09-02T07:11:23Z
+OMP link -> /Users/nick/proofpunk/plugins/proofpunk
+OpenCode skills=18/18 cmds=6/6 agents=4/4
+Agents skills=18/18
+Claude cache 2.2.0 == repo (byte-identical)

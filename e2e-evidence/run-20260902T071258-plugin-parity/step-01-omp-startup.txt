@@ -1,0 +1,50 @@
+
+╭─── omp v18.1.2 ──────────────────────────────────────────────────────────────────────────────────╮
+│                          │ Tips                                                                  │
+│      Welcome back!       │ # for prompt actions                                                  │
+│                          │ / for commands                                                        │
+│       ████████████       │ ! to run bash                                                         │
+│          ██  ██          │ $ to run python                                                       │
+│          ██  ██          │ ───────────────────────────────────────────────────────────────────── │
+│          ▒▒  ██          │ LSP Servers                                                           │
+│              ██          │ No LSP servers                                                        │
+│                          │                                                                       │
+│     cc/claude-opus-5     │                                                                       │
+│         9router          │                                                                       │
+│                          │ ───────────────────────────────────────────────────────────────────── │
+│                          │ Recent sessions                                                       │
+│                          │  Update omp and claude plugin to latest (just now)                   │
+│                          │  Do not use tools. Is there a slash command named /proofpun… (1m ago)│
+│                          │  Use read exactly once on skill://end-user-testing. Reply w… (7m ago)│
+│                          │  Use read exactly once on skill://proofpunk. Reply with ON… (10m ago)│
+│                          │                                                                       │
+╰──────────────────────────┴───────────────────────────────────────────────────────────────────────╯
+ Tip: Press ← ← to drill into a running or finished agent and inspect its tool calls and transcript
+
+MCP finished with failures. Connected: chrome-devtools, knowledge-graph-memory, sequential-thinking, context7:context7. Failed: neon-postgres:neon [config:
+~/.claude/plugins/cache/neon-agent-skills/neon-postgres/1.2.0/mcp.json]: HTTP 401: {"error":"invalid_token","error_description":"No authorization provid…; expo:expo [config:
+~/.claude/plugins/cache/claude-plugins-official/expo/1.12.0/.mcp.json]: HTTP 401: {"error":"invalid_token","error_description":"Missing Authorization h…; atr-skills:atr-browser [config:
+~/.claude/plugins/cache/atr-marketplace/atr-skills/1.9.0/.mcp.json]: Executable not found in $PATH: "atr"; hiveterm [config: ~/.gemini/settings.json]: Unable to connect. Is the computer able to access
+the url?
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  cc/claude-opus-5  ·  main *3                                                                                                                                                           32.1%/1M 󰁨
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+npm Plugins:
+
+● proofpunk@2.2.0
+
+Marketplace Plugins:
+
+  claude-crew@claude-community (2.0.4) (user)
+  truth-forge@truth-forge (1.7.0) (user)

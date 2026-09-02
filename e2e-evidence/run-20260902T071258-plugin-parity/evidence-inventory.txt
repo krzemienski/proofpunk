@@ -1,0 +1,12 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-omp-startup.txt 5113 eb4caf213ded3b6aca0f4bedcae0d4bc95f57ab0a8a73692cf9c6bec4cbc8308
+step-02-command-picker.txt 8811 06a19a6968cafd9b8d9562d617a65c2144eac1cd568122a37af3e9017934b0c5
+step-03-after-execute.txt 4522 fcb377d7f934b696142d335f33871128ebed833019da7506f494904cfcf79c05
+step-04-platform-wiring.txt 201 b6a07e5d15f8df9acef91d38dc77635bb505b0f952942c8f6e85827535095100
+step-05-omp-plugin-list.txt 144 0c32224834b2ab55e69416e023d004254c9aad97d57f4a3b8944ff46c274f8e2
+step-06-claude-details.txt 3615 a661c25afed1604d881773464e3d342a08edb344d6926154c9e104ae7fc1f12d
+step-07-gate-hooks.txt 2240 ab85e0d4ad224d7f66570e116b0fe541c0f6985c532a291e79d794e2c64c129f
+step-08-gate-orchestration.txt 10702 d48b80fd85bf20f3ebdb21dc7d6388c15944fc7dd7638ade0a84d3ba15a3e20a
+step-09-opencode-blocked.txt 106 1eb7c990c667978f994bd8152a4cfb1eed0be36cbd5d85aba8c5988bd453c29a
+step-10-gate-dry-run-install.txt 1275 bec64dbf03dfe3fe8f172b0004e54b1dbf063d877f56d09bfca7891ac48a6c40
+sealed=2026-09-02T07:13:33Z count=10 total_bytes=36729

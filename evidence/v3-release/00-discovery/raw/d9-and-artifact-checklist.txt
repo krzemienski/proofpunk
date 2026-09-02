@@ -1,0 +1,38 @@
+=== D9 TERMS IN TREE ===
+proofbunk: 1 hits
+    evidence/v3-release/00-discovery/d1-d2-d4-d9-dictation.md:100: | "ProofBunk" | Proofpunk | Confirmed by tree: every manifest, package, and marketplace en
+rebo: 1 hits
+    evidence/v3-release/00-discovery/d1-d2-d4-d9-dictation.md:101: | "Rebo" | the router head, `skills/proofpunk/SKILL.md` | **Standing interpretation retain
+furble: 1 hits
+    evidence/v3-release/00-discovery/d1-d2-d4-d9-dictation.md:102: | "Furble's Claude" | the Claude Code invocation contract, `plugins/proofpunk/docs/invocat
+
+=== WORK-ORDER NAMED ARTIFACTS ===
+ABSENT  docs/discovery-register.md
+ABSENT  docs/session-intent-ledger.md
+ABSENT  docs/commit-archaeology.md
+ABSENT  docs/skill-canon.md
+ABSENT  docs/proposals.md
+ABSENT  docs/v3-research/r1-candidates.md
+ABSENT  docs/v3-research/r2-patterns.md
+EXISTS  evidence/v3-release/00-baseline/tool-inventory.md
+ABSENT  evidence/v3-release/00-baseline/codebase-analysis.md
+ABSENT  tools/trace.py
+ABSENT  tools/verify-runtime.py
+ABSENT  tools/gauge-report.py
+ABSENT  tools/memory.py
+ABSENT  tools/route-eval.py
+ABSENT  tools/harvest.py
+ABSENT  tools/build-manifest.py
+ABSENT  tools/verify-manifest.py
+ABSENT  tools/test-platform-parity.sh
+ABSENT  tools/test-regressions.sh
+ABSENT  plugins/proofpunk/references/run-trace-schema.md
+ABSENT  plugins/proofpunk/references/memory-contract.md
+ABSENT  docs/v3-gauges.md
+ABSENT  docs/platform-parity.md
+ABSENT  proofpunk-v3-release-report.md
+ABSENT  plugins/proofpunk/manifest.json
+EXISTS  e2e-evidence/FIXES.md
+EXISTS  plugins/proofpunk/docs/improvements.md
+ABSENT  .planning/run-trace.jsonl
+ABSENT  .planning/lane-b-audit.md

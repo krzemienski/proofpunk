@@ -1,0 +1,534 @@
+{
+ "claude": {
+  "files": 97,
+  "operator_turns": 168,
+  "counts": {
+   "D8": 0,
+   "D1": 0,
+   "D2": 0,
+   "D4": 0
+  },
+  "hits": {
+   "D8": [],
+   "D1": [],
+   "D2": [],
+   "D4": []
+  }
+ },
+ "omp": {
+  "files": 445,
+  "operator_turns": 34674,
+  "counts": {
+   "D8": 20,
+   "D1": 20,
+   "D2": 20,
+   "D4": 20
+  },
+  "hits": {
+   "D8": [
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2037,
+     "text": "I need to move `_ddmin_indices` above `minimise_steps` since Python needs it defined before use at call time (though since it's inside a function body called later, forward reference within the module actually works fine at runtime \u2014 Python resolves names at call time, not definition time, as long as `_ddmin_indices` exists in the module namespace before `minimise_steps` is *called*). But for readability I'll keep the shared primitive near the top since it's now used by 3 functions. Restructuring: move `_ddmin_indices` to right after `Reproduces` type alias, then have `minimise_steps` and `_sh"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2047,
+     "text": "### Session update\n\n**agent**:\nNow also refactoring `minimise_steps` itself to use `_ddmin_indices` for consistency (currently it still has its own separate implementation of the same two-phase algorithm). This closes the \"avoid duplicate algorithm drift\" concern completely across all four call sites.\n// Re-read minimise_steps body with fresh line numbers before consolidating onto t\u2026\n\u2192 read(/Users/nick/dev/hunter-seed-wt-hunter-v1-build/harness/ladder.py:60-91) \u21d2 ok \u00b7 46 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 71,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ Skill locations: end-user-testing at ~/.omp/agent/skills/end-user-testing/. tui-design/tui-testing/python-agent-sdk elsewhere \u2014 likely ~/.claude/skills/. Find them.\n\nNow I have everything needed to plan. Let me consolidate the design decision for the local runtime:\n\n**Design: local execution profile**\n\nCurrent agent execution: `run_agent` spawns `docker exec <container> claude -p --output-format stream-json ...` with argv flags including `--setting-sources \"\"` (already the hermetic flag!), `--permission-mode`, `--model`, `--max-turns`, `--tools`, `--s"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2181,
+     "text": "**agent**:\nSame overflow, ~286K tokens, even after tightening the file list. This is consistent \u2014 it's NOT the content being read (still only ~15KB), it's something structural: the subagent's OWN base system prompt/context is likely enormous (this environment has hundreds of skills loaded, per the massive skill list at session start), and adding even a small task on top exceeds `claude-haiku-4-5`'s 200K window entirely. Let me inspect the raw HTTP request log to confirm this diagnosis precisely.\n// Checking the raw HTTP request log size to confirm the overflow source\n\u2192 bash(wc -c /Users/nick/."
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2185,
+     "text": "### Session update\n\n**agent**:\nConfirmed \u2014 a 1.18MB request payload for a task that should need <20KB of actual content. This is a pre-existing session/harness-level constraint (subagent context bloat from this environment's own massive skill/tool inventory), not something fixable by tightening my task instructions further. Since I cannot dispatch a genuinely independent subagent reviewer in this environment (both attempts fail identically regardless of scope), I need to find an alternative path to satisfy the \"independent engineer agrees\" requirement.\n\nGiven the environment constraint is real"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2677,
+     "text": "### Session update\n\n**agent**:\nAll 5 reviewers done. Raw findings: 3 clean lens results consolidate into 5 candidate issues (2 lenses found nothing). Now scoring each independently.\n// Advance to adjudication\n\u2192 todo(done) \u21d2 ok \u00b7 15 lines\n// Read full prior-PR reviewer output\n\u2192 read(agent://ReviewPriorPRs) \u21d2 ok \u00b7 67 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-23",
+     "line": 6,
+     "text": "# /shannon:dispatch\n\nSubagent dispatch. Three modes consolidated:\n\n> v1 consolidation: absorbs legacy `/shannon:dispatch-parallel` (`--mode parallel`) and `/shannon:dispatch-competitive` (`--mode competitive`).\n\n## Inputs\n\n- Positional: task list (path or newline-separated inline)\n- `--mode sequential|parallel|competitive` (default `sequential`)\n- `--max-parallel N` \u2014 concurrency cap for `parallel` mode (default 5)\n- `--candidates N` \u2014 candidate count for `competitive` mode (default 3)\n\n## Behavior\n\n### mode=sequential\nSequential chain. Each step's output informs the next.\n\n1. Parse task list."
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-23",
+     "line": 6,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n# Task: Fully Audit and Remediate the Video Visualization and Ground-Truth Annotation Tool\n\n## Context and Assumptions\n<task_context>\n\n* Source input(s): Rough implementation brief requesting an OMP Relay\u2013orchestrated functional audit, remediation, and end-to-end validation.\n* Source input(s): Existing codebase reference at `krzemienski/yt-transition-shorts-detector`, specifically `visualization-tool/` on `main`.\n* Repository baseline examined: `main` at commit `2d712928ba6f5059ed31e68257641c02b9d712ac`.\n* Background: The visuali"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 53,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ I need to patch:\n1. Protocol verdict for 702fb4df - change from `deviated` to `pre-protocol` (for .omp/rules) and note standing-rule mock claim is unproven\nPatching the unproven mock verdict and replacing the protocol-break standout.\n// Fix 702fb4df protocol verdict and standouts\n\u2192 edit([SESSIONS-S05.md#5BD2] PUT 152.=155: +- **What actually happened:** ultracode session executed wave-5 deepening (P0\u2013P17\u2026) \u21d2 ok \u00b7 33 lines\n```diff\n 12|## Per-session records\n\n 144|### 2026-07-20__claude__702fb4df-8cc7-4c57-87b7-d8427be955bf.md\n\n 146|- **Date:** 2026-07-"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 70,
+     "text": "### Session update\n\n**agent**:\nApplying the four label fixes now.\n// Normalize four Files touched labels\n\u2192 edit([/Users/nick/Desktop/yt-transition-shorts-detector/.debug/260822-1500-45day-retro/ledgers/SESSIONS-S05.md#E9B2] PUT 38.\u2026) \u21d2 ok \u00b7 33 lines\n```diff\n 36|- **Date:** 2026-07-19 (`first_ts=2026-07-19T16:11:06.005Z`, `last_ts=2026-07-19T20:27:04.719Z`; `e905dd0c.md:3`)\n 37|- **Stated intent:** first *human* turn is after the cook finished: \u201cpushed\u201d (`e905dd0c.md:9-10`). Second: \u201cuse 1m token team matss include /self-improve\u201d (`e905dd0c.md:12-14`). The session was launched by slash commands"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 318,
+     "text": "### Session update\n\n**agent**:\nNow inserting the compact ask ledger before \"## Intent threads\", enumerating every distinct ask with digest+turn, date, one-line want, and status \u2014 collapsing true verbatim repeats into single rows with repeat counts.\n// Insert compact ask ledger before Intent threads section, covering every distinc\u2026\n\u2192 edit([.debug/260822-1500-45day-retro/release/INTENT-LATE.md#C9BE] PUT >23: + +## Ask ledger \u2014 every distinct ask, cite, want\u2026) \u21d2 ok \u00b7 20 lines\n```diff\n 11|- **human** \u2014 literally typed by the user (154 turns across the window).\n\n 17|- **subagent-lane** \u2014 text that "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 331,
+     "text": "### Session update\n\n**agent**:\nGood \u2014 that's confirmed strong evidence (verified when I read it earlier). Now let me completely rewrite the ledger to: (1) use full digest filenames, (2) separate exact quotes from paraphrased \"want\", (3) remove the exposed credential, (4) downgrade inferential DELIVERED verdicts to UNVERIFIED/PARTIAL unless I have explicit confirming digest text.\n// Full rewrite of ask ledger section: full filenames, quote/want separation, cred\u2026\n\u2192 edit([.debug/260822-1500-45day-retro/release/INTENT-LATE.md#856C] PUT 25.=96: +## Ask ledger \u2014 every distinct ask, cite, wan\u2026) \u21d2 ok "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 346,
+     "text": "### Session update\n\n**agent**:\nGood, all real full filenames confirmed. Now let me completely rewrite the ledger: full basenames everywhere, exactly 4 verdicts (DELIVERED/PARTIAL/ABANDONED/NEVER-STARTED), and remove A2/A11/A18/A36/A50/A51 (non-asks), renumbering sequentially.\n// Rewrite ledger with full digest filenames, 4-word verdict taxonomy only, remove\u2026\n\u2192 edit([.debug/260822-1500-45day-retro/release/INTENT-LATE.md#ED22] PUT 25.=104: +## Ask ledger \u2014 every distinct ask, cite, wa\u2026) \u21d2 ok \u00b7 31 lines\n```diff\n 25|## Ask ledger \u2014 every distinct ask, cite, want, status\n 26|\n-27|Chronological, one"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 364,
+     "text": "### Session update\n\n**agent**:\n// Get current header state before consolidation rewrite\n\u2192 read(/Users/nick/Desktop/yt-transition-shorts-detector/.debug/260822-1500-45day-retro/release/INTENT-LATE.md:1-25) \u21d2 ok \u00b7 37 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 368,
+     "text": "### Session update\n\n**agent**:\nNow let me replace the entire 45-row ledger with a consolidated 10-15 thread table. Let me find current line boundaries of the ledger section.\n// Get precise start line of ledger heading\n\u2192 read(/Users/nick/Desktop/yt-transition-shorts-detector/.debug/260822-1500-45day-retro/release/INTENT-LATE.md:24-30) \u21d2 ok \u00b7 22 lines\n// Get precise end line of ledger section before Intent threads heading\n\u2192 read(/Users/nick/Desktop/yt-transition-shorts-detector/.debug/260822-1500-45day-retro/release/INTENT-LATE.md:104-115) \u21d2 ok \u00b7 28 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 370,
+     "text": "### Session update\n\n**agent**:\nNow I'll replace lines 25-109 (the entire ledger section, ending right before \"## Intent threads\") with a consolidated 10-15 thread table, judged using digest evidence already read (context-turn tool outputs, compaction text) rather than only human-turn confirmation.\n// Replace 45-row ledger with consolidated 12-thread table judged on full digest e\u2026\n\u2192 edit([.debug/260822-1500-45day-retro/release/INTENT-LATE.md#4453] PUT 25.=109: +## Ask ledger \u2014 distinct intent threads, cit\u2026) \u21d2 ok \u00b7 35 lines\n```diff\n 11|- **human** \u2014 literally typed by the user (154 turns across "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 376,
+     "text": "### Session update\n\n**agent**:\nThe structure now flows well: L1-L13 (consolidated ledger) \u2192 T1-T5 (deep-dive threads with full quotes) \u2192 Repeated asks \u2192 Frustration \u2192 Release asks \u2192 In flight \u2192 Answered with process \u2192 Final synthesis. This is a sensible two-layer structure (compact ledger + detailed threads) rather than redundant. Let me do a final full read-through to confirm the whole document is coherent and complete.\n// Verify remainder of document from Repeated asks through end is intact\n\u2192 read(/Users/nick/Desktop/yt-transition-shorts-detector/.debug/260822-1500-45day-retro/release/INTENT"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 419,
+     "text": "### Session update\n\n**agent**:\nConsolidating: advisories converge on not sorting (corrupts index mapping) and on using the known `start_frame` as the seek anchor. Running the deciding simulation.\n// Writing decision simulation\n\u2192 write(visualization-tool/.debug/260901-1530-pts-promotion/simulate.py) \u21d2 error \u00b7 1 line \u2014 Skipped due to pending system advisory. Do not count this skipped result as completed work or verification. After the a\u2026\nTool result:\n```text\nSkipped due to pending system advisory. Do not count this skipped result as completed work or verification. After the advisory is handled o"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1000,
+     "text": "**agent**:\nRunning the audit in **drive-interaction** mode across all 7 runs. Loading references first.\n// Reading interactive audit reference\n\u2192 read(/Users/nick/.omp/agent/skills/ui-experience-audit/references/interactive-element-audit.md) \u21d2 ok \u00b7 104 lines\nTool result:\n````text\n[~/.omp/agent/skills/ui-experience-audit/references/interactive-element-audit.md#57FE]\n1:# Interactive Element Audit \u2014 Phase 2 Method\n2:\n3:## Contents\n4:\n5:- [What counts as an interactive element](#what-counts-as-an-interactive-element)\n\u2026\n14:The bulk of UI defects do not live in pixels \u2014 they live in the gap between *"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 902,
+     "text": "No regressions across three runs. Key isolation works exactly as designed: body focus \u2192 frame step (100\u2192101), scrubber focus \u2192 time scrub (101\u2192137, a ~1.2s jump, not a single frame).\n\nLet me summarize where this stands.\n\n## Status\n\n**Runs consolidated** \u2014 all seven now served from one server-indexed directory (`RUNS_DIR`, default `public/runs`). The three FrameTruth runs were published as hash-verified copies with their videos; sources untouched.\n\n**File picker removed entirely** per your instruction \u2014 no FSA path, no client override, no `?picker=`. The hook is a single HTTP scan.\n\n**Nine defe"
+    }
+   ],
+   "D1": [
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2432,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ The skill is read. Now I run AUTHOR mode. Section 0 first: sequential thinking, todos, authorization, file-output contract.\n\n**0.1 Sequential Thinking:**\n\n1. **Decompose the request:**\n   - User wants a prompt authored (.prompt.md) that will drive a full functional audit + remediation + UI/UX redesign of the yt-transition-shorts-detector visualization-tool\n   - The prompt is for an executor agent (coding agent with OMP relay, Chrome DevTools MCP, subagents, sequential thinking)\n   - Flags: `--auto --mine --parallel` \u2014 these are the flags for the `impl"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 588,
+     "text": "### Session update\n\n**agent**:\n// Adding parity gate to probe\n\u2192 edit([plans/260821-frametruth-4of4/evidence/pill-position.py#2474] PUT 114.=169: + prev: float | None = None + rows = 0 + mi\u2026) \u21d2 ok \u00b7 59 lines\n```diff\n 86|def main() -> int:\n 87|    if len(sys.argv) < 3:\n\n 115|    rows = 0\n 116|    misses = 0\n+117|    parity: list[tuple[int, float, float]] = []\n+118|\n 117|    for path in sorted(glob.glob(os.path.join(frame_dir, \"frame_*.png\"))):\n 118|        m = FRAME_RE.search(os.path.basename(path))\n\n 123|        if frame is None:\n 124|            emit(f\"   {idx:<8}  UNREADABLE\")\n 125|          "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 607,
+     "text": "### Session update\n\n**agent**:\n// Requiring all expected parity overlaps\n\u2192 edit([plans/260821-frametruth-4of4/evidence/pill-position.py#DE10] PUT 157.=186: + # PARITY GATE. The probe's numbers mean n\u2026) \u21d2 ok \u00b7 43 lines\n```diff\n 93|def main() -> int:\n 94|    if len(sys.argv) < 3:\n\n 158|    # reproduces the trace on the frames production DID sample. Any divergence means the\n 159|    # probe is measuring something else, exactly as the previous full-band version was.\n+160|    #\n+161|    # The overlap set is computed from the frame range actually on disk, and EVERY member\n+162|    # must be checked."
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 57,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ The advisory says: use the full run spans from the audit, mirror verbatim on sorted prod_popup_ynorm samples within each span, compare nine recorded settle ends. If mismatch, report failure and stop \u2014 no sparse-tail substitution.\n\nWait \u2014 but the parent's IRC said the walks only cover the onset\u2192GT window (20-45% of full run), so a full-run mirror on the walks is IMPOSSIBLE for events whose walk ends before the run ends... unless the walk actually covers the full span? Let me check the actual data first. The parent's audit says full coverage is 30-45% o"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 202,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ Now I can see the structure. Critical observation from the trajectories:\n\n**The y-series NEVER settles to a constant** \u2014 it's a monotone decelerating creep ALL the way down, continuing past GT. Look at the control: at GT_e=2887, y=0.686268; it continues to 0.685317 by 2900-2922. The motion NEVER stops within the window. It decelerates from ~0.0009/frame at onset to ~0.0003/frame.\n\nThis is crucial: there is NO plateau in the dense data. The \"resting\" is an occupancy artifact \u2014 the trajectory creeps through the band slowly enough that occupancy (weighte"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 287,
+     "text": "// Fixing device_step tie handling\n\u2192 edit([.debug/w2-densescore/score2.py#B2F7] PUT 93.=99: +def device_step(local): + steps = [round(abs(b - a), 5) for (n1, a),\u2026) \u21d2 ok \u00b7 13 lines\n```diff\n 92|\n 93|def device_step(local):\n-94|    steps = [abs(b - a) for (n1, a), (n2, b) in zip(local, local[1:])\n+94|    steps = [round(abs(b - a), 5) for (n1, a), (n2, b) in zip(local, local[1:])\n 95|             if n2 - n1 == 1 and abs(b - a) > 2e-4]\n 96|    if not steps:\n 97|        return 1.0 / 3236\n 98|    c = Counter(steps)\n-99|    return c.most_common(1)[0][0]\n+99|    top = max(c.values())\n+100|    # ties re"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-24",
+     "line": 11,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your full understanding of the food c"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-02",
+     "line": 8,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine the current skills, evals, com"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-27",
+     "line": 9,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your full understanding of the food c"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-24",
+     "line": 11,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your full understanding of the food c"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-01",
+     "line": 87,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully\n understand the commits and all the different things that go into this plugin, as well as just some\n of the skills, and improve it, and basically, it looks like the install script isn't actually\n properly working correctly, and so you should only have one massive skill that basically the head\n will link with everything else up correctly. And according to that, then you'll actually move\n forward with whatever happens next. And so, first gain your full understanding of the f"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-01",
+     "line": 210,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully\n understand the commits and all the different things that go into this plugin, as well as just some\n of the skills, and improve it, and basically, it looks like the install script isn't actually\n properly working correctly, and so you should only have one massive skill that basically the head\n will link with everything else up correctly. And according to that, then you'll actually move\n forward with whatever happens next. And so, first gain your full understanding of the f"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-02",
+     "line": 8,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine the current skills, evals, com"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-02",
+     "line": 7,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine the current skills, evals, com"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 15,
+     "text": "// Enumerating full v3 work surface\n\u2192 todo(init) \u21d2 ok \u00b7 204 lines\nTool result:\n```text\nRemaining items (96):\n  - Inventory MCP servers tools skills present absent [in_progress] (Setup)\n  - Record host toolchain presence with exact versions [pending] (Setup)\n  - Record which hosts installable on this machine [pending] (Setup)\n  - Write evidence/v3-release/00-baseline/tool-inventory.md [pending] (Setup)\n  - Activate head skill proofpunk and lane skills [pending] (Setup)\n  - D1 resolve the two e prompt [pending] (Phase0 Discovery)\n  - D2 resolve the other lane needing verification [pending] (Phas"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 66,
+     "text": "### Session update\n\n**agent**:\nTodos are stale \u2014 closing the four verified items and starting D5, in the same turn as real work.\n// Closing verified toolchain task\n\u2192 todo(done) \u21d2 ok \u00b7 203 lines\nTool result:\n```text\nRemaining items (95):\n  - Inventory MCP servers tools skills present absent [in_progress] (Setup)\n  - Record which hosts installable on this machine [pending] (Setup)\n  - Write evidence/v3-release/00-baseline/tool-inventory.md [pending] (Setup)\n  - Activate head skill proofpunk and lane skills [pending] (Setup)\n  - D1 resolve the two e prompt [pending] (Phase0 Discovery)\n  - D2 reso"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 76,
+     "text": "### Session update\n\n**agent**:\n// Closing verified D5\n\u2192 todo(done) \u21d2 ok \u00b7 202 lines\nTool result:\n```text\nRemaining items (94):\n  - Inventory MCP servers tools skills present absent [in_progress] (Setup)\n  - Record which hosts installable on this machine [pending] (Setup)\n  - Write evidence/v3-release/00-baseline/tool-inventory.md [pending] (Setup)\n  - Activate head skill proofpunk and lane skills [pending] (Setup)\n  - D1 resolve the two e prompt [pending] (Phase0 Discovery)\n  - D2 resolve the other lane needing verification [pending] (Phase0 Discovery)\n  - D3 inventory every gate and its blind"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 80,
+     "text": "### Session update\n\n**agent**:\nD1 converging: zero hits for any \"2e/e2e prompt\" spelling anywhere; the prompt lane is real and well-populated. Checking the one \"two prompt\" hit and branches/tags before ruling.\n// D1 checking branches tags and phrasing\n\u2192 bash(cd /Users/nick/proofpunk echo \"== the single 'two prompt' hit ==\" grep -rin \"two prompt\" --include='*.md' --include='*.\u2026) \u21d2 error \u00b7 11 lines \u2014 Blocked: Use the `grep` tool instead of grep/rg. It respects .gitignore and provides structured output.\nTool result:\n```text\nBlocked: Use the `grep` tool instead of grep/rg. It respects .gitignore a"
+    }
+   ],
+   "D2": [
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1326,
+     "text": "Docstring is correct, no duplication. Need the elided body (61-156) to fully verify, then run the same assertion script \u2014 this time actually against the real current file.\n// Read the full remaining template body to fully verify no other duplication or d\u2026\n\u2192 read(/Users/nick/dev/hunter-seed-wt-hunter-v1-build/harness/prompts/review_prompt.py:61-156) \u21d2 ok \u00b7 103 lines\n// Syntax-check via a plain python3 -c call (not chained bash with echo) to avoid \u2026\n\u2192 bash(cd /Users/nick/dev/hunter-seed-wt-hunter-v1-build && PIP_USER=0 ./.venv/bin/python3 -c \" import ast src = open('harness\u2026) \u21d2 ok \u00b7 4 lines\n\n\n--"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2737,
+     "text": "### Session update\n\n**agent**:\nThe ledger only reflects phase-00/01 status, but `.hunter-build/` shows `phase-02.md` and `phase-02-blocked.md` were touched more recently than my ladder.py session (1h and 4h ago vs. this conversation). Since this is a `--parallel` run, Phase 2 (recon) work may have progressed concurrently. Let me check its actual state before continuing \u2014 I shouldn't blindly resume the anti-mock thread if another lane is blocked and needs attention.\n// Read phase-02-blocked.md to understand what blocked Phase 2 and whether it need\u2026\n\u2192 read(/Users/nick/dev/hunter-seed-wt-hunter-v"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1650,
+     "text": "### Session update\n\n**agent**:\nAuthFix landed and \u2014 more valuable \u2014 caught a cross-lane conflict rather than silently editing outside its glob. `probe_gateway_auth.py:109-119` asserts the old broken contract, so it must now fail.\n\nRouting that to the owner while the other lanes finish.\n// Routing cross-lane conflict to owner\n\u2192 hub(Cross-lane finding from AuthFix \u2014 you own the file, so this is yours to action. `.hunter-build/probe_gateway_auth.py:10\u2026) \u21d2 ok \u00b7 2 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-21",
+     "line": 6,
+     "text": "Activate the `implement` skill and run it against:\n\n# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** -- memory persistence goes to th"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-19",
+     "line": 6,
+     "text": "# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** -- memory persistence goes to the **memory / knowledge-graph MCP (the OMP MemBank)**"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-19",
+     "line": 138,
+     "text": "# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** -- memory persistence goes to the **memory / knowledge-graph MCP (the OMP MemBank)**"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-19",
+     "line": 516,
+     "text": "# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** -- memory persistence goes to the **memory / knowledge-graph MCP (the OMP MemBank)**"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-20",
+     "line": 7,
+     "text": "Activate the `implement` skill and run it against:\n\n# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** -- memory persistence goes to th"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-20",
+     "line": 568,
+     "text": "Activate the `implement` skill and run it against:\n\n# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** -- memory persistence goes to th"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 369,
+     "text": "### Session update\n\n**agent**:\n## MOBILE slice \u2014 incomplete, not fully verified\n\nHEAD `01faf396`. Own only `visualization-tool/src/**`. No commit.\n\n### Files / lines\n- `visualization-tool/src/App.tsx` **122** \u2014 Clear Data `h-11 min-h-11 min-w-11 px-3 sm:h-8`\n- `visualization-tool/src/components/CommandWorkspace.tsx` **149\u2013166** \u2014 video.js height 1024\u20131279 `min(30vh,16rem)`; 1280+ `min(37vh,19rem)`\n- `visualization-tool/src/components/annotations/AnnotationList.tsx` **78\u201380, 129, 133, 143** \u2014 stack/wrap row; delete/jump `min-h-11 min-w-11`\n- `visualization-tool/src/components/annotations/Annota"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1864,
+     "text": "// Closing fully verified ios-12-3\n\u2192 todo(done) \u21d2 ok \u00b7 34 lines\n// P23 annotate on android-12-3\n\u2192 write(xd://browser) \u21d2 ok \u00b7 22 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 240,
+     "text": "### Session update\n\n**agent**:\nConfirmed: lines 97-98 are \"Tests must be implemented...\" and \"No code implementations...\" \u2014 both content, fully consistent with prior reads. code-assist.sop.md is fully verified REVIEWED, no findings (generic strands-agents workflow template, no factual claims about this codebase). Now systematically covering code-task-generator.sop.md's elided ranges.\n// read elided params section\n\u2192 read(.sops/code-task-generator.sop.md:9-22:raw) \u21d2 ok \u00b7 16 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1783,
+     "text": "### Session update\n\n**agent**:\n// Close all P5 items - fully verified\n\u2192 todo(done) \u21d2 ok \u00b7 27 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1858,
+     "text": "// Close all P5 items - fully verified\n\u2192 todo(done) \u21d2 ok \u00b7 27 lines\n"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2286,
+     "text": "// Close all P5 items - fully verified\n\u2192 todo(done) \u21d2 ok \u00b7 27 lines\n"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\n# Task: Close the FrameTruth 4/4 Gate -- 4 Open Detection Loci on `fix/gate-exit-code-and-black`\n\n## Context and Assumptions\n\n<task_context>\n-   Source input(s):\n  - Status table (6 rows) describing the remaining FrameTruth work, delivered as a chat brief with shorthand per-locus state.\n  - Repo handle `yt-tranisitopn-shorts-detector` (sic; canonical local repo: `/Users/nick/Desktop/yt-transition-shorts-detector`, branch `fix/gate-exit-code-and-black`).\n  - Tooling correction: **no Serena MCP on this project** --"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3666,
+     "text": "### Session update\n\n**agent**:\n**Fully verified, and it mirrors the popup locus exactly.** `y_pos` is the single value 2410 across 171\u2013200; text is 1 unique tuple. The Y channel carries zero information separating frame 171 from GT 185.\n\nBut one number stands out: **ssim drops to 0.9084 at frame 185** \u2014 precisely GT \u2014 against 0.9990 neighbours.\n// Testing whether ssim dip at GT is special\n\u2192 bash(cd /Users/nick/Desktop/yt-transition-shorts-detector && python3 - > .debug/260821-arrival/ssim185.txt 2>&1 <<'PY' \"\"\"ss\u2026) \u21d2 ok \u00b7 4 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3633,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ The user wants me to wait - but I need to continue the work. The advisory says stop issuing tools this turn and wait. But I also have a requirement to not yield while work remains.\nI see the stall overlay is fully verified and working\u2014those timeline bars, list buttons, and seek handlers are all in place with the right styling and ARIA labels. The frame-truth loading is still the blocker, though, since we're only hitting the index file right now.\nStall overlay is live on ios-yt-stalls. Frame-truth load is not: HTTP still only reads `runs-index.json`; F"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 4001,
+     "text": "_thinking:_ The user wants me to wait - but I need to continue the work. The advisory says stop issuing tools this turn and wait. But I also have a requirement to not yield while work remains.\nI see the stall overlay is fully verified and working\u2014those timeline bars, list buttons, and seek handlers are all in place with the right styling and ARIA labels. The frame-truth loading is still the blocker, though, since we're only hitting the index file right now.\nStall overlay is live on ios-yt-stalls. Frame-truth load is not: HTTP still only reads `runs-index.json`; FSA finds sessions via `metadata"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 156,
+     "text": "### Session update\n\n**agent**:\nMechanism fully verified: `:203` partitions on `SUPPORTED_EVENT_TYPES`, `:255` assigns `unsupported`, `:261` confirms it never flips `ok`. Now pulling the affected records.\n\u2192 eval(py) \u21d2 error \u00b7 1 line \u2014 Skipped due to pending system advisory. Do not count this skipped result as completed work or verification. After the a\u2026\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    }
+   ],
+   "D4": [
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 1840,
+     "text": "### Session update\n\n**agent**:\nConfirmed \u2014 the advisory is right. TASK.md's Phase 3 has **6 checklist items**, but the ledger only tracked 4 before my restoration (now 5). Missing entirely: \"Implement reproduction minimisation before promotion\" (line 167) and \"Implement flake classification and the 3-run tiebreak\" (line 168). Neither is covered by \"verification ladder + Sign->Find promotion\" \u2014 minimization and flake-tiebreak are distinct sub-mechanisms within the ladder, explicitly called out as separate checklist lines. Adding both now, before any implementation, so the full scope is tracked "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 2761,
+     "text": "### Session update\n\n**agent**:\nReading the elided ranges \u2014 the input schema, full scope controls, exact regex tables per pattern family, and the remainder past line 269.\n// Read inputs schema and full scope controls sections\n\u2192 read(/Users/nick/dev/hunter-seed-wt-hunter-v1-build/kit/plugin/skills/hunter-anti-mock/SKILL.md:38-66) \u21d2 ok \u00b7 40 lines\n\n\n---\n\n[in progress \u2014 more steps follow]"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 82,
+     "text": "_thinking:_ I have a clear picture. I need to write an experiment script that:\nI understand the full scope of the experiment you're outlining. I'll build the script to replicate the Phase-1 path exactly, enforce the specified control frames (2840, 2848, 2880, 2920, 2968) with no 'View' token, and run the four alternative pipelines on the 40-frame blast radius for videos 1aec67ac and f1dcc6d6. I'll also measure wall-clock time per frame and generate a report that includes both raw OCR words and grouped lines for each variant.\n\nTo ensure we stay aligned with the crop logic, I'll extract frames d"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 94,
+     "text": "_thinking:_ I have a clear picture. I need to write an experiment script that:\nI understand the full scope of the experiment you're outlining. I'll build the script to replicate the Phase-1 path exactly, enforce the specified control frames (2840, 2848, 2880, 2920, 2968) with no 'View' token, and run the four alternative pipelines on the 40-frame blast radius for videos 1aec67ac and f1dcc6d6. I'll also measure wall-clock time per frame and generate a report that includes both raw OCR words and grouped lines for each variant.\n\nTo ensure we stay aligned with the crop logic, I'll extract frames d"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 4832,
+     "text": "### Session update\n\n**agent**:\nConfirmed \u2014 imported at `:21`, instantiated at `:53`. **Scripts-only, not dead.** My earlier scan restricted to `src/`, which structurally cannot see `scripts/`. Same failure mode as the `LoadingToleranceFilter` \"absence\" earlier: a narrow search reported as a global fact.\n\nRecording the classification, then continuing the audit with correct scope.\n// Re-running reachability with full scope\n\u2192 bash(cd /Users/nick/Desktop/yt-transition-shorts-detector && for f in glm_ocr_engine remote_http_ocr v8_ocr engine_factory a\u2026) \u21d2 ok \u00b7 20 lines\n\n\n---\n\n[in progress \u2014 more ste"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-24",
+     "line": 11,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your full understanding of the food c"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-02",
+     "line": 8,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine the current skills, evals, com"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-27",
+     "line": 9,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your full understanding of the food c"
+    },
+    {
+     "store": "omp",
+     "file": "2026-08-24",
+     "line": 11,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your full understanding of the food c"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-01",
+     "line": 87,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully\n understand the commits and all the different things that go into this plugin, as well as just some\n of the skills, and improve it, and basically, it looks like the install script isn't actually\n properly working correctly, and so you should only have one massive skill that basically the head\n will link with everything else up correctly. And according to that, then you'll actually move\n forward with whatever happens next. And so, first gain your full understanding of the f"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-01",
+     "line": 210,
+     "text": "Activate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully\n understand the commits and all the different things that go into this plugin, as well as just some\n of the skills, and improve it, and basically, it looks like the install script isn't actually\n properly working correctly, and so you should only have one massive skill that basically the head\n will link with everything else up correctly. And according to that, then you'll actually move\n forward with whatever happens next. And so, first gain your full understanding of the f"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-02",
+     "line": 8,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine the current skills, evals, com"
+    },
+    {
+     "store": "omp",
+     "file": "2026-09-02",
+     "line": 7,
+     "text": "Activate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine the current skills, evals, com"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\n<attachment>\n\n# Proofpunk v3.0.0 -- Discovery-First Reconstruction, Then the Gauged Improvement Program\n\n<task>\nShip Proofpunk v3.0.0 from `krzemienski/proofpunk` (default branch `main`, HEAD `a41591a`, manifests at `2.2.0`). The work has a hard front half and a hard back half, in this order:\n\n1. **Front half (read-only, Phases 0-4):** resolve every unknown in the source transcripts by evidence; mine every prior session for original intent; absorb the multi-host documentation canon for what a *skill* is; examine "
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your fu"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your fu"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 25,
+     "text": "### Session update\n\n**agent**:\n_thinking:_ The user wants me to do a SCOPE lens review of 05-gated.md after loop-5 edits. Let me carefully verify each of the assigned checks:\nThe SCOPE lens review for 05-gated.md after loop-5 edits is clean across every check. All per-phase file lists stay at or below five, with no unowned deliverables. The VG-P3 drill slots remain pure gate artifacts, P6M adds nothing, and P7\u2019s refusal guard lives entirely in evidence behavior. P5 stays the sole modal owner, G-15 overflow rule is untouched (including the exact c1..c4 cell pin), and v1.0 ceiling is still in pl"
+    },
+    {
+     "store": "omp",
+     "file": "__advisor.",
+     "line": 3,
+     "text": "### Session update\n\n**user**:\nActivate the `implement` skill and run it against:\n\nSo, currently, we need to do a lot of work on it, and we need to fully understand the commits and all the different things that go into this plugin, as well as just some of the skills, and improve it, and basically, it looks like the install script isn't actually properly working correctly, and so you should only have one massive skill that basically the head will link with everything else up correctly. And according to that, then you'll actually move forward with whatever happens next. And so, first gain your fu"
+    },
+    {
+     "store": "omp",
+     "file": "A1Discover",
+     "line": 7,
+     "text": "Complete assignment thoroughly:\n\n# Target\nOutput: `evidence/v3-release/00-discovery/a1-discovery-register.md`\n\n# Change\nResolve discovery unknowns D1, D2, D3, D4, D9 by evidence.\n\n- D1 \"the two e prompt\": grep the whole tree (including untracked), all branches (`git branch -a`), all tags (`git tag`), and every commit body (`git log --all --format=%B`) for: `e2e prompt`, `two prompt`, `2e`, `E2`, `ship-below-threshold`, `forge`, `rate`. Enumerate every prompt-facing artifact: `plugins/proofpunk/skills/prompt-forge/**`, `commands/forge-prompt.md`, `commands/rate-prompt.md`, both OpenCode mirrors"
+    }
+   ]
+  }
+ },
+ "opencode": {
+  "files": 0,
+  "operator_turns": 0,
+  "counts": {
+   "D8": 0,
+   "D1": 0,
+   "D2": 0,
+   "D4": 0
+  },
+  "hits": {
+   "D8": [],
+   "D1": [],
+   "D2": [],
+   "D4": []
+  }
+ }
+}

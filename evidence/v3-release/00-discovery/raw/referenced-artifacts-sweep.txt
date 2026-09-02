@@ -1,0 +1,182 @@
+guides_scanned=51 distinct_refs=296 unresolved=60
+
+.code-task.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+.omp/AGENTS.md
+  cited_by: ['plugins/proofpunk/docs/invocation-contracts.md']
+  basename_found: ['AGENTS.md', 'tools/AGENTS.md', 'evidence/AGENTS.md']
+.prompts/onboarding/NN-stage/PROMPT.md
+  cited_by: ['README.md']
+  basename_found: NONE
+NAME.md
+  cited_by: ['README.md', 'plugins/proofpunk/docs/usage-guide.md', 'plugins/proofpunk/skills/prompt-forge/SKILL.md']
+  basename_found: NONE
+NAME.optimized.md
+  cited_by: ['README.md', 'plugins/proofpunk/docs/validation-results.md', 'plugins/proofpunk/skills/prompt-forge/SKILL.md']
+  basename_found: NONE
+NAME.prompt.md
+  cited_by: ['plugins/proofpunk/docs/validation-results.md', 'plugins/proofpunk/skills/prompt-forge/SKILL.md']
+  basename_found: NONE
+NAME.rating.md
+  cited_by: ['README.md', 'plugins/proofpunk/docs/usage-guide.md', 'plugins/proofpunk/docs/validation-results.md', 'plugins/proofpunk/skills/prompt-forge/SKILL.md']
+  basename_found: NONE
+NAME.remediated.md
+  cited_by: ['README.md', 'plugins/proofpunk/docs/usage-guide.md', 'plugins/proofpunk/docs/validation-results.md', 'plugins/proofpunk/skills/prompt-forge/SKILL.md']
+  basename_found: NONE
+RULES.md
+  cited_by: ['plugins/proofpunk/docs/invocation-contracts.md']
+  basename_found: NONE
+SUMMARY.md
+  cited_by: ['plugins/proofpunk/skills/prompt-forge/SKILL.md']
+  basename_found: NONE
+__main__.py
+  cited_by: ['plugins/proofpunk/references/cli-validation.md']
+  basename_found: NONE
+a-sql-review-prompt.prompt.md
+  cited_by: ['README.md']
+  basename_found: NONE
+api/web/cli/ios-validation.md
+  cited_by: ['plugins/proofpunk/skills/implement/SKILL.md']
+  basename_found: ['plugins/proofpunk/references/ios-validation.md']
+build-quality-gates/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+code-task-generator/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+cook/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+create-meta-prompts/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+create-validation-plan/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+deepen-prompt-plan/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+e2e-validate/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+e2e-validate/templates/verdict.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md', 'plugins/proofpunk/docs/validation-results.md']
+  basename_found: ['e2e-evidence/run-sdk-probes/verdict.md', 'e2e-evidence/run-20260902T071258-plugin-parity/verdict.md', 'e2e-evidence/run-flag-drift/verdict.md']
+evaluate-session.sh
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+fresh-evidence.sh
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+fresh-evidence/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+full-ui-experience-audit/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+functional-validation/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+gate-validation-discipline/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+harden-plan/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+ios-validation-runner/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+login.md
+  cited_by: ['README.md']
+  basename_found: NONE
+login.optimized.md
+  cited_by: ['README.md']
+  basename_found: NONE
+login.rating.md
+  cited_by: ['README.md']
+  basename_found: NONE
+login.remediated.md
+  cited_by: ['README.md']
+  basename_found: NONE
+marketplace.json
+  cited_by: ['plugins/proofpunk/docs/validation-results.md']
+  basename_found: NONE
+no-mocking-validation-gates/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+optimize-prompt/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+package-lock.json
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+package_skill.py
+  cited_by: ['plugins/proofpunk/docs/validation-results.md']
+  basename_found: NONE
+plugin-marketplace-overview.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+plugin-marketplace-schema.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+plugin-marketplaces.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+plugin.json
+  cited_by: ['plugins/proofpunk/docs/validation-results.md']
+  basename_found: NONE
+plugins-reference.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+plugins.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+preflight/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+prompt-enhancer/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+prompt-factory/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+quick_validate.py
+  cited_by: ['plugins/proofpunk/docs/validation-results.md']
+  basename_found: NONE
+ref-skill-inventory.json
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+report.md
+  cited_by: ['plugins/proofpunk/references/evidence-contract.md']
+  basename_found: NONE
+review.md
+  cited_by: ['README.md']
+  basename_found: NONE
+settings.json
+  cited_by: ['README.md', 'plugins/proofpunk/docs/architecture.md', 'plugins/proofpunk/docs/improvements.md', 'tools/AGENTS.md']
+  basename_found: NONE
+setup.py
+  cited_by: ['plugins/proofpunk/references/cli-validation.md']
+  basename_found: NONE
+skill-creator/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+skill-inventory.json
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: NONE
+skills/functional-validation/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/validation-results.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+src/api/users.ts
+  cited_by: ['plugins/proofpunk/skills/brainstorm/SKILL.md']
+  basename_found: NONE
+transform-validation-prompt/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+validate-phase/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']
+verification-before-completion/SKILL.md
+  cited_by: ['plugins/proofpunk/docs/consolidation-decisions.md']
+  basename_found: ['plugins/proofpunk/skills/stack-testing/SKILL.md', 'plugins/proofpunk/skills/mobile-validation-runner/SKILL.md', 'plugins/proofpunk/skills/plan-hardening/SKILL.md']

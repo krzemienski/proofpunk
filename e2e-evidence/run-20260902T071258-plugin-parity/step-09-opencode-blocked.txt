@@ -1,0 +1,1 @@
+opencode run FAILED: invalid x-api-key (auth) — discovery proven via debug skill, invocation UNVERIFIED

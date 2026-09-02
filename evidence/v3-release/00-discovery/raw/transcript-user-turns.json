@@ -1,0 +1,32 @@
+{
+ "files_scanned": 97,
+ "user_turns": 188,
+ "counts": {
+  "D8": 3,
+  "D1": 0,
+  "D2": 0,
+  "D4": 0
+ },
+ "hits": {
+  "D8": [
+   {
+    "file": "06c7e4d4",
+    "line": 27,
+    "text": "Base directory for this skill: /Users/nick/proofpunk/plugins/proofpunk/skills/proofpunk\n\n# ProofPunk \u2014 Plugin Router\n\n## Run checklist\n\n- [ ] Classify the request: design, build, audit, bug, or proof ask\n- [ ] Pick the single best-fit skill (or shortest ordered chain)\n- [ ] Hand off \u2014 quote the ask, do not restate the target skill's method\n- [ ] If nothing fits, say so rather than forcing a match\n\n## Why a router\n\n17 narrow skills, each cross-referencing neighbors in its own \"Not for...\"\nclause \u2014 enough once inside one skill's context, not enough cold. This is\nthe one lookup before the 17 file"
+   },
+   {
+    "file": "7ef8f501",
+    "line": 28,
+    "text": "Base directory for this skill: /Users/nick/proofpunk/plugins/proofpunk/skills/proofpunk\n\n# ProofPunk \u2014 Plugin Router\n\n## Run checklist\n\n- [ ] Classify the request: design, build, audit, bug, or proof ask\n- [ ] Pick the single best-fit skill (or shortest ordered chain)\n- [ ] Hand off \u2014 quote the ask, do not restate the target skill's method\n- [ ] If nothing fits, say so rather than forcing a match\n\n## Why a router\n\n17 narrow skills, each cross-referencing neighbors in its own \"Not for...\"\nclause \u2014 enough once inside one skill's context, not enough cold. This is\nthe one lookup before the 17 file"
+   },
+   {
+    "file": "ddc05cc4",
+    "line": 27,
+    "text": "Base directory for this skill: /Users/nick/proofpunk/plugins/proofpunk/skills/proofpunk\n\n# ProofPunk \u2014 Plugin Router\n\n## Run checklist\n\n- [ ] Classify the request: design, build, audit, bug, or proof ask\n- [ ] Pick the single best-fit skill (or shortest ordered chain)\n- [ ] Hand off \u2014 quote the ask, do not restate the target skill's method\n- [ ] If nothing fits, say so rather than forcing a match\n\n## Why a router\n\n17 narrow skills, each cross-referencing neighbors in its own \"Not for...\"\nclause \u2014 enough once inside one skill's context, not enough cold. This is\nthe one lookup before the 17 file"
+   }
+  ],
+  "D1": [],
+  "D2": [],
+  "D4": []
+ }
+}
