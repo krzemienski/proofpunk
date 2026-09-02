@@ -58,5 +58,29 @@ Execution-first delivery plugin for Claude Code, oh-my-pi (OMP), and OpenCode: 1
 ### External
 
 - No runtime dependencies — the installed plugin is markdown, JSON, and shell. Build-time tooling needs Bash, Python 3, and PyYAML (`build-site.py` frontmatter parsing); optional `mmdc` (mermaid-cli) for diagram pre-rendering.
-
 <!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+
+<!-- proofpunk:begin -->
+## Proof contract (proofpunk)
+
+- Done means proven by end-user testing: drive the real system as the end
+  user, capture run-scoped evidence, cite it by full path. Unexecuted =
+  UNVERIFIED, never PASS.
+- No mocks, stubs, or placeholder implementations. Malformed input fails
+  clearly and safely. Secrets never enter evidence directories.
+- Load proofpunk doctrine (`plugins/proofpunk/references/`) on demand with
+  the read tool — do not preload it here.
+
+## Commands
+
+- Test: `bash tools/test-hooks.sh`, `bash tools/dry-run-install.sh`,
+  `python3 tools/verify-orchestration.py`
+- Build: `python3 tools/build-site.py` (docs), `python3 tools/generate-themes.py` (themes)
+- Proof runs: `/proofpunk:verify` before any completion claim;
+  `/proofpunk:implement "<goal>"` for multi-step work.
+
+## Project
+
+- proofpunk — read README.md for overview.
+<!-- proofpunk:end -->
+

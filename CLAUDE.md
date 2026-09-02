@@ -22,3 +22,25 @@ Known recurring failure — sweep after changing the skill set or version:
 - stale skill/command counts and version strings in
   `plugins/proofpunk/package.json`, `README.md`, `tools/INSTALL.md`, and
   the page sources inside `tools/build-site.py` (see commits 2953547, 7958498)
+
+<!-- proofpunk:begin -->
+## Proof contract (proofpunk)
+
+- Done means proven by end-user testing: drive the real system as the end
+  user, capture run-scoped evidence, cite it by full path. Unexecuted =
+  UNVERIFIED, never PASS.
+- No mocks, stubs, or placeholder implementations. Malformed input fails
+  clearly and safely. Secrets never enter evidence directories.
+
+## Commands
+
+- Test: `bash tools/test-hooks.sh` (also `bash tools/dry-run-install.sh`,
+  `python3 tools/verify-orchestration.py`)
+- Build: `python3 tools/build-site.py` (docs), `python3 tools/generate-themes.py` (themes)
+- Proof runs: `/proofpunk:verify` before any completion claim;
+  `/proofpunk:implement "<goal>"` for multi-step work.
+
+## Project
+
+- proofpunk — see @README.md for overview.
+<!-- proofpunk:end -->
