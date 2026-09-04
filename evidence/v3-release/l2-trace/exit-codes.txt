@@ -1,0 +1,11 @@
+Exit codes recorded SEPARATELY from stdout/stderr (subprocess.run capture_output,
+never a shell pipe -- no `| tee` / `| grep` stage that could mask the real rc).
+
+arm0_baseline                      rc=0
+arm1_mutated_missing_field         rc=2
+arm1_restored                      rc=0
+arm2_mutated_broken_json           rc=2
+arm2_restored                      rc=0
+arm3_mutated_wrong_schema_version  rc=2
+arm3_restored_final                rc=0
+final_reconcile                    rc=0

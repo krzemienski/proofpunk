@@ -1,0 +1,94 @@
+VENDORED-VS-BROKEN VERDICT: plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-*.md
+======================================================================================================
+
+CLAIM: the 23 unresolved citations in xc-mcp-*.md files are broken PROOFPUNK
+doctrine citations that should be fixed by bundling more files.
+
+FINDING: FALSE. They are vendored pass-through content citing a FOREIGN
+upstream project's OWN internal directory layout. Rewriting or "fixing"
+them by bundling proofpunk-local files at those paths would CORRUPT
+correct vendored content, not repair it.
+
+EVIDENCE
+--------
+1. Every one of the 12 provenance-header hits (line 1 of each xc-mcp-*.md
+   and simctl-command-reference.md, and 5 more in root-cause-debugging's
+   expert-*.md files) opens with an explicit machine-readable attribution
+   line, e.g.:
+
+     xc-mcp-tool-reference.md:1
+       > Incorporated from the `xc-mcp` skill (references/tool-reference.md).
+
+     simctl-command-reference.md:1
+       > Incorporated from the `ios-simulator-control` skill (references/reference.md).
+
+     expert-debugging-mindset.md:1
+       > Incorporated from the `debug-like-expert` skill (references/debugging-mindset.md).
+
+   This is the SAME pattern used by every bundled-content skill in this
+   repo (mobile-validation-runner, root-cause-debugging): a one-line
+   "Incorporated from `<donor-skill>` (references/<donor-relative-path>)"
+   header that documents WHERE the content came from — a citation to the
+   DONOR skill's own references/ directory, in the DONOR's namespace, not
+   a citation into proofpunk's own doctrine tree. The donor skills
+   (`xc-mcp`, `ios-simulator-control`, `debug-like-expert`) do not exist
+   anywhere in this repo (confirmed: `git log --all --diff-filter=A` for
+   paths matching any of the three donor skill names returns zero commits)
+   — they were merged content, never siblings. The provenance path is
+   therefore inherently unresolvable in THIS repo by design: it documents
+   foreign provenance, not a local link.
+
+2. The remaining 11 hits are `<required_reading>` blocks inside the
+   xc-mcp-workflow-*.md files, e.g. xc-mcp-workflow-build-project.md:16-17:
+
+     <required_reading>
+     **Read these reference files NOW:**
+     1. references/tool-reference.md
+     2. references/progressive-disclosure.md
+     </required_reading>
+
+   These are INSTRUCTIONS TO THE READER inside vendored workflow content —
+   they tell an agent reading the upstream xc-mcp tool "go read
+   references/tool-reference.md" using the UPSTREAM PROJECT's OWN relative
+   path convention (bare `references/X.md`, sibling to the workflow file,
+   exactly matching how `xc-mcp.md`'s own `<reference_index>` describes its
+   layout at lines 185-191: "All domain knowledge in `references/` (bundled
+   here as `xc-mcp-*.md`)"). The prose is talking about the UPSTREAM tool's
+   references/ directory as the upstream tool would have organized it, not
+   about proofpunk's local `mobile-validation-runner/references/` bundle.
+   The depth-normalization the installer performs (proofpunk-install.sh:297-298,
+   the "bare-name inside references/" rewrite) is EXACTLY the mechanism that
+   would make these resolve once bundled at install time under the OLD
+   (already-suspect) install-time-repair flow — which is precisely the
+   behavior this gate exists to stop trusting, because it repairs the
+   SYMPTOM (an unresolvable path) without checking whether the citation was
+   ever meant to resolve inside THIS repo tree in the first place.
+
+3. Cross-check: `xc-mcp.md`'s own `<reference_index>` (lines 185-191) lists
+   the SAME six names (tool-reference.md, operation-enums.md,
+   accessibility-patterns.md, progressive-disclosure.md, plus two NOT
+   bundled at all: optimal-login-flow.md, testing-patterns.md) as living in
+   "references/" — i.e. the xc-mcp skill's own documentation of its own
+   layout is the source these citations were copy-pasted from, unedited,
+   during incorporation into mobile-validation-runner.
+
+CONCLUSION
+----------
+Do not fix these 23 by bundling proofpunk-local content at those paths —
+there is no proofpunk-local content to bundle; the paths refer to donor
+files not present in this repo. Two legitimate remediation paths exist for
+a future change (NOT performed by this script, which only reports):
+  (a) rewrite the citations to plain prose ("see the upstream xc-mcp tool's
+      own tool-reference.md") so they stop looking like resolvable local
+      paths, or
+  (b) leave them as-is and teach `verify-citations.py --explain-vendor`'s
+      reasoning into a permanent allowlist/comment so future readers do not
+      re-litigate this.
+This script deliberately does NEITHER — it reports them as WARN (not
+ERROR) precisely because misclassifying vendored provenance text as a
+repo-breaking defect is the wrong failure mode for a gate meant to be
+adopted without false alarms.
+
+
+
+rc=0

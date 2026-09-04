@@ -1,0 +1,6 @@
+# rc=2
+# --- stdout ---
+# --- stderr ---
+INVALID: /Users/nick/proofpunk/evidence/v3-release/l2-trace/proof-run.jsonl -- 2 problem(s):
+  - line 1: WRONG SCHEMA_VERSION -- got '2.7', supported ['1.0']
+  - line 1: HASH CHAIN BROKEN -- expected fe218a35b776cb876d427c09207a189fffd5533918eaeaa67e889d56b9ee18cb, got 1a70b62de10d7d65f2242b052eb44fa4a2834268397663d8ee2cba0aafdd3765 (this line's content or an earlier line was altered after being written)

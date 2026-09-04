@@ -10,7 +10,8 @@ description: >
   transport-envelope traps, and per-run secret scans. Use when validating a
   TUI/CLI-interactive feature, when a gate drives a terminal app, or when
   'prove the TUI works' is the ask. Not for web UIs (use web-validation via
-  the implement validation phase) or non-interactive CLIs (use `references/cli-validation.md`).
+  the implement validation phase) or non-interactive CLIs (use
+  `../../references/cli-validation.md`).
 ---
 
 # TUI Testing — Terminal UI End-User Proof

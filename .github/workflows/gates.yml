@@ -2,17 +2,23 @@
 #
 # The orchestration DAG has drifted silently before; verify-orchestration.py
 # caught it only because someone remembered to run it by hand. This workflow
-# makes forgetting impossible: all four gates run on every push and PR.
+# makes forgetting impossible: all seven gates run on every push and PR.
 #
 # Doctrine: never pipe a command whose exit code is reported. Every gate below
 # runs unpiped as its own named step, so a failure names itself in the UI and
 # the step's own exit code fails the job.
 #
-# All four gates are hermetic: no network, no secrets, no external deps —
+# All seven gates are hermetic: no network, no secrets, no external deps —
 # bash + python3 (stdlib) + coreutils only. test-installer.sh and test-hooks.sh
 # isolate themselves in mktemp scratch dirs and scratch HOMEs; every installer
 # invocation in the harness passes a local --source-dir, so the installer's
 # GitHub-download branch is never exercised here.
+#
+# NOT run here, deliberately: tools/sdk_probe.py. It drives a live Claude Agent
+# SDK session, so it needs network and credentials and is neither hermetic nor
+# deterministic. Its absence is a known coverage gap, not an oversight — no CI
+# run exercises a live model session against this plugin. Recorded in
+# evidence/v3-release/00-baseline/codebase-analysis.md rather than papered over.
 
 name: gates
 
@@ -47,14 +53,39 @@ jobs:
             bash -n "$f"
           done
 
-      - name: "Gate 1/4: verify-orchestration.py (skill graph DAG)"
+      - name: "Gate 1/7: verify-orchestration.py (skill graph DAG)"
         run: python3 tools/verify-orchestration.py
 
-      - name: "Gate 2/4: test-hooks.sh (hook decision assertions)"
+      - name: "Gate 2/7: test-hooks.sh (hook decision assertions)"
         run: bash tools/test-hooks.sh
 
-      - name: "Gate 3/4: test-installer.sh (real installer harness)"
+      - name: "Gate 3/7: test-installer.sh (real installer harness)"
         run: bash tools/test-installer.sh
 
-      - name: "Gate 4/4: dry-run-install.sh (slash-command merge logic)"
+      - name: "Gate 4/7: dry-run-install.sh (slash-command merge logic)"
         run: bash tools/dry-run-install.sh
+
+      # Repo-tree citation resolution. The installer's own --verify CANNOT see
+      # these: it rewrites citations and bundles with an optional
+      # `(references/)?` prefix, so a broken repo citation is repaired during
+      # install and then verified in its repaired form. Default mode fails on
+      # ERROR only (unresolved citation in a top-level SKILL.md); the 29 known
+      # bundled-reference warns are a frozen baseline so growth cannot be silent.
+      - name: "Gate 5/7: verify-citations.py (repo-tree citation resolution)"
+        run: python3 tools/verify-citations.py
+
+      # Meta-gate: every harness must actually invoke its declared subject.
+      # dry-run-install.sh was once labelled the installer's harness while
+      # invoking it zero times, producing zero installer coverage beside three
+      # green gates and five real defects (5e5150b).
+      - name: "Gate 6/7: verify-harness-integrity.py (harnesses invoke subjects)"
+        run: python3 tools/verify-harness-integrity.py
+
+      # Gauge board. Exits non-zero while any gauge is unmet or its evidence
+      # does not resolve, so an unmet gauge cannot be reported as a pass. This
+      # gate is EXPECTED to fail until the v3 lanes land — continue-on-error
+      # keeps it visible and advisory without blocking unrelated work, and it
+      # must be flipped to blocking before the v3.0.0 tag.
+      - name: "Gate 7/7: gauge-report.py (advisory until v3 lanes land)"
+        continue-on-error: true
+        run: python3 tools/gauge-report.py

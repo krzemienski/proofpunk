@@ -1,0 +1,12 @@
+gauge-report: 3/8 gauges PASS
+  wrote gauge-report.md
+  wrote gauge-report.json
+  [PASS] #1 (L12) Skills passing spec basics (name/desc/fields): 18/18
+  [UNMET] #7 (L10) Total description chars vs 1,536-char listing budget: 13955 vs 1536 (9.1x)
+  [UNMEASURED] #8 (L10) Median skill body size (context-economy proxy): 6186 bytes
+  [PASS] #2 (L4) stop-guard scout-substring false-PASS closed, mutation-proven: baseline=48 mutated=47 restored=48 byte_identical=True
+  [UNMET] #3 (L1) Unresolved repo-tree citations (name/desc/fields resolve relative to citing file): 29 unresolved (top-level: 0)
+  [UNMET] #4 (L16) Commands proven end-to-end at the real slash-command surface: 0/6
+  [PASS] #5 (L2/L3) Release gates: all exit 0, exit codes captured separately from stdout: test-hooks.sh=0, test-installer.sh=0, dry-run-install.sh=0, verify-orchestration.py=0
+  [UNVERIFIED] #6 (L14) Skill count (ground truth, derived not restated): None
+VERDICT: FAIL — 5/8 gauge(s) not PASS

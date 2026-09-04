@@ -1,0 +1,6 @@
+# rc=2
+# --- stdout ---
+# --- stderr ---
+INVALID: /Users/nick/proofpunk/evidence/v3-release/l2-trace/proof-run.jsonl -- 2 problem(s):
+  - line 8: MALFORMED JSON -- Unterminated string starting at: line 1 column 386 (char 385) -- raw: '{"schema_version":"1.0","run_id":"run-20260904T054443-l2-trace-proof","ts":"2026-09-04T06:15:57.926Z","event":"verdict","stage":"gates.test-installer","skill":"test-installer.sh","agent_id":"TraceSubs'
+  - line 9: HASH CHAIN BROKEN -- expected 48ecba83c0e73b8abceb746ecb5b95262f182769360762474d3a9a61acd3afac, got 5ff7af83efcdca0b766b34263b642c7cb7573f97befdf1e08fc79a82946ea36d (this line's content or an earlier line was altered after being written)

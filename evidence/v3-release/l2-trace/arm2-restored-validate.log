@@ -1,0 +1,4 @@
+# rc=0
+# --- stdout ---
+VALID: /Users/nick/proofpunk/evidence/v3-release/l2-trace/proof-run.jsonl -- 15 event(s), run_id=run-20260904T054443-l2-trace-proof, hash chain intact
+# --- stderr ---

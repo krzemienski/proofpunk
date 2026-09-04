@@ -1,5 +1,26 @@
 # Proofpunk v1.10.0 — Hooks + `/proofpunk:install` — Measured Improvement Report (Round 3, 2026-08-13)
 
+> **SUPERSEDED 2026-09-04 — historical record, retained intact.**
+>
+> Every number below was **correct when measured on 2026-08-13 against
+> v1.10.0**. Several no longer describe the repository. This notice exists so
+> the figures are not cited as current; the original text is left unedited
+> below, per the `7adf7ba` precedent (supersede with a dated notice, never
+> rewrite the record).
+>
+> | Row | Stated here (v1.10.0) | Measured at HEAD `9963648`, 2026-09-04 |
+> |---|---|---|
+> | Hook events covered | 5 | **7** event keys, **11** registrations across **9** distinct scripts |
+> | Commands (claude + opencode) | 7+7 | **6+6** |
+> | Orchestration graph | closed @ 19 skills | closed @ **18** skills |
+>
+> The 19→18 and 7+7→6+6 movements are real removals, not drift: `cook` and
+> `functional-validation` were deliberately retired, and the `install`
+> command's count was folded accordingly. Current values derive from
+> `evidence/v3-release/00-discovery/d6-d7-measurement.md` and
+> `evidence/v3-release/00-discovery/d5-d6-closure.md`, both measured from
+> disk rather than restated from prose.
+
 Basis: external research (Claude Code hooks reference, anthropics hook-development
 skill, claude-mem hook architecture, current CLAUDE.md guidance), then design
 (`plugins/proofpunk/docs/hooks-and-init-design.md`), then implementation, then

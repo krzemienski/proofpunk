@@ -1,0 +1,5 @@
+# rc=2
+# --- stdout ---
+# --- stderr ---
+INVALID: /Users/nick/proofpunk/evidence/v3-release/l2-trace/proof-run.jsonl -- 1 problem(s):
+  - line 15: MISSING FIELD(S) ['hash'] (record has ['agent_id', 'artifact', 'cost', 'decision', 'event', 'parent_id', 'run_id', 'schema_version', 'skill', 'stage', 'ts'])

@@ -1,13 +1,27 @@
-# Discovery Register — Phase 0 (DRAFT — Phase 0 NOT complete)
+# Discovery Register — Phase 0 (FINAL)
 
 One row per unknown: resolution, evidence path, confidence. Unresolved entries
-stay visible. Measured 2026-09-02 against `/Users/nick/proofpunk` @ `a41591a`.
+stay visible. Measured 2026-09-02 against `/Users/nick/proofpunk` @ `a41591a`;
+closed 2026-09-04 against HEAD `9963648`.
 
-**Status: DRAFT.** Phase 0 is not closed. Open at the time of writing:
-D1/D2 are medium-confidence prior-agent interpretations with no operator
-corroboration; D5's explicit named-artifact inventory is incomplete; D9b/D9c
-are unresolved; several Setup items (lane-skill activation) are still pending.
-Nothing downstream may cite this file as a completed phase gate.
+**Status: FINAL.** Phase 0 is closed. Every item is either resolved with an
+evidence path, or recorded unresolved with what was tried. Closure record:
+
+| Item | Was | Now | Closed by |
+|---|---|---|---|
+| D1 / D2 | medium, OPEN | **medium, CLOSED as interpretation** — Phase 1 mining independently re-derived the same conclusion instead of inheriting it: zero genuine operator turns corroborate the artifact mapping. The interpretation stands, explicitly labelled as such, and is *not* reported as evidence-resolved. | `docs/session-intent-ledger.md` |
+| D5 | PARTIAL, OPEN | **RESOLVED (high)** — explicit inventory, 26/26 named artifacts located by enumeration, not by grep heuristic. | `evidence/v3-release/00-discovery/d5-d6-closure.md` |
+| F-D6-4 | asserted | **CONFIRMED by independent re-derivation** — 7 event keys / 11 registrations / 9 distinct scripts, walked programmatically from `hooks.json`. Zero unregistered files, zero missing scripts. | same |
+| D9b / D9c | low-medium, OPEN | **UNRESOLVED — recorded with attempts, never guessed.** Unattested across the tree, 97 Claude session files, and 7,320 OMP session files. No further source is known to exist; only the operator can resolve these. | `d9-and-artifact-checklist.md` |
+
+Two findings were **refuted** by measurement during closure, and neither
+should generate remediation work:
+
+- The work order's "9 script registrations" is wrong; the repo is right (11).
+- The work order's flagged risk that the head's folded `description: >` block
+  might breach the 1024-char ceiling does not exist: `proofpunk` has the
+  *shortest* description of all 18 (718 chars). See
+  `evidence/v3-release/00-baseline/description-budget-baseline.md`.
 
 Confidence rule used throughout: only text an **operator actually typed or
 dictated** is primary evidence. Assistant-authored text delivered to a
@@ -53,12 +67,37 @@ Each was a near-miss that would have produced a false finding:
 5. **`grep` found no matches ≠ absence** — `test-hooks.sh` resolves scripts through `$HOOKS`, so a literal-string count reported 0 for a harness that invokes all 9.
 6. **A `role=user` envelope is not an operator turn** — the strongest-looking D1/D2 evidence was an assistant-authored task assignment; downgraded to medium.
 
-## What must close before Phase 0 is complete
+## Closure status (was: "what must close before Phase 0 is complete")
 
-- **D1/D2** — search operator turns for any corroboration of the
-  `.planning/proofpunk-agent.prompt.md` mapping (carried into Phase 1 mining).
-- **D5** — explicit named-artifact inventory verified in context, not by
-  parser heuristic (Phase 3 end-to-end read).
-- **D9b/D9c** — remain unresolved with what was tried recorded; no further
-  source is known to exist.
-- **Setup** — lane-skill activation and the MCP/skill inventory row.
+- **D1/D2 — CLOSED as interpretation.** Phase 1 mining searched the operator
+  turns programmatically and found no corroboration for the
+  `.planning/proofpunk-agent.prompt.md` mapping. Critically, that lane
+  re-derived the conclusion independently rather than inheriting this file's
+  ruling. The mapping remains the leading hypothesis at medium confidence,
+  labelled an agent interpretation, and is **not** reported as
+  evidence-resolved. L18 proceeds on the standing fallback
+  (`/proofpunk:forge-prompt` + `/proofpunk:rate-prompt` over `prompt-forge`).
+- **D5 — CLOSED (high).** 26/26 named artifacts located by explicit
+  enumeration over the product tree, replacing the earlier parser heuristic.
+  Confirms F-D6-1: `fresh_evidence.py` is skill-owned, not in `tools/`.
+- **D9b/D9c — UNRESOLVED, recorded with attempts.** No further source is
+  known to exist. Only the operator can resolve these; they are reported as
+  honest open items rather than replaced by a guess.
+- **Setup — CLOSED.** Tool inventory recorded in
+  `evidence/v3-release/00-baseline/tool-inventory.md`; lane skills activated
+  for this run (`implement` as the write path, with `session-intent`,
+  `codebase-truth-audit`, `root-cause-debugging`, `end-user-testing`,
+  `red-team-eval`, `plan-hardening`, `prompt-forge` per lane).
+
+### Carried forward as open items (not Phase 0 blockers)
+
+- **Lane B execution** stays BLOCKED on an exact operator token
+  (`APPROVE BARRIER DELTA` / `REJECT BARRIER DELTA` / `STOP`). Mining it was
+  authorized and is done; verifying or validating it is not possible without
+  the token. Delegated judgment was attempted twice in prior sessions and
+  retracted both times as fabricated authority — it is not attempted again.
+- **`shellcheck` is absent on this host** (F-T1), so L5's lint lane cannot run
+  as written; it needs an install, a vendored copy, or an explicit recorded
+  exception.
+- **`jq` resolves to `jaq 2.3.0`**, not GNU jq (F-T2); any harness assuming
+  GNU semantics is untested here.

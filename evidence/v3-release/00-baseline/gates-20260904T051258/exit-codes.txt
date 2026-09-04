@@ -1,0 +1,4 @@
+test-hooks.sh rc=0
+test-installer.sh rc=0
+dry-run-install.sh rc=0
+verify-orchestration.py rc=0

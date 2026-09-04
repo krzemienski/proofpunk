@@ -1,0 +1,133 @@
+usage: verify-harness-integrity.py [-h] [--root ROOT]
+
+Assert every harness in tools/ actually invokes the subject it claims to test. See the module docstring (python3 -m pydoc, or read the top of this file) for the full declaration convention and detection method.
+
+options:
+  -h, --help   show this help message and exit
+  --root ROOT  repo root to check (default: parent of this script's tools/
+               dir); point this at a sandbox copy to run a mutation test
+               without touching the real tools/ files
+
+verify-harness-integrity.py — L16 meta-gate: proves every harness in
+tools/ actually INVOKES the subject it claims to test, instead of trusting
+its label or docstring.
+
+WHY THIS EXISTS (the defect it retires)
+----------------------------------------
+`tools/dry-run-install.sh` was labelled the installer dry-run harness in
+`tools/AGENTS.md` but never invoked `tools/proofpunk-install.sh` at all
+(a literal grep for "proofpunk-install.sh" inside it returned 0 hits).
+Three gates showed green (test-hooks.sh, dry-run-install.sh,
+verify-orchestration.py) alongside five real installer defects, because
+nothing checked whether the harness *claiming* installer coverage actually
+exercised the installer (commit 5e5150b). This script is that check.
+
+DECLARATION CONVENTION (how a harness tells this gate what it covers)
+-----------------------------------------------------------------------
+Two ways a harness in tools/ can be "declared", checked in this order:
+
+  1. INLINE TAG — a single-line comment anywhere in the first 60 lines of
+     the harness source, of the form:
+
+     start the line with `#`, then the literal token `PP-HARNESS-SUBJECT`
+     followed by a colon, then space-separated `key=value` pairs for
+     `kind`, `subjects` (comma-joined basenames/tokens), and `keywords`
+     (comma-joined invocation-keyword tokens). (Deliberately not shown as
+     a literal matching example line in this docstring — this file is
+     itself scanned by HARNESS_NAME_RE/TAG_RE and a literal example line
+     here would self-tag with a bogus `kind`. See the real declaration
+     for this file's own subject a few lines below the MANIFEST list.)
+
+     `kind` is one of: shell_script_subjects | shell_file_subjects |
+     python_file_level | python_file_level_literal (see DETECTION METHOD
+     below for what each means). `subjects` is a comma-separated list of
+     literal basenames/tokens the harness must invoke. `keywords` is a
+     comma-separated list of invocation-keyword tokens (command names for
+     shell kinds, call-site substrings for python kinds); may be empty for
+     python_file_level_literal, where the subjects themselves double as
+     the invocation markers.
+
+     This is the self-declaring path: any NEW harness dropped into tools/
+     can carry this tag with no edit to this script required.
+
+  2. GRANDFATHERED MANIFEST — the six harnesses that existed before this
+     gate was built (test-hooks.sh, test-installer.sh, dry-run-install.sh,
+     verify-orchestration.py, sdk_probe.py, verify-citations.py) are
+     declared in the MANIFEST constant below instead of carrying an inline
+     tag, because this task's file-ownership boundary forbids editing
+     those six files. The next
+     lane to touch any of them should migrate its declaration to the
+     inline-tag form and delete its MANIFEST entry.
+
+  A harness file matching the naming convention `test-*.sh`, `verify-*.py`,
+  `dry-run-*.sh`, or `*_probe.py` under tools/ that has NEITHER an inline
+  tag NOR a MANIFEST entry is reported UNDECLARED and fails the gate by
+  name — a brand-new harness with zero declared coverage is exactly the
+  historical defect class, so it must be loud, not silently skipped.
+
+DETECTION METHOD (how "invokes" is decided — and why not filename grep)
+-------------------------------------------------------------------------
+A naive check greps the harness source for the subject's FULL PATH (e.g.
+"plugins/proofpunk/hooks/session-start.sh") and counts hits. That is the
+exact mistake that produced a false finding on this repo before: real
+harnesses resolve their subject directory through a shell variable first
+(`HOOKS="$(cd ... && pwd)"`, then `"$HOOKS/session-start.sh"`), so a
+full-path grep against the literal source returns 0 even though the
+harness genuinely invokes all nine hook scripts.
+
+This gate instead keys on BASENAME co-occurrence with an invocation
+keyword, which is invariant to whatever variable prefixes the path:
+
+  shell_script_subjects / shell_file_subjects (per-line, indirection-safe):
+    1. Merge backslash line-continuations into one logical line (a
+       multi-line `sed ... "$PP/assets/x.md"` invocation is one command).
+    2. Drop pure-comment lines (first non-whitespace char `#`) so a
+       comment merely *mentioning* a subject's name cannot count as
+       invoking it — comments narrating what a script does are common in
+       this repo's headers and must not manufacture a false PASS.
+    3. For each required subject basename, require SOME logical line to
+       contain BOTH: an invocation keyword in command position (preceded
+       by start-of-line/whitespace/`;`/`&`/`|`/`(` AND followed by
+       whitespace — this specifically excludes a keyword like "sh" merely
+       matching the ".sh" suffix of a filename, which a naive `sh`
+       word-boundary regex would NOT exclude) AND the basename as a
+       path component (preceded by `/`, quote, paren, or whitespace).
+    This is indirection-safe: `sh "$HOOKS/x.sh"`, `bash "$V/x.sh"`, and
+    `bash "$(dirname "$0")/x.sh"` all match on the basename regardless of
+    what resolves the prefix.
+
+  python_file_level (co-occurrence anywhere in file, not same line):
+    Python discovery and consumption of a subject population are usually
+    two different call sites (a glob() that finds files, and a separate
+    open() inside a helper that reads them) — see LIMITATIONS below. This
+    mode requires the subject token AND every keyword to each appear
+    somewhere in non-comment source, without asserting they are on the
+    same line or connected by dataflow.
+
+  python_file_level_literal (literal substring presence):
+    Used when the "subject" is itself a call token (e.g. `query(`,
+    `ClaudeAgentOptions`) rather than a file being read — presence of the
+    literal token IS the invocation.
+
+LIMITATIONS — what this gate can and cannot prove (read before trusting it)
+-----------------------------------------------------------------------------
+- Static-only. It never executes a harness or its subject; it proves the
+  harness SOURCE contains an invocation, not that a run succeeds. A
+  harness that invokes its subject and then ignores the result would
+  still PASS here — this gate is a coverage-presence check, not a
+  correctness check.
+- python_file_level is file-level co-occurrence, not verified dataflow.
+  It cannot distinguish "the open() call reads what the glob() found"
+  from "the file happens to contain an unrelated open() call somewhere
+  else." The mutation-proof run for this gate exercises this exact
+  boundary (see evidence/v3-release/l16-harness/).
+- Per-harness CAN/CANNOT OBSERVE statements (printed for every harness on
+  every run, and captured in evidence/v3-release/l16-harness/STATEMENT.md)
+  describe what the *harness itself* can prove about its subject, which is
+  a separate and narrower claim than what this gate proves about the
+  harness.
+
+Exit 0 = every declared harness's subject is invoked. Exit N = N harnesses
+failed (printed by name and missing subject). Stdlib only.
+
+[captured exit code separately]: rc=0

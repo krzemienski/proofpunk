@@ -1,0 +1,43 @@
+verify-citations: scanning /Users/nick/proofpunk/plugins/proofpunk/skills
+
+ERROR (0) — no unresolved citations in any top-level SKILL.md
+
+WARN (30) — unresolved citation inside a bundled references/ dir [29 baseline, 1 NEW]:
+  plugins/proofpunk/skills/mobile-validation-runner/references/simctl-command-reference.md:1 -> references/reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-accessibility-patterns.md:1 -> references/accessibility-patterns.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-caching-strategy.md:1 -> references/caching-strategy.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-mcp-configuration.md:1 -> references/mcp-configuration.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-operation-enums.md:1 -> references/operation-enums.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-progressive-disclosure.md:1 -> references/progressive-disclosure.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-tool-reference.md:1 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md:16 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md:17 -> references/operation-enums.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md:16 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md:17 -> references/progressive-disclosure.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md:16 -> references/caching-strategy.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md:17 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md:17 -> references/progressive-disclosure.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md:18 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md:13 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md:14 -> references/operation-enums.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md:16 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md:17 -> references/progressive-disclosure.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md:17 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md:18 -> references/operation-enums.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md:16 -> references/accessibility-patterns.md  (baseline)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md:17 -> references/tool-reference.md  (baseline)
+  plugins/proofpunk/skills/prompt-forge/references/prompt-patterns.md:521 -> references/does-not-exist-mutation-proof-warn.md  (NEW)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-debugging-mindset.md:1 -> references/debugging-mindset.md  (baseline)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-hypothesis-testing.md:1 -> references/hypothesis-testing.md  (baseline)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md:1 -> references/investigation-techniques.md  (baseline)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-verification-patterns.md:1 -> references/verification-patterns.md  (baseline)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-when-to-research.md:1 -> references/when-to-research.md  (baseline)
+  plugins/proofpunk/skills/stack-testing/references/webapp-testing.md:120 -> references/web-validation.md  (baseline)
+
+summary: 0 ERROR, 30 WARN (29 baseline / 1 NEW), known baseline size = 29
+NOTE: 1 WARN(s) not in the frozen baseline of 29 — review and either fix them or update KNOWN_WARN_BASELINE in this script.
+
+RESULT: PASS (default: ERROR-only)
+
+
+rc=0

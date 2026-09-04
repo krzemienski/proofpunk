@@ -1,0 +1,26 @@
+# rc=0
+# --- stdout ---
+RECONCILE: trace=/Users/nick/proofpunk/evidence/v3-release/l2-trace/proof-run.jsonl (15 events) vs ledger=.planning/execution-ledger.json
+  verdict claims in ledger : 8
+    MATCHED   : 4
+      - gates.test-installer: ledger='PASS' trace=['PASS']
+      - gates.test-hooks: ledger='PASS' trace=['PASS']
+      - gates.dry-run-install: ledger='PASS' trace=['PASS']
+      - gates.verify-orchestration: ledger='PASS' trace=['PASS']
+    MISMATCHED: 0
+    UNTRACED  : 4 (ledger claims a verdict this trace never independently recorded)
+      - criteria.C1_router_as_head_keep_18: ledger='PASS'
+      - criteria.C2_lane_b_unblock: ledger='BLOCKED'
+      - criteria.C3_before_after_evidence_each: ledger='PASS'
+      - gates.clean_home_install: ledger='PASS'
+  evidence paths cited in ledger : 6
+    MATCHED (captured in this trace)  : 1
+      - criteria.C1_router_as_head_keep_18.evidence -> e2e-evidence/run-20260827T145523-headskill-links-after/step-01-head-links-resolve.txt
+    UNTRACED (not captured in this trace): 5
+      - corrections_made_this_run[0].evidence -> e2e-evidence/run-20260827T162405-ref-differential-pristine/verdict.json
+      - corrections_made_this_run[1].evidence -> e2e-evidence/run-20260827T160133-hooks-guard-mkdir/verdict.json
+      - corrections_made_this_run[2].evidence -> e2e-evidence/run-20260827T160741-evidence-integrity-audit/invalid-rc-captures.json
+      - corrections_made_this_run[4].evidence -> e2e-evidence/run-20260827T160908-hook-mutation/verdict.json
+      - corrections_made_this_run[5].evidence -> e2e-evidence/run-20260827T161126-verify-arm-gitorig/verdict.json
+RECONCILE OK: 0 mismatches (4 matched, 4 untraced -- untraced is expected for ledger claims outside this trace's own observed scope)
+# --- stderr ---
