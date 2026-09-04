@@ -44,6 +44,10 @@
 <li><strong>Chaining</strong>: skills delegate to each other per the delegation graph (README diagram 3). Invoking <code>/implement</code> fires session-intent, prompt-forge, validation-plan, plan-hardening, and the proof layer in one run — you don't invoke those separately unless you want just one layer.</li>
 </ol>
 <h2 id="orchestration">Orchestration</h2>
+<h3 id="proofpunk--router-head-pick-the-right-skill"><code>/proofpunk</code> — router head (pick the right skill)</h3>
+<pre><code>/proofpunk &quot;audit the checkout flow and fix what fails&quot;
+/proofpunk &quot;plan and implement offline sync for the mobile app&quot;</code></pre>
+<p>No flags. Names the single best-fit skill for the ask — or a short ordered chain for compound asks (<code>brainstorm</code> → <code>validation-plan</code> → <code>implement</code>) — and hands off without repeating that skill's own doctrine. Use it when unsure which skill applies or when a request spans more than one skill's scope.</p>
 <h3 id="implement--the-front-door-execution-loop"><code>/implement</code> — the front door (execution loop)</h3>
 <pre><code>/implement &lt;goal&gt; [--parallel] [--auto] [--mine] [--fast]
 /implement mine [--project DIR] [--since DATE] [--until DATE]</code></pre>
@@ -79,21 +83,25 @@
 <h3 id="stack-testing--real-server-test-rigs"><code>/stack-testing</code> — real-server test rigs</h3>
 <pre><code>/stack-testing &quot;run the checkout e2e against the dev server&quot;</code></pre>
 <p>Natural-language routing to the stack runbooks. The bundled CLI for lifecycle-managed servers:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/stack-testing/scripts/with_server.py <span class="dt">\</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--server</span> <span class="st">&quot;npm run dev&quot;</span> <span class="at">--port</span> 5173 <span class="at">--</span> npx playwright test e2e/checkout.spec.ts</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/stack-testing/scripts/with_server.py <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--server</span> <span class="st">&quot;npm run dev&quot;</span> <span class="at">--port</span> 5173 <span class="at">--</span> npx playwright test e2e/checkout.spec.ts</span></code></pre></div>
 <p><code>--server</code> starts the real server, <code>--port</code> proves readiness by the port answering (condition-based, no sleeps), the trailing positional after <code>--</code> is your actual check command.</p>
 <h3 id="mobile-validation-runner--ios-end-user-validation"><code>/mobile-validation-runner</code> — iOS end-user validation</h3>
 <pre><code>/mobile-validation-runner &quot;the login screen&quot;
 /mobile-validation-runner &quot;full onboarding flow on iPhone 16 Pro simulator&quot;</code></pre>
 <p>No flags. Lanes (simctl / XC-MCP / Expo-idb) are routed by your environment and request, not by arguments — say "simctl only" in the request if you want the bundled lane. Protocol: SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet checks.</p>
+<h3 id="tui-testing--terminal-ui-end-user-proof"><code>/tui-testing</code> — terminal UI end-user proof</h3>
+<pre><code>/tui-testing &quot;the dashboard renders, navigates, and saves&quot;
+/tui-testing &quot;prove the install wizard works end to end&quot;</code></pre>
+<p>No flags. Drives the real TUI in a real PTY as the end user: never pipe a TTY-guarded app, observe-then-act with matched-assertion waits, three-facet evidence (screen + disk + logs), pixel proof for visual claims, and a secret scan before sealing. Not for web UIs or non-interactive CLIs (<code>references/cli-validation.md</code>).</p>
 <h2 id="proof-layer">Proof layer</h2>
 <h3 id="end-user-testing--fresh-evidence-lifecycle"><code>/end-user-testing</code> — fresh evidence lifecycle</h3>
 <pre><code>/end-user-testing &quot;seal the mood-ring run&quot;</code></pre>
 <p>Natural-language routing; the enforcing CLI (invoked by every verdict):</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py init-run mood-ring</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py next-step mood-ring</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py seal</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py validate</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py init-run mood-ring</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py next-step mood-ring</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py seal</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py validate</span></code></pre></div>
 <p>Positional <code>&lt;slug&gt;</code> names the run. Exit 2 = refusal with STALE:/EMPTY: lines per offending artifact.</p>
 <h3 id="visual-inspection--screenshot-qa"><code>/visual-inspection</code> — screenshot QA</h3>
 <pre><code>/visual-inspection evidence/run-20260811/step-03-checkout.png
@@ -124,15 +132,15 @@
 <pre><code>/session-intent --project my-shop --since 2026-07-01
 /session-intent --since 2026-08-01 --until 2026-08-07 --json out/intent.json</code></pre>
 <p>Flags map straight onto the bundled CLI:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/session-intent/scripts/session_intent.py <span class="dt">\</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--project</span> my-shop <span class="at">--since</span> 2026-07-01 <span class="at">--md</span> out/intent-matrix.md</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/session-intent/scripts/session_intent.py <span class="dt">\</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--project</span> my-shop <span class="at">--since</span> 2026-07-01 <span class="at">--md</span> out/intent-matrix.md</span></code></pre></div>
 <p>Exit 2 when no transcripts match — never a silent empty success.</p>
 <h3 id="codebase-truth-audit--repo-wide-truth-audit"><code>/codebase-truth-audit</code> — repo-wide truth audit</h3>
 <pre><code>/codebase-truth-audit /path/to/repo
 /codebase-truth-audit /path/to/repo --start 2026-06-01 --end 2026-08-01 --label q3-audit</code></pre>
 <p>Positionals: the repository path. Flags map onto the bundled CLI, which scaffolds the 8-phase audit workspace with captured git evidence:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/codebase-truth-audit/scripts/init_audit_workspace.py <span class="dt">\</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--repo</span> /path/to/repo <span class="at">--label</span> q3-audit <span class="at">--start</span> 2026-06-01 <span class="at">--output-root</span> plans/</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> plugins/proofpunk/skills/codebase-truth-audit/scripts/init_audit_workspace.py <span class="dt">\</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--repo</span> /path/to/repo <span class="at">--label</span> q3-audit <span class="at">--start</span> 2026-06-01 <span class="at">--output-root</span> plans/</span></code></pre></div>
 <p>The audit pauses for explicit approval before any behavior or destructive change.</p>
 <h2 id="chaining-recipes">Chaining recipes</h2>
 <table>
@@ -175,15 +183,15 @@
 </table>
 <h2 id="after-installing-with-the-script">After installing with the script</h2>
 <p><code>tools/proofpunk-install.sh</code> installs the skills as <strong>plain skills</strong> (not a plugin) into the skills dir of your platform — Claude Code (<code>~/.claude/skills</code>), oh-my-pi (<code>~/.omp/agent/skills</code>), OpenCode (<code>~/.config/opencode/skills</code>), or the shared agents location (<code>~/.agents/skills</code>). Post-install invocation is identical to the above; verify with:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/proofpunk-install.sh</span> <span class="at">--target</span> claude-code <span class="at">--dry-run</span>   <span class="co"># see the full plan</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/proofpunk-install.sh</span> <span class="at">--target</span> claude-code             <span class="co"># install all 18 + doctrine</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/proofpunk-install.sh</span> <span class="at">--target</span> claude-code <span class="at">--dry-run</span>   <span class="co"># see the full plan</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/proofpunk-install.sh</span> <span class="at">--target</span> claude-code             <span class="co"># install all 18 + doctrine</span></span></code></pre></div>
 
   </div>
   <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/docs/usage-guide.md">source → plugins/proofpunk/docs/usage-guide.md</a> · <a href="docs.html">← all docs</a></p>
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:USAGE-GUIDE</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-09-01</span></div>
+  <div class="statusline"><span><b>DOC:USAGE-GUIDE</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 13 refs · generated 2026-09-04</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
