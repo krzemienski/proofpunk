@@ -1,0 +1,5 @@
+=== driving INSTALLED hook scripts (not repo copies) ===
+no-test-files  test-path      rc=2 (2=deny) DENY
+no-test-files  mock content   rc=0 warn=yes
+evidence-guard secret          rc=2 (2=deny)
+session-start  doctrine        rc=0 emits_json=yes

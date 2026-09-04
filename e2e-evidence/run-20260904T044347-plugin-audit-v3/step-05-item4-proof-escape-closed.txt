@@ -1,0 +1,5 @@
+OK  bare 'validate OK' (the bypass)    blocked=True expected_block=True
+OK  real curl with url+200             blocked=False expected_block=False
+OK  fresh_evidence.py validate OK      blocked=False expected_block=False
+OK  real on-disk artifact              blocked=False expected_block=False
+ALL_CORRECT = True

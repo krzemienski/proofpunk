@@ -1,0 +1,9 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-gate-suite-all-green.txt 83 d4bc7825cc88cc78b94fb80a1c29402da882998df46f540f7ef86675a722f8f7
+step-02-hook-registration-11-of-11.txt 572 9aacf3d48628ffa8092a316d6085394853e0f2b2e93b7afb4953b4bb477a1df1
+step-03-skills-load-18.txt 135 9e7f9dd39c2b9b1bfd29cefb0e9fd38590daa82b74036106f38f5c91fa49ec04
+step-04-hooks-fire-installed.txt 246 36e10e1b6271e361afc2b781fdac247d01d525a6a002b81d91f68a28a0faf354
+step-05-item4-proof-escape-closed.txt 313 a4413739b71345352d79597d5359f2e74163d18aef48cddb57261813a9bea66b
+step-06-item5-scout-bypass-closed.txt 520 90d2f4a83c1fd54316281bf37091e9dfba21e7e6de00805c880815cb214ef1ef
+step-07-pycache-excluded-install.txt 685 b9d33a5d32b481c7ab5c5e45bd4c895a562f38f393f6a3f364e5b47fadf363b6
+sealed=2026-09-04T04:45:03Z count=7 total_bytes=2554

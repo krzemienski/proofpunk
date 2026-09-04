@@ -1,0 +1,11 @@
+== Proofpunk installer ==
+target dir : /Users/nick/proofpunk/.debug/260904-0045-pycache-probe/home/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.2.0 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL end-user-testing
+doctrine   : /Users/nick/proofpunk/.debug/260904-0045-pycache-probe/home/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ end-user-testing
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==

@@ -1,0 +1,7 @@
+OK  'envelope cwd only (was the bypass)'          path_shaped=False expected=False
+OK  'prose pair and/or'                           path_shaped=False expected=False
+OK  'bare URL'                                    path_shaped=False expected=False
+OK  'input/output prose'                          path_shaped=False expected=False
+OK  'real file src/app.py'                        path_shaped=True expected=True
+OK  'nested hooks path'                           path_shaped=True expected=True
+ALL_DISCRIMINATING = True

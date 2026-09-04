@@ -1,0 +1,4 @@
+  (doctrine bundle, no SKILL.md by design: proofpunk-doctrine)
+loadable skills: 18
+defects: none
+dangling local reference citations: 0

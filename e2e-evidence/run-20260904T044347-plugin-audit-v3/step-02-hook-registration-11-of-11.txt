@@ -1,0 +1,14 @@
+registered proofpunk hooks: 11
+  InstructionsLoaded     instructions-loaded.sh
+  PostToolUse            bash-write-notice.sh
+  PostToolUse            post-write-walkthrough.sh
+  PostToolUseFailure     bash-write-notice.sh
+  PreToolUse             bash-write-snapshot.sh
+  PreToolUse             capture-guard.sh
+  PreToolUse             evidence-guard.sh
+  PreToolUse             no-test-files.sh
+  SessionStart           session-start.sh
+  Stop                   stop-guard.sh
+  SubagentStop           stop-guard.sh
+canonical registrations in hooks.json: 11
+MATCH = True

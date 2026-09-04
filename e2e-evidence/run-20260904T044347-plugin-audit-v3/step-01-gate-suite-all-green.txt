@@ -1,0 +1,4 @@
+verify-orchestration rc=0
+test-hooks rc=0
+test-installer rc=0
+dry-run-install rc=0
