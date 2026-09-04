@@ -54,7 +54,14 @@ cwd = sys.argv[2] if len(sys.argv) > 2 else ""
 
 CLAIM = re.compile(r"\b(done|complete|completed|finished|shipped|works now|fixed it)\b", re.I)
 # Non-path proof: an inline assertion that names no file and needs none.
-PROOF_NONPATH = re.compile(r"(curl\s+\S+\s+200|validate\s+OK)", re.I)
+# Both forms must carry a command shape, not a bare phrase: `curl <url> ... 200`
+# names the endpoint it hit, and `fresh_evidence.py validate` names the tool
+# that emitted the OK. A bare "validate OK" was two typed words wide and let a
+# completion claim citing ZERO artifacts pass silently (backlog #4).
+PROOF_NONPATH = re.compile(
+    r"(curl\s+\S*https?://\S+.*?\b200\b|fresh_evidence(?:\.py)?\s+validate\b[^\n]*\bOK\b)",
+    re.I,
+)
 # File-citation proof: only a path rooted at e2e-evidence/ or evidence/
 # counts, and only once resolved (see path_proof). Bare keywords like
 # "screenshot"/"verdict"/"evidence-inventory"/"step-NN" are no longer

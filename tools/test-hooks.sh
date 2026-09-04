@@ -281,6 +281,23 @@ EOF
 out=$(printf '{"session_id":"s12","transcript_path":"%s","cwd":"%s"}' "$TMP/t12.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
 if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'scout'; then case_ok "stop-guard blocks bare-keyword scout record"; else case_fail "stop-guard accepted bare-keyword scout — got: $out"; fi
 
+# Case 24: scout-substring self-certification. Case 23 deliberately names its
+# run dir 'run-2026-plain' to avoid the substring hazard — which means case 23
+# passes with OR without the fix and cannot see this defect. This case IS the
+# hazard: identical prose to case 23, but the cited evidence path contains the
+# substring 'scout'. Unmasked, that single citation supplies BOTH conjuncts
+# (keyword from the dirname, path shape from the path) and self-certifies as
+# its own scout record — a false PASS in the proof-of-work guard. Only the
+# dirname differs between case 23 and this case.
+mkdir -p "$TMP/e2e-evidence/run-2026-scout"
+echo shot > "$TMP/e2e-evidence/run-2026-scout/step-05.png"
+cat > "$TMP/t13.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout context summary: I reviewed all the touchpoints in the checkout module."}
+{"role":"assistant","text":"All done — complete. Evidence in e2e-evidence/run-2026-scout/step-05.png"}
+EOF
+out=$(printf '{"session_id":"s13","transcript_path":"%s","cwd":"%s"}' "$TMP/t13.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'scout'; then case_ok "stop-guard blocks scout-substring self-certification"; else case_fail "stop-guard accepted scout-named evidence dir as its own scout record — got: $out"; fi
+
 echo "== instructions-loaded.sh"
 # Case 8: writes a JSONL log line, exits 0
 export HOME="$TMP/home"
@@ -293,6 +310,25 @@ else
 fi
 
 echo
+
+# Case 25: bare-phrase non-path proof (item #4). PROOF_NONPATH exists so an
+# inline assertion that needs no file can still count — but "validate OK" as a
+# bare phrase was two typed words wide, and a claim citing ZERO artifacts
+# passed silently. Both arms below are required: the bare phrase must block,
+# and the real command shapes must still earn credit (otherwise the fix is a
+# regression, not a tightening).
+cat > "$TMP/t14.jsonl" <<'EOF'
+{"role":"assistant","text":"Scouted src/app.py touchpoints. All done — complete. validate OK."}
+EOF
+out=$(printf '{"session_id":"s14","transcript_path":"%s","cwd":"%s"}' "$TMP/t14.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'without a cited'; then case_ok "stop-guard blocks bare-phrase 'validate OK' proof"; else case_fail "stop-guard credited a bare phrase as proof — got: $out"; fi
+
+# Case 25b: positive arm — a real curl naming its endpoint and status still counts.
+cat > "$TMP/t15.jsonl" <<'EOF'
+{"role":"assistant","text":"Scouted src/app.py touchpoints. Done — curl https://api.example/health returned 200."}
+EOF
+out=$(printf '{"session_id":"s15","transcript_path":"%s","cwd":"%s"}' "$TMP/t15.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if [ -z "$out" ]; then case_ok "stop-guard silent on curl url+200 proof"; else case_fail "stop-guard rejected a real curl assertion — got: $out"; fi
 
 echo "== bash-write detector (Bash bypass mitigation)"
 BW=$(mktemp -d); mkdir -p "$BW/e2e-evidence/run-1" "$BW/src"
