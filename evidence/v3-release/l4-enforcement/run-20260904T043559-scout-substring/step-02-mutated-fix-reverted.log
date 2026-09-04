@@ -1,0 +1,61 @@
+== bash -n syntax check
+  PASS: syntax bash-write-notice.sh
+  PASS: syntax bash-write-snapshot.sh
+  PASS: syntax capture-guard.sh
+  PASS: syntax evidence-guard.sh
+  PASS: syntax instructions-loaded.sh
+  PASS: syntax no-test-files.sh
+  PASS: syntax post-write-walkthrough.sh
+  PASS: syntax session-start.sh
+  PASS: syntax stop-guard.sh
+== session-start.sh emits valid JSON with doctrine context
+  PASS: session-start doctrine context
+== stop-guard.sh
+  PASS: stop-guard blocks unproven claim
+  PASS: stop-guard silent on proven claim
+  PASS: stop-guard silent on non-claim
+  PASS: stop-guard silent on missing transcript
+== evidence-guard.sh
+  PASS: evidence-guard denies secret into evidence
+  PASS: evidence-guard denies generic credential assignment
+  PASS: evidence-guard allows clean evidence write
+  PASS: evidence-guard ignores non-evidence paths
+== capture-guard.sh
+  PASS: capture-guard denies edit of existing evidence capture
+  PASS: capture-guard allows editing existing json sidecar
+  PASS: capture-guard allows new evidence capture
+  PASS: capture-guard ignores non-evidence paths
+== no-test-files.sh
+  PASS: no-test-files blocks *.test.* creation
+  PASS: no-test-files blocks __tests__ dir
+  PASS: no-test-files allows production code
+  PASS: no-test-files fails open on empty path
+== post-write-walkthrough.sh
+  PASS: post-write walkthrough reminder on production change
+  PASS: post-write silent on evidence writes
+== stop-guard scout requirement
+  PASS: stop-guard blocks claim+proof without scout record
+  PASS: stop-guard silent on claim+proof+scout
+== stop-guard role gate + artifact-gated proof + path-shaped scout
+  PASS: stop-guard ignores claim words on user lines
+  PASS: stop-guard blocks claim 'proven' only by user words
+  PASS: stop-guard blocks prose-only proof
+  PASS: stop-guard blocks fabricated evidence path
+  PASS: stop-guard silent on real on-disk evidence path
+  PASS: stop-guard blocks bare-keyword scout record
+  FAIL: stop-guard accepted scout-named evidence dir as its own scout record — got: 
+== instructions-loaded.sh
+  PASS: instructions-loaded logs load event
+
+== bash-write detector (Bash bypass mitigation)
+  PASS: bash-detector test file via Bash is noticed
+  PASS: bash-detector evidence capture tamper is noticed
+  PASS: bash-detector evidence deletion is noticed
+  PASS: bash-detector cp -p stays silent (no false deny)
+  PASS: bash-detector sed -i -e stays silent
+  PASS: bash-detector touch -c stays silent
+  PASS: bash-detector no-op command stays silent
+  PASS: bash-detector secret into evidence is noticed
+  PASS: bash-detector failure event echoes PostToolUseFailure
+  PASS: bash-detector parallel calls isolated, state consumed
+HOOK TEST FAILS: 1
