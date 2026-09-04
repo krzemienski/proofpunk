@@ -1,0 +1,28 @@
+HOME_B=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/home-b
+settings_exists=True
+settings_valid_json=True
+hook_copied=['bash-write-notice.sh', 'bash-write-snapshot.sh', 'capture-guard.sh', 'evidence-guard.sh', 'instructions-loaded.sh', 'no-test-files.sh', 'post-write-walkthrough.sh', 'session-start.sh', 'stop-guard.sh']
+hook_copied_count=9
+named_in_hooks_json=['bash-write-notice.sh', 'bash-write-snapshot.sh', 'capture-guard.sh', 'evidence-guard.sh', 'instructions-loaded.sh', 'no-test-files.sh', 'post-write-walkthrough.sh', 'session-start.sh', 'stop-guard.sh']
+missing_copied=[]
+extra_copied=[]
+present_in_settings=['bash-write-notice.sh', 'bash-write-snapshot.sh', 'capture-guard.sh', 'evidence-guard.sh', 'instructions-loaded.sh', 'no-test-files.sh', 'post-write-walkthrough.sh', 'session-start.sh', 'stop-guard.sh']
+missing_from_settings=[]
+script_counts_in_settings={'bash-write-notice.sh': 2, 'bash-write-snapshot.sh': 1, 'capture-guard.sh': 1, 'evidence-guard.sh': 1, 'instructions-loaded.sh': 1, 'no-test-files.sh': 1, 'post-write-walkthrough.sh': 1, 'session-start.sh': 1, 'stop-guard.sh': 2}
+spec_events=['InstructionsLoaded', 'PostToolUse', 'PostToolUseFailure', 'PreToolUse', 'SessionStart', 'Stop', 'SubagentStop']
+inst_events=['InstructionsLoaded', 'PostToolUse', 'PostToolUseFailure', 'PreToolUse', 'SessionStart', 'Stop', 'SubagentStop']
+event_symdiff=[]
+want_regs=11 got_regs=11
+duplicate_event_command_pairs=[]
+installed_reg_list=
+  SessionStart matcher=startup|resume|clear cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/session-start.sh
+  Stop matcher=None cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/stop-guard.sh
+  SubagentStop matcher=None cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/stop-guard.sh
+  PreToolUse matcher=Write|Edit cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/no-test-files.sh
+  PreToolUse matcher=Write|Edit cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/evidence-guard.sh
+  PreToolUse matcher=Write|Edit cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/capture-guard.sh
+  PreToolUse matcher=Bash cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/bash-write-snapshot.sh
+  InstructionsLoaded matcher=None cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/instructions-loaded.sh
+  PostToolUse matcher=Write|Edit cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/post-write-walkthrough.sh
+  PostToolUse matcher=Bash cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/bash-write-notice.sh
+  PostToolUseFailure matcher=Bash cmd=sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/bash-write-notice.sh

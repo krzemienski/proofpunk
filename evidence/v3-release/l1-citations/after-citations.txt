@@ -1,0 +1,40 @@
+# after-citations.txt — raw re-derivation, LaneA (L1 gauge #3), post-fix
+# Measured: after all 28 rewrites applied (12 provenance reword + 16
+# required_reading sibling-path fix) and mutation-proof restore verified
+# byte-identical.
+# Method: identical sweep to before-citations.txt (gauge-report.py's
+# sweep_repo_tree_citations logic, independently re-implemented and
+# cross-checked against the real `python3 tools/gauge-report.py` run).
+
+total citations found: 128
+total UNRESOLVED: 0
+top-level (SKILL.md) unresolved: 0
+
+RESULT: 0 unresolved repo-tree citations in plugins/proofpunk/skills/**.
+
+## Cross-check against the real tools
+$ python3 tools/gauge-report.py
+  [PASS] #3 (L1) Unresolved repo-tree citations (name/desc/fields resolve
+  relative to citing file): 0 unresolved (top-level: 0)
+
+$ python3 tools/verify-citations.py
+  ERROR (0) — no unresolved doctrine citations, no unresolved SKILL.md citations
+  WARN (0) — unresolved foreign-layout citation in a vendored file:
+  summary: 0 ERROR, 0 WARN (WARN count is derived, not a frozen baseline)
+  RESULT: PASS (default: ERROR-only)
+  exit code: 0
+
+## Note on citation count change (156 -> 128)
+The total number of `references/X.md`-shaped substrings the sweep finds
+dropped from 156 to 128 (delta: 28, matching the 28 fixed). This is
+EXPECTED, not a defect: the 12 provenance-header fixes deliberately
+rewrote the prose so it no longer forms a `references/X.md`-shaped
+substring at all (see VERDICT.md "Category 1" for why: rewriting them to
+point at a same-repo sibling would fabricate a false provenance claim,
+so instead of relocating the citation, the sentence was reworded to state
+the same donor fact without using citation syntax). Those 12 therefore
+correctly disappear from the citation count entirely rather than
+reappearing as "resolved" citations. The remaining 16 (the
+required_reading fixes) DID become resolved citations, using bare
+same-directory sibling filenames per the correct repo layout convention.
+12 removed + 16 now-resolved = 28, matching before-citations.txt.

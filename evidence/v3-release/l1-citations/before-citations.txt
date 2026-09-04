@@ -1,0 +1,51 @@
+# before-citations.txt — raw re-derivation, LaneA (L1 gauge #3)
+# Measured: 2026-09-04T14:48:26Z (before any LaneA fix)
+# Method: python3 sweep using the EXACT regex/resolution logic copied from
+# tools/gauge-report.py's sweep_repo_tree_citations() — the authoritative
+# gauge #3 sweep this lane's fix must satisfy. Not the same tool as
+# tools/verify-citations.py (which classifies ERROR vs WARN); this is the
+# raw unresolved count gauge #3 reports.
+#
+# NOTE: the task brief said 29. Independently re-measured (never trusted
+# blind): 28. The 29th item from the original 00-baseline finding
+# (stack-testing/references/webapp-testing.md:120 -> references/web-validation.md)
+# was already fixed by prior/concurrent work before this lane started —
+# confirmed resolved=True, current form `../../../references/web-validation.md`.
+# This lane's job was the remaining 28.
+
+total citations found: 156
+total UNRESOLVED: 28
+top-level (SKILL.md) unresolved: 0
+
+## unresolved (file, cited) pairs — 28 total, exact partition:
+##   12 = provenance-header prose (line 1, "> Incorporated from the `X` skill (references/Y.md).")
+##   16 = <required_reading> forward-pointers inside xc-mcp-workflow-*.md files
+
+plugins/proofpunk/skills/mobile-validation-runner/references/simctl-command-reference.md -> references/reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-accessibility-patterns.md -> references/accessibility-patterns.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-caching-strategy.md -> references/caching-strategy.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-mcp-configuration.md -> references/mcp-configuration.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-operation-enums.md -> references/operation-enums.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-progressive-disclosure.md -> references/progressive-disclosure.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-tool-reference.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md -> references/operation-enums.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md -> references/progressive-disclosure.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md -> references/caching-strategy.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md -> references/progressive-disclosure.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md -> references/operation-enums.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md -> references/progressive-disclosure.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md -> references/operation-enums.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md -> references/tool-reference.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md -> references/accessibility-patterns.md
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md -> references/tool-reference.md
+plugins/proofpunk/skills/root-cause-debugging/references/expert-debugging-mindset.md -> references/debugging-mindset.md
+plugins/proofpunk/skills/root-cause-debugging/references/expert-hypothesis-testing.md -> references/hypothesis-testing.md
+plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md -> references/investigation-techniques.md
+plugins/proofpunk/skills/root-cause-debugging/references/expert-verification-patterns.md -> references/verification-patterns.md
+plugins/proofpunk/skills/root-cause-debugging/references/expert-when-to-research.md -> references/when-to-research.md

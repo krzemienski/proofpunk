@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run-Trace Schema (shared) — proofpunk doctrine</title>
+<meta name="description" content="Canonical record shape and event-type catalogue for the L2 run-trace">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>14 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / RUN-TRACE-SCHEMA</div>
+  <div class="doc">
+<h1 id="run-trace-schema-shared">Run-Trace Schema (shared)</h1>
+<p>Canonical record shape and event-type catalogue for the L2 run-trace substrate: a schema-versioned, hash-chained JSONL event log of what actually happened during an orchestration run. Implemented by <code>tools/trace.py</code>. Every worked example below is a real, unmodified record emitted by that tool during its own build (<code>evidence/v3-release/l2-trace/proof-run.jsonl</code>, <code>run_id=run-20260904T054443-l2-trace-proof</code>) — not hand-typed fiction.</p>
+<h2 id="what-this-is-and-what-it-is-not">What this is, and what it is not</h2>
+<p>The trace is <strong>machine-facing history</strong>: an append-only sequence of timestamped facts about what happened, in the order it happened, tamper-evident via a hash chain. It answers "what occurred, and when, and in what order" after the fact.</p>
+<p><strong><code>.planning/execution-ledger.json</code> remains human-facing state.</strong> The ledger answers "what does this session currently believe is true right now" — criteria verdicts, gate results, corrections made, root cause. It is read by humans, written by hand or by an agent narrating its own progress, and it is mutable (a criterion's verdict can be revised as new evidence arrives).</p>
+<p>The trace does not replace the ledger's job and never writes to it. <code>tools/trace.py reconcile</code> reads the ledger read-only, purely as a comparison target: does the ledger's claimed state agree with what the trace independently observed? Disagreement is reported, never silently resolved in either document's favor.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Trace (<code>tools/trace.py</code>)</th>
+<th>Ledger (<code>.planning/execution-ledger.json</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nature</td>
+<td>append-only event log</td>
+<td>current-state document</td>
+</tr>
+<tr>
+<td>Mutability</td>
+<td>never edited in place; only appended</td>
+<td>edited as understanding changes</td>
+</tr>
+<tr>
+<td>Granularity</td>
+<td>one record per discrete event</td>
+<td>one entry per criterion/gate/correction</td>
+</tr>
+<tr>
+<td>Integrity</td>
+<td>hash-chained, tamper-evident</td>
+<td>none (plain JSON, hand-editable)</td>
+</tr>
+<tr>
+<td>Consumed by</td>
+<td><code>read</code>, <code>validate</code>, <code>reconcile</code></td>
+<td>any skill/human reading current state</td>
+</tr>
+<tr>
+<td>Written by</td>
+<td><code>tools/trace.py emit</code></td>
+<td><code>implement</code>'s Stage 5/7, or by hand</td>
+</tr>
+</tbody>
+</table>
+<h2 id="record-shape">Record shape</h2>
+<p>Every record is exactly one line of JSON (JSONL) with <strong>exactly these 12 keys</strong>, no more, no fewer — <code>validate</code> reports both <code>MISSING FIELD(S)</code> and <code>UNEXPECTED FIELD(S)</code> as separate defect classes:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Nullable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema_version</code></td>
+<td>string</td>
+<td>no</td>
+<td>Must be a version this <code>trace.py</code> build supports (currently <code>"1.0"</code>). A trace and its reader/validator can drift apart across <code>tools/</code> upgrades; this field is how <code>validate</code> catches that instead of silently misreading an old or newer shape.</td>
+</tr>
+<tr>
+<td><code>run_id</code></td>
+<td>string</td>
+<td>no</td>
+<td>Identifies one orchestration run. One trace <strong>file</strong> holds exactly one <code>run_id</code> — <code>validate</code> flags a second <code>run_id</code> appearing mid-file as a defect, and <code>emit</code> refuses to append a record whose <code>--run-id</code> disagrees with the file's established one.</td>
+</tr>
+<tr>
+<td><code>ts</code></td>
+<td>string</td>
+<td>no</td>
+<td>ISO-8601 UTC, millisecond precision, <code>Z</code> suffix (<code>2026-09-04T06:15:57.730Z</code>). <code>emit</code> stamps this automatically (<code>--ts</code> overrides for reconstructing historical events).</td>
+</tr>
+<tr>
+<td><code>event</code></td>
+<td>string</td>
+<td>no</td>
+<td>One of the 9 event types below.</td>
+</tr>
+<tr>
+<td><code>stage</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The orchestration stage/phase name this event belongs to (e.g. <code>Phase5-L2Trace</code>, or a ledger-style dotted path like <code>gates.test-hooks</code> for <code>verdict</code> events — see <code>reconcile</code> conventions below). Null when the event has no stage context (rare).</td>
+</tr>
+<tr>
+<td><code>skill</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The skill, hook script, or tool name most directly responsible for this event (e.g. <code>evidence-guard.sh</code>, <code>end-user-testing</code>, <code>bash</code>). Null when not applicable.</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The subagent/session identifier this event belongs to. Required non-null for <code>spawn</code> and <code>return</code>.</td>
+</tr>
+<tr>
+<td><code>parent_id</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The parent agent/session identifier (who spawned <code>agent_id</code>, or who this <code>return</code> reports back to).</td>
+</tr>
+<tr>
+<td><code>decision</code></td>
+<td>string | object | null</td>
+<td>yes</td>
+<td>The event's payload. Shape depends on <code>event</code> — see the per-event-type table below.</td>
+</tr>
+<tr>
+<td><code>artifact</code></td>
+<td>string</td>
+<td>yes</td>
+<td>A path (repo-relative) to a produced or consulted artifact. Required non-null for <code>evidence_capture</code>.</td>
+</tr>
+<tr>
+<td><code>cost</code></td>
+<td>object</td>
+<td>no</td>
+<td><strong>Always</strong> an object with exactly the keys <code>tokens</code>, <code>wall_ms</code>, <code>tool_calls</code> — each an individual <code>int | float | null</code>. Never omit the object itself; individual metrics may be <code>null</code> when not tracked for that event.</td>
+</tr>
+<tr>
+<td><code>hash</code></td>
+<td>string</td>
+<td>no</td>
+<td>64-char lowercase hex sha256 digest — see Hash chain below. Computed by <code>emit</code>, never hand-supplied.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="event-types-all-9-each-with-a-real-worked-example">Event types (all 9, each with a real worked example)</h2>
+<h3 id="stage_enter--entering-an-orchestration-stage-or-phase"><code>stage_enter</code> — entering an orchestration stage or phase</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.730Z&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;stage_enter&quot;</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;proofpunk&quot;</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">},</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;1a70b62de10d7d65f2242b052eb44fa4a2834268397663d8ee2cba0aafdd3765&quot;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>stage</code>.</p>
+<h3 id="stage_exit--leaving-an-orchestration-stage-or-phase"><code>stage_exit</code> — leaving an orchestration stage or phase</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:58.092Z&quot;</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;stage_exit&quot;</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;proofpunk&quot;</span><span class="fu">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">},</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;010e534289a3645a08e4d95971e9729a3b07f10e1338afbdbff6466ef24b824f&quot;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>stage</code>.</p>
+<h3 id="spawn--a-subagent-is-dispatched"><code>spawn</code> — a subagent is dispatched</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.760Z&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;spawn&quot;</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;task&quot;</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;Main&quot;</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">},</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;a87cc40192cad53baa7084d82345c26edbb79c8b75a7ab5c184ebe0943a6d3d7&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>agent_id</code> (the id being spawned). <code>parent_id</code> is who spawned it — record it whenever known, though the schema does not force it, since a top-level session has no parent to name.</p>
+<h3 id="return--a-subagent-reports-back-to-its-caller"><code>return</code> — a subagent reports back to its caller</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:58.064Z&quot;</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;return&quot;</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;task&quot;</span><span class="fu">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;Main&quot;</span><span class="fu">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">},</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;0948d290cde2e938bc7b63deac40a361ccd2540b411bd1fac43367a1f1ebf955&quot;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>agent_id</code>.</p>
+<h3 id="skill_invoke--a-skills-doctrine-is-loadedinvoked"><code>skill_invoke</code> — a skill's doctrine is loaded/invoked</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.789Z&quot;</span><span class="fu">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;skill_invoke&quot;</span><span class="fu">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;end-user-testing&quot;</span><span class="fu">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;Main&quot;</span><span class="fu">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">},</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;be6edaec42274b0c3b35baef19deb89bc8c8f1a1f3d2f6d91fa51cb219366050&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>skill</code>.</p>
+<h3 id="hook_decision--a-hooks-outcome-including-silent-passes"><code>hook_decision</code> — a hook's outcome, <strong>including silent passes</strong></h3>
+<p>A hook's silence is itself a decision — a hook can only enforce anything if its non-firing is as recordable as its firing. <code>decision</code> for this event type is either the bare string <code>"allow" | "block" | "silent"</code>, or an object with an <code>"outcome"</code> key holding one of those three values plus whatever extra context the emitter wants to carry (<code>rc</code>, <code>reason</code>, …). <code>validate</code> accepts both shapes but requires the outcome to be one of the three values in either form.</p>
+<p><strong>Silent pass</strong> (evidence-guard.sh allowed a clean write — this is a <em>decision</em>, not an absence of one):</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.844Z&quot;</span><span class="fu">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;hook_decision&quot;</span><span class="fu">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;evidence-guard.sh&quot;</span><span class="fu">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;outcome&quot;</span><span class="fu">:</span> <span class="st">&quot;silent&quot;</span><span class="fu">,</span> <span class="dt">&quot;rc&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;reason&quot;</span><span class="fu">:</span> <span class="st">&quot;clean content into evidence dir&quot;</span><span class="fu">},</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="st">&quot;evidence/v3-release/l2-trace/proof-run.jsonl&quot;</span><span class="fu">,</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">42</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">},</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;98adfefdbeebb1121f59402b1865b32a0426b218dca4beca05cc41995183b9da&quot;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>Block</strong> (evidence-guard.sh denied a <code>ghp_</code>-shaped secret targeting an evidence directory, <code>rc=2</code>):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.871Z&quot;</span><span class="fu">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;hook_decision&quot;</span><span class="fu">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;evidence-guard.sh&quot;</span><span class="fu">,</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;outcome&quot;</span><span class="fu">:</span> <span class="st">&quot;block&quot;</span><span class="fu">,</span> <span class="dt">&quot;rc&quot;</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span> <span class="dt">&quot;reason&quot;</span><span class="fu">:</span> <span class="st">&quot;probable secret material (ghp_ pattern) targeting an evidence directory&quot;</span><span class="fu">},</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">38</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">},</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;21411d1a7c3b1ebb365e120d194620794d8a6fd9606bed9bcaeb1b7bafa9fb48&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>decision</code>.</p>
+<h3 id="tool_call--a-tool-call-class-this-session-executed"><code>tool_call</code> — a tool-call class this session executed</h3>
+<p><code>decision</code> here is a free-form object describing the call class and enough of the invocation to be useful without duplicating full tool transcripts (that belongs in the session transcript, not the trace).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.817Z&quot;</span><span class="fu">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;tool_call&quot;</span><span class="fu">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;bash&quot;</span><span class="fu">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;class&quot;</span><span class="fu">:</span> <span class="st">&quot;read&quot;</span><span class="fu">,</span> <span class="dt">&quot;cmd&quot;</span><span class="fu">:</span> <span class="st">&quot;git log --oneline -15&quot;</span><span class="fu">},</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">120</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">},</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;309aba052fcd59a9b043a174c92d115f5b3e00bdd0909a07d2d9b86867592521&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="evidence_capture--an-artifact-was-produced-or-consulted"><code>evidence_capture</code> — an artifact was produced or consulted</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:58.009Z&quot;</span><span class="fu">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;evidence_capture&quot;</span><span class="fu">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;Phase5-L2Trace&quot;</span><span class="fu">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;trace.py&quot;</span><span class="fu">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="st">&quot;evidence/v3-release/l2-trace/proof-run.jsonl&quot;</span><span class="fu">,</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">},</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;e903fabc56b85481eeb0e6974b050fb4dc9a93ad625eb4fd7077f89706629ae7&quot;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>artifact</code>.</p>
+<h3 id="verdict--a-criterion-gate-or-checkpoint-verdict"><code>verdict</code> — a criterion, gate, or checkpoint verdict</h3>
+<p><code>decision</code> for this event type is a bare string, one of <code>PASS</code>, <code>FAIL</code>, <code>BLOCKED</code>, <code>UNVERIFIED</code> — the same four-state vocabulary the rest of Proofpunk uses (<code>references/severity-model.md</code>). <code>stage</code> conventionally carries the dotted path matching how the ledger names the same claim (<code>gates.&lt;name&gt;</code> for release gates, <code>criteria.&lt;ID&gt;</code> for numbered criteria) — <code>reconcile</code> depends on this convention to match trace verdicts against ledger claims; see below.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;ts&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-09-04T06:15:57.899Z&quot;</span><span class="fu">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;event&quot;</span><span class="fu">:</span> <span class="st">&quot;verdict&quot;</span><span class="fu">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;stage&quot;</span><span class="fu">:</span> <span class="st">&quot;gates.test-hooks&quot;</span><span class="fu">,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;skill&quot;</span><span class="fu">:</span> <span class="st">&quot;test-hooks.sh&quot;</span><span class="fu">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;agent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TraceSubstrate&quot;</span><span class="fu">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;parent_id&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;decision&quot;</span><span class="fu">:</span> <span class="st">&quot;PASS&quot;</span><span class="fu">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;artifact&quot;</span><span class="fu">:</span> <span class="st">&quot;evidence/v3-release/00-baseline/gates-20260904T051258/test-hooks.sh.log&quot;</span><span class="fu">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;cost&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;tokens&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;wall_ms&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">&quot;tool_calls&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">},</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;hash&quot;</span><span class="fu">:</span> <span class="st">&quot;e1e2054754a64a746b4583a6724ac296dd8f9f5701d79e90f675a48bdd923fd7&quot;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Required non-null: <code>decision</code>.</p>
+<h2 id="hash-chain-tamper-evidence">Hash chain (tamper-evidence)</h2>
+<p><code>hash = sha256(prev_hash + "\n" + canonical_json(record_without_hash))</code>, where <code>canonical_json</code> sorts keys and uses no whitespace. <code>prev_hash</code> for a run's first record is the genesis value <code>"0"</code> × 64. Every subsequent record chains from the previous record's own <code>hash</code>.</p>
+<p>This is why corrupting <em>any</em> line cascades: <code>validate</code> reports the corrupted line's own defect <strong>and</strong> a <code>HASH CHAIN BROKEN</code> finding on every line after it, because each downstream hash was computed assuming the previous line's content was exactly what it now is not. This was observed directly during mutation-proof testing — see <code>evidence/v3-release/l2-trace/VERDICT.md</code>, arms 2 and 3.</p>
+<p><code>emit</code> also refuses to append to a trace whose current tail already fails its own hash check (<code>rc=2</code>, "refusing to append") — extending a known-corrupt chain would compound the exact defect <code>validate</code> exists to catch, rather than surface it.</p>
+<h2 id="reconcile-conventions"><code>reconcile</code> conventions</h2>
+<p><code>tools/trace.py reconcile --trace &lt;file&gt; &lt;ledger&gt;</code> walks the ledger JSON recursively and extracts two claim classes:</p>
+<ol type="1">
+<li><strong>Verdict claims</strong> — any object carrying a <code>"verdict"</code> key (the <code>criteria.*</code> shape), plus the special-cased <code>gates</code> block (whose values are bare <code>0</code>/<code>1</code> ints or <code>{"rc": N}</code> objects — the <em>one</em> ledger shape this function hardcodes, because a bare int has no other way to express PASS/FAIL). Each claim's dotted path (e.g. <code>gates.test-hooks</code>, <code>criteria.C1_router_as_head_keep_18</code>) is looked up against every <code>verdict</code> event in the trace whose <code>stage</code> field matches that same path.</li>
+<li><strong>Evidence citations</strong> — any <code>"evidence"</code> or <code>"artifact"</code> string value anywhere in the ledger, checked against every <code>artifact</code> value this trace recorded via <code>evidence_capture</code> or <code>verdict</code> events.</li>
+</ol>
+<p>Each claim class resolves to exactly one of three buckets:</p>
+<ul>
+<li><strong>MATCHED</strong> — the trace independently recorded the same verdict (or captured the same evidence path) the ledger claims.</li>
+<li><strong>MISMATCHED</strong> — the trace recorded a <em>different</em> verdict for the same stage the ledger claims a verdict for. This is the interesting, attention-worthy case: <code>reconcile</code> exits 1 (not 2 — a policy disagreement is not a schema violation).</li>
+<li><strong>UNTRACED</strong> — the ledger makes a claim this trace never independently observed at all. This is <strong>expected and honest</strong>, not a defect: a trace only records what actually happened during the run it covers, and a ledger legitimately carries claims from other sessions or criteria this run never touched. <code>reconcile</code> still exits 0 when every checked claim is either MATCHED or UNTRACED — only a genuine MISMATCH is a failure.</li>
+</ul>
+<p><code>reconcile</code> exits 2 if either input file is missing or malformed (mirrors <code>validate</code>'s exit-code contract), 1 on any MISMATCH, 0 otherwise.</p>
+<h2 id="exit-codes-both-validate-and-reconcile">Exit codes (both <code>validate</code> and <code>reconcile</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>rc</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Clean — file valid (or reconcile found 0 mismatches)</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>reconcile</code> only: ≥1 verdict MISMATCH between trace and ledger</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Missing file, empty file, malformed JSON on any line, unknown event type, missing required field, wrong <code>schema_version</code>, hash-chain break, or (ledger-side) malformed ledger JSON</td>
+</tr>
+</tbody>
+</table>
+<p><code>validate</code> never exits with anything other than 0 or 2 — there is no "warn but pass" state for a schema violation; see <code>evidence/v3-release/l2-trace/VERDICT.md</code> for the three named corruption classes proven to trigger rc=2, each restored to a byte-identical clean state afterward.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/run-trace-schema.md">source → plugins/proofpunk/references/run-trace-schema.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:RUN-TRACE-SCHEMA</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 14 refs · generated 2026-09-04</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v2.2.0 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

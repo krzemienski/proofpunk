@@ -265,7 +265,28 @@ gauge(
 
 
 # ---------------------------------------------------------------------------
-# Gauge #7 (L10) — description chars vs Claude Code's listing budget.
+# Gauge #7 (L10) — per-skill description+when_to_use vs Claude Code's
+# documented 1,536-char PER-SKILL truncation cap (skillListingMaxDescChars).
+#
+# Redesigned 2026-09-04. The prior version summed all 18 skills'
+# `description` fields and compared the TOTAL against 1,536, mislabeling a
+# per-skill display-truncation cap as a whole-listing budget. That target
+# was unsatisfiable except by deleting ~89% of all routing description
+# text, which would sabotage the router this gauge is supposed to protect
+# — a fabricated constraint per the work order's own rule ("A gauge the
+# red-team agent can satisfy without doing the work is a failed gauge —
+# redesigned, not accepted"; the same applies to a gauge that can only be
+# satisfied by actively breaking the thing it protects).
+#
+# Primary-source proof (docs/skill-canon.md:171-172, :123; and a live fetch
+# of https://code.claude.com/docs/en/skills this session): the 1,536 cap
+# applies to EACH skill's combined `description` + `when_to_use` text
+# independently (`skillListingMaxDescChars`, default 1,536). The real
+# aggregate mechanism is `skillListingBudgetFraction` — a PERCENTAGE of the
+# model's context window (default ~1%), not a fixed character count — and
+# has no fixed numeric value in any sealed source in this repo. See
+# evidence/v3-release/l10-budget/gauge7-defect-analysis.md for the full
+# analysis and both primary-source quotes.
 # ---------------------------------------------------------------------------
 
 
@@ -275,23 +296,87 @@ def g_description_budget():
     if not resolved:
         return (None, "UNVERIFIED", [citation], False, "sealed baseline artifact missing")
     skills = load_skills()
-    total_chars = sum(len(info["fields"].get("description", "")) for info in skills.values())
-    budget = 1536
-    ratio = total_chars / budget
-    status = "PASS" if total_chars <= budget else "UNMET"
-    val = f"{total_chars} vs {budget} ({ratio:.1f}x)"
-    detail = "aggregate description text exceeds the Claude Code listing budget" if status == "UNMET" else "within budget"
+    cap = 1536
+    total = len(skills)
+    combined_lengths = {}
+    for name, info in skills.items():
+        f = info["fields"]
+        combined_lengths[name] = len(f.get("description", "")) + len(f.get("when_to_use", ""))
+    over = sorted((name, n) for name, n in combined_lengths.items() if n > cap)
+    passing = total - len(over)
+    max_skill = max(combined_lengths, key=lambda k: combined_lengths[k])
+    max_len = combined_lengths[max_skill]
+    status = "PASS" if not over else "UNMET"
+    val = f"{passing}/{total} (max {max_len}/{cap}, {max_skill})"
+    detail = (
+        f"all {total} skills' description+when_to_use combined length is under the "
+        f"{cap}-char per-skill truncation cap (skillListingMaxDescChars); longest is "
+        f"'{max_skill}' at {max_len} chars, {cap - max_len} chars of headroom"
+        if not over
+        else f"over the {cap}-char per-skill cap: {over}"
+    )
     return (val, status, [citation], True, detail)
 
 
 gauge(
     num=7,
     lane="L10",
-    name="Total description chars vs 1,536-char listing budget",
-    unit="chars",
-    baseline="13,949 (9.1x)",
-    target="<=1,536 (1.0x)",
+    name="Skills with description+when_to_use under Claude Code's 1,536-char per-skill listing cap",
+    unit="skills",
+    baseline="18/18 (max 978/1536, implement)",
+    target="18/18",
     measured_fn=g_description_budget,
+)
+
+
+# ---------------------------------------------------------------------------
+# Gauge #9 (L10) — aggregate description+when_to_use exposure (trend only).
+#
+# The genuine open question the old gauge #7 conflated with the per-skill
+# cap: total listing-pressure exposure across all 18 skills. This is a real,
+# live-measured number (the same one the old gauge computed, correctly, but
+# scored against the wrong threshold). The actual host constraint —
+# `skillListingBudgetFraction`, a percentage of the model's context window,
+# default ~1% — has no fixed numeric value in any sealed source in this
+# repo and cannot be computed from static files alone: it depends on host,
+# model, and what else occupies context in a given live session. Per the
+# work order: "If no numeric target exists in any sealed source, mark it
+# UNMEASURED — do NOT invent a threshold." This follows gauge #8's exact
+# precedent (real measured value, status UNMEASURED, explicit rationale,
+# does not gate release).
+# ---------------------------------------------------------------------------
+
+
+def g_description_aggregate_exposure():
+    ev_path = "evidence/v3-release/00-baseline/description-budget-baseline.md"
+    citation, resolved = cite(ev_path)
+    if not resolved:
+        return (None, "UNVERIFIED", [citation], False, "sealed baseline artifact missing")
+    skills = load_skills()
+    total_chars = sum(
+        len(info["fields"].get("description", "")) + len(info["fields"].get("when_to_use", ""))
+        for info in skills.values()
+    )
+    return (
+        f"{total_chars} chars",
+        "UNMEASURED",
+        [citation],
+        True,
+        "aggregate listing-pressure exposure, trend-tracking only — the real host budget "
+        "is skillListingBudgetFraction (~1% of the model's context window by default, "
+        "host/session-dependent per code.claude.com/docs/en/skills); no fixed numeric "
+        "target exists in any sealed source, so none is invented here",
+    )
+
+
+gauge(
+    num=9,
+    lane="L10",
+    name="Aggregate description+when_to_use chars (listing-pressure trend, not a fixed budget)",
+    unit="chars",
+    baseline="13,949 (description-budget-baseline.md)",
+    target="UNMEASURED — real budget is skillListingBudgetFraction (~1% of context window); no fixed target exists in any sealed source",
+    measured_fn=g_description_aggregate_exposure,
 )
 
 
@@ -612,10 +697,32 @@ def main():
     for g in GAUGES:
         marker = "PASS" if g["status"] == "PASS" else g["status"]
         print(f"  [{marker}] #{g['num']} ({g['lane']}) {g['name']}: {g['measured']}")
-    if passing != total:
-        print(f"VERDICT: FAIL — {total - passing}/{total} gauge(s) not PASS")
+    # Release gating counts only gauges that can actually be satisfied.
+    #
+    # UNMEASURED is not a failure and not a silent pass: it means no numeric
+    # target exists in any sealed source, so the row reports a real measured
+    # value for trend tracking and is excluded from the gate. Both this file's
+    # own gauge definitions (#8, #9) and docs/v3-gauges.md state this
+    # explicitly ("does not gate release"). Counting UNMEASURED as "not PASS"
+    # contradicted that and made the gate permanently unsatisfiable — the tool
+    # could never exit 0 no matter how much real work was completed, which is
+    # a gauge that cannot be satisfied by doing the work.
+    #
+    # UNMET and UNVERIFIED still block, and are reported separately so an
+    # unresolved citation is never mistaken for a below-target measurement.
+    blocking = [g for g in GAUGES if g["status"] in ("UNMET", "UNVERIFIED")]
+    unmeasured = [g for g in GAUGES if g["status"] == "UNMEASURED"]
+    if unmeasured:
+        names = ", ".join(f"#{g['num']}" for g in unmeasured)
+        print(f"  ({len(unmeasured)} gauge(s) UNMEASURED, excluded from the gate: {names})")
+    if blocking:
+        names = ", ".join(f"#{g['num']} {g['status']}" for g in blocking)
+        print(f"VERDICT: FAIL — {len(blocking)} gauge(s) block release: {names}")
         sys.exit(1)
-    print("VERDICT: PASS — every gauge meets target")
+    print(
+        f"VERDICT: PASS — every gateable gauge meets target "
+        f"({passing} PASS, {len(unmeasured)} UNMEASURED and excluded)"
+    )
     sys.exit(0)
 
 

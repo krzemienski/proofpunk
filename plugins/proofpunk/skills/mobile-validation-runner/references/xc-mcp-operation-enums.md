@@ -1,4 +1,4 @@
-> Incorporated from the `xc-mcp` skill (references/operation-enums.md).
+> Incorporated from the `xc-mcp` skill (its own `references` directory, file `operation-enums.md`).
 
 # Operation Enum Reference
 

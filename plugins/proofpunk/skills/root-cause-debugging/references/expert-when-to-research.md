@@ -1,4 +1,4 @@
-> Incorporated from the `debug-like-expert` skill (references/when-to-research.md).
+> Incorporated from the `debug-like-expert` skill (its own `references` directory, file `when-to-research.md`).
 
 
 ## Contents

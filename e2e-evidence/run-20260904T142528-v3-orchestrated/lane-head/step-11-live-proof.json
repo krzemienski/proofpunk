@@ -1,0 +1,74 @@
+{
+  "id": "proof",
+  "ask": "Prove the export button actually works as an end user. Capture run-scoped evidence before marking the feature done.",
+  "expected": "end-user-testing",
+  "actual": "end-user-testing",
+  "match": true,
+  "reached": [
+    {
+      "raw": "proofpunk:end-user-testing",
+      "normalized": "end-user-testing",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:end-user-testing. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "delivery": [
+    {
+      "raw": "proofpunk:end-user-testing",
+      "normalized": "end-user-testing",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:end-user-testing. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "reply": "Routed to `proofpunk:end-user-testing` \u2014 matches the ask exactly: drive the export button as the end user, capture run-scoped fresh evidence, gate completion on a cited verdict.\n\nSkill loaded read-only per instruction. Not implementing.",
+  "tools_used": [
+    "Skill"
+  ],
+  "elapsed_s": 9.7,
+  "result": {
+    "is_error": false,
+    "num_turns": 3,
+    "cost_usd": 0.7006297499999999
+  },
+  "system_message_count": 93,
+  "system_keys_sample": [
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    }
+  ]
+}

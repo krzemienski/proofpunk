@@ -1,0 +1,54 @@
+{
+  "n": 6,
+  "matches": 6,
+  "rows": [
+    {
+      "id": "build",
+      "expected": "implement",
+      "actual": "implement",
+      "match": true,
+      "elapsed_s": 13.6,
+      "cost_usd": 1.4563284999999997
+    },
+    {
+      "id": "audit",
+      "expected": "full-functional-audit",
+      "actual": "full-functional-audit",
+      "match": true,
+      "elapsed_s": 15.3,
+      "cost_usd": 1.27446075
+    },
+    {
+      "id": "bug",
+      "expected": "root-cause-debugging",
+      "actual": "root-cause-debugging",
+      "match": true,
+      "elapsed_s": 12.0,
+      "cost_usd": 0.6964182499999999
+    },
+    {
+      "id": "proof",
+      "expected": "end-user-testing",
+      "actual": "end-user-testing",
+      "match": true,
+      "elapsed_s": 9.7,
+      "cost_usd": 0.7006297499999999
+    },
+    {
+      "id": "planning",
+      "expected": "validation-plan",
+      "actual": "validation-plan",
+      "match": true,
+      "elapsed_s": 16.2,
+      "cost_usd": 1.34084425
+    },
+    {
+      "id": "nothing",
+      "expected": "ROUTES_TO_NOTHING",
+      "actual": "ROUTES_TO_NOTHING",
+      "match": true,
+      "elapsed_s": 6.8,
+      "cost_usd": 0.6221735
+    }
+  ]
+}

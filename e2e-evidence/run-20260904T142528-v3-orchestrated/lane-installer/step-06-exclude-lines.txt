@@ -1,0 +1,6 @@
+BEFORE-ARM (73e928e) exclude hits:
+280:     # skill script locally leaves __pycache__/*.pyc beside it, and a wholesale
+283:     (cd "$src" && tar cf - --exclude='__pycache__' --exclude='*.pyc' .) | (cd "$dst" && tar xf -)
+WORKDIR exclude hits:
+280:     # skill script locally leaves __pycache__/*.pyc beside it, and a wholesale
+283:     (cd "$src" && tar cf - --exclude='__pycache__' --exclude='*.pyc' .) | (cd "$dst" && tar xf -)

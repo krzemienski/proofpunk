@@ -1,4 +1,4 @@
-> Incorporated from the `xc-mcp` skill (references/caching-strategy.md).
+> Incorporated from the `xc-mcp` skill (its own `references` directory, file `caching-strategy.md`).
 
 # XC-MCP Caching Strategy
 

@@ -1,0 +1,1 @@
+Proofpunk: refusing to write probable secret material into an evidence directory. Evidence is committed and public — redact keys/tokens first (see references/evidence-contract.md: redact, never commit).

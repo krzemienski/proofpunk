@@ -1,0 +1,8 @@
+Usage:
+  fresh_evidence.py init-run <slug>
+  fresh_evidence.py next-step <slug>
+  fresh_evidence.py seal
+  fresh_evidence.py validate
+
+All operations work against ./e2e-evidence/ in the current working directory.
+The "active run" is the most recently modified run-* subdirectory.

@@ -1,4 +1,4 @@
-> Incorporated from the `debug-like-expert` skill (references/verification-patterns.md).
+> Incorporated from the `debug-like-expert` skill (its own `references` directory, file `verification-patterns.md`).
 
 
 ## Contents

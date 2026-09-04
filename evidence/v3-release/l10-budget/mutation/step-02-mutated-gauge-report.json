@@ -1,0 +1,146 @@
+{
+  "generated": "2026-09-04T14:40:14Z",
+  "head": "73e928ed8d3b62827018ab8ab2e470c5487d0e2d",
+  "dirty": true,
+  "gauges": [
+    {
+      "num": 1,
+      "lane": "L12",
+      "name": "Skills passing spec basics (name/desc/fields)",
+      "unit": "skills",
+      "baseline": "18/18",
+      "target": "18/18",
+      "measured": "17/18",
+      "status": "UNMET",
+      "evidence": [
+        "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
+      ],
+      "detail": "failing: ['visual-inspection']"
+    },
+    {
+      "num": 7,
+      "lane": "L10",
+      "name": "Skills with description+when_to_use under Claude Code's 1,536-char per-skill listing cap",
+      "unit": "skills",
+      "baseline": "18/18 (max 978/1536, implement)",
+      "target": "18/18",
+      "measured": "17/18 (max 1956/1536, visual-inspection)",
+      "status": "UNMET",
+      "evidence": [
+        "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
+      ],
+      "detail": "over the 1536-char per-skill cap: [('visual-inspection', 1956)]"
+    },
+    {
+      "num": 9,
+      "lane": "L10",
+      "name": "Aggregate description+when_to_use chars (listing-pressure trend, not a fixed budget)",
+      "unit": "chars",
+      "baseline": "13,949 (description-budget-baseline.md)",
+      "target": "UNMEASURED \u2014 real budget is skillListingBudgetFraction (~1% of context window); no fixed target exists in any sealed source",
+      "measured": "15239 chars",
+      "status": "UNMEASURED",
+      "evidence": [
+        "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
+      ],
+      "detail": "aggregate listing-pressure exposure, trend-tracking only \u2014 the real host budget is skillListingBudgetFraction (~1% of the model's context window by default, host/session-dependent per code.claude.com/docs/en/skills); no fixed numeric target exists in any sealed source, so none is invented here"
+    },
+    {
+      "num": 8,
+      "lane": "L10",
+      "name": "Median skill body size (context-economy proxy)",
+      "unit": "bytes",
+      "baseline": "6,266",
+      "target": "UNMEASURED (no target defined in sealed sources)",
+      "measured": "6186 bytes",
+      "status": "UNMEASURED",
+      "evidence": [
+        "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
+      ],
+      "detail": "no numeric target defined in sealed sources \u2014 trend-tracking only, does not gate release"
+    },
+    {
+      "num": 2,
+      "lane": "L4",
+      "name": "stop-guard scout-substring false-PASS closed, mutation-proven",
+      "unit": "cases",
+      "baseline": "47 -> 48 cases",
+      "target": "mutation-proven (baseline=mutated+1, restored byte-identical to baseline)",
+      "measured": "baseline=48 mutated=47 restored=48 byte_identical=True",
+      "status": "PASS",
+      "evidence": [
+        "evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/VERDICT.md@sha256:43646ce82d6a4d2da30824812ac88cbf465833114b95167e2f70a6ccbb787aeb",
+        "evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-00-root-cause.md@sha256:6aab30d9ceee57b61cd8ee4fa6b60ab3c5a61c67653fd2ce94273b65b53ed791",
+        "evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-01-baseline-fix-present.log@sha256:e12a0e2d4cd0f0a4b1aa60289f9abae03c4306ad38da0ef77761d3b885907dff",
+        "evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-02-mutated-fix-reverted.log@sha256:47ae31b428db297c08369770ce251a19b1c4d34ed0dd5f2d592134c55dd212a9",
+        "evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-03-restored.log@sha256:e12a0e2d4cd0f0a4b1aa60289f9abae03c4306ad38da0ef77761d3b885907dff"
+      ],
+      "detail": "mutation flips the gate red by name and restore is byte-identical"
+    },
+    {
+      "num": 3,
+      "lane": "L1",
+      "name": "Unresolved repo-tree citations (name/desc/fields resolve relative to citing file)",
+      "unit": "citations",
+      "baseline": "30 -> 29 (top-level: 1 -> 0)",
+      "target": "0",
+      "measured": "29 unresolved (top-level: 0)",
+      "status": "UNMET",
+      "evidence": [
+        "evidence/v3-release/00-baseline/citation-integrity-finding.md@sha256:90969b64df5cc23d260e99b276822a09ff4e0123866730802d0004fa2ac04ec3"
+      ],
+      "detail": "unresolved: ['plugins/proofpunk/skills/mobile-validation-runner/references/simctl-command-reference.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-accessibility-patterns.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-caching-strategy.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-mcp-configuration.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-operation-enums.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-progressive-disclosure.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-tool-reference.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-debugging-mindset.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-hypothesis-testing.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-verification-patterns.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-when-to-research.md', 'plugins/proofpunk/skills/stack-testing/references/webapp-testing.md']"
+    },
+    {
+      "num": 4,
+      "lane": "L16",
+      "name": "Commands proven end-to-end at the real slash-command surface",
+      "unit": "commands",
+      "baseline": "0/6",
+      "target": "6/6",
+      "measured": "0/6",
+      "status": "UNMET",
+      "evidence": [
+        "evidence/v3-release/00-baseline/command-surface-map.md@sha256:9d76a58a16eb5246f48818666ba2b7d51a4242be64d8a824150d85636e0d3220"
+      ],
+      "detail": "no command has a single artifact proving slash-typed -> flag mapping -> real execution -> observed result"
+    },
+    {
+      "num": 5,
+      "lane": "L2/L3",
+      "name": "Release gates: all exit 0, exit codes captured separately from stdout",
+      "unit": "gates",
+      "baseline": "4/4 rc=0",
+      "target": "4/4 rc=0 (this is a sealed snapshot \u2014 re-run tools/*.sh/py to confirm current tree)",
+      "measured": "test-hooks.sh=0, test-installer.sh=0, dry-run-install.sh=0, verify-orchestration.py=0",
+      "status": "PASS",
+      "evidence": [
+        "evidence/v3-release/00-baseline/gates-20260904T051258/exit-codes.txt@sha256:c6db6b3274cf4ee0b9a51a2b043d8234fb53e8f4a5d837f005a9aa19abc4a947",
+        "evidence/v3-release/00-baseline/gates-20260904T051258/README.md@sha256:e09021a705dccd4e4e03a73d8a054d72cdaa92c132bab404c0bfdf19c64a1c68",
+        "evidence/v3-release/00-baseline/gates-20260904T051258/test-hooks.sh.log@sha256:563d8e2216ca7699b7021916e6ad8ddd98a050c96eb979e7f9dd8f462da4f8e6",
+        "evidence/v3-release/00-baseline/gates-20260904T051258/test-installer.sh.log@sha256:fac80dddb4814f0852bacac17baa97af6f776b7e78b73e6fab02102a19b981f7",
+        "evidence/v3-release/00-baseline/gates-20260904T051258/dry-run-install.sh.log@sha256:78770467d5cdbf18b7eebdf18803af3006ef12e16084beb65002c948470b6d68",
+        "evidence/v3-release/00-baseline/gates-20260904T051258/verify-orchestration.py.log@sha256:16188c448147dbfe97be37d50c88f76ccceeb5e7b1b8d01e7b5e32c205e3cbf3"
+      ],
+      "detail": "all 4 gates rc=0, exit codes captured separately from stdout"
+    },
+    {
+      "num": 6,
+      "lane": "L14",
+      "name": "Skill count (ground truth, derived not restated)",
+      "unit": "skills",
+      "baseline": "18",
+      "target": "18",
+      "measured": "18",
+      "status": "PASS",
+      "evidence": [
+        "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
+      ],
+      "detail": "18 skill directories with SKILL.md found under plugins/proofpunk/skills/"
+    }
+  ],
+  "summary": {
+    "passing": 3,
+    "total": 9
+  }
+}

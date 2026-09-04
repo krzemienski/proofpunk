@@ -1,0 +1,133 @@
+{
+  "hooks_json_sha256": "e0227d5b825d2d5f943722e4a41c70914b4d7e116dff65b838d6b39457c2ec92",
+  "hooks_json_bytes": 2707,
+  "event_key_count": 7,
+  "event_keys": [
+    "SessionStart",
+    "Stop",
+    "SubagentStop",
+    "PreToolUse",
+    "InstructionsLoaded",
+    "PostToolUse",
+    "PostToolUseFailure"
+  ],
+  "registration_count": 11,
+  "distinct_scripts_registered": [
+    "bash-write-notice.sh",
+    "bash-write-snapshot.sh",
+    "capture-guard.sh",
+    "evidence-guard.sh",
+    "instructions-loaded.sh",
+    "no-test-files.sh",
+    "post-write-walkthrough.sh",
+    "session-start.sh",
+    "stop-guard.sh"
+  ],
+  "distinct_script_count": 9,
+  "on_disk_sh": [
+    "bash-write-notice.sh",
+    "bash-write-snapshot.sh",
+    "capture-guard.sh",
+    "evidence-guard.sh",
+    "instructions-loaded.sh",
+    "no-test-files.sh",
+    "post-write-walkthrough.sh",
+    "session-start.sh",
+    "stop-guard.sh"
+  ],
+  "on_disk_sh_count": 9,
+  "registered_twice": {
+    "stop-guard.sh": 2,
+    "bash-write-notice.sh": 2
+  },
+  "registrations": [
+    {
+      "event": "SessionStart",
+      "matcher": "startup|resume|clear",
+      "script": "session-start.sh",
+      "timeout": 5,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"
+    },
+    {
+      "event": "Stop",
+      "matcher": null,
+      "script": "stop-guard.sh",
+      "timeout": 10,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/stop-guard.sh"
+    },
+    {
+      "event": "SubagentStop",
+      "matcher": null,
+      "script": "stop-guard.sh",
+      "timeout": 10,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/stop-guard.sh"
+    },
+    {
+      "event": "PreToolUse",
+      "matcher": "Write|Edit",
+      "script": "no-test-files.sh",
+      "timeout": 5,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/no-test-files.sh"
+    },
+    {
+      "event": "PreToolUse",
+      "matcher": "Write|Edit",
+      "script": "evidence-guard.sh",
+      "timeout": 5,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/evidence-guard.sh"
+    },
+    {
+      "event": "PreToolUse",
+      "matcher": "Write|Edit",
+      "script": "capture-guard.sh",
+      "timeout": 5,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/capture-guard.sh"
+    },
+    {
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "script": "bash-write-snapshot.sh",
+      "timeout": 10,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-snapshot.sh"
+    },
+    {
+      "event": "InstructionsLoaded",
+      "matcher": null,
+      "script": "instructions-loaded.sh",
+      "timeout": 5,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/instructions-loaded.sh"
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": "Write|Edit",
+      "script": "post-write-walkthrough.sh",
+      "timeout": 5,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/post-write-walkthrough.sh"
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": "Bash",
+      "script": "bash-write-notice.sh",
+      "timeout": 10,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-notice.sh"
+    },
+    {
+      "event": "PostToolUseFailure",
+      "matcher": "Bash",
+      "script": "bash-write-notice.sh",
+      "timeout": 10,
+      "type": "command",
+      "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-notice.sh"
+    }
+  ]
+}

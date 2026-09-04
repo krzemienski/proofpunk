@@ -13,8 +13,8 @@
 
 <required_reading>
 **Read these reference files NOW:**
-1. references/caching-strategy.md
-2. references/tool-reference.md
+1. xc-mcp-caching-strategy.md
+2. xc-mcp-tool-reference.md
 </required_reading>
 
 <cache_architecture>

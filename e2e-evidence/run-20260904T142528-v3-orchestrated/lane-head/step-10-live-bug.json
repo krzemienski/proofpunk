@@ -1,0 +1,74 @@
+{
+  "id": "bug",
+  "ask": "The login form submits twice and I cannot find why. Symptom fixes keep failing. Reproduction: click Submit, the browser fires two POSTs to /login.",
+  "expected": "root-cause-debugging",
+  "actual": "root-cause-debugging",
+  "match": true,
+  "reached": [
+    {
+      "raw": "proofpunk:root-cause-debugging",
+      "normalized": "root-cause-debugging",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:root-cause-debugging. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "delivery": [
+    {
+      "raw": "proofpunk:root-cause-debugging",
+      "normalized": "root-cause-debugging",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:root-cause-debugging. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "reply": "I'll route this to the proofpunk root-cause debugging skill \u2014 the ask is a persistent bug where symptom fixes keep failing and the real cause is unknown.Routed: `proofpunk:root-cause-debugging`.\n\nFit: persistent bug, symptom fixes failing, reproduction known but cause unknown \u2014 the skill's core case (reproduce \u2192 minimize \u2192 competing hypotheses \u2192 trace backward to origin \u2192 fix cause, not symptom).\n\nNot implementing per instructions.",
+  "tools_used": [
+    "Skill"
+  ],
+  "elapsed_s": 12.0,
+  "result": {
+    "is_error": false,
+    "num_turns": 3,
+    "cost_usd": 0.6964182499999999
+  },
+  "system_message_count": 93,
+  "system_keys_sample": [
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    }
+  ]
+}

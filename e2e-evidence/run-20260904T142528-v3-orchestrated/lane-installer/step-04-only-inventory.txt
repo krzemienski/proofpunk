@@ -1,0 +1,5 @@
+DIR_D=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/dir-d
+top_dirs=['end-user-testing']
+fresh_evidence=[PosixPath('/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/dir-d/end-user-testing/scripts/fresh_evidence.py')]
+fresh_evidence_size=10412
+fresh_evidence_mode=0o100644

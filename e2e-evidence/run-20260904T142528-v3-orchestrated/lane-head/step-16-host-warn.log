@@ -1,0 +1,1 @@
+2026-09-04T14:43:56.945Z [WARN] Skill listing over budget: 1574 skills, 553023 chars > 150000 budget — descriptions will be truncated. Run /skills to disable some, or raise skillListingBudgetFraction in settings.

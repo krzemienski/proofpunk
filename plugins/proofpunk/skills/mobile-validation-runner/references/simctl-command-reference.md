@@ -1,4 +1,4 @@
-> Incorporated from the `ios-simulator-control` skill (references/reference.md).
+> Incorporated from the `ios-simulator-control` skill (its own `references` directory, file `reference.md`).
 
 # Ios Simulator Control Reference
 

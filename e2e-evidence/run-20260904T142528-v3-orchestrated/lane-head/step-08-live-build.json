@@ -1,0 +1,81 @@
+{
+  "id": "build",
+  "ask": "Build a CLI that converts markdown files to HTML end to end. Scope is known: one command, real files on disk, no design debate.",
+  "expected": "implement",
+  "actual": "implement",
+  "match": true,
+  "reached": [
+    {
+      "raw": "proofpunk:proofpunk",
+      "normalized": "proofpunk",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:proofpunk. Nothing was executed; delegate execution to a worker."
+    },
+    {
+      "raw": "proofpunk:implement",
+      "normalized": "implement",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:implement. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "delivery": [
+    {
+      "raw": "proofpunk:implement",
+      "normalized": "implement",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:implement. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "reply": "Routed. `proofpunk:implement` is the fit \u2014 known scope, end-to-end build, real files on disk, no design debate (so not `brainstorm`), single command (so not `validation-plan`).",
+  "tools_used": [
+    "Skill"
+  ],
+  "elapsed_s": 13.6,
+  "result": {
+    "is_error": false,
+    "num_turns": 5,
+    "cost_usd": 1.4563284999999997
+  },
+  "system_message_count": 113,
+  "system_keys_sample": [
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    }
+  ]
+}

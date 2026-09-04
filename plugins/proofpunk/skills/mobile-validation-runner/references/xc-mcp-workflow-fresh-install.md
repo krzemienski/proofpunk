@@ -10,8 +10,8 @@
 
 <required_reading>
 **Read these reference files NOW:**
-1. references/tool-reference.md
-2. references/operation-enums.md
+1. xc-mcp-tool-reference.md
+2. xc-mcp-operation-enums.md
 </required_reading>
 
 <workflow_overview>

@@ -1,4 +1,4 @@
-> Incorporated from the `debug-like-expert` skill (references/debugging-mindset.md).
+> Incorporated from the `debug-like-expert` skill (its own `references` directory, file `debugging-mindset.md`).
 
 ## Contents
 

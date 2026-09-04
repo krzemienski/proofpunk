@@ -1,4 +1,4 @@
-> Incorporated from the `xc-mcp` skill (references/mcp-configuration.md).
+> Incorporated from the `xc-mcp` skill (its own `references` directory, file `mcp-configuration.md`).
 
 # XC-MCP Configuration Reference
 

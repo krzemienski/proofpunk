@@ -1,0 +1,56 @@
+{
+  "id": "nothing",
+  "ask": "Explain what this function does",
+  "expected": "ROUTES_TO_NOTHING",
+  "actual": "ROUTES_TO_NOTHING",
+  "match": true,
+  "reached": [],
+  "delivery": [],
+  "reply": "ROUTES_TO_NOTHING",
+  "tools_used": [],
+  "elapsed_s": 6.8,
+  "result": {
+    "is_error": false,
+    "num_turns": 1,
+    "cost_usd": 0.6221735
+  },
+  "system_message_count": 73,
+  "system_keys_sample": [
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    }
+  ]
+}

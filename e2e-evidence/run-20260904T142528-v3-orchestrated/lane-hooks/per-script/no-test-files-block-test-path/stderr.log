@@ -1,0 +1,1 @@
+Proofpunk: refusing to create a test artifact (src/checkout.test.ts). The write path validates by driving the real system as the end user — never by writing test files. If this project has a pre-existing suite and the user explicitly asked to extend it, surface that to the user and let them decide — the default is no new test files.

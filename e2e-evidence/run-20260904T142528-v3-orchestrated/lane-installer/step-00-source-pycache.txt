@@ -1,0 +1,3 @@
+SOURCE PYCACHE
+  DIR /Users/nick/proofpunk/plugins/proofpunk/skills/stack-testing/scripts/__pycache__
+  FILE /Users/nick/proofpunk/plugins/proofpunk/skills/stack-testing/scripts/__pycache__/with_server.cpython-311.pyc 6654B

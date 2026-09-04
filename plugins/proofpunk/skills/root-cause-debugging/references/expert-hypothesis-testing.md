@@ -1,4 +1,4 @@
-> Incorporated from the `debug-like-expert` skill (references/hypothesis-testing.md).
+> Incorporated from the `debug-like-expert` skill (its own `references` directory, file `hypothesis-testing.md`).
 
 
 ## Contents

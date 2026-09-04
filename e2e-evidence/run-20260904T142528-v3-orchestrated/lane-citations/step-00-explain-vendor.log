@@ -1,0 +1,91 @@
+VENDORED-VS-BROKEN VERDICT: plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-*.md
+======================================================================================================
+
+CLAIM: the unresolved citations in xc-mcp-*.md files (and the same shape in
+simctl-command-reference.md and root-cause-debugging/references/expert-*.md)
+are broken PROOFPUNK doctrine citations that should be fixed by bundling
+more files.
+
+FINDING: FALSE for foreign-layout citations. They are vendored pass-through
+content citing a FOREIGN upstream project's OWN internal directory layout.
+Rewriting or "fixing" them by bundling proofpunk-local files at those paths
+would CORRUPT correct vendored content, not repair it.
+
+The ONE exception on the tree this gate was rewritten against: a vendored
+file that cites a SHARED DOCTRINE basename (`web-validation.md`) is a real
+broken doctrine link and is classified ERROR until the relative path is
+fixed to the repo's deliberate layout (`../../../references/X` from a
+bundled references/ file; `../../references/X` from a SKILL.md). That
+classification is DERIVED from the live `plugins/proofpunk/references/`
+directory listing, not from a frozen tuple.
+
+EVIDENCE
+--------
+1. Provenance headers. Every vendored bundled-content file opens with an
+   explicit machine-readable attribution line, e.g.:
+
+     xc-mcp-tool-reference.md:1
+       > Incorporated from the `xc-mcp` skill (references/tool-reference.md).
+
+     simctl-command-reference.md:1
+       > Incorporated from the `ios-simulator-control` skill (references/reference.md).
+
+     expert-debugging-mindset.md:1
+       > Incorporated from the `debug-like-expert` skill (references/debugging-mindset.md).
+
+   This is the SAME pattern used by every bundled-content skill in this
+   repo: a one-line
+   "Incorporated from `<donor-skill>` (references/<donor-relative-path>)"
+   header that documents WHERE the content came from — a citation to the
+   DONOR skill's own references/ directory, in the DONOR's namespace, not
+   a citation into proofpunk's own doctrine tree. The donor skills
+   (`xc-mcp`, `ios-simulator-control`, `debug-like-expert`) do not exist
+   as sibling skill directories in this repo — they were merged content,
+   never siblings. The provenance path is therefore inherently
+   unresolvable in THIS repo by design: it documents foreign provenance,
+   not a local link.
+
+2. The remaining non-header hits inside xc-mcp-workflow-*.md files are
+   `<required_reading>` blocks, e.g. xc-mcp-workflow-build-project.md:16-17:
+
+     <required_reading>
+     **Read these reference files NOW:**
+     1. references/tool-reference.md
+     2. references/progressive-disclosure.md
+     </required_reading>
+
+   These are INSTRUCTIONS TO THE READER inside vendored workflow content —
+   they tell an agent reading the upstream xc-mcp tool "go read
+   references/tool-reference.md" using the UPSTREAM PROJECT's OWN relative
+   path convention (bare `references/X.md`, sibling to the workflow file,
+   exactly matching how `xc-mcp.md`'s own `<reference_index>` describes its
+   layout). The prose is talking about the UPSTREAM tool's references/
+   directory as the upstream tool would have organized it, not about
+   proofpunk's local `mobile-validation-runner/references/` bundle.
+
+3. Cross-check: `xc-mcp.md`'s own `<reference_index>` lists the SAME names
+   (tool-reference.md, operation-enums.md, accessibility-patterns.md,
+   progressive-disclosure.md) as living in "references/" — i.e. the xc-mcp
+   skill's own documentation of its own layout is the source these
+   citations were copy-pasted from, unedited, during incorporation.
+
+HOW THE GATE DISTINGUISHES THIS WITHOUT A FROZEN COUNT
+------------------------------------------------------
+`file_is_vendored(path)` is true iff the citing file's first non-empty line
+matches PROVENANCE_RE. `shared_doctrine_basenames(root)` is the live glob
+of `plugins/proofpunk/references/*.md`. An unresolved citation is WARN iff
+the file is vendored AND the basename is not shared doctrine; otherwise it
+is ERROR. Adding a new vendored file with foreign `references/foo.md`
+citations does not require editing this script. Adding a broken citation
+to a proofpunk-authored file, or pointing at a real doctrine basename with
+the wrong relative path, goes ERROR.
+
+Do not fix the foreign-layout citations by bundling proofpunk-local
+content at those paths — there is no proofpunk-local content to bundle.
+Two legitimate remediation paths exist for a future change (NOT performed
+by this script, which only reports WARNs):
+  (a) rewrite the citations to plain prose ("see the upstream xc-mcp
+      tool's own tool-reference.md") so they stop looking like resolvable
+      local paths, or
+  (b) leave them as-is; the derived classifier already treats them as WARN.
+

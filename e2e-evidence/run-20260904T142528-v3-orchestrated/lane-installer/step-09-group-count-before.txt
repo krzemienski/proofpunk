@@ -1,0 +1,11 @@
+group_count=10
+37: echo "== group 1: happy path (clean install of all $SKILL_COUNT skills)"
+57: echo "== group 2: collision default (second run over same dir does not clobber)"
+74: echo "== group 3: --override replaces and reports replaced"
+98: echo "== group 4: --only <name> installs exactly one skill"
+110: echo "== group 5: --only <nonexistent> exits non-zero and reports missing"
+127: echo "== group 6: --dry-run creates no files"
+139: echo "== group 7: malformed skill (missing frontmatter) fails verify — the D3 regression"
+173: echo "== group 8: --hooks registers EVERY proofpunk hook in settings.json"
+211: echo "== group 9: fresh_evidence.py strict seal/validate contract"
+233: echo "== group 10: installed tree matches canonical hooks.json"

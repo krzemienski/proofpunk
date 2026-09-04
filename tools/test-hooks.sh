@@ -5,6 +5,8 @@ set -u
 HOOKS="${1:-$(cd "$(dirname "$0")/../plugins/proofpunk/hooks" && pwd)}"
 TMP=$(mktemp -d)
 FAILS=0
+export HOME="$TMP/home"
+mkdir -p "$HOME/.claude" "$HOME/.proofpunk/bash-baselines"
 
 case_ok() { echo "  PASS: $1"; }
 case_fail() { echo "  FAIL: $1"; FAILS=$((FAILS+1)); }
@@ -25,6 +27,21 @@ assert "end-user testing is the only PASS" in d["additionalContext"], "doctrine 
   case_ok "session-start doctrine context"
 else
   case_fail "session-start doctrine context — got: $out"
+fi
+
+# SessionStart never denies. Garbage stdin is ignored (script reads no
+# stdin); still valid doctrine JSON, never a block decision. This is the
+# allowing opposite of "could deny".
+out=$(printf 'not-json' | sh "$HOOKS/session-start.sh" 2>/dev/null)
+if printf '%s' "$out" | python3 -c '
+import json, sys
+d = json.load(sys.stdin)["hookSpecificOutput"]
+assert d["hookEventName"] == "SessionStart"
+assert "Proofpunk is installed" in d["additionalContext"]
+' 2>/dev/null; then
+  case_ok "session-start ignores stdin and never denies"
+else
+  case_fail "session-start stdin-ignored — got: $out"
 fi
 
 echo "== stop-guard.sh"
@@ -53,9 +70,51 @@ EOF
 out=$(printf '{"session_id":"s3","transcript_path":"%s","cwd":"/tmp"}' "$TMP/t3.jsonl" | sh "$HOOKS/stop-guard.sh")
 if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard blocked a non-claim — got: $out"; elif [ -n "$out" ]; then case_fail "stop-guard spoke on a non-claim (must be silent) — got: $out"; else case_ok "stop-guard silent on non-claim"; fi
 
-# Case 4: missing transcript → non-blocking
+# Case 4: missing transcript → non-blocking, but the fail-open must be
+# OBSERVABLE. Silence is reserved for "the heuristic actually ran and found
+# nothing to enforce"; a transcript it could never read must say so, or a
+# guard that structurally cannot fail is indistinguishable from a clean run
+# (this repo's defect Class 1). Still exit 0 — Stop cannot be blocked on an
+# unread transcript — and must never emit a block decision.
 out=$(printf '{"session_id":"s4","transcript_path":"/nonexistent/x.jsonl","cwd":"/tmp"}' | sh "$HOOKS/stop-guard.sh")
-if [ -z "$out" ]; then case_ok "stop-guard silent on missing transcript"; else case_fail "stop-guard spoke on missing transcript (must be silent) — got: $out"; fi
+if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard blocked on a missing transcript (must never block) — got: $out"; elif printf '%s' "$out" | grep -q 'enforcement OFF (transcript-missing-or-unreadable)'; then case_ok "stop-guard announces fail-open on missing transcript"; else case_fail "stop-guard fail-open was silent on missing transcript (must be observable) — got: $out"; fi
+
+# Case 4b: python3 absent from PATH. Pre-fix: python3 missing made the
+# `transcript=$(... python3 ... 2>/dev/null || true)` pipeline empty, then
+# the `[ -n "$transcript" ] || exit 0` branch exited silently — same as a
+# clean run. Isolated PATH=/bin (no python3 there) must emit python3-not-found.
+out=$(PATH=/bin /bin/sh "$HOOKS/stop-guard.sh" <<'EOF'
+{"session_id":"s4b","transcript_path":"/tmp/whatever.jsonl","cwd":"/tmp","hook_event_name":"Stop"}
+EOF
+)
+rc=$?
+if [ "$rc" -ne 0 ]; then case_fail "stop-guard python3-absent must exit 0 — rc=$rc out=$out"
+elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard python3-absent must never block — got: $out"
+elif printf '%s' "$out" | grep -q 'enforcement OFF (python3-not-found)'; then case_ok "stop-guard announces fail-open on missing python3"
+else case_fail "stop-guard python3-absent was silent (must be observable) — got: $out"; fi
+
+# Case 4c: unreadable existing transcript (chmod 000). Pre-fix: `[ -f ]`
+# succeeded and python opened with errors=ignore / OSError → empty lines →
+# silent exit 0. Now must emit transcript-missing-or-unreadable (or the
+# python-side transcript-unreadable notice).
+touch "$TMP/t4c.jsonl"
+chmod 000 "$TMP/t4c.jsonl" 2>/dev/null || true
+out=$(printf '{"session_id":"s4c","transcript_path":"%s","cwd":"/tmp","hook_event_name":"Stop"}' "$TMP/t4c.jsonl" | sh "$HOOKS/stop-guard.sh")
+rc=$?
+chmod 644 "$TMP/t4c.jsonl" 2>/dev/null || true
+if [ "$rc" -ne 0 ]; then case_fail "stop-guard unreadable transcript must exit 0 — rc=$rc out=$out"
+elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard unreadable transcript must never block — got: $out"
+elif printf '%s' "$out" | grep -q 'enforcement OFF'; then case_ok "stop-guard announces fail-open on unreadable transcript"
+else case_fail "stop-guard unreadable transcript was silent — got: $out"; fi
+
+# Case 4d: malformed stdin JSON. Pre-fix: python3 -c except printed '' then
+# `[ -n "$transcript" ] || exit 0` — silent. Now stdin-json-unreadable.
+out=$(printf 'not-json' | sh "$HOOKS/stop-guard.sh")
+rc=$?
+if [ "$rc" -ne 0 ]; then case_fail "stop-guard malformed stdin must exit 0 — rc=$rc out=$out"
+elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard malformed stdin must never block — got: $out"
+elif printf '%s' "$out" | grep -q 'enforcement OFF (stdin-json-unreadable)'; then case_ok "stop-guard announces fail-open on malformed stdin"
+else case_fail "stop-guard malformed stdin was silent — got: $out"; fi
 
 echo "== evidence-guard.sh"
 # Case 5: secret into evidence dir → denied (exit 2). JSON via heredoc —
@@ -168,6 +227,29 @@ EOF
 )
 rc=$?
 if [ "$rc" -eq 0 ]; then case_ok "no-test-files fails open on empty path"; else case_fail "no-test-files empty path — rc=$rc out=$out"; fi
+
+# Case 11c: production path whose CONTENT carries a Fake* class. Path-only
+# gating would stay silent (rc=0, empty stderr). The mock heuristic is a
+# SOFT WARN — exit 0, never a deny — because a hard deny on `class Fake*`
+# would block legitimate domain names. Pre-fix scripts without MOCK_MARKERS
+# fail this case (empty stderr).
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"src/gateway.py","content":"class FakeGateway:\n    def send(self):\n        return 'ok'\n"}}
+EOF
+)
+rc=$?
+if [ "$rc" -ne 0 ]; then case_fail "no-test-files FakeGateway must stay exit 0 — rc=$rc out=$out"
+elif printf '%s' "$out" | grep -q 'Fake/Mock/Stub class'; then case_ok "no-test-files warns on FakeGateway in production content"
+else case_fail "no-test-files FakeGateway warn missing — out=$out"; fi
+
+# Case 11d: production path with no mock markers → silent allow (exit 0, empty).
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"Write","tool_input":{"file_path":"src/gateway.py","content":"class RealGateway:\n    def send(self):\n        return client.post('/v1')\n"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ] && [ -z "$out" ]; then case_ok "no-test-files silent on RealGateway production content"
+else case_fail "no-test-files RealGateway — rc=$rc out=$out"; fi
 
 echo "== post-write-walkthrough.sh"
 # Case 12: production change → walkthrough reminder
@@ -309,6 +391,15 @@ else
   case_fail "instructions-loaded log — out=$out"
 fi
 
+# Case 8b: malformed stdin → exit 0, no extra log line (fail-open, never a deny).
+# This is the allowing opposite of "did write a line".
+before=$(wc -l < "$HOME/.claude/proofpunk-loads.jsonl" | tr -d ' ')
+out=$(printf 'not-json' | sh "$HOOKS/instructions-loaded.sh" 2>&1)
+rc=$?
+after=$(wc -l < "$HOME/.claude/proofpunk-loads.jsonl" | tr -d ' ')
+if [ "$rc" -eq 0 ] && [ "$before" = "$after" ]; then case_ok "instructions-loaded fails open on malformed stdin"
+else case_fail "instructions-loaded malformed stdin — rc=$rc before=$before after=$after out=$out"; fi
+
 echo
 
 # Case 25: bare-phrase non-path proof (item #4). PROOF_NONPATH exists so an
@@ -329,6 +420,43 @@ cat > "$TMP/t15.jsonl" <<'EOF'
 EOF
 out=$(printf '{"session_id":"s15","transcript_path":"%s","cwd":"%s"}' "$TMP/t15.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
 if [ -z "$out" ]; then case_ok "stop-guard silent on curl url+200 proof"; else case_fail "stop-guard rejected a real curl assertion — got: $out"; fi
+
+# Case 25c: PROOF_NONPATH honesty. A typed curl+200 earns proof credit even
+# when no HTTP request was ever made — the guard reads the transcript, not
+# the network. Documented limitation (rule 10: never parse shell to close
+# it). This case PASSES on both pre-fix and post-fix; it exists so a later
+# "fix" that starts parsing shell cannot hide behind silence.
+cat > "$TMP/t15c.jsonl" <<'EOF'
+{"role":"assistant","text":"Scouted src/app.py touchpoints. Done — curl https://api.example/health returned 200."}
+EOF
+out=$(printf '{"session_id":"s15c","transcript_path":"%s","cwd":"%s"}' "$TMP/t15c.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if [ -z "$out" ]; then case_ok "stop-guard curl+200 proof is transcript-only (request never confirmed)"
+else case_fail "stop-guard curl+200 honesty case spoke — got: $out"; fi
+
+echo "== bash-write-snapshot.sh (allow = silent exit 0; 'block' = non-Bash no-op)"
+# Snapshot never denies. The allowing case is a real Bash snapshot that
+# writes a baseline file. The "block-shaped" case is a non-Bash payload
+# that the script ignores (exit 0, no state) — it cannot deny, so the
+# closest observable opposite of "did work" is "did nothing".
+SNAP=$(mktemp -d); mkdir -p "$SNAP/e2e-evidence/run-s" "$SNAP/src"
+echo cap > "$SNAP/e2e-evidence/run-s/step-01.txt"
+printf '{"hook_event_name":"PreToolUse","tool_name":"Bash","cwd":"%s","session_id":"snap","tool_use_id":"s1","tool_input":{"command":"true"}}' "$SNAP" > "$SNAP/in.json"
+out=$(sh "$HOOKS/bash-write-snapshot.sh" < "$SNAP/in.json" 2>&1)
+rc=$?
+nbase=$(ls "$HOME/.proofpunk/bash-baselines" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$rc" -eq 0 ] && [ -z "$out" ] && [ "$nbase" -ge 1 ]; then case_ok "bash-write-snapshot records baseline on Bash"
+else case_fail "bash-write-snapshot Bash arm — rc=$rc nbase=$nbase out=$out"; fi
+# consume so leftover state cannot poison later cases
+printf '{"hook_event_name":"PostToolUse","tool_name":"Bash","cwd":"%s","session_id":"snap","tool_use_id":"s1","tool_input":{"command":"true"}}' "$SNAP" > "$SNAP/in.json"
+sh "$HOOKS/bash-write-notice.sh" < "$SNAP/in.json" >/dev/null 2>&1
+out=$(sh "$HOOKS/bash-write-snapshot.sh" 2>&1 <<'EOF'
+{"hook_event_name":"PreToolUse","tool_name":"Write","cwd":"/tmp","session_id":"snap","tool_use_id":"s2","tool_input":{"file_path":"src/a.ts"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ] && [ -z "$out" ]; then case_ok "bash-write-snapshot silent on non-Bash tool"
+else case_fail "bash-write-snapshot non-Bash — rc=$rc out=$out"; fi
+rm -rf "$SNAP"
 
 echo "== bash-write detector (Bash bypass mitigation)"
 BW=$(mktemp -d); mkdir -p "$BW/e2e-evidence/run-1" "$BW/src"

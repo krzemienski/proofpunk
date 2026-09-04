@@ -1,0 +1,74 @@
+{
+  "id": "audit",
+  "ask": "Audit this entire running web app at http://127.0.0.1:3999 \u2014 click through every screen, button, form, and endpoint.",
+  "expected": "full-functional-audit",
+  "actual": "full-functional-audit",
+  "match": true,
+  "reached": [
+    {
+      "raw": "proofpunk:full-functional-audit",
+      "normalized": "full-functional-audit",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:full-functional-audit. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "delivery": [
+    {
+      "raw": "proofpunk:full-functional-audit",
+      "normalized": "full-functional-audit",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:full-functional-audit. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "reply": "I'll invoke the proofpunk router-designated delivery skill for an app-wide functional audit of a running system.Routed to `proofpunk:full-functional-audit` \u2014 app-wide interaction audit of a running system, which matches the ask (every screen, button, form, endpoint at a live URL).\n\nSkill loaded read-only. Not implementing per instructions.\n\n**What the skill would run:**\n\n| Phase | Output |\n|---|---|\n| EXPLORE | Interaction inventory \u2014 routes, buttons, forms, endpoints, flows, states |\n| PLAN | Validation batches + resource mutexes (browser session, dev server, code edits) |\n| EXECUTE | Each it",
+  "tools_used": [
+    "Skill"
+  ],
+  "elapsed_s": 15.3,
+  "result": {
+    "is_error": false,
+    "num_turns": 3,
+    "cost_usd": 1.27446075
+  },
+  "system_message_count": 93,
+  "system_keys_sample": [
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    }
+  ]
+}

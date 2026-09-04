@@ -1,0 +1,2 @@
+VERDICT: FAIL
+OFFENDER: doctrine reference(s) do not resolve relative to /Users/nick/proofpunk/plugins/proofpunk/skills/proofpunk/SKILL.md: ['../../references/does-not-exist.md -> /Users/nick/proofpunk/plugins/proofpunk/references/does-not-exist.md']

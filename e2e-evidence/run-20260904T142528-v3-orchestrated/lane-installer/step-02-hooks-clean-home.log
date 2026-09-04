@@ -1,0 +1,25 @@
+== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.2.0 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL proofpunk
+hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)
+  copied: 9 hook scripts (bash-write-notice.sh, bash-write-snapshot.sh, capture-guard.sh, evidence-guard.sh, instructions-loaded.sh, no-test-files.sh, post-write-walkthrough.sh, session-start.sh, stop-guard.sh)
+  SessionStart: added
+  Stop: added
+  SubagentStop: added
+  PreToolUse:no-test-files: added
+  PreToolUse:evidence-guard: added
+  PreToolUse:capture-guard: added
+  PreToolUse:bash-write-snapshot: added
+  InstructionsLoaded: added
+  PostToolUse:post-write-walkthrough: added
+  PostToolUse:bash-write-notice: added
+  PostToolUseFailure: added
+  settings: /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.claude/settings.json
+doctrine   : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ proofpunk
+verify     : all skills pass (see ✓ lines above)
+== summary: 1 installed, 0 replaced, 0 skipped (collision), 0 missing ==

@@ -1,0 +1,1 @@
+{"hook_event_name": "PostToolUse", "tool_name": "Bash", "cwd": "/Users/nick/proofpunk/e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/per-script/bash-tree", "session_id": "h", "tool_use_id": "w2", "tool_input": {"command": "true"}}

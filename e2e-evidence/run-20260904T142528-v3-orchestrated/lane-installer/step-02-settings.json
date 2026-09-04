@@ -1,0 +1,125 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/session-start.sh",
+            "timeout": 5
+          }
+        ],
+        "matcher": "startup|resume|clear"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/stop-guard.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/stop-guard.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/no-test-files.sh",
+            "timeout": 5
+          }
+        ],
+        "matcher": "Write|Edit"
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/evidence-guard.sh",
+            "timeout": 5
+          }
+        ],
+        "matcher": "Write|Edit"
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/capture-guard.sh",
+            "timeout": 5
+          }
+        ],
+        "matcher": "Write|Edit"
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/bash-write-snapshot.sh",
+            "timeout": 10
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "InstructionsLoaded": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/instructions-loaded.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/post-write-walkthrough.sh",
+            "timeout": 5
+          }
+        ],
+        "matcher": "Write|Edit"
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/bash-write-notice.sh",
+            "timeout": 10
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.proofpunk/hooks/bash-write-notice.sh",
+            "timeout": 10
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ]
+  }
+}

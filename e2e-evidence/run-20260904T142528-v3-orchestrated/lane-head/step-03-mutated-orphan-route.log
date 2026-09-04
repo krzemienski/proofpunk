@@ -1,0 +1,3 @@
+VERDICT: FAIL
+OFFENDER: unrouted skill(s) (expected 17 non-head from glob of 18; table has 17 unique): ['brainstorm']
+OFFENDER: orphan route(s) (name does not exist as a skill dir): ['does-not-exist-skill']

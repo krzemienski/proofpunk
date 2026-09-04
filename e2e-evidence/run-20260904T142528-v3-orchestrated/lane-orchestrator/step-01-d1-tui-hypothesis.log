@@ -1,0 +1,23 @@
+=== A: is TUI established project vocabulary? ===
+plugins/proofpunk/skills/tui-testing
+SKILL tui-testing EXISTS
+
+=== B: does any OTHER .planning artifact declare a TUI product? ===
+0  .planning/BUILD-PROMPT.md
+1  .planning/plugin-improvement-criteria.md
+1  .planning/plugin-improvements.md
+0  .planning/proofpunk-agent-criteria.md
+36  .planning/proofpunk-agent.prompt.md
+0  .planning/v3-criteria.md
+
+=== C: artifact self-description (line 6 + 1.1) ===
+**UI framework:** Textual (pinned stable)
+Proofpunk Agent is a terminal-native mission-control interface for Claude Agent SDK sessions. It runs one or more Claude agent sessions -- with the Proofpunk plugin loaded -- and renders everything the SDK exposes, live: the orchestrator/subagent tree, per-agent current activity, streaming tokens, tool calls and results, hook events, permission prompts, cost and context consumption, MCP server health, checkpoints, and errors.
+
+=== D: does it define a SEPARATE repo == another lane? ===
+**Repository:** `krzemienski/proofpunk-agent` (new, standalone)
+**Consumes (unmodified, read-only):** `krzemienski/proofpunk` plugin v2.0.1
+
+=== E: exhaustive absence of 2e/E2 named artifact (re-verify prior claim) ===
+0
+0 matches in all commit bodies

@@ -260,5 +260,49 @@ else
 fi
 rm -rf "$PH"
 
+echo
+echo "== group 11: F-D5-1 installed tree never contains __pycache__ or *.pyc"
+# Non-vacuous: plant bytecode in a scratch SOURCE, then assert the installed
+# tree has zero of it. A check against a source that never had pycache cannot
+# prove the exclude path fired.
+SRC11="$TMP/src11"
+mkdir -p "$SRC11/plugins/proofpunk/skills"
+cp -R "$REPO_ROOT/plugins/proofpunk/skills/end-user-testing" "$SRC11/plugins/proofpunk/skills/"
+mkdir -p "$SRC11/plugins/proofpunk/skills/end-user-testing/scripts/__pycache__"
+printf 'PLANTED-BYTECODE-F-D5-1\n' > "$SRC11/plugins/proofpunk/skills/end-user-testing/scripts/__pycache__/planted.cpython-311.pyc"
+printf 'PLANTED-PYC-LOOSE\n' > "$SRC11/plugins/proofpunk/skills/end-user-testing/scripts/planted.pyc"
+T11="$TMP/no-pycache"
+OUT11=$(bash "$(dirname "$0")/proofpunk-install.sh" --source-dir "$SRC11" --dir "$T11" --no-doctrine --no-verify --only end-user-testing 2>&1)
+RC11=$?
+planted_src=$(find "$SRC11" \( -name '__pycache__' -o -name '*.pyc' \) | wc -l | tr -d ' ')
+planted_dst=$(find "$T11" \( -name '__pycache__' -o -name '*.pyc' \) | wc -l | tr -d ' ')
+if [ "$RC11" -eq 0 ] && [ "${planted_src:-0}" -ge 2 ] && [ "${planted_dst:-0}" -eq 0 ]; then
+  ok "F-D5-1: source had $planted_src pycache/pyc entries, installed tree has 0"
+else
+  bad "F-D5-1 pycache leak — installer copied host bytecode; rc=$RC11 source_pyc=$planted_src dest_pyc=$planted_dst out=$OUT11"
+fi
+
+echo
+echo "== group 12: F-D5-2 installed fresh_evidence.py is runnable"
+# Group 9 exercises the SOURCE copy. This group asserts the installed tree
+# contains a runnable helper — the gap that let wholesale skills/** copy
+# ship it with nothing checking it.
+T12="$TMP/fresh-ev-installed"
+OUT12=$(bash "$(dirname "$0")/proofpunk-install.sh" --source-dir "$REPO_ROOT" --dir "$T12" --no-doctrine --only end-user-testing 2>&1)
+RC12=$?
+FE12="$T12/end-user-testing/scripts/fresh_evidence.py"
+if [ "$RC12" -eq 0 ] && [ -f "$FE12" ]; then
+  ok "F-D5-2: fresh_evidence.py present in installed tree"
+else
+  bad "F-D5-2: fresh_evidence.py missing after install rc=$RC12 out=$OUT12"
+fi
+python3 "$FE12" --help >"$T12/help.out" 2>&1
+RC12H=$?
+if [ "$RC12H" -eq 0 ]; then
+  ok "F-D5-2: installed fresh_evidence.py --help exits 0"
+else
+  bad "F-D5-2: installed fresh_evidence.py --help rc=$RC12H out=$(cat "$T12/help.out" 2>/dev/null)"
+fi
+
 echo "INSTALLER TEST FAILS: $FAILS"
 exit "$FAILS"

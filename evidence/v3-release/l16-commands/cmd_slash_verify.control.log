@@ -1,0 +1,38 @@
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+{
+  "probe": "cmd_slash_verify",
+  "why": "slash /proofpunk:verify is a playbook (no Activate-skill line); prove expansion + unique command-doc marker",
+  "plugin_loaded": false,
+  "elapsed_s": 0.7,
+  "reply": "Unknown command: /proofpunk:verify",
+  "hook_events": [],
+  "tools_used": [],
+  "hook_runs": [],
+  "tool_calls": [],
+  "result": {
+    "is_error": false,
+    "num_turns": 0,
+    "cost_usd": 0
+  },
+  "transcript": [
+    {
+      "kind": "init",
+      "slash_proofpunk": [],
+      "local_plugin": false
+    },
+    {
+      "kind": "text",
+      "text": "Unknown command: /proofpunk:verify"
+    }
+  ],
+  "init_slash_proofpunk": [],
+  "local_plugin_loaded": false,
+  "prompt": "/proofpunk:verify \"surface-probe only \u2014 quote the proof standard (Unexecuted checks are UNVERIFIED) and that verify has no flags. Do not start a runtime.\"",
+  "checks": {
+    "text_matches": false,
+    "slash_registered": false,
+    "local_plugin_loaded": false
+  },
+  "expect_text": "UNVERIFIED",
+  "pass": false
+}

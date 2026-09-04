@@ -357,7 +357,7 @@ index_main = f"""
 """
 write("index.html", chrome(
     "proofpunk — done means proven by end-user testing",
-    "Proofpunk — execution-first delivery plugin for Claude Code, OMP, and OpenCode. 18 skills where end-user testing is the only PASS.",
+    f"Proofpunk — execution-first delivery plugin for Claude Code, OMP, and OpenCode. {N_SKILLS} skills where end-user testing is the only PASS.",
     "overview", index_main, "OVERVIEW"))
 
 # ---------------- skills.html ----------------

@@ -1,0 +1,6 @@
+after-arm HEAD installer against source that CONTAINS bytecode
+source_pycache_count=2
+  SRC /Users/nick/proofpunk/plugins/proofpunk/skills/stack-testing/scripts/__pycache__
+  SRC /Users/nick/proofpunk/plugins/proofpunk/skills/stack-testing/scripts/__pycache__/with_server.cpython-311.pyc
+installed_pycache_count=0
+EXCLUDED

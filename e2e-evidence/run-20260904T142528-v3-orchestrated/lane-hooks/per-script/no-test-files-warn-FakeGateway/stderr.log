@@ -1,0 +1,1 @@
+Proofpunk (warn): src/gateway.py contains a Fake/Mock/Stub class — possible mock/stub. The pipeline validates by driving the real system, not by mocking it. Proceeding, but if this is meant as production code, replace the mock with the real implementation.

@@ -1,0 +1,4 @@
+DIR_E=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/dir-e
+canary_in_live=False
+bak_dirs=['/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/dir-e/.brainstorm.bak-20260904-103323']
+  bak_has_canary=True

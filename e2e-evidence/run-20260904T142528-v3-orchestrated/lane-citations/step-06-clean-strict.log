@@ -1,0 +1,38 @@
+verify-citations: scanning /Users/nick/proofpunk/plugins/proofpunk/skills
+shared doctrine set (14): api-validation.md, ci-gates.md, cli-validation.md, defect-pattern-database.md, end-user-actor.md, evidence-contract.md, ios-hig-checklist.md, ios-validation.md, platform-routing.md, preflight-checks.md, run-trace-schema.md, severity-model.md, web-validation.md, web-wcag-checklist.md
+
+ERROR (0) — no unresolved doctrine citations, no unresolved SKILL.md citations
+
+WARN (28) — unresolved foreign-layout citation in a vendored file:
+  plugins/proofpunk/skills/mobile-validation-runner/references/simctl-command-reference.md:1 -> references/reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-accessibility-patterns.md:1 -> references/accessibility-patterns.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-caching-strategy.md:1 -> references/caching-strategy.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-mcp-configuration.md:1 -> references/mcp-configuration.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-operation-enums.md:1 -> references/operation-enums.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-progressive-disclosure.md:1 -> references/progressive-disclosure.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-tool-reference.md:1 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md:16 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md:17 -> references/operation-enums.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md:16 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md:17 -> references/progressive-disclosure.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md:16 -> references/caching-strategy.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md:17 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md:17 -> references/progressive-disclosure.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md:18 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md:13 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md:14 -> references/operation-enums.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md:16 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md:17 -> references/progressive-disclosure.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md:17 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md:18 -> references/operation-enums.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md:16 -> references/accessibility-patterns.md  (vendored)
+  plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md:17 -> references/tool-reference.md  (vendored)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-debugging-mindset.md:1 -> references/debugging-mindset.md  (vendored)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-hypothesis-testing.md:1 -> references/hypothesis-testing.md  (vendored)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md:1 -> references/investigation-techniques.md  (vendored)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-verification-patterns.md:1 -> references/verification-patterns.md  (vendored)
+  plugins/proofpunk/skills/root-cause-debugging/references/expert-when-to-research.md:1 -> references/when-to-research.md  (vendored)
+
+summary: 0 ERROR, 28 WARN (WARN count is derived, not a frozen baseline)
+
+RESULT: FAIL (--strict)

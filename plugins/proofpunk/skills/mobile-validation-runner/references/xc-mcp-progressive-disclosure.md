@@ -1,4 +1,4 @@
-> Incorporated from the `xc-mcp` skill (references/progressive-disclosure.md).
+> Incorporated from the `xc-mcp` skill (its own `references` directory, file `progressive-disclosure.md`).
 
 # Progressive Disclosure Pattern
 

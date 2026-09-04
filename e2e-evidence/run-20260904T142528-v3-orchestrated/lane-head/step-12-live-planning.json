@@ -1,0 +1,81 @@
+{
+  "id": "planning",
+  "ask": "I need a written multi-phase roadmap before any code for adding OAuth to this existing app. Do not write code yet.",
+  "expected": "validation-plan",
+  "actual": "validation-plan",
+  "match": true,
+  "reached": [
+    {
+      "raw": "proofpunk:proofpunk",
+      "normalized": "proofpunk",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:proofpunk. Nothing was executed; delegate execution to a worker."
+    },
+    {
+      "raw": "proofpunk:validation-plan",
+      "normalized": "validation-plan",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:validation-plan. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "delivery": [
+    {
+      "raw": "proofpunk:validation-plan",
+      "normalized": "validation-plan",
+      "is_error": null,
+      "unknown": false,
+      "result_head": "Loaded skill instructions (read-only): proofpunk:validation-plan. Nothing was executed; delegate execution to a worker."
+    }
+  ],
+  "reply": "I'll follow the proofpunk router.Routed: `proofpunk:validation-plan` \u2014 a multi-phase build needing a written roadmap before code.",
+  "tools_used": [
+    "Skill"
+  ],
+  "elapsed_s": 16.2,
+  "result": {
+    "is_error": false,
+    "num_turns": 5,
+    "cost_usd": 1.34084425
+  },
+  "system_message_count": 113,
+  "system_keys_sample": [
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    },
+    {
+      "subtype": "hook_started",
+      "data_keys": [
+        "hook_event",
+        "hook_id",
+        "hook_name",
+        "session_id",
+        "subtype",
+        "type",
+        "uuid"
+      ]
+    }
+  ]
+}

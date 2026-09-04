@@ -1,0 +1,26 @@
+== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=none → source=2.2.0 (source is always the newest main)
+installing : 1 skill(s)
+  SKIP    proofpunk (already exists; use --override to replace)
+hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)
+  copied: 9 hook scripts (bash-write-notice.sh, bash-write-snapshot.sh, capture-guard.sh, evidence-guard.sh, instructions-loaded.sh, no-test-files.sh, post-write-walkthrough.sh, session-start.sh, stop-guard.sh)
+  SessionStart: already present
+  Stop: already present
+  SubagentStop: already present
+  PreToolUse:no-test-files: already present
+  PreToolUse:evidence-guard: already present
+  PreToolUse:capture-guard: already present
+  PreToolUse:bash-write-snapshot: already present
+  InstructionsLoaded: already present
+  PostToolUse:post-write-walkthrough: already present
+  PostToolUse:bash-write-notice: already present
+  PostToolUseFailure: already present
+  settings: /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.claude/settings.json
+doctrine   : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T//pp-install-drive.Q8oHXi/home-b/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ proofpunk
+verify     : all skills pass (see ✓ lines above)
+== summary: 0 installed, 0 replaced, 1 skipped (collision), 0 missing ==
+   re-run with --override to replace skipped skills

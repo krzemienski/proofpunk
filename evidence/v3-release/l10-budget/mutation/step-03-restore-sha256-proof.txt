@@ -1,0 +1,4 @@
+target: /Users/nick/proofpunk/plugins/proofpunk/skills/visual-inspection/SKILL.md
+original_sha256:  766e9f126f5ecd7b9baf61607a6a0ed5fc0626e91cd4d50157d2da3044a926cb
+restored_sha256:  766e9f126f5ecd7b9baf61607a6a0ed5fc0626e91cd4d50157d2da3044a926cb
+byte_identical:   True

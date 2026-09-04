@@ -13,8 +13,8 @@
 
 <required_reading>
 **Read these reference files NOW:**
-1. references/tool-reference.md
-2. references/progressive-disclosure.md
+1. xc-mcp-tool-reference.md
+2. xc-mcp-progressive-disclosure.md
 </required_reading>
 
 <process>

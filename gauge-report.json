@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-04T14:22:49Z",
-  "head": "40abc0b322d3c0393f7f0283db447a7db4c1b2a1",
+  "generated": "2026-09-04T15:20:07Z",
+  "head": "73e928ed8d3b62827018ab8ab2e470c5487d0e2d",
   "dirty": true,
   "gauges": [
     {
@@ -20,16 +20,30 @@
     {
       "num": 7,
       "lane": "L10",
-      "name": "Total description chars vs 1,536-char listing budget",
-      "unit": "chars",
-      "baseline": "13,949 (9.1x)",
-      "target": "<=1,536 (1.0x)",
-      "measured": "13955 vs 1536 (9.1x)",
-      "status": "UNMET",
+      "name": "Skills with description+when_to_use under Claude Code's 1,536-char per-skill listing cap",
+      "unit": "skills",
+      "baseline": "18/18 (max 978/1536, implement)",
+      "target": "18/18",
+      "measured": "18/18 (max 978/1536, implement)",
+      "status": "PASS",
       "evidence": [
         "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
       ],
-      "detail": "aggregate description text exceeds the Claude Code listing budget"
+      "detail": "all 18 skills' description+when_to_use combined length is under the 1536-char per-skill truncation cap (skillListingMaxDescChars); longest is 'implement' at 978 chars, 558 chars of headroom"
+    },
+    {
+      "num": 9,
+      "lane": "L10",
+      "name": "Aggregate description+when_to_use chars (listing-pressure trend, not a fixed budget)",
+      "unit": "chars",
+      "baseline": "13,949 (description-budget-baseline.md)",
+      "target": "UNMEASURED \u2014 real budget is skillListingBudgetFraction (~1% of context window); no fixed target exists in any sealed source",
+      "measured": "13955 chars",
+      "status": "UNMEASURED",
+      "evidence": [
+        "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
+      ],
+      "detail": "aggregate listing-pressure exposure, trend-tracking only \u2014 the real host budget is skillListingBudgetFraction (~1% of the model's context window by default, host/session-dependent per code.claude.com/docs/en/skills); no fixed numeric target exists in any sealed source, so none is invented here"
     },
     {
       "num": 8,
@@ -70,12 +84,12 @@
       "unit": "citations",
       "baseline": "30 -> 29 (top-level: 1 -> 0)",
       "target": "0",
-      "measured": "29 unresolved (top-level: 0)",
-      "status": "UNMET",
+      "measured": "0 unresolved (top-level: 0)",
+      "status": "PASS",
       "evidence": [
         "evidence/v3-release/00-baseline/citation-integrity-finding.md@sha256:90969b64df5cc23d260e99b276822a09ff4e0123866730802d0004fa2ac04ec3"
       ],
-      "detail": "unresolved: ['plugins/proofpunk/skills/mobile-validation-runner/references/simctl-command-reference.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-accessibility-patterns.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-caching-strategy.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-mcp-configuration.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-operation-enums.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-progressive-disclosure.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-tool-reference.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md', 'plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-debugging-mindset.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-hypothesis-testing.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-verification-patterns.md', 'plugins/proofpunk/skills/root-cause-debugging/references/expert-when-to-research.md', 'plugins/proofpunk/skills/stack-testing/references/webapp-testing.md']"
+      "detail": "all citations resolve"
     },
     {
       "num": 4,
@@ -126,7 +140,7 @@
     }
   ],
   "summary": {
-    "passing": 4,
-    "total": 8
+    "passing": 6,
+    "total": 9
   }
 }

@@ -1,0 +1,1 @@
+Proofpunk: refusing to modify an existing evidence capture — a modified capture is a fabricated claim (see evidence/AGENTS.md:22). Captures are read-only once written; write a NEW run directory instead of editing or overwriting this file.

@@ -1,0 +1,21 @@
+=== D2: Lane B artifact verification (read-only, no execution) ===
+--- artifact size + structure ---
+62932 .planning/proofpunk-agent.prompt.md
+38
+--- Part I / Part II boundary present? ---
+12:# PART I -- FINAL PRODUCT SPECIFICATION v1.0
+478:# PART II -- MASTER BUILD PROMPT (proofpunk-agent v1.0)
+--- hardening chain complete? ---
+62932  .planning/hardening/00-draft.md
+4797  .planning/hardening/01-normalized.md
+10547  .planning/hardening/02-red-team-findings.md
+8105  .planning/hardening/03-gap-register.md
+8377  .planning/hardening/04-edits.md
+9202  .planning/hardening/04-remediated.md
+36521  .planning/hardening/05-gated.md
+12024  .planning/hardening/consensus-verdict.md
+--- barrier token status: has any operator token been recorded? ---
+.planning/execution-ledger.json:15:        "APPROVE BARRIER DELTA",
+.planning/execution-ledger.json:16:        "REJECT BARRIER DELTA",
+.planning/BUILD-PROMPT.md:48:  `APPROVE BARRIER DELTA`. It has NOT been given. A prior session twice
+(above: any line that is an actual recorded token, not a spec of one)

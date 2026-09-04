@@ -1,0 +1,2 @@
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+{"probe": "cmd_slash_forge_prompt", "harness_error": "ResultError: Claude Code returned an error result: Reached maximum number of turns (5) (exit code: 1)"}

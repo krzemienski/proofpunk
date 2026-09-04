@@ -1,0 +1,47 @@
+# hash-manifest.txt — mutation-proof byte-identical restore verification
+# LaneA, gauge #3 (L1) citation gate mutation proof
+#
+# Method: sha256 recorded via Python hashlib immediately before mutation and
+# immediately after restore, then independently cross-checked with the real
+# `shasum -a 256` CLI (not just the Python computation) after restore.
+
+## Mutation target
+plugins/proofpunk/skills/stack-testing/references/webapp-testing.md:120
+
+## Mutation applied
+../../../references/web-validation.md
+  -> ../../../../references/web-validation.md   (added one extra ../, basename
+     preserved so the doctrine-basename ERROR classification path is exercised
+     — see arm2-mutated-stdout.txt: this correctly forces ERROR, not WARN)
+
+## sha256 (hashlib.sha256, before mutation)
+718de3f1fe03142f3d427cdee1b43e90413f7a7c03c40c669f5df8639d7101ab  plugins/proofpunk/skills/stack-testing/references/webapp-testing.md
+
+## sha256 (hashlib.sha256, after restore)
+718de3f1fe03142f3d427cdee1b43e90413f7a7c03c40c669f5df8639d7101ab  plugins/proofpunk/skills/stack-testing/references/webapp-testing.md
+
+## sha256 (shasum -a 256, independent CLI cross-check, after restore)
+718de3f1fe03142f3d427cdee1b43e90413f7a7c03c40c669f5df8639d7101ab  plugins/proofpunk/skills/stack-testing/references/webapp-testing.md
+
+RESULT: byte-identical restore, confirmed by two independent hash computations.
+
+## Discarded diagnostic mutation (not part of final proof, disclosed for honesty)
+An earlier mutation attempt targeted
+plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md
+line 16 (`1. xc-mcp-tool-reference.md` -> `1. xc-mcp-tool-reference-DOES-NOT-EXIST.md`).
+This mutation produced a FALSE negative: the gate reported PASS/exit 0 on the
+mutated tree, because bare same-directory filenames (no `references/` prefix)
+fall outside CITATION_RE's pattern by design — that pattern only matches
+`(?:\.\./)*references/...md`, and the fixed required_reading lines correctly
+use bare sibling filenames since they cite a file in the SAME directory.
+This is not a gate defect; it is the correct, narrower scope of what
+CITATION_RE was built to check (repo-tree `references/X.md`-shaped citations,
+not arbitrary same-directory markdown links). The file was restored
+byte-identically before this diagnostic capture was discarded:
+
+sha256 before: 90420e3d4fc1b7b8931225311d7e059096437a9066b8d8da7a783f4867ed6289
+sha256 after restore: 90420e3d4fc1b7b8931225311d7e059096437a9066b8d8da7a783f4867ed6289
+(shasum -a 256 cross-check, matches)
+
+The actual required mutation proof (arm1/arm2/arm3) uses the corrected
+target (webapp-testing.md:120) documented above.

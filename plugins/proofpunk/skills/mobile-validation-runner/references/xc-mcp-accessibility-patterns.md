@@ -1,4 +1,4 @@
-> Incorporated from the `xc-mcp` skill (references/accessibility-patterns.md).
+> Incorporated from the `xc-mcp` skill (its own `references` directory, file `accessibility-patterns.md`).
 
 # Accessibility-First Automation Patterns
 

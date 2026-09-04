@@ -1,4 +1,4 @@
-> Incorporated from the `debug-like-expert` skill (references/investigation-techniques.md).
+> Incorporated from the `debug-like-expert` skill (its own `references` directory, file `investigation-techniques.md`).
 
 
 ## Contents

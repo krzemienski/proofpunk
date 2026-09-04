@@ -20,38 +20,46 @@ plugins/proofpunk/skills/** LITERALLY, relative to the citing file, against
 the real repo tree on disk — exactly what a human (or an agent) reading the
 repo would have to do.
 
-SEVERITY MODEL
---------------
-- ERROR: an unresolved citation inside a top-level SKILL.md (the file a user
-  or agent reads first, and the only file the installer's --skip-skills-free
-  "just read the doctrine" flow guarantees is present). Currently: 0.
-- WARN:  an unresolved citation inside a skill's bundled references/ dir.
-  These are frequently either (a) provenance-header citations to a FOREIGN
-  upstream/donor skill's OWN internal layout (see `--explain-vendor`), or
-  (b) genuine local doctrine breakage. This script does not distinguish the
-  two automatically — see `--explain-vendor` for the investigated verdict.
-  Currently: 29 (frozen baseline below).
+SEVERITY MODEL (derived — no frozen count)
+------------------------------------------
+Classification is computed per citation from two observables, never from a
+hand-maintained baseline of N tuples:
+
+1. **Provenance header.** A citing file is VENDORED iff its first non-empty
+   line matches `> Incorporated from the \`<donor>\` skill ...`. That is the
+   repo's standard merged-content attribution. The donor skill is a foreign
+   namespace; its `references/` layout is not this repo's doctrine tree.
+2. **Shared-doctrine basename.** `plugins/proofpunk/references/*.md` is the
+   live set of proofpunk doctrine files. An unresolved citation whose
+   basename is in that set is a broken doctrine link even if the citing
+   file is vendored (a foreign file that was later patched to point at
+   proofpunk doctrine must use a resolvable relative path).
+
+- ERROR: unresolved citation in a top-level SKILL.md, OR unresolved
+  citation whose basename is shared doctrine, OR unresolved citation in a
+  file that is NOT vendored. Adding a genuinely broken doctrine link goes
+  ERROR without anyone updating a constant.
+- WARN:  unresolved citation in a vendored file whose basename is NOT
+  shared doctrine. These are pass-through citations to a FOREIGN upstream
+  layout. See `--explain-vendor`. Adding another vendored-shaped citation
+  in a vendored file stays WARN.
+
+There is no `KNOWN_WARN_BASELINE` and no "known baseline size = N". The
+WARN count is whatever the current tree's vendored files actually cite.
 
 EXIT CODE CONTRACT
 -------------------
-- Default:  exit 1 iff ERROR count > 0. WARN count NEVER affects the default
-  exit code (baseline or new) — this keeps the gate adoptable today without
-  blocking on the known 29.
-- --strict: exit 1 iff (ERROR count > 0) OR (WARN count > 0), including the
-  frozen baseline 29. Use this to notice growth or to eventually clear the
-  backlog to zero.
-
-Every WARN is printed tagged `(baseline)` or `(NEW)` against the frozen
-29-item baseline below, so growth is DISTINGUISHABLE in the report even
-though it does not change the default exit code. A CI job that also greps
-the report for `(NEW)` (or diffs the WARN total against 29) gets a hard
-regression signal without this script needing an extra flag for it.
+- Default:  exit 1 iff ERROR count > 0. WARN count NEVER affects the
+  default exit code — vendored foreign layout is not a repo-breaking
+  defect.
+- --strict: exit 1 iff (ERROR count > 0) OR (WARN count > 0). Use this to
+  notice vendored-warn growth, not as the adoptable default.
 
 USAGE
 -----
     tools/verify-citations.py                 # default: fail only on ERROR
     tools/verify-citations.py --strict         # fail on ERROR or any WARN
-    tools/verify-citations.py --explain-vendor # print the vendored-xc-mcp verdict, no scan
+    tools/verify-citations.py --explain-vendor # print the vendored verdict, no scan
     tools/verify-citations.py --root /path/to/repo
 """
 from __future__ import annotations
@@ -69,6 +77,15 @@ import sys
 # would produce; a real citation always starts the reference token cleanly).
 CITATION_RE = re.compile(
     r'(?<![A-Za-z0-9_/])((?:\.\./)*references/[A-Za-z0-9._/-]+\.md)'
+)
+
+# Line-1 (or first non-empty line) provenance header used by every merged
+# bundled-content skill in this repo. Matches both the strict form
+#   > Incorporated from the `xc-mcp` skill (references/tool-reference.md).
+# and the Adaptation-suffixed form
+#   > Incorporated from the `trace` skill (skills-ref.zip). **Adaptation:** ...
+PROVENANCE_RE = re.compile(
+    r'^>\s*Incorporated from the `([^`]+)` skill\b'
 )
 
 
@@ -110,70 +127,82 @@ def is_top_level_skill_md(path: str, skills_root: str) -> bool:
     return os.path.dirname(skill_dir) == os.path.normpath(skills_root)
 
 
-# ---------------------------------------------------------------------------
-# Frozen baseline: the 29 unresolved bundled-reference citations present on
-# the tree at the time this gate was built (v3 Phase 5, HEAD 9963648 + the
-# tui-testing/SKILL.md:13 fix that brought ERRORs to 0). Recorded as
-# (repo-relative-posix-path, line, citation) so a NEW warn — any tuple not
-# in this set — is immediately distinguishable in the report as `(NEW)`
-# regardless of whether it is a true regression or a legitimate new vendor
-# citation that simply hasn't been triaged yet.
-#
-# This baseline intentionally does NOT get auto-regenerated by this script.
-# Shrinking it (fixing a citation) is always safe. Growing it requires a
-# human to update this literal set, which is the whole point: the number
-# cannot change without someone noticing the diff.
-KNOWN_WARN_BASELINE = frozenset({
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/simctl-command-reference.md", 1, "references/reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-accessibility-patterns.md", 1, "references/accessibility-patterns.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-caching-strategy.md", 1, "references/caching-strategy.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-mcp-configuration.md", 1, "references/mcp-configuration.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-operation-enums.md", 1, "references/operation-enums.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-progressive-disclosure.md", 1, "references/progressive-disclosure.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-tool-reference.md", 1, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md", 16, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-app-deployment.md", 17, "references/operation-enums.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md", 16, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-build-project.md", 17, "references/progressive-disclosure.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md", 16, "references/caching-strategy.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-configure-caching.md", 17, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md", 17, "references/progressive-disclosure.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-debug-failures.md", 18, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md", 13, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-fresh-install.md", 14, "references/operation-enums.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md", 16, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-run-tests.md", 17, "references/progressive-disclosure.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md", 17, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-simulator-management.md", 18, "references/operation-enums.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md", 16, "references/accessibility-patterns.md"),
-    ("plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-workflow-ui-automation.md", 17, "references/tool-reference.md"),
-    ("plugins/proofpunk/skills/root-cause-debugging/references/expert-debugging-mindset.md", 1, "references/debugging-mindset.md"),
-    ("plugins/proofpunk/skills/root-cause-debugging/references/expert-hypothesis-testing.md", 1, "references/hypothesis-testing.md"),
-    ("plugins/proofpunk/skills/root-cause-debugging/references/expert-investigation-techniques.md", 1, "references/investigation-techniques.md"),
-    ("plugins/proofpunk/skills/root-cause-debugging/references/expert-verification-patterns.md", 1, "references/verification-patterns.md"),
-    ("plugins/proofpunk/skills/root-cause-debugging/references/expert-when-to-research.md", 1, "references/when-to-research.md"),
-    ("plugins/proofpunk/skills/stack-testing/references/webapp-testing.md", 120, "references/web-validation.md"),
-})
+def first_nonempty_line(path: str) -> str:
+    try:
+        with open(path, encoding='utf-8') as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped:
+                    return stripped
+    except (OSError, UnicodeDecodeError):
+        return ''
+    return ''
+
+
+def file_is_vendored(path: str) -> bool:
+    """True iff the file opens with the repo's merged-content provenance
+    header. Derived from the file itself — not from a path glob, skill
+    name, or frozen tuple list."""
+    return bool(PROVENANCE_RE.match(first_nonempty_line(path)))
+
+
+def shared_doctrine_basenames(root: str) -> frozenset:
+    """Live set of proofpunk shared-doctrine filenames. Adding a file under
+    plugins/proofpunk/references/ automatically expands this set; there is
+    no parallel constant to update."""
+    refs_dir = os.path.join(root, 'plugins', 'proofpunk', 'references')
+    names = set()
+    if os.path.isdir(refs_dir):
+        for fn in os.listdir(refs_dir):
+            if fn.endswith('.md') and os.path.isfile(os.path.join(refs_dir, fn)):
+                names.add(fn)
+    return frozenset(names)
+
+
+def classify_unresolved(path: str, cite: str, skills_root: str,
+                        doctrine_names: frozenset) -> str:
+    """Return 'error' or 'warn' for an unresolved citation.
+
+    ERROR when a repo reader would be looking for proofpunk doctrine and
+    not find it. WARN when the path is a foreign donor layout documented
+    by a provenance header.
+    """
+    if is_top_level_skill_md(path, skills_root):
+        return 'error'
+    basename = os.path.basename(cite)
+    if basename in doctrine_names:
+        return 'error'
+    if file_is_vendored(path):
+        return 'warn'
+    return 'error'
 
 
 VENDOR_VERDICT = """\
 VENDORED-VS-BROKEN VERDICT: plugins/proofpunk/skills/mobile-validation-runner/references/xc-mcp-*.md
 ======================================================================================================
 
-CLAIM: the 23 unresolved citations in xc-mcp-*.md files are broken PROOFPUNK
-doctrine citations that should be fixed by bundling more files.
+CLAIM: the unresolved citations in xc-mcp-*.md files (and the same shape in
+simctl-command-reference.md and root-cause-debugging/references/expert-*.md)
+are broken PROOFPUNK doctrine citations that should be fixed by bundling
+more files.
 
-FINDING: FALSE. They are vendored pass-through content citing a FOREIGN
-upstream project's OWN internal directory layout. Rewriting or "fixing"
-them by bundling proofpunk-local files at those paths would CORRUPT
-correct vendored content, not repair it.
+FINDING: FALSE for foreign-layout citations. They are vendored pass-through
+content citing a FOREIGN upstream project's OWN internal directory layout.
+Rewriting or "fixing" them by bundling proofpunk-local files at those paths
+would CORRUPT correct vendored content, not repair it.
+
+The ONE exception on the tree this gate was rewritten against: a vendored
+file that cites a SHARED DOCTRINE basename (`web-validation.md`) is a real
+broken doctrine link and is classified ERROR until the relative path is
+fixed to the repo's deliberate layout (`../../../references/X` from a
+bundled references/ file; `../../references/X` from a SKILL.md). That
+classification is DERIVED from the live `plugins/proofpunk/references/`
+directory listing, not from a frozen tuple.
 
 EVIDENCE
 --------
-1. Every one of the 12 provenance-header hits (line 1 of each xc-mcp-*.md
-   and simctl-command-reference.md, and 5 more in root-cause-debugging's
-   expert-*.md files) opens with an explicit machine-readable attribution
-   line, e.g.:
+1. Provenance headers. Every vendored bundled-content file opens with an
+   explicit machine-readable attribution line, e.g.:
 
      xc-mcp-tool-reference.md:1
        > Incorporated from the `xc-mcp` skill (references/tool-reference.md).
@@ -185,20 +214,19 @@ EVIDENCE
        > Incorporated from the `debug-like-expert` skill (references/debugging-mindset.md).
 
    This is the SAME pattern used by every bundled-content skill in this
-   repo (mobile-validation-runner, root-cause-debugging): a one-line
+   repo: a one-line
    "Incorporated from `<donor-skill>` (references/<donor-relative-path>)"
    header that documents WHERE the content came from — a citation to the
    DONOR skill's own references/ directory, in the DONOR's namespace, not
    a citation into proofpunk's own doctrine tree. The donor skills
    (`xc-mcp`, `ios-simulator-control`, `debug-like-expert`) do not exist
-   anywhere in this repo (confirmed: `git log --all --diff-filter=A` for
-   paths matching any of the three donor skill names returns zero commits)
-   — they were merged content, never siblings. The provenance path is
-   therefore inherently unresolvable in THIS repo by design: it documents
-   foreign provenance, not a local link.
+   as sibling skill directories in this repo — they were merged content,
+   never siblings. The provenance path is therefore inherently
+   unresolvable in THIS repo by design: it documents foreign provenance,
+   not a local link.
 
-2. The remaining 11 hits are `<required_reading>` blocks inside the
-   xc-mcp-workflow-*.md files, e.g. xc-mcp-workflow-build-project.md:16-17:
+2. The remaining non-header hits inside xc-mcp-workflow-*.md files are
+   `<required_reading>` blocks, e.g. xc-mcp-workflow-build-project.md:16-17:
 
      <required_reading>
      **Read these reference files NOW:**
@@ -211,42 +239,35 @@ EVIDENCE
    references/tool-reference.md" using the UPSTREAM PROJECT's OWN relative
    path convention (bare `references/X.md`, sibling to the workflow file,
    exactly matching how `xc-mcp.md`'s own `<reference_index>` describes its
-   layout at lines 185-191: "All domain knowledge in `references/` (bundled
-   here as `xc-mcp-*.md`)"). The prose is talking about the UPSTREAM tool's
-   references/ directory as the upstream tool would have organized it, not
-   about proofpunk's local `mobile-validation-runner/references/` bundle.
-   The depth-normalization the installer performs (proofpunk-install.sh:297-298,
-   the "bare-name inside references/" rewrite) is EXACTLY the mechanism that
-   would make these resolve once bundled at install time under the OLD
-   (already-suspect) install-time-repair flow — which is precisely the
-   behavior this gate exists to stop trusting, because it repairs the
-   SYMPTOM (an unresolvable path) without checking whether the citation was
-   ever meant to resolve inside THIS repo tree in the first place.
+   layout). The prose is talking about the UPSTREAM tool's references/
+   directory as the upstream tool would have organized it, not about
+   proofpunk's local `mobile-validation-runner/references/` bundle.
 
-3. Cross-check: `xc-mcp.md`'s own `<reference_index>` (lines 185-191) lists
-   the SAME six names (tool-reference.md, operation-enums.md,
-   accessibility-patterns.md, progressive-disclosure.md, plus two NOT
-   bundled at all: optimal-login-flow.md, testing-patterns.md) as living in
-   "references/" — i.e. the xc-mcp skill's own documentation of its own
-   layout is the source these citations were copy-pasted from, unedited,
-   during incorporation into mobile-validation-runner.
+3. Cross-check: `xc-mcp.md`'s own `<reference_index>` lists the SAME names
+   (tool-reference.md, operation-enums.md, accessibility-patterns.md,
+   progressive-disclosure.md) as living in "references/" — i.e. the xc-mcp
+   skill's own documentation of its own layout is the source these
+   citations were copy-pasted from, unedited, during incorporation.
 
-CONCLUSION
-----------
-Do not fix these 23 by bundling proofpunk-local content at those paths —
-there is no proofpunk-local content to bundle; the paths refer to donor
-files not present in this repo. Two legitimate remediation paths exist for
-a future change (NOT performed by this script, which only reports):
-  (a) rewrite the citations to plain prose ("see the upstream xc-mcp tool's
-      own tool-reference.md") so they stop looking like resolvable local
-      paths, or
-  (b) leave them as-is and teach `verify-citations.py --explain-vendor`'s
-      reasoning into a permanent allowlist/comment so future readers do not
-      re-litigate this.
-This script deliberately does NEITHER — it reports them as WARN (not
-ERROR) precisely because misclassifying vendored provenance text as a
-repo-breaking defect is the wrong failure mode for a gate meant to be
-adopted without false alarms.
+HOW THE GATE DISTINGUISHES THIS WITHOUT A FROZEN COUNT
+------------------------------------------------------
+`file_is_vendored(path)` is true iff the citing file's first non-empty line
+matches PROVENANCE_RE. `shared_doctrine_basenames(root)` is the live glob
+of `plugins/proofpunk/references/*.md`. An unresolved citation is WARN iff
+the file is vendored AND the basename is not shared doctrine; otherwise it
+is ERROR. Adding a new vendored file with foreign `references/foo.md`
+citations does not require editing this script. Adding a broken citation
+to a proofpunk-authored file, or pointing at a real doctrine basename with
+the wrong relative path, goes ERROR.
+
+Do not fix the foreign-layout citations by bundling proofpunk-local
+content at those paths — there is no proofpunk-local content to bundle.
+Two legitimate remediation paths exist for a future change (NOT performed
+by this script, which only reports WARNs):
+  (a) rewrite the citations to plain prose ("see the upstream xc-mcp
+      tool's own tool-reference.md") so they stop looking like resolvable
+      local paths, or
+  (b) leave them as-is; the derived classifier already treats them as WARN.
 """
 
 
@@ -255,7 +276,7 @@ def main(argv=None) -> int:
     ap.add_argument('--root', default=None,
                      help='repo root (default: two dirs up from this script)')
     ap.add_argument('--strict', action='store_true',
-                     help='also fail (exit 1) on any WARN, baseline included')
+                     help='also fail (exit 1) on any WARN, vendored included')
     ap.add_argument('--explain-vendor', action='store_true',
                      help='print the investigated vendored-xc-mcp verdict and exit 0 (no scan)')
     args = ap.parse_args(argv)
@@ -272,54 +293,45 @@ def main(argv=None) -> int:
         print(f"verify-citations: no such skills root: {skills_root}", file=sys.stderr)
         return 2
 
+    doctrine_names = shared_doctrine_basenames(root)
+
     errors = []
     warns = []
     for path, lineno, cite, resolved in find_citations(skills_root):
         if resolved:
             continue
         rel = os.path.relpath(path, root).replace(os.sep, '/')
-        if is_top_level_skill_md(path, skills_root):
-            errors.append((rel, lineno, cite))
+        kind = classify_unresolved(path, cite, skills_root, doctrine_names)
+        row = (rel, lineno, cite)
+        if kind == 'error':
+            errors.append(row)
         else:
-            warns.append((rel, lineno, cite))
+            warns.append(row)
 
     errors.sort()
     warns.sort()
 
-    baseline_seen = [w for w in warns if w in KNOWN_WARN_BASELINE]
-    new_warns = [w for w in warns if w not in KNOWN_WARN_BASELINE]
-    fixed_baseline = sorted(KNOWN_WARN_BASELINE - set(warns))
-
     print(f"verify-citations: scanning {skills_root}")
+    print(f"shared doctrine set ({len(doctrine_names)}): "
+          f"{', '.join(sorted(doctrine_names))}")
     print()
 
     if errors:
-        print(f"ERROR ({len(errors)}) — unresolved citation in a top-level SKILL.md:")
+        print(f"ERROR ({len(errors)}) — unresolved doctrine citation or SKILL.md citation:")
         for rel, lineno, cite in errors:
             print(f"  {rel}:{lineno} -> {cite}")
         print()
     else:
-        print("ERROR (0) — no unresolved citations in any top-level SKILL.md")
+        print("ERROR (0) — no unresolved doctrine citations, no unresolved SKILL.md citations")
         print()
 
-    print(f"WARN ({len(warns)}) — unresolved citation inside a bundled references/ dir "
-          f"[{len(baseline_seen)} baseline, {len(new_warns)} NEW]:")
+    print(f"WARN ({len(warns)}) — unresolved foreign-layout citation in a vendored file:")
     for rel, lineno, cite in warns:
-        tag = "(baseline)" if (rel, lineno, cite) in KNOWN_WARN_BASELINE else "(NEW)"
-        print(f"  {rel}:{lineno} -> {cite}  {tag}")
-    if fixed_baseline:
-        print(f"  ({len(fixed_baseline)} baseline entries no longer present — fixed since baseline was frozen):")
-        for rel, lineno, cite in fixed_baseline:
-            print(f"    {rel}:{lineno} -> {cite}")
+        print(f"  {rel}:{lineno} -> {cite}  (vendored)")
     print()
 
     print(f"summary: {len(errors)} ERROR, {len(warns)} WARN "
-          f"({len(baseline_seen)} baseline / {len(new_warns)} NEW), "
-          f"known baseline size = {len(KNOWN_WARN_BASELINE)}")
-
-    if new_warns:
-        print(f"NOTE: {len(new_warns)} WARN(s) not in the frozen baseline of {len(KNOWN_WARN_BASELINE)} "
-              f"— review and either fix them or update KNOWN_WARN_BASELINE in this script.")
+          f"(WARN count is derived, not a frozen baseline)")
 
     fail = bool(errors) or (args.strict and bool(warns))
     print()

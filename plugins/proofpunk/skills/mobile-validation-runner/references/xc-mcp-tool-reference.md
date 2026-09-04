@@ -1,4 +1,4 @@
-> Incorporated from the `xc-mcp` skill (references/tool-reference.md).
+> Incorporated from the `xc-mcp` skill (its own `references` directory, file `tool-reference.md`).
 
 # XC-MCP Tool Reference
 

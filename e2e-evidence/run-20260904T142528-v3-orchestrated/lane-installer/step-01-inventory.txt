@@ -1,0 +1,9 @@
+DIR_A=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/dir-a
+top_dirs=['brainstorm', 'codebase-truth-audit', 'end-user-testing', 'full-functional-audit', 'implement', 'mobile-validation-runner', 'plan-hardening', 'production-readiness', 'prompt-forge', 'proofpunk', 'proofpunk-doctrine', 'red-team-eval', 'root-cause-debugging', 'session-intent', 'stack-testing', 'tui-testing', 'ui-experience-audit', 'validation-plan', 'visual-inspection']
+skill_dir_count=18
+skill_with_SKILL.md=18
+doctrine_present=True
+doctrine_files=['README.md', 'api-validation.md', 'ci-gates.md', 'cli-validation.md', 'defect-pattern-database.md', 'end-user-actor.md', 'evidence-contract.md', 'ios-hig-checklist.md', 'ios-validation.md', 'platform-routing.md', 'preflight-checks.md', 'run-trace-schema.md', 'severity-model.md', 'web-validation.md', 'web-wcag-checklist.md']
+pycache_in_install_a=0
+fresh_evidence_hits=[PosixPath('/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-install-drive.Q8oHXi/dir-a/end-user-testing/scripts/fresh_evidence.py')]
+per_skill_ref_counts={"brainstorm": 2, "codebase-truth-audit": 1, "end-user-testing": 4, "full-functional-audit": 5, "implement": 6, "mobile-validation-runner": 24, "plan-hardening": 3, "production-readiness": 6, "prompt-forge": 9, "proofpunk": 13, "red-team-eval": 7, "root-cause-debugging": 11, "session-intent": 4, "stack-testing": 13, "tui-testing": 1, "ui-experience-audit": 10, "validation-plan": 3, "visual-inspection": 6}
