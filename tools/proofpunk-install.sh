@@ -276,7 +276,11 @@ for skill in $SELECTED; do
   fi
   run "mkdir -p '$dst'"
   if [ "$DRY_RUN" -eq 0 ]; then
-    (cd "$src" && tar cf - .) | (cd "$dst" && tar xf -)
+    # --exclude keeps build-host bytecode out of user installs: compiling a
+    # skill script locally leaves __pycache__/*.pyc beside it, and a wholesale
+    # copy shipped that cpython-<ver> bytecode to every user (finding F-D5-1).
+    # The mode flag must lead: BSD tar (macOS) rejects --exclude before -c.
+    (cd "$src" && tar cf - --exclude='__pycache__' --exclude='*.pyc' .) | (cd "$dst" && tar xf -)
     # Make the installed copy SELF-CONTAINED: the repo layout cites shared
     # doctrine as ../../references/X (plugin structure). In a plain skills
     # dir that path escapes the skill — so rewrite citations to references/X
