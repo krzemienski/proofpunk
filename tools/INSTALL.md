@@ -6,6 +6,46 @@ choice, injects the ruling doctrine alongside them, and verifies the result.
 Everything below was executed against the real script before shipping — the
 outputs shown are the actual behaviors, not aspirations.
 
+## Two installation channels — and why hooks behave differently in each
+
+This is the most common confusion, so it is stated first.
+
+| | **Plain-skills channel** (this script) | **Plugin channel** (marketplace) |
+|---|---|---|
+| How you install | `bash proofpunk-install.sh …` | `/plugin marketplace add …` then `/plugin install …` |
+| Where skills land | your skills dir (`~/.claude/skills`, `~/.omp/agent/skills`, …) | the host's plugin cache |
+| Where hooks come from | copied to `~/.proofpunk/hooks/`, **registered into `settings.json`** | read from the plugin's own `hooks/hooks.json` in the cache |
+| Does `settings.json` gain hook entries? | **only with `--hooks`** | **never** — and that is correct, not a bug |
+
+Both channels enforce the same doctrine; they differ only in *where the host
+reads the hooks from*. If you installed from the marketplace and then looked
+in `~/.claude/settings.json` expecting proofpunk entries, finding none is the
+expected result — the host loads them from the plugin cache.
+
+**Hooks in this script are opt-in.** `WITH_HOOKS=0` is the default and the
+whole copy-and-register block is gated behind `--hooks`. A quick-start command
+without that flag installs skills and doctrine but **zero enforcement**. That
+is a deliberate default — hooks write to a shared settings file — but it does
+mean you have to ask for them.
+
+To confirm hooks actually registered rather than merely landing on disk:
+
+```bash
+bash proofpunk-install.sh --target claude-code --hooks
+python3 - <<'EOF'
+import json, os
+h = json.load(open(os.path.expanduser("~/.claude/settings.json"))).get("hooks", {})
+n = sum(1 for ev in h for b in h[ev] for e in b.get("hooks", [])
+        if "proofpunk" in e.get("command", ""))
+print(f"proofpunk hook registrations: {n}")   # expect 11
+EOF
+```
+
+Eleven registrations across seven event keys is the full set. That count comes
+from `plugins/proofpunk/hooks/hooks.json`, the single source of truth for both
+which scripts get copied and which events get registered. Re-running with
+`--hooks` is idempotent — the second run leaves `settings.json` byte-identical.
+
 ## The 60-second version
 
 ```bash
