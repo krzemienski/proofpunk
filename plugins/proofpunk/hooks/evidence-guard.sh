@@ -22,6 +22,10 @@ ti = data.get("tool_input") or {}
 path = str(ti.get("file_path") or "")
 content = str(ti.get("content") or ti.get("new_string") or "")
 
+# The evidence-directory pattern below is mirrored verbatim in
+# plugins/proofpunk/hooks/capture-guard.sh. Any change to it MUST be
+# applied to both files — keep the two regex literals textually
+# identical or the guards will silently diverge.
 in_evidence = bool(re.search(r"(^|/)(e2e-evidence|evidence)(/|$)", path))
 if not in_evidence:
     sys.exit(0)

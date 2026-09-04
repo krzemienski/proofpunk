@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Execution-first delivery plugin for Claude Code, oh-my-pi (OMP), and OpenCode: 17 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user, and any claim it did not actually execute is reported UNVERIFIED, never PASS. No mocks, no stubs, no test-mode bypasses.
+Execution-first delivery plugin for Claude Code, oh-my-pi (OMP), and OpenCode: 18 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user, and any claim it did not actually execute is reported UNVERIFIED, never PASS. No mocks, no stubs, no test-mode bypasses.
 
 ## Key Files
 

@@ -29,6 +29,7 @@ Consolidated from a curated review of a 445-skill archive. See
 
 | Skill | Use it to |
 |-------|-----------|
+| `proofpunk` | Router head: reads the ask, names the single best-fit skill (or short ordered chain for compound asks), hands off without repeating that skill's doctrine |
 | `brainstorm` | Decide the approach: scout-first ideation, trade-off analysis, brutal honesty, approved design before any code |
 | `validation-plan` | Author BRIEF -> ROADMAP -> per-phase plans with blocking cumulative proof obligations |
 | `plan-hardening` | Red-team a draft plan (4 lenses), score confidence gaps, inject proof obligations, strengthen prompts |
@@ -40,14 +41,18 @@ Consolidated from a curated review of a 445-skill archive. See
 | `prompt-forge` | Author, rate (rubric + test cases), optimize prompts; build meta-prompt pipelines |
 | `stack-testing` | Per-stack real-system testing: pytest/Go/C++/Django/Spring gotchas, FastAPI SSE, Playwright e2e, condition-based waiting |
 | `mobile-validation-runner` | iOS simulator validation: SETUP→RECORD→ACT→COLLECT→VERIFY, three-facet gates, simctl/XC-MCP/Expo |
+| `tui-testing` | End-user proof for terminal UIs (Ink, blessed, textual, ratatui): real-PTY driving, observe-then-act waits, three-facet evidence (screen + disk + logs) |
 | `root-cause-debugging` | Reproduce-first diagnosis, backward tracing, pollution bisection — no symptomatic hacks |
 | `production-readiness` | 8-phase ship-readiness audit, spec-compliance matrix, dependency supply-chain health |
 | `red-team-eval` | 4-lens hostile review, eval-driven development, QA cycling to measured goal attainment |
 | `session-intent` | Reconstruct per-session intent from Claude Code transcripts; intent-vs-implementation matrices |
+| `codebase-truth-audit` | Evidence-backed repo-wide audit: reconstruct change intent from history, verify code/config/docs/deps, approval-gated safe remediation |
 
 Shared references (loaded on demand by the skills):
 `references/evidence-contract.md`, `references/end-user-actor.md`,
 `references/platform-routing.md`, `references/preflight-checks.md`,
+`references/api-validation.md`, `references/cli-validation.md`,
+`references/ios-validation.md`, `references/web-validation.md`,
 `references/ci-gates.md`, `references/severity-model.md`,
 `references/ios-hig-checklist.md`, `references/web-wcag-checklist.md`,
 `references/defect-pattern-database.md`.

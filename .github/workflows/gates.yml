@@ -1,0 +1,60 @@
+# CI gates for proofpunk — closes register item #13 ("no CI runs the gates").
+#
+# The orchestration DAG has drifted silently before; verify-orchestration.py
+# caught it only because someone remembered to run it by hand. This workflow
+# makes forgetting impossible: all four gates run on every push and PR.
+#
+# Doctrine: never pipe a command whose exit code is reported. Every gate below
+# runs unpiped as its own named step, so a failure names itself in the UI and
+# the step's own exit code fails the job.
+#
+# All four gates are hermetic: no network, no secrets, no external deps —
+# bash + python3 (stdlib) + coreutils only. test-installer.sh and test-hooks.sh
+# isolate themselves in mktemp scratch dirs and scratch HOMEs; every installer
+# invocation in the harness passes a local --source-dir, so the installer's
+# GitHub-download branch is never exercised here.
+
+name: gates
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3'
+
+      - name: Shell syntax check (bash -n over hooks and tools)
+        run: |
+          set -euo pipefail
+          for f in plugins/proofpunk/hooks/*.sh tools/*.sh; do
+            echo "bash -n $f"
+            bash -n "$f"
+          done
+
+      - name: "Gate 1/4: verify-orchestration.py (skill graph DAG)"
+        run: python3 tools/verify-orchestration.py
+
+      - name: "Gate 2/4: test-hooks.sh (hook decision assertions)"
+        run: bash tools/test-hooks.sh
+
+      - name: "Gate 3/4: test-installer.sh (real installer harness)"
+        run: bash tools/test-installer.sh
+
+      - name: "Gate 4/4: dry-run-install.sh (slash-command merge logic)"
+        run: bash tools/dry-run-install.sh

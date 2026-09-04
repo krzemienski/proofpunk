@@ -100,7 +100,7 @@ DOCTRINE (the ruling rules):
                          No value = auto: ./<memory-file> of the cwd project
   --inject-claude-md F   legacy alias of '--inject-memory F'
 
-HOOKS (deterministic enforcement — plugin installs get them automatically):
+HOOKS (deterministic enforcement — opt-in, never automatic):
   --hooks                copy hook scripts to ~/.proofpunk/hooks and merge them
                          into the platform's settings file (claude-code:
                          ~/.claude/settings.json — Stop/SubagentStop unproven-
@@ -108,6 +108,9 @@ HOOKS (deterministic enforcement — plugin installs get them automatically):
                          immutable-capture guards).
                          Idempotent; opencode/omp get enforcement via their
                          plugin/extension glue (printed guidance instead).
+                         Marketplace/plugin installs load hooks from the
+                         plugin's own hooks/hooks.json — no settings.json
+                         entries are written; only --hooks registers them.
 
 INSPECTION:
   --dry-run              print the full plan, change nothing
@@ -380,7 +383,7 @@ if [ "$WITH_PLUGINS" -eq 1 ]; then
       cp "$SRC_ROOT/$OPENCODE_SUBPATH/commands/"*.md "$HOME/.config/opencode/commands/"
       cp "$SRC_ROOT/$OPENCODE_SUBPATH/agents/"*.md "$HOME/.config/opencode/agents/"
     fi
-    say "  OpenCode plugin    -> ~/.config/opencode/plugin/proofpunk.ts (+6 commands, 1 agent)"
+    say "  OpenCode plugin    -> ~/.config/opencode/plugin/proofpunk.ts (+6 commands, 4 agents)"
     say "  OpenCode skills    : shared from ~/.claude/skills — re-run with --target claude-code if missing"
   fi
   # Claude Code full plugin = marketplace install (skills alone are plain)

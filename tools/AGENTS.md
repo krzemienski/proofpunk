@@ -1,5 +1,5 @@
 <!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-08-23 | Updated: 2026-08-23 -->
+<!-- Generated: 2026-08-23 | Updated: 2026-09-04 -->
 
 # tools
 
@@ -31,6 +31,7 @@ Build, install, and verification toolchain for proofpunk: the multi-platform ins
 ### Testing Requirements
 
 - Any change here: run `bash test-hooks.sh`, `bash test-installer.sh`, `bash dry-run-install.sh`, `python3 verify-orchestration.py` from this directory, all green, outputs captured under `evidence/<release>/`.
+- CI (`.github/workflows/gates.yml`) runs all four gates on every push and pull_request, each unpiped as its own named step — a red Gates check on GitHub is a real gate failure, not flake.
 - Theme pipeline: `python3 generate-themes.py` twice → byte-identical output (determinism check).
 
 ### Common Patterns

@@ -13,3 +13,7 @@ banks/
 
 # Lane B planning state — BLOCKED verdict awaiting operator token, local only
 .planning/
+
+# Local probe/baseline artifacts from gate runs — cited evidence lives in
+# e2e-evidence/ and evidence/, which stay tracked.
+.debug/

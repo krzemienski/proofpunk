@@ -5,6 +5,11 @@
 # target path is a test artifact:
 #   *test*, *.spec.*, *.test.*, __tests__/ directories, fixtures-as-tests
 # The pipeline's validation is end-user driving, never a test file.
+# Warns on stderr (still exit 0) when a non-test file's content carries
+# mock/stub markers (class Fake*/Mock*/Stub*, jest.mock, unittest.mock,
+# sinon.stub, @patch, MagicMock, NotImplementedError placeholder body,
+# TODO: implement) — a soft nudge, not a deny, so legitimate domain names
+# and edits to existing test infrastructure are not blocked.
 # Silent (exit 0) for everything else.
 set -eu
 
@@ -36,5 +41,27 @@ if TEST_PATH.search(path):
         "user and let them decide — the default is no new test files.\n"
     )
     sys.exit(2)
+
+content = str(ti.get("content") or ti.get("new_string") or "")
+MOCK_MARKERS = [
+    ("a Fake/Mock/Stub class", r"\bclass\s+(?:Fake|Mock|Stub)[A-Za-z0-9_]*\b"),
+    ("jest.mock", r"jest\.mock\("),
+    ("unittest.mock", r"unittest\.mock"),
+    ("sinon.stub", r"sinon\.stub\("),
+    ("@patch", r"@patch\("),
+    ("MagicMock", r"\bMagicMock\("),
+    ("NotImplementedError placeholder body", r"raise\s+NotImplementedError"),
+    ("TODO: implement", r"TODO:\s*implement"),
+]
+if content:
+    for label, pat in MOCK_MARKERS:
+        if re.search(pat, content):
+            sys.stderr.write(
+                f"Proofpunk (warn): {path} contains {label} — possible mock/stub. "
+                "The pipeline validates by driving the real system, not by mocking it. "
+                "Proceeding, but if this is meant as production code, replace the "
+                "mock with the real implementation.\n"
+            )
+            break
 sys.exit(0)
 PYEOF

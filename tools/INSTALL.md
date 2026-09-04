@@ -35,6 +35,14 @@ bash proofpunk-install.sh --source-dir /path/to/proofpunk --target opencode \
   --only tui-testing --inject-memory --no-verify
 ```
 
+**Hooks are opt-in.** The quick-start commands above install zero enforcement
+hooks. Pass `--hooks` to install the guard scripts and merge them into the
+platform's settings file (`~/.claude/settings.json` for Claude Code): the
+Stop/SubagentStop unproven-claim guard plus PreToolUse secrets-in-evidence and
+immutable-capture guards. Marketplace/plugin installs get their hooks from the
+plugin cache's own `hooks/hooks.json` instead — that channel never writes
+`settings.json` entries.
+
 ## What an install actually produces
 
 ```

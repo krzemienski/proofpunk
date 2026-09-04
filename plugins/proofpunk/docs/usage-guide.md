@@ -49,6 +49,19 @@ and because OpenCode reads `~/.claude/skills` too, one
 
 ## Orchestration
 
+### `/proofpunk` — router head (pick the right skill)
+
+```
+/proofpunk "audit the checkout flow and fix what fails"
+/proofpunk "plan and implement offline sync for the mobile app"
+```
+
+No flags. Names the single best-fit skill for the ask — or a short
+ordered chain for compound asks (`brainstorm` → `validation-plan` →
+`implement`) — and hands off without repeating that skill's own
+doctrine. Use it when unsure which skill applies or when a request
+spans more than one skill's scope.
+
 ### `/implement` — the front door (execution loop)
 
 ```
@@ -155,6 +168,19 @@ No flags. Lanes (simctl / XC-MCP / Expo-idb) are routed by your
 environment and request, not by arguments — say "simctl only" in the
 request if you want the bundled lane. Protocol:
 SETUP → RECORD → ACT → COLLECT → VERIFY, with three-facet checks.
+
+### `/tui-testing` — terminal UI end-user proof
+
+```
+/tui-testing "the dashboard renders, navigates, and saves"
+/tui-testing "prove the install wizard works end to end"
+```
+
+No flags. Drives the real TUI in a real PTY as the end user: never
+pipe a TTY-guarded app, observe-then-act with matched-assertion waits,
+three-facet evidence (screen + disk + logs), pixel proof for visual
+claims, and a secret scan before sealing. Not for web UIs or
+non-interactive CLIs (`references/cli-validation.md`).
 
 ## Proof layer
 

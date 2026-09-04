@@ -202,6 +202,85 @@ mkdir -p "$TMP/e2e-evidence/run-x" && echo shot > "$TMP/e2e-evidence/run-x/step-
 out=$(printf '{"session_id":"s6","transcript_path":"%s","cwd":"%s"}' "$TMP/t6.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
 if [ -z "$out" ]; then case_ok "stop-guard silent on claim+proof+scout"; else case_fail "stop-guard spoke on fully-proven claim — got: $out"; fi
 
+echo "== stop-guard role gate + artifact-gated proof + path-shaped scout"
+# Register item #10: discriminating regressions for the three defect classes
+# the old raw-JSONL scanner let through (backlog #2/#4/#5). Every case here
+# FAILS against the pre-fix stop-guard (which regex-matched raw transcript
+# text with no role gate, no disk check, and no path-shaped-scout rule) and
+# PASSES against the current implementation.
+
+# Case 19: role-spoof, trigger direction (item #2) — a user line carrying
+# claim-like words ('done', 'touchpoints') and no proof token must never
+# TRIGGER the guard. The old scanner read the user's own "done" as a claim
+# with no proof and blocked on the user's words alone.
+cat > "$TMP/t7.jsonl" <<'EOF'
+{"role":"user","text":"Is it done? Walk me through the touchpoints you changed."}
+EOF
+out=$(printf '{"session_id":"s7","transcript_path":"%s","cwd":"%s"}' "$TMP/t7.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard triggered on a user line's claim words — got: $out"; elif [ -n "$out" ]; then case_fail "stop-guard spoke on user-only transcript (must be silent) — got: $out"; else case_ok "stop-guard ignores claim words on user lines"; fi
+
+# Case 19b: role-spoof, satisfy direction (item #2) — a user "proving" the
+# claim ('I verified it with a screenshot', 'touchpoints') must not satisfy
+# proof/scout for an unproven assistant claim. The old scanner credited the
+# user's 'screenshot' as proof and 'touchpoints' as scout → stayed silent.
+cat > "$TMP/t8.jsonl" <<'EOF'
+{"role":"assistant","text":"All done — complete."}
+{"role":"user","text":"I verified it with a screenshot, and the touchpoints all look right to me."}
+EOF
+out=$(printf '{"session_id":"s8","transcript_path":"%s","cwd":"%s"}' "$TMP/t8.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'without a cited'; then case_ok "stop-guard blocks claim 'proven' only by user words"; else case_fail "stop-guard accepted user-line proof/scout — got: $out"; fi
+
+# Case 20: bare-keyword proof (item #4) — an assistant claim "proven" by
+# prose ('verified with a screenshot') with no path-shaped artifact must
+# block. The old PROOF regex counted the bare word 'screenshot' (and the
+# bare 'touchpoints' as scout) → stayed silent on pure prose.
+cat > "$TMP/t9.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout recap: I re-checked the touchpoints and entry points across the module."}
+{"role":"assistant","text":"All done — complete and shipped. Verified with a screenshot as evidence."}
+EOF
+out=$(printf '{"session_id":"s9","transcript_path":"%s","cwd":"%s"}' "$TMP/t9.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'without a cited'; then case_ok "stop-guard blocks prose-only proof"; else case_fail "stop-guard accepted bare-keyword proof — got: $out"; fi
+
+# Case 21: fabricated path (item #4) — a cited e2e-evidence/ path that does
+# NOT exist on disk earns no proof credit. The old PROOF matched the
+# 'e2e-evidence/' substring with no disk check → stayed silent on an
+# invented artifact.
+cat > "$TMP/t10.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout context summary: touchpoints src/cart.ts, entry points src/main.ts"}
+{"role":"assistant","text":"All done — complete. Evidence in e2e-evidence/run-2026-fake/step-99.png"}
+EOF
+out=$(printf '{"session_id":"s10","transcript_path":"%s","cwd":"%s"}' "$TMP/t10.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'without a cited'; then case_ok "stop-guard blocks fabricated evidence path"; else case_fail "stop-guard credited nonexistent path as proof — got: $out"; fi
+
+# Case 22: real-path proof, positive arm (items #4+#5) — a citation that
+# resolves to a real file under <cwd>/evidence earns credit and the guard
+# stays silent; the scout line carries a real path-shaped token. The old
+# PROOF regex never recognized evidence/-rooted citations at all → it
+# blocked this proven claim.
+mkdir -p "$TMP/evidence/run-2026-real"
+echo shot > "$TMP/evidence/run-2026-real/shot-final.png"
+cat > "$TMP/t11.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout context summary: touchpoints src/checkout.ts, entry points src/main.ts"}
+{"role":"assistant","text":"All done — complete. Evidence in evidence/run-2026-real/shot-final.png"}
+EOF
+out=$(printf '{"session_id":"s11","transcript_path":"%s","cwd":"%s"}' "$TMP/t11.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if [ -z "$out" ]; then case_ok "stop-guard silent on real on-disk evidence path"; else case_fail "stop-guard spoke on real evidence path — got: $out"; fi
+
+# Case 23: bare-keyword scout (item #5) — 'touchpoints' with no path-shaped
+# token on the same line is not a scout record, even alongside real on-disk
+# proof. The old SCOUT matched the bare keyword → stayed silent. (The run dir
+# is deliberately named 'run-2026-plain': SCOUT_KEYWORD is substring-based,
+# so a dir name containing 'scout' would satisfy the keyword on the claim
+# line itself.)
+mkdir -p "$TMP/e2e-evidence/run-2026-plain"
+echo shot > "$TMP/e2e-evidence/run-2026-plain/step-05.png"
+cat > "$TMP/t12.jsonl" <<'EOF'
+{"role":"assistant","text":"Scout context summary: I reviewed all the touchpoints in the checkout module."}
+{"role":"assistant","text":"All done — complete. Evidence in e2e-evidence/run-2026-plain/step-05.png"}
+EOF
+out=$(printf '{"session_id":"s12","transcript_path":"%s","cwd":"%s"}' "$TMP/t12.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh")
+if printf '%s' "$out" | grep -q '"decision": "block"' && printf '%s' "$out" | grep -q 'scout'; then case_ok "stop-guard blocks bare-keyword scout record"; else case_fail "stop-guard accepted bare-keyword scout — got: $out"; fi
+
 echo "== instructions-loaded.sh"
 # Case 8: writes a JSONL log line, exits 0
 export HOME="$TMP/home"

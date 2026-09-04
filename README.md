@@ -36,6 +36,11 @@ bash tools/proofpunk-install.sh --target agents                 # ~/.agents/skil
 Or download `proofpunk-marketplace.tar.gz` from this repo's release artifacts and
 extract it into your marketplaces directory.
 
+**Version labels vs. real tags:** only `v2.1.0` and `v2.2.0` exist as git tags
+in this repository. Earlier versions (`v1.x`, `v2.0.x`) were labeled in commit
+messages only, so `--ref v1.10.0` does not resolve. To pin a pre-tag install,
+pass the full commit SHA — `--ref` accepts branch, bare SHA, or tag.
+
 **Upgrading from v1.10.0–v2.1.0?** `--hooks` installs on those versions copied
 `evidence-guard.sh` to disk but never registered it in `settings.json` — secrets-in-evidence
 enforcement was silently inert for that hook. Fixed in v2.2.0 (`99c72fb`). Re-run

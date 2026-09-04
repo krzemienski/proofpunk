@@ -58,4 +58,4 @@ building validation on a broken foundation compounds every later step.
 |-------|-----|-----|
 | Skip preflight and jump straight to work | Undetected blockers waste hours of downstream debugging | Run preflight at the start of every major session |
 | Ignore critical failures and proceed | Every later step fails for the same root cause | Fix all critical failures before the main task |
-| Treat preflight as feature validation | Environment readiness != behavior proof | After preflight passes, validate with `functional-validation` — the AI driving the system as the end user |
+| Treat preflight as feature validation | Environment readiness != behavior proof | After preflight passes, prove behavior with `end-user-testing` — the AI driving the real system as the end user |

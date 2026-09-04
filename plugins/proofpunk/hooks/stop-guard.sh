@@ -61,10 +61,14 @@ PROOF_NONPATH = re.compile(r"(curl\s+\S+\s+200|validate\s+OK)", re.I)
 # proof on their own (backlog #4).
 PROOF_PATH = re.compile(r"(?<![\w-])(?:e2e-evidence|evidence)/[\w./-]+")
 SCOUT_KEYWORD = re.compile(r"(scout|context summary|files touched|touchpoints|entry points)", re.I)
-# A concrete file reference: at least two /-separated path segments. Scout
-# must co-occur with one on the same line — prose alone does not count
-# (backlog #5).
-PATH_SHAPED = re.compile(r"[\w.\-]+(?:/[\w.\-]+)+")
+# A concrete FILE reference: two or more /-separated segments whose final
+# segment carries an extension (src/app.py, plugins/proofpunk/hooks/x.sh).
+# Requiring the extension is what keeps prose pairs ("and/or",
+# "input/output") and bare URLs ("https://x.com/y") from counting as a
+# scout record. Matched against extracted assistant text, never the raw
+# JSON record — the envelope's own "cwd" would otherwise satisfy this on
+# every line and make the conjunction inert (backlog #5).
+PATH_SHAPED = re.compile(r"[\w.\-]+/[\w.\-/]*[\w\-]+\.[A-Za-z0-9]{1,8}\b")
 
 try:
     with open(path, errors="ignore") as f:
@@ -85,6 +89,33 @@ def is_assistant_line(record):
         if isinstance(message, dict):
             role = message.get("role")
     return isinstance(role, str) and role.strip().lower() == "assistant"
+
+def assistant_text(record):
+    # Signals must match the assistant's OWN WORDS, never the raw JSON record.
+    # Real transcript envelopes carry "cwd":"/Users/<you>/<project>", which
+    # satisfies PATH_SHAPED on every line — that made the SCOUT conjunction
+    # inert: prose with no path at all scored as a scout. Extract the text
+    # blocks and match those. Falls back to "" so a shape we do not recognize
+    # grants no credit rather than silently reverting to raw-line matching.
+    if not isinstance(record, dict):
+        return ""
+    message = record.get("message")
+    content = (message or {}).get("content") if isinstance(message, dict) else None
+    if content is None:
+        content = record.get("content")
+    if content is None and isinstance(record.get("text"), str):
+        # Flat {"role": ..., "text": ...} records.
+        return record["text"]
+    if isinstance(content, str):
+        return content
+    parts = []
+    if isinstance(content, list):
+        for block in content:
+            if isinstance(block, dict) and isinstance(block.get("text"), str):
+                parts.append(block["text"])
+            elif isinstance(block, str):
+                parts.append(block)
+    return "\n".join(parts)
 
 def path_proof(line):
     # A cited e2e-evidence/ or evidence/ path counts as proof only if it
@@ -130,11 +161,22 @@ for line in lines:
         continue
     if not is_assistant_line(record):
         continue
-    if CLAIM.search(line):
+    text = assistant_text(record)
+    if not text:
+        continue
+    if CLAIM.search(text):
         claim = True
-    if PROOF_NONPATH.search(line) or path_proof(line):
+    if PROOF_NONPATH.search(text) or path_proof(text):
         proof = True
-    if SCOUT_KEYWORD.search(line) and PATH_SHAPED.search(line):
+    # A scout record must be the assistant's OWN PROSE naming real files.
+    # Cited evidence paths are masked out first: a run directory named
+    # e2e-evidence/run-2026-scout/step-05.png otherwise supplies BOTH
+    # conjuncts by itself (the word "scout" from the dirname, the path
+    # shape from the path), letting any citation self-certify as its own
+    # scout record. Only the dirname differed between the two arms that
+    # exposed this, so mask the citations, then test the remaining prose.
+    scout_text = PROOF_PATH.sub(" ", text)
+    if SCOUT_KEYWORD.search(scout_text) and PATH_SHAPED.search(scout_text):
         scout = True
 
 if claim and not proof:

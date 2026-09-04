@@ -79,9 +79,17 @@ if not cyc:
     for s in skills: dep(s)
     sinks = sorted(s for s, d in depth.items() if d == 0)
     print("  depth map:", ", ".join(f"{s}={d}" for s, d in sorted(depth.items(), key=lambda x: -x[1])))
-    check("leaf owners are the canonical-method skills",
-          set(sinks) == {"brainstorm", "end-user-testing", "prompt-forge", "session-intent", "tui-testing"},
-          f"sinks={sinks}")
+    # Derive the expected sink set from what the skills THEMSELVES declare.
+    # A hardcoded list here drifts the moment a leaf gains an edge (that is how
+    # tui-testing declaring its end-user-testing dependency broke this check
+    # while the graph itself stayed correct). Derive, never restate.
+    declared_leaves = {
+        s for s in skills
+        if "Leaf skill — owns canonical methods; calls nothing." in bodies[s]
+    }
+    check("leaf owners are exactly the skills declaring themselves leaves",
+          set(sinks) == declared_leaves,
+          f"sinks={sinks} declared_leaves={sorted(declared_leaves)}")
 
 # ---- 4. called-by consistency ----------------------------------------------
 print("CHECK 4: 'Called by' lines match real edges")

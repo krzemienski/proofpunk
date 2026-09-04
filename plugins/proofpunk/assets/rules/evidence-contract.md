@@ -7,6 +7,13 @@ paths:
 
 # Evidence contract
 
+Role note: this is the **path-scoped hygiene rule** that `/proofpunk:install`
+copies into a project (`.claude/rules/`) — it auto-attaches when you touch
+`e2e-evidence/**` or `evidence/**` paths. It is not the doctrine. The full
+canonical standard every skill cites is the sibling
+`plugins/proofpunk/references/evidence-contract.md` (Iron Rule, verification
+loop, PASS criteria, refusal rules).
+
 - Fresh evidence per run: timestamped run directory, sequential step names,
   non-empty artifacts, never reused across runs.
 - Redact before write: no tokens, cookies, keys, or personal data in any

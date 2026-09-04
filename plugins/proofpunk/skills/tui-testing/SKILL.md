@@ -127,6 +127,9 @@ driver + version, runtime floor probed, boot wait used, facet checklist
 
 ## Skill calls
 
-Leaf skill — owns canonical methods; calls nothing.
+| Calls | When | What it hands over |
+|-------|------|--------------------|
+| `end-user-testing` | proof standard for every TUI run | verdict template the TUI verdict extends |
+
 Called by: `implement`, `full-functional-audit`, `proofpunk`.
-Pairs with `end-user-testing` (proof standard) and the shared runbooks (`references/*-validation.md`) (platform routing).
+Pairs with the shared runbooks (`references/*-validation.md`) (platform routing).
