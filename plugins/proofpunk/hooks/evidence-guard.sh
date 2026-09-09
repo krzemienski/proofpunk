@@ -1,10 +1,13 @@
 #!/bin/sh
 # Proofpunk PreToolUse evidence guard — secrets never enter evidence dirs.
 #
-# Matcher: Write|Edit. If the target file lives under an evidence directory
-# (e2e-evidence/** or evidence/**) and the payload matches known secret
-# shapes, the write is denied (exit 2; stderr is fed back to Claude).
-# Everything else passes (exit 0). Deterministic, <30ms.
+# Matcher: ^(Write|Edit|mcp__<server>__<write-ish tool>)$ — first-party
+# Write/Edit plus MCP mutation tools. MCP filesystem payloads use `path`
+# where first-party tools use `file_path`; both keys are read below.
+# If the target file lives under an evidence directory (e2e-evidence/**
+# or evidence/**) and the payload matches known secret shapes, the write
+# is denied (exit 2; stderr is fed back to Claude). Everything else
+# passes (exit 0). Deterministic, <30ms.
 set -eu
 
 input=$(cat)
@@ -19,7 +22,7 @@ except Exception:
     sys.exit(0)
 
 ti = data.get("tool_input") or {}
-path = str(ti.get("file_path") or "")
+path = str(ti.get("file_path") or ti.get("path") or "")
 content = str(ti.get("content") or ti.get("new_string") or "")
 
 # The evidence-directory pattern below is mirrored verbatim in

@@ -266,6 +266,87 @@ EOF
 )
 if [ -z "$out" ]; then case_ok "post-write silent on evidence writes"; else case_fail "post-write spoke on evidence write — got: $out"; fi
 
+echo "== hooks.json matcher routes MCP write tools (D-A)"
+# Case M1: the matcher string in hooks.json must route MCP mutation tools
+# to the PreToolUse guard group and must NOT route read-only MCP tools.
+# Direct script tests above cannot prove this — they feed the scripts
+# payloads the matcher would never deliver. This case parses hooks.json
+# and applies the documented matcher semantics (charset-only → exact
+# string-or-list; anything else → unanchored JS regex .test) to the
+# actual matcher string, for both the PreToolUse and PostToolUse groups.
+python3 - "$HOOKS/hooks.json" <<'EOF'
+import json, re, sys
+cfg = json.load(open(sys.argv[1]))
+EXACT_CHARS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_- ,|")
+def matches(matcher, tool):
+    if matcher in ("", "*"):
+        return True
+    if all(c in EXACT_CHARS for c in matcher):
+        return tool in matcher.split("|")
+    return re.search(matcher, tool) is not None  # JS regex .test, unanchored
+fails = []
+for event in ("PreToolUse", "PostToolUse"):
+    groups = [g for g in cfg["hooks"][event] if "no-test-files" in json.dumps(g) or "post-write-walkthrough" in json.dumps(g)]
+    if len(groups) != 1:
+        fails.append(f"{event}: expected exactly 1 write-guard group, got {len(groups)}")
+        continue
+    m = groups[0]["matcher"]
+    for tool in ("Write", "Edit", "mcp__filesystem__write_file", "mcp__filesystem__edit_file",
+                 "mcp__filesystem__move_file", "mcp__knowledge_graph_memory__create_entities"):
+        if not matches(m, tool):
+            fails.append(f"{event}: matcher does NOT route {tool}")
+    for tool in ("Bash", "Read", "mcp__filesystem__read_file", "mcp__filesystem__list_directory",
+                 "mcp__sequential_thinking__sequentialthinking"):
+        if matches(m, tool):
+            fails.append(f"{event}: matcher wrongly routes {tool}")
+if fails:
+    print("\n".join(fails))
+    sys.exit(1)
+EOF
+if [ $? -eq 0 ]; then case_ok "hooks.json matcher routes MCP writes, skips reads (both groups)"; else case_fail "hooks.json matcher routing — see output above"; fi
+
+echo "== MCP path-key payloads (D-A)"
+# Case M2: mcp__filesystem__write_file to a test path → denied (exit 2).
+# MCP filesystem payloads carry `path`, not `file_path`; pre-fix guards
+# read only `file_path` and failed open.
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"mcp__filesystem__write_file","tool_input":{"path":"src/checkout.test.ts","content":"import {describe} from 'vitest'"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "no-test-files denies MCP write to test path"; else case_fail "no-test-files MCP test-path deny — rc=$rc"; fi
+
+# Case M3: mcp__filesystem__write_file to a production path → allowed.
+out=$(sh "$HOOKS/no-test-files.sh" 2>&1 <<'EOF'
+{"tool_name":"mcp__filesystem__write_file","tool_input":{"path":"src/checkout.ts","content":"export const x = 1"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ]; then case_ok "no-test-files allows MCP write to production path"; else case_fail "no-test-files MCP production write — rc=$rc"; fi
+
+# Case M4: MCP write of a secret into an evidence dir → denied (exit 2).
+out=$(sh "$HOOKS/evidence-guard.sh" 2>&1 <<'EOF'
+{"tool_name":"mcp__filesystem__write_file","tool_input":{"path":"e2e-evidence/run-x/settings.json","content":"{\"apiKey\": \"ghp_ABCDEFGHIJKLMNOPQRSTUVWX123456\"}"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "evidence-guard denies MCP secret write into evidence"; else case_fail "evidence-guard MCP secret deny — rc=$rc"; fi
+
+# Case M5: MCP overwrite of an existing capture → denied (exit 2).
+out=$(sh "$HOOKS/capture-guard.sh" 2>&1 <<EOF
+{"tool_name":"mcp__filesystem__write_file","tool_input":{"path":"$TMP/e2e-evidence/run-x/existing.txt","content":"tampered"}}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 2 ]; then case_ok "capture-guard denies MCP capture overwrite"; else case_fail "capture-guard MCP overwrite deny — rc=$rc"; fi
+
+# Case M6: MCP write to a production file → walkthrough reminder (PostToolUse).
+out=$(sh "$HOOKS/post-write-walkthrough.sh" 2>&1 <<'EOF'
+{"tool_name":"mcp__filesystem__write_file","tool_input":{"path":"src/checkout.ts","content":"export const x = 1"}}
+EOF
+)
+if printf '%s' "$out" | grep -q "drive the real system"; then case_ok "post-write reminder on MCP production change"; else case_fail "post-write MCP reminder — got: $out"; fi
+
 echo "== stop-guard scout requirement"
 # Case 14: claim + proof + no scout → blocked with scout reason
 cat > "$TMP/t5.jsonl" <<'EOF'

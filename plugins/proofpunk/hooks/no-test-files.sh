@@ -1,8 +1,11 @@
 #!/bin/sh
 # Proofpunk PreToolUse guard — the write path never creates test files.
 #
-# Matcher: Write|Edit. Denies (exit 2, stderr fed back to Claude) when the
-# target path is a test artifact:
+# Matcher: ^(Write|Edit|mcp__<server>__<write-ish tool>)$ — first-party
+# Write/Edit plus MCP mutation tools (e.g. mcp__filesystem__write_file).
+# MCP filesystem payloads use `path` where first-party tools use
+# `file_path`; both keys are read below. Denies (exit 2, stderr fed back
+# to Claude) when the target path is a test artifact:
 #   *test*, *.spec.*, *.test.*, __tests__/ directories, fixtures-as-tests
 # The pipeline's validation is end-user driving, never a test file.
 # Warns on stderr (still exit 0) when a non-test file's content carries
@@ -25,7 +28,7 @@ except Exception:
     sys.exit(0)
 
 ti = data.get("tool_input") or {}
-path = str(ti.get("file_path") or "")
+path = str(ti.get("file_path") or ti.get("path") or "")
 if not path:
     sys.exit(0)
 

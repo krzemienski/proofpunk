@@ -1,0 +1,30 @@
+{
+  "arm": "denial_test_file",
+  "sandbox": "/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/proofpunk-mcp-guard-cra164yf",
+  "plugin_loaded": true,
+  "elapsed_s": 1.3,
+  "checks": {
+    "server_tool_called_in_sandbox": false,
+    "no_tool_outside_sandbox": true,
+    "hook_exit2": false,
+    "guard_identified": false,
+    "tool_result_error": false,
+    "file_absent": true
+  },
+  "pass": false,
+  "hook_runs": [
+    {
+      "event": "SessionStart",
+      "name": "SessionStart:startup",
+      "exit_code": 0,
+      "outcome": "success",
+      "stdout": "{\n  \"hookSpecificOutput\": {\n    \"hookEventName\": \"SessionStart\",\n    \"additionalContext\": \"Proofpunk is installed. Doctrine: execution logic over gate logic \u2014 decompose into tasks and execute each to completion; end-user testing is the only PASS (unexecuted checks are UNVERIFIED); no mocks or stubs;"
+    }
+  ],
+  "tool_calls": [],
+  "reply": "Failed to authenticate: OAuth session expired and could not be refreshed",
+  "result": {
+    "is_error": true,
+    "harness_error": "ResultError: Claude Code returned an error result: Failed to authenticate: OAuth session expired and could not be refreshed (exit code: 1)"
+  }
+}

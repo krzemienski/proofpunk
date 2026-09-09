@@ -2,9 +2,12 @@
 # Proofpunk PostToolUse guard — production-code changes demand an end-user
 # walkthrough as the next action.
 #
-# Matcher: Write|Edit. When a production file changed (not evidence, docs,
-# plans, or config), inject a tight reminder as additionalContext. Silent for
-# everything else (evidence, docs, .planning, non-code).
+# Matcher: ^(Write|Edit|mcp__<server>__<write-ish tool>)$ — first-party
+# Write/Edit plus MCP mutation tools. MCP filesystem payloads use `path`
+# where first-party tools use `file_path`; both keys are read below.
+# When a production file changed (not evidence, docs, plans, or config),
+# inject a tight reminder as additionalContext. Silent for everything
+# else (evidence, docs, .planning, non-code).
 set -eu
 
 input=$(cat)
@@ -19,7 +22,7 @@ except Exception:
     sys.exit(0)
 
 ti = data.get("tool_input") or {}
-path = str(ti.get("file_path") or "")
+path = str(ti.get("file_path") or ti.get("path") or "")
 if not path:
     sys.exit(0)
 

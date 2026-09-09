@@ -37,7 +37,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "^(Write|Edit|mcp__[A-Za-z0-9_]+__(write|edit|move|create|rename|delete|remove)[A-Za-z0-9_]*)$",
         "hooks": [
           {
             "type": "command",
@@ -80,7 +80,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "^(Write|Edit|mcp__[A-Za-z0-9_]+__(write|edit|move|create|rename|delete|remove)[A-Za-z0-9_]*)$",
         "hooks": [
           {
             "type": "command",
