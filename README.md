@@ -36,8 +36,8 @@ bash tools/proofpunk-install.sh --target agents                 # ~/.agents/skil
 Or download `proofpunk-marketplace.tar.gz` from this repo's release artifacts and
 extract it into your marketplaces directory.
 
-**Version labels vs. real tags:** only `v2.1.0` and `v2.2.0` exist as git tags
-in this repository. Earlier versions (`v1.x`, `v2.0.x`) were labeled in commit
+**Version labels vs. real tags:** only `v2.1.0`, `v2.2.0`, and `v3.0.0` exist as
+git tags in this repository. Earlier versions (`v1.x`, `v2.0.x`) were labeled in commit
 messages only, so `--ref v1.10.0` does not resolve. To pin a pre-tag install,
 pass the full commit SHA — `--ref` accepts branch, bare SHA, or tag.
 
