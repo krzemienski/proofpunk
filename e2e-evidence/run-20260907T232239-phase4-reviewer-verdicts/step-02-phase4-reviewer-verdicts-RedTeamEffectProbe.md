@@ -1,0 +1,13 @@
+1|{
+2|  "verdict": "ADOPT-WITH-CHANGES",
+3|  "vector_count": 12,
+4|  "target": "C2 effect-probe proposal, docs/v3-research/r1-candidates.md:41-49",
+5|  "top_severity_gaps": [
+6|    "Causal attribution: filesystem delta + UserPromptExpansion does not prove the playbook's content caused the write (Read is already unrestricted under _SLASH_PLAYBOOK_TOOLS, and slash expansion delivers full instructions the model could ignore) — closed by a playbook-content mutation/counterfactual test (neuter install.md's body in a scratch plugin copy, require the effect to disappear, restore byte-identical) plus an ordered tool-trace assertion, extending r2 Pattern 6's own mutation methodology one level deeper than r2 itself proposes.",
+7|    "Narration-only PASS: no drafted checks{} dict exists for C2's new multi-file criteria; the only multi-criteria code pattern in sdk_probe.py (the `else` branch) uses joined reply text as a primary signal, so criteria beyond the single legacy artifact case are not guaranteed filesystem-only.",
+8|    "Non-determinism collapsed: did-not-attempt vs attempted-and-denied vs attempted-succeeded-wrong-content are three distinguishable states given existing ToolResultBlock.is_error correlation, but no code reads it for this purpose — closed by path-scoped Write/Edit correlation emitting three explicit fields instead of one boolean.",
+9|    "Control-oracle insufficiency: exit 1 alone conflates a correct denial with a crashed session, an unrelated auth failure, or a cwd/mktemp failure — main()'s except ResultError block sets harness_error but no downstream check ever reads it — closed by requiring clean session completion, healthy init, absence-attributed failure, and a same-session baseline sanity check."
+10|  ],
+11|  "full_report_delivered_in_chat": true,
+12|  "note_on_defect_database": "plugins/proofpunk/references/defect-pattern-database.md is predominantly iOS/web visual-QA content with no transfer to this CLI probe; three rows (lines 31, 71, 137) do have direct structural analogies and are cited in the full report rather than the database being dismissed wholesale."
+13|}

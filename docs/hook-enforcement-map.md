@@ -232,22 +232,30 @@ there would be a false claim against skill-canon §2.5.
 Command Surface owns the file): `stop_guard`, `instructions_loaded`,
 `blocks_test_file`, `allows_normal_file`, `doctrine`.
 
-At the time this document was sealed, those five live probes were
-**UNVERIFIED** — Lane Command Surface held an exclusive live-session
-lock on `sdk_probe.py` (12 `cmd_slash_*` sessions). Script-level proof
-stands. Do not upgrade these five rows to PASS from an older
-`e2e-evidence/run-sdk-probes/` capture; that run predates this lane's
-`stop-guard.sh` fail-open change.
+Driven this lane after LaneCommandSurface released the live lock
+(cwd `lane-hooks/live/probe-cwd`). Unpiped rc + JSON stdout under
+`e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/live/`.
+This SDK session's available tools were `ListAgents`, `SendMessage`,
+`Skill`, `TaskStop`, `Workflow` — **no Write**. That is why the two
+Write-path probes could not attempt a write.
 
-| Hook | Script-level (this lane) | Live-session (`sdk_probe.py`) |
+| Probe | rc | `pass` | What was actually observed |
+|---|---|---|---|
+| `doctrine` | 0 | true | Reply starts `Proofpunk is installed. Doctrine: execution logic`. SessionStart stdout contains the same additionalContext. **PASS live** for injection. |
+| `instructions_loaded` | 0 | true | `loads_appended` + `loads_this_run`; 62 new JSONL lines, first cwd is this run's probe-cwd. **PASS live** for the tap. Note: the probe's `require_hook_event` is `SessionStart`, not `InstructionsLoaded` — it does not prove the InstructionsLoaded *event name* fired. |
+| `stop_guard` | 0 | true | Stop hook_run stdout is `{"decision": "block", "reason": "Proofpunk: a completion was claimed without a cited end-user evidence artifact…"}`. That is this plugin's script, not a generic Stop event. **PASS live** for Stop-path enforcement. |
+| `blocks_test_file` | 1 | false | `write_attempted: false`. Model: "No Write tool in this session." File absent is not a deny. **UNVERIFIED live** (probe cannot fire PreToolUse:Write here). |
+| `allows_normal_file` | 1 | false | Same missing-Write blocker; `artifact_exists: false`. **UNVERIFIED live**. |
+
+| Hook | Script-level (this lane) | Live-session (`sdk_probe.py`, this run) |
 |---|---|---|
-| `session-start.sh` | PASS | `doctrine` UNVERIFIED |
-| `stop-guard.sh` (Stop) | PASS | `stop_guard` UNVERIFIED |
-| `stop-guard.sh` (SubagentStop) | PASS (same script) | no probe exists — UNVERIFIED |
-| `no-test-files.sh` | PASS | `blocks_test_file` / `allows_normal_file` UNVERIFIED |
-| `evidence-guard.sh` | PASS | no probe — UNVERIFIED live |
-| `capture-guard.sh` | PASS | no probe — UNVERIFIED live |
-| `bash-write-snapshot.sh` | PASS | no probe — UNVERIFIED live |
-| `bash-write-notice.sh` | PASS | no probe — UNVERIFIED live |
-| `post-write-walkthrough.sh` | PASS | no probe — UNVERIFIED live |
-| `instructions-loaded.sh` | PASS | `instructions_loaded` UNVERIFIED |
+| `session-start.sh` | PASS | **PASS** — `doctrine` rc=0, SessionStart stdout is proofpunk additionalContext (`live/step-01-doctrine.json`) |
+| `stop-guard.sh` (Stop) | PASS | **PASS** — `stop_guard` rc=0 and stdout is this plugin's `decision:block` (`live/step-05-stop_guard.json`) |
+| `stop-guard.sh` (SubagentStop) | PASS (same script) | no probe exists — **UNVERIFIED** |
+| `no-test-files.sh` | PASS | **UNVERIFIED live** — SDK session has no Write tool, so PreToolUse:Write never ran (`live/step-03-blocks_test_file.json`, `live/step-04-allows_normal_file.json`) |
+| `evidence-guard.sh` | PASS | no probe — **UNVERIFIED live** |
+| `capture-guard.sh` | PASS | no probe — **UNVERIFIED live** |
+| `bash-write-snapshot.sh` | PASS | no probe — **UNVERIFIED live** |
+| `bash-write-notice.sh` | PASS | no probe — **UNVERIFIED live** |
+| `post-write-walkthrough.sh` | PASS | no probe — **UNVERIFIED live** |
+| `instructions-loaded.sh` | PASS | **PASS** for the tap (cwd-attributed JSONL append). Event-name `InstructionsLoaded` itself is **UNVERIFIED** — the probe keys off SessionStart (`live/step-02-instructions_loaded.json`) |

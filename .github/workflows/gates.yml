@@ -81,6 +81,21 @@ jobs:
       - name: "Gate 6/7: verify-harness-integrity.py (harnesses invoke subjects)"
         run: python3 tools/verify-harness-integrity.py
 
+      - name: "Gate: verify-router-links.py (head routes every non-head skill)"
+        run: python3 tools/verify-router-links.py
+
+      - name: "Gate: verify-mutation-artifact.py (Class 1 mutation-test link)"
+        run: python3 tools/verify-mutation-artifact.py
+
+      - name: "Gate: verify-shipped-vs-active.py (Class 3 shipped vs wired)"
+        run: python3 tools/verify-shipped-vs-active.py
+
+      - name: "Gate: verify-proof-vocab.py (Class 4 cited completion words)"
+        run: python3 tools/verify-proof-vocab.py
+
+      - name: "Gate: verify-counts.py (Class 2 hardcoded counts vs live tree)"
+        run: python3 tools/verify-counts.py
+
       # Gauge board. Exits non-zero while any gauge is unmet or its evidence
       # does not resolve, so an unmet gauge cannot be reported as a pass. This
       # gate is EXPECTED to fail until the v3 lanes land — continue-on-error

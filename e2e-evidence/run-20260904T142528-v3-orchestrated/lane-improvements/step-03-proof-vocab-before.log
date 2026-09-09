@@ -1,0 +1,37 @@
+files=21
+uncited=34
+VERDICT: FAIL
+  .planning/BUILD-PROMPT.md:79: uncited status word: head skill names; PASS iff 0 unresolved and every one of the 17 routed
+  .planning/plugin-improvement-criteria.md:26: uncited status word: | P8 | Each implemented improvement is individually proven | drive the real behavior it changed | per-item PASS with artifact citation |
+  .planning/proofpunk-agent.prompt.md:295: uncited status word: │ S1 streaming renders live          PASS     0003                                       │
+  .planning/proofpunk-agent.prompt.md:296: uncited status word: │ S2 tree attribution correct        PASS     0002, 0003                                 │
+  .planning/proofpunk-agent.prompt.md:297: uncited status word: │ S3 permission modal gates tool     PASS     0004                                       │
+  .planning/proofpunk-agent.prompt.md:298: uncited status word: │ S4 interrupt honored               PASS     0005                                       │
+  .planning/proofpunk-agent.prompt.md:299: uncited status word: │ S5 hook block visible              PASS     0006                                       │
+  .planning/proofpunk-agent.prompt.md:300: uncited status word: │ S6 ledger export on disk           PASS     0007                                       │
+  .planning/v3-criteria.md:46: uncited status word: **L4 / gauge #2 — stop-guard scout-substring false-PASS.**
+  .planning/v3-criteria.md:57: uncited status word: baseline rc=0/48 PASS, mutated rc=1/47 PASS failing by name, restored
+  docs/skill-canon.md:369: uncited status word: This measures the **RESOLVED** string per the assignment's instruction, not
+  docs/skill-canon.md:383: uncited status word: | 1 | `brainstorm` | `brainstorm` | Yes | 833 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:384: uncited status word: | 2 | `codebase-truth-audit` | `codebase-truth-audit` | Yes | 759 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:385: uncited status word: | 3 | `end-user-testing` | `end-user-testing` | Yes | 838 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:386: uncited status word: | 4 | `full-functional-audit` | `full-functional-audit` | Yes | 811 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:387: uncited status word: | 5 | `implement` | `implement` | Yes | 978 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:388: uncited status word: | 6 | `mobile-validation-runner` | `mobile-validation-runner` | Yes | 727 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:389: uncited status word: | 7 | `plan-hardening` | `plan-hardening` | Yes | 745 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:390: uncited status word: | 8 | `production-readiness` | `production-readiness` | Yes | 737 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:391: uncited status word: | 9 | `prompt-forge` | `prompt-forge` | Yes | 887 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:392: uncited status word: | 10 | `proofpunk` | `proofpunk` | Yes | 718 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:393: uncited status word: | 11 | `red-team-eval` | `red-team-eval` | Yes | 761 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:394: uncited status word: | 12 | `root-cause-debugging` | `root-cause-debugging` | Yes | 731 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:395: uncited status word: | 13 | `session-intent` | `session-intent` | Yes | 805 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:396: uncited status word: | 14 | `stack-testing` | `stack-testing` | Yes | 746 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:397: uncited status word: | 15 | `tui-testing` | `tui-testing` | Yes | 746 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:398: uncited status word: | 16 | `ui-experience-audit` | `ui-experience-audit` | Yes | 807 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:399: uncited status word: | 17 | `validation-plan` | `validation-plan` | Yes | 648 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:400: uncited status word: | 18 | `visual-inspection` | `visual-inspection` | Yes | 672 | PASS | PASS | PASS | PASS | None | None | none |
+  docs/skill-canon.md:453: uncited status word: 1. **RESOLVED, not actually unresolved** — the XML-tag and reserved-word
+  docs/v3-reasoning-gate.md:77: uncited status word: 1. **Correctness of the instrument comes first.** Two false-PASS defects were
+  README.md:399: uncited status word: | `visual-inspection` | screenshot QA with severity classification | ui-experience-audit (deeper pass) (exercise after visual PASS) |
+  e2e-evidence/AGENTS.md:63: uncited status word: - A claim is not PASS until this directory holds a fresh, sealed, non-empty
+  evidence/AGENTS.md:14: uncited status word: | `v2.0.1-release/` | v2.0.1: test-hooks 19/19, dry-run 0 fails, verifier PASS, full-install output |

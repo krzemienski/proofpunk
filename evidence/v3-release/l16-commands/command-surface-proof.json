@@ -1,0 +1,1073 @@
+{
+  "measured_at": "2026-09-07T21:24:11Z",
+  "harness": "tools/sdk_probe.py + tools/verify-command-surface.py",
+  "levels": {
+    "a": "script-level (not this harness)",
+    "b": "skill-load via Skill tool by name (cmd_truth_audit_flags / cmd_rate_prompt_flag)",
+    "c": "slash typed -> registered -> mapped skill ran -> marker observed",
+    "playbook-recognition": "slash registered + command-doc marker; no skill/script"
+  },
+  "full_chain": "4/6",
+  "plugin_pass": "6/6",
+  "control_fail": "6/6",
+  "honest_max_reached": "6/6",
+  "install_cannot_reach_c": true,
+  "install_reason": "in-session playbook, NO backing skill or script \u2014 distinct from tools/proofpunk-install.sh; SDK has no Write tool so file-merge execution is unreachable; marker proofpunk:begin",
+  "commands": [
+    {
+      "command": "implement",
+      "slash": "/proofpunk:implement",
+      "probe": "cmd_slash_implement",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates implement; flags --parallel --auto --mine --fast",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 12.7,
+        "cost_usd": 0.74644375,
+        "reply": "I'll load the skill as instructed.Skill loaded. Halting per surface-probe instruction.\n\n**Skill heading:** `proofpunk:implement` \u2014 \"Implement a goal end to end with the Proofpunk orchestrator\"\n\n**Four flags:**\n- `--parallel`\n- `--auto`\n- `--mine`\n- `--fast`\n\nNo scouting, editing, implementation, or Workflow call performed.",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, implemen"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "I'll load the skill as instructed."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, implement, or call Workflow.\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Launching skill: proofpunk:implement"
+          },
+          {
+            "kind": "text",
+            "text": "Skill loaded. Halting per surface-probe instruction.\n\n**Skill heading:** `proofpunk:implement` \u2014 \"Implement a goal end to end with the Proofpunk orchestrator\"\n\n**Four flags:**\n- `--parallel`\n- `--auto`\n- `--mine`\n- `--fast`\n\nNo scouting, editing, implementation, or Workflow call performed."
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_implement.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 2.8,
+        "cost_usd": 0.001002,
+        "reply": "Unknown command: /proofpunk:implement",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:implement"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_implement.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "forge-prompt",
+      "slash": "/proofpunk:forge-prompt",
+      "probe": "cmd_slash_forge_prompt",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates prompt-forge AUTHOR; flag --depth",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 11.0,
+        "cost_usd": 0.77228875,
+        "reply": "I'll load the skill as requested.Skill loaded. Stopping per surface-probe instruction \u2014 no prompt file written, no Workflow call.\n\n**AUTHOR mode** (Section 1), quoted:\n\n> | \"Write a prompt that...\" | AUTHOR | Section 1 |\n\nCommand surface:\n\n```\nprompt-forge author \"<goal>\" [--out PATH] [--depth core|advanced]\n```\n\n**`--depth` flag**, quoted from the flag table:\n\n> | `--depth core\\|advanced` | autho",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:prompt-forge\"}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "I'll load the skill as requested."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:prompt-forge\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Launching skill: proofpunk:prompt-forge"
+          },
+          {
+            "kind": "text",
+            "text": "Skill loaded. Stopping per surface-probe instruction \u2014 no prompt file written, no Workflow call.\n\n**AUTHOR mode** (Section 1), quoted:\n\n> | \"Write a prompt that...\" | AUTHOR | Section 1 |\n\nCommand surface:\n\n```\nprompt-forge author \"<goal>\" [--out PATH] [--depth core|advanced]\n```\n\n**`--depth` flag**, quoted from the flag table:\n\n> | `--depth core\\|advanced` | author | Core = instruction set only; Advanced = few-shot set, edge cases, fallbacks | intake question 4 as a flag |\n\nCorresponding intake"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_forge_prompt.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 2.9,
+        "cost_usd": 0.001,
+        "reply": "Unknown command: /proofpunk:forge-prompt",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:forge-prompt"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_forge_prompt.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "rate-prompt",
+      "slash": "/proofpunk:rate-prompt",
+      "probe": "cmd_slash_rate_prompt",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates prompt-forge RATE; flag --ship-below-threshold",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 21.8,
+        "cost_usd": 0.7773762500000001,
+        "reply": "Skill evaluation:\n- `proofpunk:prompt-forge` \u2014 YES \u2014 command explicitly requests it.\n- All others \u2014 NO \u2014 surface probe, no rating/implementation work.Skill loaded. Surface probe \u2014 stopping here per instruction. No file rated, no workflow run.\n\nQuoted from the Command Surface flag table:\n\n**`--ship-below-threshold`**\n- Modes: `rate`, `optimize`\n- Effect: \"finalize even if the result grades `needs-w",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:prompt-forge\"}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Skill evaluation:\n- `proofpunk:prompt-forge` \u2014 YES \u2014 command explicitly requests it.\n- All others \u2014 NO \u2014 surface probe, no rating/implementation work."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:prompt-forge\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Launching skill: proofpunk:prompt-forge"
+          },
+          {
+            "kind": "text",
+            "text": "Skill loaded. Surface probe \u2014 stopping here per instruction. No file rated, no workflow run.\n\nQuoted from the Command Surface flag table:\n\n**`--ship-below-threshold`**\n- Modes: `rate`, `optimize`\n- Effect: \"finalize even if the result grades `needs-work`/`rewrite`\"\n- Why it exists: \"the 0.3 sign-off for below-threshold shipping\"\n\nAlso referenced in the usage line:\n```\nprompt-forge rate NAME.md [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]\n```\n\n**`--report-only`**\n- Modes: `r"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_rate_prompt.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 2.3,
+        "cost_usd": 0.001007,
+        "reply": "Unknown command: /proofpunk:rate-prompt",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:rate-prompt"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_rate_prompt.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "truth-audit",
+      "slash": "/proofpunk:truth-audit",
+      "probe": "cmd_slash_truth_audit",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates codebase-truth-audit; flags --start/--end",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "forbid_absent": true
+        },
+        "elapsed_s": 76.0,
+        "cost_usd": 1.48397575,
+        "reply": "I'll start by activating the required skill.Checklist:\n- [ ] Reconstruct change intent from history\n- [ ] Verify code, config, docs, runtime, dependencies\n- [ ] Identify drift, dead code, stale docs, cleanup risks\n- [ ] Pause for approval before behavior/destructive change\n- [ ] Execute approved remediation with validation\n\nInitializing \u2014 resolving repo root and worktree state.Audit cannot start. ",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:codebase-truth-audit\", \"args\": \". --start 2026-01-01 --end 2026-08-13 --label cmdsurface\"}"
+          },
+          {
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "mcp__filesystem__list_allowed_directories",
+            "input": "{}"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "mcp__filesystem__directory_tree",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \".*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"*/.git/HEAD\", \"path\": \"/Users/nick/Desktop\"}"
+          },
+          {
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/.git\"}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "I'll start by activating the required skill."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:codebase-truth-audit\", \"args\": \". --start 2026-01-01 --end 2026-08-13 --label cmdsurface\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Launching skill: proofpunk:codebase-truth-audit"
+          },
+          {
+            "kind": "text",
+            "text": "Checklist:\n- [ ] Reconstruct change intent from history\n- [ ] Verify code, config, docs, runtime, dependencies\n- [ ] Identify drift, dead code, stale docs, cleanup risks\n- [ ] Pause for approval before behavior/destructive change\n- [ ] Execute approved remediation with validation\n\nInitializing \u2014 resolving repo root and worktree state."
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_allowed_directories",
+            "input": "{}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"Allowed directories:\\n/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\\n/Users/nick/Desktop/anneal\\n/Users/nick/Desktop/crucible\\n/Users/nick/Desktop/multi-agent-consensus\\n/Users/nick/Desktop/orbit\\n/Users/nick/Desktop/shannon-framework/.v7\\n/Users/nick/De"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "No files found"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"size: 64\\ncreated: Mon Sep 07 2026 17:20:52 GMT-0400 (Eastern Daylight Time)\\nmodified: Mon Sep 07 2026 17:20:52 GMT-0400 (Eastern Daylight Time)\\naccessed: Mon Sep 07 2026 17:20:52 GMT-0400 (Eastern Daylight Time)\\nisDirectory: true\\nisFile: false\\npermissions: 700\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__directory_tree",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"[]\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \".*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "No files found"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"*/.git/HEAD\", \"path\": \"/Users/nick/Desktop\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/.git\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "ENOENT: no such file or directory, stat '/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/.git'"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "Ripgrep search timed out after 20 seconds. The search may have matched files but did not complete in time. Try searching a more specific path or pattern."
+          },
+          {
+            "kind": "text",
+            "text": "Audit cannot start. Two hard blockers.\n\n## Blocker 1 \u2014 target `.` is empty and not a repository\n\nCWD resolves to `/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk`.\n\nEvidence:\n- `directory_tree` \u2192 `[]` (zero entries)\n- `get_file_info` \u2192 `isDirectory: true`, `size: 64` (empty dir inode)\n- `get_file_info` on `.git` \u2192 `ENOENT: no such file or directory`\n- `Glob **/*` and `Glob .*` \u2192 `No files found`\n\nNo tracked files, no working tree, no git metadata. Nothing to audit"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_truth_audit.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "forbid_absent": true
+        },
+        "elapsed_s": 2.3,
+        "cost_usd": 0.001008,
+        "reply": "Unknown command: /proofpunk:truth-audit",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:truth-audit"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_truth_audit.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "verify",
+      "slash": "/proofpunk:verify",
+      "probe": "cmd_slash_verify",
+      "max_honest_level": "playbook-recognition",
+      "reached_level": "playbook-recognition",
+      "note": "playbook: no Activate-skill line, no flags; marker UNVERIFIED",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 5.6,
+        "cost_usd": 0.36535125,
+        "reply": "Quote: Unexecuted checks are UNVERIFIED. There are no flags.\n\nNo runtime started. No tools called.",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Quote: Unexecuted checks are UNVERIFIED. There are no flags.\n\nNo runtime started. No tools called."
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_verify.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 2.9,
+        "cost_usd": 0.001003,
+        "reply": "Unknown command: /proofpunk:verify",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:verify"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_verify.control.log"
+      },
+      "classify": {
+        "level": "playbook-recognition",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded + local plugin; no backing skill/script executed (or Skill not required)"
+      }
+    },
+    {
+      "command": "install",
+      "slash": "/proofpunk:install",
+      "probe": "cmd_slash_install",
+      "max_honest_level": "playbook-recognition",
+      "reached_level": "playbook-recognition",
+      "note": "in-session playbook, NO backing skill or script \u2014 distinct from tools/proofpunk-install.sh; SDK has no Write tool so file-merge execution is unreachable; marker proofpunk:begin",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 50.7,
+        "cost_usd": 3.0055082499999997,
+        "reply": "Skill evaluation:\n- proofpunk:proofpunk \u2014 NO, doctrine already loaded via SessionStart hook\n- All others \u2014 NO, this is a scripted install command with explicit steps\n\nNo skills needed. Executing install.\n\nStep 1 \u2014 Detect:Empty project dir. Reading template:Empty project \u2014 no manifests, no README, no existing memory files. Platform: claude-code (explicit). Rules: skipped (`--no-rules`).\n\nStep 2 \u2014 W",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/proofpunk/**/assets/claude-md-template.md\", \"path\": \"/Users/nick/.claude\"}"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/2.2.0/assets/claude-md-template.md\"}"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "name": "mcp__filesystem__write_file",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\", \"content\": \"<!-- proofpunk:begin -->\\n## Proof contract (proofpunk)\\n\\n- Done means proven by end-"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\"}"
+          },
+          {
+            "name": "Grep",
+            "input": "{\"pattern\": \"proofpunk:(begin|end)\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\", \"output_mode\": \"content\"}"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/proofpunk-loads.jsonl\", \"offset\": 0, \"limit\": 3}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Skill evaluation:\n- proofpunk:proofpunk \u2014 NO, doctrine already loaded via SessionStart hook\n- All others \u2014 NO, this is a scripted install command with explicit steps\n\nNo skills needed. Executing install.\n\nStep 1 \u2014 Detect:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/proofpunk/**/assets/claude-md-template.md\", \"path\": \"/Users/nick/.claude\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/2.2.0/assets/claude-md-template.md"
+          },
+          {
+            "kind": "text",
+            "text": "Empty project dir. Reading template:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/2.2.0/assets/claude-md-template.md\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1\t<!-- proofpunk:begin -->\n2\t## Proof contract (proofpunk)\n3\t\n4\t- Done means proven by end-user testing: drive the real system as the end\n5\t  user, capture run-scoped evidence, cite it by full path. Unexecuted =\n6\t  UNVERIFIED, never PASS.\n7\t- No mocks, stubs, or placeholder implementations. Malform"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "No files found"
+          },
+          {
+            "kind": "text",
+            "text": "Empty project \u2014 no manifests, no README, no existing memory files. Platform: claude-code (explicit). Rules: skipped (`--no-rules`).\n\nStep 2 \u2014 Write memory file:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__write_file",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\", \"content\": \"<!-- proofpunk:begin -->\\n## Proof contract (proofpunk)\\n\\n- Done means proven by end-user testing: drive the real system as the end\\n  user, capture run-scoped evidence, cite it by full"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"Successfully wrote to /private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\"}"
+          },
+          {
+            "kind": "text",
+            "text": "Step 3 \u2014 skipped (`--no-rules`).\n\nStep 4 \u2014 Verify:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1\t<!-- proofpunk:begin -->\n2\t## Proof contract (proofpunk)\n3\t\n4\t- Done means proven by end-user testing: drive the real system as the end\n5\t  user, capture run-scoped evidence, cite it by full path. Unexecuted =\n6\t  UNVERIFIED, never PASS.\n7\t- No mocks, stubs, or placeholder implementations. Malform"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Grep",
+            "input": "{\"pattern\": \"proofpunk:(begin|end)\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk/CLAUDE.md\", \"output_mode\": \"content\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1:<!-- proofpunk:begin -->\n18:<!-- proofpunk:end -->"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/proofpunk-loads.jsonl\", \"offset\": 0, \"limit\": 3}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "0\t{\"ts\": \"2026-08-14T15:18:04.504787+00:00\", \"file_path\": \"/Users/nick/.claude/rules/tui-patterns.md\", \"load_reason\": \"session_start\", \"cwd\": \"/Users/nick/Desktop/yt-transition-shorts-detector\"}\n1\t{\"ts\": \"2026-08-14T15:18:04.506536+00:00\", \"file_path\": \"/Users/nick/.claude/rules/workflow.md\", \"load_"
+          },
+          {
+            "kind": "text",
+            "text": "Load log exists and is populated (entries from prior sessions; this project's entry fires next session).\n\n## Report\n\n| File | Action | Lines |\n|---|---|---|\n| `CLAUDE.md` | created | 19 |\n| `AGENTS.md` | skipped (not the claude-code target) | \u2014 |\n| `.claude/rules/*.md` | skipped (`--no-rules`) | \u2014 |\n\nVerification output (via Read/Grep \u2014 `wc`/`grep` shell equivalents):\n- `CLAUDE.md` \u2192 19 lines\n- marker count \u2192 `proofpunk:begin` at line 1, `proofpunk:end` at line 18 (1 each)\n- `~/.claude/proofpunk"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_install.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 2.4,
+        "cost_usd": 0.000978,
+        "reply": "Unknown command: /proofpunk:install",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:install"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_install.control.log"
+      },
+      "classify": {
+        "level": "playbook-recognition",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded + local plugin; no backing skill/script executed (or Skill not required)"
+      }
+    }
+  ]
+}

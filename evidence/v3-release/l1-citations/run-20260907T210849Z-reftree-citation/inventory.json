@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "count": 4,
+  "artifacts": [
+    {
+      "name": "step-01-before.log",
+      "bytes": 9117,
+      "sha256": "c0253d094fe79733ec536cb344bcea6ebce37b8b8c20a58be24df906922bd201"
+    },
+    {
+      "name": "step-01-before.rc",
+      "bytes": 2,
+      "sha256": "10159baf262b43a92d95db59dae1f72c645127301661e0a3ce4e38b295a97c58"
+    },
+    {
+      "name": "step-02-after.log",
+      "bytes": 2799,
+      "sha256": "0b513f84689890346e00455da0878bd7fe778ebcbd291e5ecec973f9551b9d52"
+    },
+    {
+      "name": "step-02-after.rc",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "total_bytes": 11920
+}

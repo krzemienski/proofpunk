@@ -55,7 +55,8 @@ Shared references (loaded on demand by the skills):
 `references/ios-validation.md`, `references/web-validation.md`,
 `references/ci-gates.md`, `references/severity-model.md`,
 `references/ios-hig-checklist.md`, `references/web-wcag-checklist.md`,
-`references/defect-pattern-database.md`.
+`references/defect-pattern-database.md`,
+`references/run-trace-schema.md`.
 
 Helper script: `skills/end-user-testing/scripts/fresh_evidence.py`
 (`init-run` / `next-step` / `seal` / `validate`; Python 3.8+, stdlib only).

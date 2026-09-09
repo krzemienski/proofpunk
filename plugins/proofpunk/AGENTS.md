@@ -27,8 +27,8 @@ The shippable plugin unit: 18 skills, 6 commands, 9 enforcement hook scripts (11
 | `skills/` | 18 skill dirs, each with `SKILL.md`; `../../references/X` citations are deliberate — the installer rewrites them to self-contained copies. `proofpunk/` is the router head — it calls all 17 others and is called by none |
 | `commands/` | 6 slash commands: verify, forge-prompt, implement, install, truth-audit, rate-prompt |
 | `hooks/` | 9 hook scripts (stop-guard, evidence-guard, capture-guard, no-test-files, post-write-walkthrough, session-start, instructions-loaded, bash-write-notice, bash-write-snapshot) + `hooks.json`, which wires them into 7 event keys (SessionStart, Stop, SubagentStop, PreToolUse, InstructionsLoaded, PostToolUse, PostToolUseFailure) via 11 registrations |
-| `agents/` | 3 Claude Code subagents: end-user-validate, implement, scout |
-| `references/` | 13 shared doctrine files covering validation (api/cli/ios/web), CI gates, evidence contract, end-user actor rules, iOS HIG and WCAG checklists, platform routing, preflight checks, severity model, and defect patterns; cited as `../../references/X` and rewritten to self-contained copies at install time (scoped rule files live in `assets/rules/`) |
+| `agents/` | 3 Claude Code subagents: end-user-validate, implement, scout. OpenCode adds a 4th (`opencode/agents/proofpunk.md`, the router). OMP mirrors the Claude Code 3 (`omp/agents/`). |
+| `references/` | 14 shared doctrine files covering validation (api/cli/ios/web), CI gates, evidence contract, end-user actor rules, iOS HIG and WCAG checklists, platform routing, preflight checks, severity model, defect patterns, and the run-trace schema; cited as `../../references/X` and rewritten to self-contained copies at install time (scoped rule files live in `assets/rules/`) |
 | `assets/` | `claude-md-template.md` + `agents-md-template.md` (used by `/proofpunk:install`) and `rules/` scoped rule files |
 | `themes/` | `palettes.json` canonical source + rendered `omp/`, `opencode/`, `hyper/` formats (generated — never hand-edit) |
 | `opencode/` | OpenCode commands, plugin glue, agents |
@@ -47,7 +47,7 @@ The shippable plugin unit: 18 skills, 6 commands, 9 enforcement hook scripts (11
 
 ### Testing Requirements
 
-- Full trio from repo root (`tools/test-hooks.sh`, `tools/dry-run-install.sh`, `tools/verify-orchestration.py`), captures under `evidence/<release>/`, before claiming any change here done.
+- Full trio from repo root (`tools/test-hooks.sh`, `tools/dry-run-install.sh`, `tools/verify-orchestration.py`) plus `python3 tools/verify-counts.py` (Class-2 live-count detector), captures under `evidence/<release>/`, before claiming any change here done.
 
 ### Common Patterns
 

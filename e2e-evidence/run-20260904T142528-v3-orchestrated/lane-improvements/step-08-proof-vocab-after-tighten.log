@@ -1,0 +1,6 @@
+files=21
+uncited=3
+VERDICT: FAIL
+  .planning/plugin-improvement-criteria.md:26: uncited status word: | P8 | Each implemented improvement is individually proven | drive the real behavior it changed | per-item PASS with artifact citation |
+  docs/hook-enforcement-map.md:244: uncited status word: | `doctrine` | 0 | true | Reply starts `Proofpunk is installed. Doctrine: execution logic`. SessionStart stdout contains the same additionalContext. **PASS live
+  docs/hook-enforcement-map.md:245: uncited status word: | `instructions_loaded` | 0 | true | `loads_appended` + `loads_this_run`; 62 new JSONL lines, first cwd is this run's probe-cwd. **PASS live** for the tap. Note

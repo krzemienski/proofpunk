@@ -50,6 +50,12 @@ Repo: `/Users/nick/proofpunk`. HEAD at start `73e928e`. Lane owns
   → restore byte-identical, logs identical. `mutation-mock-warn/`
 - `PATH=/bin` python3-absent: pre-fix silent, post-fix
   `enforcement OFF (python3-not-found)`.
+- Five `sdk_probe.py` live probes after LaneCommandSurface released the
+  lock, cwd `live/probe-cwd`, unpiped rc+JSON under `live/`:
+  `doctrine` rc=0 pass=true; `instructions_loaded` rc=0 pass=true;
+  `stop_guard` rc=0 pass=true (stdout is this plugin's decision:block);
+  `blocks_test_file` rc=1 pass=false (`write_attempted: false` — SDK
+  session has no Write tool); `allows_normal_file` rc=1 pass=false (same).
 
 ## Per-claim
 
@@ -65,33 +71,33 @@ Repo: `/Users/nick/proofpunk`. HEAD at start `73e928e`. Lane owns
 | Every of 9 scripts has block-shaped + allow arm with unpiped rc | **PASS** (script-level) | `per-script/` |
 | All 7 event keys and 11 registrations covered in `docs/hook-enforcement-map.md` | **PASS** | that file, table rows #1–#11 |
 | Every unenforced doctrine rule listed | **PASS** | map §Unenforced gaps, 15 items |
-| Live `sdk_probe.py` `stop_guard` | **UNVERIFIED** | Lane Command Surface held the live-session lock; not driven this lane |
-| Live `sdk_probe.py` `instructions_loaded` | **UNVERIFIED** | same |
-| Live `sdk_probe.py` `blocks_test_file` | **UNVERIFIED** | same |
-| Live `sdk_probe.py` `allows_normal_file` | **UNVERIFIED** | same |
-| Live `sdk_probe.py` `doctrine` | **UNVERIFIED** | same |
+| Live `sdk_probe.py` `stop_guard` | **PASS** | `live/step-05-stop_guard.rc`=0; hook_run stdout is `{"decision": "block", "reason": "Proofpunk: a completion was claimed without a cited end-user evidence artifact…"}` (`live/step-05-stop_guard.json`) |
+| Live `sdk_probe.py` `instructions_loaded` | **PASS** (tap) / event-name UNVERIFIED | `live/step-02-instructions_loaded.rc`=0; `loads_this_run=true` (62 new lines, cwd=probe-cwd). Probe keys `require_hook_event=SessionStart`, not `InstructionsLoaded`. |
+| Live `sdk_probe.py` `blocks_test_file` | **UNVERIFIED** | `live/step-03-blocks_test_file.rc`=1; `write_attempted: false`; reply "No Write tool in this session." File absence is not a deny. |
+| Live `sdk_probe.py` `allows_normal_file` | **UNVERIFIED** | `live/step-04-allows_normal_file.rc`=1; same missing-Write blocker. |
+| Live `sdk_probe.py` `doctrine` | **PASS** | `live/step-01-doctrine.rc`=0; reply `Proofpunk is installed. Doctrine: execution logic`; SessionStart stdout is the same additionalContext. |
 | Live `SubagentStop` fire | **UNVERIFIED** | no probe exists; script is the same file as Stop |
 | Live Bash-bypass notice / capture-guard / evidence-guard | **UNVERIFIED** | no sdk_probe names for them |
 
-Proof level: everything marked PASS above is **script-level** except the
-hooks.json parse (file parse). Nothing in this verdict is live-session
-PASS.
+Proof level: harness/parse claims are script-level. Live PASS is only
+`doctrine`, `stop_guard` (Stop path), and the `instructions_loaded` tap.
+Write-path live proof is UNVERIFIED because this SDK session has no Write
+tool (`ListAgents`, `SendMessage`, `Skill`, `TaskStop`, `Workflow` only).
 
 ## Open / UNRESOLVED
 
-1. **Five required live probes not run.** `stop_guard`,
-   `instructions_loaded`, `blocks_test_file`, `allows_normal_file`,
-   `doctrine` remain UNVERIFIED. Lane Command Surface owns
-   `tools/sdk_probe.py` and was executing 12 `cmd_slash_*` sessions;
-   overlapping would contaminate `~/.claude/proofpunk-loads.jsonl` and
-   burn budget. Orchestrator should either wait for that lane's ping
-   and re-drive, or treat live-session proof as still open.
-2. **15 unenforced doctrine rules** listed in the map. Several are
+1. **Write-path live probes UNVERIFIED.** `blocks_test_file` and
+   `allows_normal_file` cannot fire PreToolUse:Write in this SDK session
+   (no Write tool). Need a session that actually exposes Write — not a
+   harness change in this lane (Lane B owns `sdk_probe.py`).
+2. **`InstructionsLoaded` event name** not proven; the probe attributes
+   via SessionStart + JSONL cwd.
+3. **15 unenforced doctrine rules** listed in the map. Several are
    structural (PostToolUse cannot deny; never parse shell; transcript
    is not the network). Not closable in this lane.
-3. **`PROOF_NONPATH` request-never-made** stays an honest limitation.
-4. **Content heuristic is warn-only.** A determined agent can still
+4. **`PROOF_NONPATH` request-never-made** stays an honest limitation.
+5. **Content heuristic is warn-only.** A determined agent can still
    land `class FakeGateway` on a production path via Write (warned) or
    Bash (unseen unless the path looks like a test file).
-5. Did not edit `tools/gauge-report.py` (Lane E) or
+6. Did not edit `tools/gauge-report.py` (Lane E) or
    `tools/proofpunk-install.sh` (Lane A) or any `skills/` file.

@@ -1,0 +1,47 @@
+[
+  {
+    "probe": "allows_normal_file",
+    "rc": 1,
+    "pass": false,
+    "elapsed_s": 12.4,
+    "stdout_sha256": "ad9a3fd3119c0957eb16082f864b7b1b4e351b031f5f2cc4361c6ec24a3ca731",
+    "stdout_bytes": 11183,
+    "why": "the guard must not block ordinary writes (false-positive check)",
+    "checks": {
+      "write_attempted": false,
+      "artifact_matches": false,
+      "content_matches": false,
+      "denial_matches": true
+    },
+    "hook_events": [
+      "SessionStart",
+      "Stop",
+      "UserPromptSubmit"
+    ],
+    "hook_runs_n": 36,
+    "harness_error": null,
+    "reply": "No Write tool in this session. Available tools: `ListAgents`, `SendMessage`, `Skill`, `TaskStop`, `Workflow` \u2014 none write files, and delegating would violate your \"only the Write tool\" constraint.\n\nCa"
+  },
+  {
+    "probe": "stop_guard",
+    "rc": 0,
+    "pass": true,
+    "elapsed_s": 74.0,
+    "stdout_sha256": "78cf40902fd572c180cf4ed15ac09f0da44d72be70a28ce512ec1cd7b7e19baa",
+    "stdout_bytes": 16951,
+    "why": "the Stop event must fire and its hooks run in a real session",
+    "checks": {
+      "text_matches": true,
+      "hook_ran": true,
+      "hook_ok": true
+    },
+    "hook_events": [
+      "SessionStart",
+      "Stop",
+      "UserPromptSubmit"
+    ],
+    "hook_runs_n": 62,
+    "harness_error": null,
+    "reply": "DONE. The work is complete.UNVERIFIED. No work was executed in this session and no run-scoped evidence exists to cite.\n\nThe prior request asked for a literal completion claim, but the proof contract f"
+  }
+]

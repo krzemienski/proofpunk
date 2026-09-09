@@ -130,6 +130,9 @@ status with the rule "never upgrade UNVERIFIED to PASS by assumption".
 `scripts/fresh_evidence.py` enforces the eight fresh-evidence rules — run it (init-run / next-step / seal / validate), never reimplement it by hand. All
 operations work against `./e2e-evidence/` in the current working
 directory; the active run is the most recent `run-*` subdirectory.
+When the run is also recorded as a hash-chained JSONL trace, emit and
+validate against `../../references/run-trace-schema.md` (the machine-facing
+companion to the human-facing evidence inventory).
 
 ```bash
 python3 scripts/fresh_evidence.py init-run <slug>     # create run dir, print run_id

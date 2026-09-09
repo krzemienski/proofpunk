@@ -1,0 +1,6 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-phase4-reviewer-verdicts-raw-ReviewProbeDesign.json 9999 cfac6b93b5af64ee7cee8d5d30392ae8493dd03adf6494c131a73d281eef2c4e
+step-02-phase4-reviewer-verdicts-raw-RedTeamEffectProbe.json 2099 0c118bfaf5b9fa35f1a4b401ed6e5c404250367436d5f08f2ff6b58c4ece1613
+step-03-phase4-reviewer-verdicts-raw-HardenProposalPlan.json 5514 0a1dacc03e1c38632a876eeef8bf61ddc325c95a5d3802926cb605b96ee0d859
+step-04-phase4-reviewer-verdicts-raw-ReviewSequencing.json 15818 fe6c84915f6ff8cefba127cbfaa1a7521b2a56f2478dac899bb6a81bb9af6240
+sealed=2026-09-07T23:26:15Z count=4 total_bytes=33430

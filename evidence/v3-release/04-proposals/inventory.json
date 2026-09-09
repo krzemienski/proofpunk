@@ -1,0 +1,30 @@
+{
+  "inventory_version": 2,
+  "count": 4,
+  "artifacts": [
+    {
+      "path": "evidence/v3-release/04-proposals/reviewers/ReviewProbeDesign.md",
+      "sha256": "68956fe70b31dce00d591a083eaa05692bf7008641afa26e71a7a4e838a0d479",
+      "bytes": 10007,
+      "verdict": "ADOPT-WITH-CHANGES"
+    },
+    {
+      "path": "evidence/v3-release/04-proposals/reviewers/RedTeamEffectProbe.md",
+      "sha256": "c6f7508b70b75bcf542262edd4e75f73e5465f6730240531c43b8bc4257e8b21",
+      "bytes": 2129,
+      "verdict": "ADOPT-WITH-CHANGES"
+    },
+    {
+      "path": "evidence/v3-release/04-proposals/reviewers/HardenProposalPlan.md",
+      "sha256": "cda13b577a0f906758c8e07b2cf15f2fc309a3f06d32abd24a0c82ccf2bfafb6",
+      "bytes": 5562,
+      "verdict": "ADOPT-WITH-CHANGES"
+    },
+    {
+      "path": "evidence/v3-release/04-proposals/reviewers/ReviewSequencing.md",
+      "sha256": "cefbf7cb57b68abf27521cd6b862215c552889c65a209fc9fff729a23a8ae18e",
+      "bytes": 15826,
+      "verdict": "REJECT"
+    }
+  ]
+}

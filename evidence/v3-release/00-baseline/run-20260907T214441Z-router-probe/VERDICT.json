@@ -1,0 +1,19 @@
+{
+  "probe": "router",
+  "plugin_rc": 0,
+  "control_rc": 1,
+  "verdict": "PASS \u2014 discriminating",
+  "plugin_arm": {
+    "plugin_loaded": true,
+    "tools_used": [
+      "Skill"
+    ],
+    "observed": "Real Skill tool call; model quoted the router's first Skill-calls row verbatim: | `brainstorm` | idea unclear, options untested, no plan exists yet | the raw ask, unfiltered |"
+  },
+  "control_arm": {
+    "plugin_loaded": false,
+    "observed": "Model reports no skill named 'proofpunk' in the available skills list; rc=1."
+  },
+  "why_non_vacuous": "Load criterion is an observed Skill tool call plus successful result, not text matching. Control arm fails, so the probe can fail.",
+  "note": "Proves the plugin's router skill loads and routes on this host. Does NOT prove 9router subagent model routing \u2014 no subagent was spawned; that remains UNVERIFIED."
+}

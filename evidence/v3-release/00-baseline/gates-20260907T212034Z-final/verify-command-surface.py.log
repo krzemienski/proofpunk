@@ -1,0 +1,14 @@
+== /proofpunk:implement plugin arm
+== /proofpunk:implement --no-plugin control
+== /proofpunk:forge-prompt plugin arm
+== /proofpunk:forge-prompt --no-plugin control
+== /proofpunk:rate-prompt plugin arm
+== /proofpunk:rate-prompt --no-plugin control
+== /proofpunk:truth-audit plugin arm
+== /proofpunk:truth-audit --no-plugin control
+== /proofpunk:verify plugin arm
+== /proofpunk:verify --no-plugin control
+== /proofpunk:install plugin arm
+== /proofpunk:install --no-plugin control
+ARTIFACT evidence/v3-release/l16-commands/command-surface-proof.json sha256:8233e98327fe37c9440c7f69cbfd35db6d091680607c35273842cb24aba9fd0c
+full_chain=4/6 plugin_pass=6/6 control_fail=6/6 honest_max=6/6

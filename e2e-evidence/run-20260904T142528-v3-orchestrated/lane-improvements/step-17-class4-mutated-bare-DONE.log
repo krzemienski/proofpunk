@@ -1,0 +1,4 @@
+files=21
+uncited=1
+VERDICT: FAIL
+  tools/AGENTS.md:57: uncited status word: STATUS: DONE

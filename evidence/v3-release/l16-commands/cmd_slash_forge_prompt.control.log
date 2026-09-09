@@ -1,9 +1,8 @@
-⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
 {
   "probe": "cmd_slash_forge_prompt",
   "why": "slash /proofpunk:forge-prompt must expand and activate prompt-forge AUTHOR",
   "plugin_loaded": false,
-  "elapsed_s": 0.8,
+  "elapsed_s": 2.9,
   "reply": "Unknown command: /proofpunk:forge-prompt",
   "hook_events": [],
   "tools_used": [],
@@ -12,7 +11,7 @@
   "result": {
     "is_error": false,
     "num_turns": 0,
-    "cost_usd": 0
+    "cost_usd": 0.001
   },
   "transcript": [
     {
@@ -27,13 +26,14 @@
   ],
   "init_slash_proofpunk": [],
   "local_plugin_loaded": false,
-  "prompt": "/proofpunk:forge-prompt \"surface-probe only \u2014 STOP after the skill loads. Quote AUTHOR mode and the --depth flag. Do not write a prompt file.\"",
+  "prompt": "/proofpunk:forge-prompt \"surface-probe only \u2014 STOP after the skill loads. Quote AUTHOR mode and the --depth flag. Do not write a prompt file or call Workflow.\"",
   "checks": {
     "text_matches": false,
     "tool_invoked": false,
     "tool_arg_matches": false,
     "tool_succeeded": false,
     "slash_registered": false,
+    "slash_expanded": false,
     "local_plugin_loaded": false
   },
   "expect_text": "--depth",

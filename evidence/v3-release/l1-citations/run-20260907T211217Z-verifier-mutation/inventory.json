@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "count": 6,
+  "artifacts": [
+    {
+      "name": "step-01-clean.log",
+      "bytes": 644,
+      "sha256": "22f345cc9a4dcc5bc150e2af0d436179be26606cf034d1c4adb9dd1081ba3912"
+    },
+    {
+      "name": "step-01-clean.rc",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "name": "step-02-mutated.log",
+      "bytes": 715,
+      "sha256": "0b3b373215dc8e765fbcd2cd830537e233973782a088514f7915203dbc45a982"
+    },
+    {
+      "name": "step-02-mutated.rc",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "name": "step-03-restored.log",
+      "bytes": 644,
+      "sha256": "22f345cc9a4dcc5bc150e2af0d436179be26606cf034d1c4adb9dd1081ba3912"
+    },
+    {
+      "name": "step-03-restored.rc",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "total_bytes": 2009
+}

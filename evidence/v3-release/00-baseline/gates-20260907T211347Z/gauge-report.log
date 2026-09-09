@@ -1,0 +1,14 @@
+gauge-report: 6/9 gauges PASS
+  wrote gauge-report.md
+  wrote gauge-report.json
+  [PASS] #1 (L12) Skills passing spec basics (name/desc/fields): 18/18
+  [PASS] #7 (L10) Skills with description+when_to_use under Claude Code's 1,536-char per-skill listing cap: 18/18 (max 978/1536, implement)
+  [UNMEASURED] #9 (L10) Aggregate description+when_to_use chars (listing-pressure trend, not a fixed budget): 13955 chars
+  [UNMEASURED] #8 (L10) Median skill body size (context-economy proxy): 6186 bytes
+  [PASS] #2 (L4) stop-guard scout-substring false-PASS closed, mutation-proven: baseline=48 mutated=47 restored=48 byte_identical=True
+  [PASS] #3 (L1) Unresolved repo-tree citations (name/desc/fields resolve relative to citing file): 0 unresolved (top-level: 0)
+  [UNMET] #4 (L16) Commands proven end-to-end at the real slash-command surface: 4/6
+  [PASS] #5 (L2/L3) Release gates: all exit 0, exit codes captured separately from stdout: test-hooks.sh=0, test-installer.sh=0, dry-run-install.sh=0, verify-orchestration.py=0
+  [PASS] #6 (L14) Skill count (ground truth, derived not restated): 18
+  (2 gauge(s) UNMEASURED, excluded from the gate: #9, #8)
+VERDICT: FAIL — 1 gauge(s) block release: #4 UNMET

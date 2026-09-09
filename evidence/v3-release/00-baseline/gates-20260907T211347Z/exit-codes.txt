@@ -1,0 +1,12 @@
+test-hooks.sh rc=0
+test-installer.sh rc=0
+dry-run-install.sh rc=0
+verify-orchestration.py rc=0
+verify-citations.py rc=0
+verify-counts.py rc=0
+verify-command-surface.py rc=0
+verify-router-links.py rc=0
+verify-proof-vocab.py rc=0
+verify-shipped-vs-active.py rc=0
+verify-harness-integrity.py rc=3
+gauge-report.py rc=1

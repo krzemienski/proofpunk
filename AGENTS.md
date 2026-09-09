@@ -40,7 +40,7 @@ Execution-first delivery plugin for Claude Code, oh-my-pi (OMP), and OpenCode: 1
 
 ### Testing Requirements
 
-- Skills/hooks/installer changes: `bash tools/test-hooks.sh`, `bash tools/dry-run-install.sh`, `python3 tools/verify-orchestration.py`, capture under `evidence/<release>/`.
+- Skills/hooks/installer changes: `bash tools/test-hooks.sh`, `bash tools/dry-run-install.sh`, `python3 tools/verify-orchestration.py`, `python3 tools/verify-counts.py`, capture under `evidence/<release>/`.
 - Theme changes: `python3 tools/generate-themes.py` then confirm deterministic output.
 
 ### Common Patterns

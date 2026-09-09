@@ -3,8 +3,8 @@
   "probe": "cmd_slash_implement",
   "why": "slash /proofpunk:implement must expand, activate implement, and surface its flags",
   "plugin_loaded": true,
-  "elapsed_s": 24.8,
-  "reply": "Step 1 \u2014 skill evaluation:\n- `proofpunk:implement` \u2014 YES \u2014 explicitly requested by the user.\n- Other listed skills (`ak:scout`, `ak:cook`, etc.) \u2014 NO \u2014 task is a surface probe, no scouting or implementation.\n\nStep 2 \u2014 activate:Skill loaded read-only (coordinator mode) \u2014 the tool returned a notice, not the skill body. So I can quote only what actually surfaced in context, not fabricate flag semanti",
+  "elapsed_s": 12.7,
+  "reply": "I'll load the skill as instructed.Skill loaded. Halting per surface-probe instruction.\n\n**Skill heading:** `proofpunk:implement` \u2014 \"Implement a goal end to end with the Proofpunk orchestrator\"\n\n**Four flags:**\n- `--parallel`\n- `--auto`\n- `--mine`\n- `--fast`\n\nNo scouting, editing, implementation, or Workflow call performed.",
   "hook_events": [
     "PostToolUse",
     "PreToolUse",
@@ -29,14 +29,14 @@
       "name": "SessionStart:startup",
       "exit_code": 0,
       "outcome": "success",
-      "stdout": ""
+      "stdout": "{\n  \"hookSpecificOutput\": {\n    \"hookEventName\": \"SessionStart\",\n    \"additionalContext\": \"Proofpunk is installed. Doctrine: execution logic over gate logic \u2014 decompose into tasks and execute each to completion; end-user testing is the only PASS (unexecuted checks are UNVERIFIED); no mocks or stubs;"
     },
     {
       "event": "SessionStart",
       "name": "SessionStart:startup",
       "exit_code": 0,
       "outcome": "success",
-      "stdout": "{\n  \"hookSpecificOutput\": {\n    \"hookEventName\": \"SessionStart\",\n    \"additionalContext\": \"Proofpunk is installed. Doctrine: execution logic over gate logic \u2014 decompose into tasks and execute each to completion; end-user testing is the only PASS (unexecuted checks are UNVERIFIED); no mocks or stubs;"
+      "stdout": ""
     },
     {
       "event": "SessionStart",
@@ -113,6 +113,13 @@
       "name": "UserPromptSubmit",
       "exit_code": 0,
       "outcome": "success",
+      "stdout": ""
+    },
+    {
+      "event": "UserPromptSubmit",
+      "name": "UserPromptSubmit",
+      "exit_code": 0,
+      "outcome": "success",
       "stdout": "INSTRUCTION: MANDATORY SKILL ACTIVATION SEQUENCE\n\nStep 1 - EVALUATE (do this in your response):\nFor each skill in <available_skills>, state: [skill-name] - YES/NO - [reason]\n\nStep 2 - ACTIVATE (do this immediately after Step 1):\nIF any skills are YES \u2192 Use Skill(skill-name) tool for EACH relevant sk"
     },
     {
@@ -127,7 +134,7 @@
       "name": "UserPromptSubmit",
       "exit_code": 0,
       "outcome": "success",
-      "stdout": ""
+      "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"UserPromptSubmit\", \"additionalContext\": \"/proofpunk:implement \\\"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, implement, or call Workflow.\\\"\"}}\n"
     },
     {
       "event": "UserPromptSubmit",
@@ -135,13 +142,6 @@
       "exit_code": 0,
       "outcome": "success",
       "stdout": ""
-    },
-    {
-      "event": "UserPromptSubmit",
-      "name": "UserPromptSubmit",
-      "exit_code": 0,
-      "outcome": "success",
-      "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"UserPromptSubmit\", \"additionalContext\": \"/proofpunk:implement \\\"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, or implement.\\\"\"}}\n"
     },
     {
       "event": "UserPromptSubmit",
@@ -190,7 +190,7 @@
       "name": "UserPromptSubmit",
       "exit_code": 0,
       "outcome": "success",
-      "stdout": "## Session\n- DateTime: 9/4/2026, 11:01:42 AM\n- CWD: \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-00g4j1u8\"\n- Timezone: \"America/New_York\"\n- Working directory: \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-00g4j1u8\"\n- OS: \"darwin\"\n- User: \"nick\"\n- "
+      "stdout": "## Session\n- DateTime: 9/7/2026, 5:20:55 PM\n- CWD: \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"\n- Timezone: \"America/New_York\"\n- Working directory: \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-fy45_8rk\"\n- OS: \"darwin\"\n- User: \"nick\"\n- L"
     },
     {
       "event": "PreToolUse",
@@ -233,27 +233,6 @@
       "exit_code": 0,
       "outcome": "success",
       "stdout": ""
-    },
-    {
-      "event": "PostToolUse",
-      "name": "PostToolUse:Skill",
-      "exit_code": 0,
-      "outcome": "success",
-      "stdout": "{\"continue\":true,\"suppressOutput\":true}\n"
-    },
-    {
-      "event": "PostToolUse",
-      "name": "PostToolUse:Skill",
-      "exit_code": 0,
-      "outcome": "success",
-      "stdout": "{\"continue\":true,\"suppressOutput\":true}\n"
-    },
-    {
-      "event": "PostToolUse",
-      "name": "PostToolUse:Skill",
-      "exit_code": 0,
-      "outcome": "success",
-      "stdout": "{\n  \"continue\": true,\n  \"suppressOutput\": true\n}\n"
     },
     {
       "event": "PostToolUse",
@@ -261,6 +240,34 @@
       "exit_code": 0,
       "outcome": "success",
       "stdout": "{\"continue\":true}\n"
+    },
+    {
+      "event": "PostToolUse",
+      "name": "PostToolUse:Skill",
+      "exit_code": 0,
+      "outcome": "success",
+      "stdout": "{\"continue\":true}\n"
+    },
+    {
+      "event": "PostToolUse",
+      "name": "PostToolUse:Skill",
+      "exit_code": 0,
+      "outcome": "success",
+      "stdout": "{\n  \"continue\": true\n}\n"
+    },
+    {
+      "event": "PostToolUse",
+      "name": "PostToolUse:Skill",
+      "exit_code": 0,
+      "outcome": "success",
+      "stdout": "{\"continue\":true}\n"
+    },
+    {
+      "event": "Stop",
+      "name": "Stop",
+      "exit_code": 0,
+      "outcome": "success",
+      "stdout": ""
     },
     {
       "event": "Stop",
@@ -344,26 +351,19 @@
       "name": "Stop",
       "exit_code": 0,
       "outcome": "success",
-      "stdout": ""
-    },
-    {
-      "event": "Stop",
-      "name": "Stop",
-      "exit_code": 0,
-      "outcome": "success",
       "stdout": "{\"continue\":true}\n"
     }
   ],
   "tool_calls": [
     {
       "name": "Skill",
-      "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, or imple"
+      "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, implemen"
     }
   ],
   "result": {
     "is_error": false,
-    "num_turns": 3,
-    "cost_usd": 0.601784
+    "num_turns": 4,
+    "cost_usd": 0.74644375
   },
   "transcript": [
     {
@@ -397,21 +397,21 @@
     },
     {
       "kind": "text",
-      "text": "Step 1 \u2014 skill evaluation:\n- `proofpunk:implement` \u2014 YES \u2014 explicitly requested by the user.\n- Other listed skills (`ak:scout`, `ak:cook`, etc.) \u2014 NO \u2014 task is a surface probe, no scouting or implementation.\n\nStep 2 \u2014 activate:"
+      "text": "I'll load the skill as instructed."
     },
     {
       "kind": "tool_use",
       "name": "Skill",
-      "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, or implement.\"}"
+      "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, implement, or call Workflow.\"}"
     },
     {
       "kind": "tool_result",
       "is_error": null,
-      "content": "Loaded skill instructions (read-only): proofpunk:implement. Nothing was executed; delegate execution to a worker."
+      "content": "Launching skill: proofpunk:implement"
     },
     {
       "kind": "text",
-      "text": "Skill loaded read-only (coordinator mode) \u2014 the tool returned a notice, not the skill body. So I can quote only what actually surfaced in context, not fabricate flag semantics.\n\n**Heading / description (from the command surface):**\n> `proofpunk:implement` \u2014 \"Implement a goal end to end with the Proofpunk orchestrator\"\n\n**Flags:**\n\n| Flag | Surfaced? | Evidence |\n|---|---|---|\n| `--parallel` | yes | `--mine --parallel --auto`; \"fans scouts/plan-stages/build-lanes out with executable lane contract"
+      "text": "Skill loaded. Halting per surface-probe instruction.\n\n**Skill heading:** `proofpunk:implement` \u2014 \"Implement a goal end to end with the Proofpunk orchestrator\"\n\n**Four flags:**\n- `--parallel`\n- `--auto`\n- `--mine`\n- `--fast`\n\nNo scouting, editing, implementation, or Workflow call performed."
     }
   ],
   "init_slash_proofpunk": [
@@ -440,13 +440,14 @@
     "proofpunk:visual-inspection"
   ],
   "local_plugin_loaded": true,
-  "prompt": "/proofpunk:implement \"surface-probe only \u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, or implement.\"",
+  "prompt": "/proofpunk:implement \"surface-probe only \u2014 STOP after the skill loads. Quote the skill heading and the four flags --parallel --auto --mine --fast. Do not scout, edit, implement, or call Workflow.\"",
   "checks": {
     "text_matches": true,
     "tool_invoked": true,
     "tool_arg_matches": true,
     "tool_succeeded": true,
     "slash_registered": true,
+    "slash_expanded": true,
     "local_plugin_loaded": true
   },
   "expect_text": "--parallel",

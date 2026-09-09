@@ -266,7 +266,7 @@ Required non-null: `artifact`.
 
 `decision` for this event type is a bare string, one of `PASS`, `FAIL`,
 `BLOCKED`, `UNVERIFIED` — the same four-state vocabulary the rest of
-Proofpunk uses (`references/severity-model.md`). `stage` conventionally
+Proofpunk uses (`severity-model.md`). `stage` conventionally
 carries the dotted path matching how the ledger names the same claim
 (`gates.<name>` for release gates, `criteria.<ID>` for numbered
 criteria) — `reconcile` depends on this convention to match trace

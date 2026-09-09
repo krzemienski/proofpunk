@@ -17,6 +17,10 @@ Build, install, and verification toolchain for proofpunk: the multi-platform ins
 | `test-installer.sh` | Real harness for `proofpunk-install.sh`: runs the installer against scratch source/target dirs and asserts exit codes + on-disk state for the happy path, collision default, `--override`, `--only`, `--dry-run`, malformed-skill (no frontmatter) detection, and `--hooks` registration (every hook both copied AND present in `settings.json`, plus idempotent re-runs); a successful run ends with `INSTALLER TEST FAILS: 0` — run before any installer change |
 | `verify-orchestration.py` | Verifies skill orchestration graph (18 skills green, `proofpunk` router as sole root) — run before any skills change |
 | `INSTALL.md` | Authoritative installer usage: every flag, what an install produces, why self-contained copies exist |
+| `verify-mutation-artifact.py` | Class 1: every tools/ harness and hooks/*.sh has a linked mutation-test artifact under e2e-evidence/ or evidence/ |
+| `verify-shipped-vs-active.py` | Class 3: hooks/skills/shared-refs/commands/CI wiring — shipped set equals the set that actually consumes it |
+| `verify-proof-vocab.py` | Class 4: living-doc DONE/FIXED/RESOLVED/PASS/PROVEN/VERIFIED sits next to a path citation or proof-level token |
+| `verify-counts.py` | Class 2: live-tree counts vs .md prose; skips historical provenance |
 | `build-site.py` | Generates `docs/*.html` (reads markdown sources; pre-renders mermaid via mmdc when present). Edit page sources here, not the HTML |
 | `generate-themes.py` | Renders `plugins/proofpunk/themes/palettes.json` → `themes/{omp,opencode,hyper}/`. Deterministic; hand-edits to rendered files are overwritten |
 

@@ -1,0 +1,6 @@
+byte-identical=True
+pre=4aed63da0a5221da3bd726d44d8424d8752ff860a8d3cbd2017b45aed454d4e3
+now=4aed63da0a5221da3bd726d44d8424d8752ff860a8d3cbd2017b45aed454d4e3
+mut.rc=1
+restored.rc=0
+named=True

@@ -96,5 +96,6 @@ resolve both in this repo and in an installed tree.
 | `../../references/ci-gates.md` | regression posture in CI |
 | `../../references/web-wcag-checklist.md` | accessibility criteria |
 | `../../references/ios-hig-checklist.md` | iOS interface criteria |
+| `../../references/run-trace-schema.md` | machine-facing run-trace record shape (`tools/trace.py`) |
 
 Called by: nothing — the entry point for the whole plugin.

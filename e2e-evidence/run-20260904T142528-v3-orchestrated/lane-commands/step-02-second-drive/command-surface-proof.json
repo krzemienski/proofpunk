@@ -1,0 +1,903 @@
+{
+  "measured_at": "2026-09-04T15:34:08Z",
+  "harness": "tools/sdk_probe.py + tools/verify-command-surface.py",
+  "levels": {
+    "a": "script-level (not this harness)",
+    "b": "skill-load via Skill tool by name (cmd_truth_audit_flags / cmd_rate_prompt_flag)",
+    "c": "slash typed -> registered -> mapped skill ran -> marker observed",
+    "playbook-recognition": "slash registered + command-doc marker; no skill/script"
+  },
+  "full_chain": "4/6",
+  "plugin_pass": "6/6",
+  "control_fail": "6/6",
+  "honest_max_reached": "6/6",
+  "install_cannot_reach_c": true,
+  "install_reason": "in-session playbook, NO backing skill or script \u2014 distinct from tools/proofpunk-install.sh; SDK has no Write tool so file-merge execution is unreachable; marker proofpunk:begin",
+  "commands": [
+    {
+      "command": "implement",
+      "slash": "/proofpunk:implement",
+      "probe": "cmd_slash_implement",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates implement; flags --parallel --auto --mine --fast",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 22.9,
+        "cost_usd": 0.6281492500000001,
+        "reply": "Skill evaluation:\n- `proofpunk:implement` \u2014 YES \u2014 explicitly requested.\n- Others \u2014 NO \u2014 surface-probe only, no scouting/implementation.Surface probe only. Stopped after load \u2014 no scout, no edits, no Workflow call.\n\n**Skill heading**\n\n```\nproofpunk:implement \u2014 Implement a goal end to end with the Proofpunk orchestrator\n```\n\n**Four flags**\n\n```\n--parallel   --auto   --mine   --fast\n```\n\nFrom the loa",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 quote heading and flags, no execution\"}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Skill evaluation:\n- `proofpunk:implement` \u2014 YES \u2014 explicitly requested.\n- Others \u2014 NO \u2014 surface-probe only, no scouting/implementation."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:implement\", \"args\": \"surface-probe only \\u2014 quote heading and flags, no execution\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Loaded skill instructions (read-only): proofpunk:implement. Nothing was executed; delegate execution to a worker."
+          },
+          {
+            "kind": "text",
+            "text": "Surface probe only. Stopped after load \u2014 no scout, no edits, no Workflow call.\n\n**Skill heading**\n\n```\nproofpunk:implement \u2014 Implement a goal end to end with the Proofpunk orchestrator\n```\n\n**Four flags**\n\n```\n--parallel   --auto   --mine   --fast\n```\n\nFrom the loaded surface:\n- `--parallel` \u2014 fan scouts / plan-stages / build-lanes out with executable lane contracts\n- `--auto` \u2014 never stop until every criterion is proven\n- `--mine` \u2014 mine past sessions first\n- `--fast` \u2014 mode flag on the same ax"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_implement.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:implement",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:implement"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_implement.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "forge-prompt",
+      "slash": "/proofpunk:forge-prompt",
+      "probe": "cmd_slash_forge_prompt",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates prompt-forge AUTHOR; flag --depth",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 55.3,
+        "cost_usd": null,
+        "reply": "Skill evaluation:\n- `proofpunk:forge-prompt` \u2014 YES \u2014 explicitly requested.\n- All others \u2014 NO \u2014 surface-probe only, no code/research/git work.Surface probe complete. Halted per instruction \u2014 no prompt file written, no Workflow call.\n\n**Skill load status:** `proofpunk:forge-prompt` loaded read-only in this coordinator session. The tool returned a load receipt only (\"Loaded skill instructions (read-o",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:forge-prompt\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote AUTHOR mode and the --depth flag. Do not write a prompt file or call Workflow.\"}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Skill evaluation:\n- `proofpunk:forge-prompt` \u2014 YES \u2014 explicitly requested.\n- All others \u2014 NO \u2014 surface-probe only, no code/research/git work."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:forge-prompt\", \"args\": \"surface-probe only \\u2014 STOP after the skill loads. Quote AUTHOR mode and the --depth flag. Do not write a prompt file or call Workflow.\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Loaded skill instructions (read-only): proofpunk:forge-prompt. Nothing was executed; delegate execution to a worker."
+          },
+          {
+            "kind": "text",
+            "text": "Surface probe complete. Halted per instruction \u2014 no prompt file written, no Workflow call.\n\n**Skill load status:** `proofpunk:forge-prompt` loaded read-only in this coordinator session. The tool returned a load receipt only (\"Loaded skill instructions (read-only)... Nothing was executed; delegate execution to a worker\") \u2014 the SKILL.md body was not rendered into this context. Quotes below come from the command surface delivered with the invocation, not from the skill body.\n\n**AUTHOR mode:**\n```\n/"
+          },
+          {
+            "kind": "text",
+            "text": "**Downgrading claim to UNVERIFIED.**\n\nNo end-user evidence artifact was captured. What actually happened:\n\n- `Skill(proofpunk:forge-prompt)` returned a load receipt only. The SKILL.md body never entered this context.\n- The AUTHOR-mode and `--depth` quotes came from the command-surface text delivered with the invocation \u2014 not from the skill file. Provenance is the harness message, not the artifact.\n- No file path cited, no run-scoped capture, no read of `SKILL.md` on disk.\n\nSo: the skill *loaded*"
+          },
+          {
+            "kind": "text",
+            "text": "**No completion is claimed. Nothing here is done.**\n\nStatus: BLOCKED, not complete.\n\nConstraint that makes evidence impossible in this session: my tool set is `SendMessage`, `Skill`, `TaskStop` only. No `Read`, no `Bash`, no `Glob`. I cannot open `SKILL.md`, cannot capture a run-scoped artifact, cannot cite a full path. Coordinator skill loads are read-only by design \u2014 the receipt string is not evidence and I have no way to upgrade it here.\n\nThe two prior outputs are UNVERIFIED and remain so:\n- "
+          },
+          {
+            "kind": "text",
+            "text": "Standing state, unchanged: **UNVERIFIED / BLOCKED. No completion claimed.**\n\nThe hook fires on every turn end because I have no way to satisfy it. My tools are `SendMessage`, `Skill`, `TaskStop`. No `Read`, `Bash`, `Glob`, or `Write` \u2014 so I cannot open a file, run a command, capture a run-scoped artifact, or cite a full path. Repeating the downgrade does not produce evidence, and further turns will keep tripping the same hook with no new information.\n\nLedger:\n- skill load \u2014 UNVERIFIED (load rece"
+          },
+          {
+            "kind": "text",
+            "text": "Stopping. Nothing further to add.\n\nState: UNVERIFIED / BLOCKED. No completion claimed, none claimable \u2014 I hold `SendMessage`, `Skill`, `TaskStop` only, so no file read, no command, no artifact, no path to cite. Additional turns cannot change that and will retrip the same hook.\n\nAwaiting `go` to dispatch a worker with `Read` for the cited `SKILL.md` path."
+          },
+          {
+            "kind": "text",
+            "text": "UNVERIFIED. Blocked. Awaiting `go`."
+          },
+          {
+            "kind": "text",
+            "text": "UNVERIFIED. Blocked. Awaiting `go`."
+          },
+          {
+            "kind": "result_error",
+            "error": "Claude Code returned an error result: Reached maximum number of turns (8) (exit code: 1)"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_forge_prompt.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:forge-prompt",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:forge-prompt"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_forge_prompt.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "rate-prompt",
+      "slash": "/proofpunk:rate-prompt",
+      "probe": "cmd_slash_rate_prompt",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates prompt-forge RATE; flag --ship-below-threshold",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 18.0,
+        "cost_usd": 0.802837,
+        "reply": "Skill evaluation:\n- `proofpunk:rate-prompt` \u2014 YES \u2014 explicitly requested.\n- others (ak:scout, ak:cook, ak:git, etc.) \u2014 NO \u2014 no code, research, or repo work in scope.Skill loaded read-only. Halting per instruction \u2014 no file rated, no workflow called. No rating target exists anyway (`surface-probe only \u2014 stop after load` is not a path).\n\nFlag semantics as documented:\n\n**`--report-only`** \u2014 rate and ",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:rate-prompt\", \"args\": \"surface-probe only \\u2014 stop after load\"}"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Skill evaluation:\n- `proofpunk:rate-prompt` \u2014 YES \u2014 explicitly requested.\n- others (ak:scout, ak:cook, ak:git, etc.) \u2014 NO \u2014 no code, research, or repo work in scope."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:rate-prompt\", \"args\": \"surface-probe only \\u2014 stop after load\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Loaded skill instructions (read-only): proofpunk:rate-prompt. Nothing was executed; delegate execution to a worker."
+          },
+          {
+            "kind": "text",
+            "text": "Skill loaded read-only. Halting per instruction \u2014 no file rated, no workflow called. No rating target exists anyway (`surface-probe only \u2014 stop after load` is not a path).\n\nFlag semantics as documented:\n\n**`--report-only`** \u2014 rate and report without rewriting. The `NAME.rating.md` scorecard lands; the prompt file is untouched. No remediation applied. Exclusive with `--out` (scorecard-only vs. writing a redirected deliverable \u2014 combining them fails fast).\n\n**`--ship-below-threshold`** \u2014 finalize "
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_rate_prompt.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:rate-prompt",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:rate-prompt"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_rate_prompt.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "truth-audit",
+      "slash": "/proofpunk:truth-audit",
+      "probe": "cmd_slash_truth_audit",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates codebase-truth-audit; flags --start/--end",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "forbid_absent": true
+        },
+        "elapsed_s": 36.6,
+        "cost_usd": 1.231424,
+        "reply": "Skill evaluation:\n- `proofpunk:truth-audit` \u2014 YES \u2014 explicitly requested.\n- Others (ak:scout/debug/cook/fix/git/test/code-review/docs/ship/review-pr) \u2014 NO \u2014 not the requested workflow.Blocked. No worker reachable, and I have no spawn tool \u2014 my toolset is `SendMessage`, `Skill`, `TaskStop` only.\n\nState:\n- `/proofpunk:truth-audit` loaded read-only. Coordinator skill loads do not execute: no fork, no",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:truth-audit\", \"args\": \". --start 2026-01-01 --end 2026-08-13 --label cmdsurface\"}"
+          },
+          {
+            "name": "SendMessage",
+            "input": "{\"to\": \"worker\", \"summary\": \"Run proofpunk truth-audit on repo\", \"message\": \"Task: run a repo-wide intent-vs-code truth audit.\\n\\nUse the /proofpunk:truth-audit skill.\\n\\nArgs: . --start 2026-01-01 --"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Skill evaluation:\n- `proofpunk:truth-audit` \u2014 YES \u2014 explicitly requested.\n- Others (ak:scout/debug/cook/fix/git/test/code-review/docs/ship/review-pr) \u2014 NO \u2014 not the requested workflow."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:truth-audit\", \"args\": \". --start 2026-01-01 --end 2026-08-13 --label cmdsurface\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Loaded skill instructions (read-only): proofpunk:truth-audit. Nothing was executed; delegate execution to a worker."
+          },
+          {
+            "kind": "tool_use",
+            "name": "SendMessage",
+            "input": "{\"to\": \"worker\", \"summary\": \"Run proofpunk truth-audit on repo\", \"message\": \"Task: run a repo-wide intent-vs-code truth audit.\\n\\nUse the /proofpunk:truth-audit skill.\\n\\nArgs: . --start 2026-01-01 --end 2026-08-13 --label cmdsurface\\n\\nWorking directory: /private/var/folders/x9/t9mpdpkn4wn6mj59k7b4"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "[{'type': 'text', 'text': '{\"success\":false,\"message\":\"No agent named \\'worker\\' is reachable.\\\\nCheck the spelling, or use the agent ID from a background agent\\'s spawn result.\"}'}]"
+          },
+          {
+            "kind": "text",
+            "text": "Blocked. No worker reachable, and I have no spawn tool \u2014 my toolset is `SendMessage`, `Skill`, `TaskStop` only.\n\nState:\n- `/proofpunk:truth-audit` loaded read-only. Coordinator skill loads do not execute: no fork, no permissions, no shell.\n- `SendMessage` to `worker` failed: `No agent named 'worker' is reachable.`\n- Team `session-1766c153` (1 member) is configured, but no member name was surfaced to address.\n\nThe audit needs a worker with Bash/Read/Grep to touch git history, transcripts, and the"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_truth_audit.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "forbid_absent": true
+        },
+        "elapsed_s": 0.9,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:truth-audit",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:truth-audit"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_truth_audit.control.log"
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "verify",
+      "slash": "/proofpunk:verify",
+      "probe": "cmd_slash_verify",
+      "max_honest_level": "playbook-recognition",
+      "reached_level": "playbook-recognition",
+      "note": "playbook: no Activate-skill line, no flags; marker UNVERIFIED",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 9.4,
+        "cost_usd": 0.250896,
+        "reply": "Unexecuted checks are UNVERIFIED.\n\nNo runtime started. No tools called. No flags exist for `/proofpunk:verify`.\n\nNothing has been executed, so nothing can be claimed PASS. Current status: UNVERIFIED.\n\nNext step: name the target under test and authorize execution; verification requires driving the live system as the end user.",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Unexecuted checks are UNVERIFIED.\n\nNo runtime started. No tools called. No flags exist for `/proofpunk:verify`.\n\nNothing has been executed, so nothing can be claimed PASS. Current status: UNVERIFIED.\n\nNext step: name the target under test and authorize execution; verification requires driving the live system as the end user."
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_verify.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:verify",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:verify"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_verify.control.log"
+      },
+      "classify": {
+        "level": "playbook-recognition",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded + local plugin; no backing skill/script executed (or Skill not required)"
+      }
+    },
+    {
+      "command": "install",
+      "slash": "/proofpunk:install",
+      "probe": "cmd_slash_install",
+      "max_honest_level": "playbook-recognition",
+      "reached_level": "playbook-recognition",
+      "note": "in-session playbook, NO backing skill or script \u2014 distinct from tools/proofpunk-install.sh; SDK has no Write tool so file-merge execution is unreachable; marker proofpunk:begin",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true
+        },
+        "elapsed_s": 49.7,
+        "cost_usd": 1.2783105000000001,
+        "reply": "Step 1 \u2014 skill evaluation:\n- `proofpunk:install` \u2014 YES \u2014 user invoked it directly.\n- `ak:scout`/`ak:debug`/`ak:cook`/`ak:fix`/`ak:git`/`ak:test`/`ak:code-review`/`ak:docs`/`ak:ship`/`ak:review-pr` \u2014 NO \u2014 not a scouting, debug, build, git, test, review, docs, or ship task.\n\nStep 2 \u2014 activate:No worker agents reachable \u2014 this session has no spawn tool (only `SendMessage`, `Skill`, `TaskStop`), and `",
+        "init_slash_proofpunk": [
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:install\", \"args\": \"--platform claude-code --no-rules\"}"
+          },
+          {
+            "name": "SendMessage",
+            "input": "{\"to\": \"worker\", \"summary\": \"Run proofpunk install, claude-code, no rules\", \"message\": \"Task: run the `/proofpunk:install` skill with args `--platform claude-code --no-rules` in the current project.\\n"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true
+          },
+          {
+            "kind": "text",
+            "text": "Step 1 \u2014 skill evaluation:\n- `proofpunk:install` \u2014 YES \u2014 user invoked it directly.\n- `ak:scout`/`ak:debug`/`ak:cook`/`ak:fix`/`ak:git`/`ak:test`/`ak:code-review`/`ak:docs`/`ak:ship`/`ak:review-pr` \u2014 NO \u2014 not a scouting, debug, build, git, test, review, docs, or ship task.\n\nStep 2 \u2014 activate:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:install\", \"args\": \"--platform claude-code --no-rules\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Loaded skill instructions (read-only): proofpunk:install. Nothing was executed; delegate execution to a worker."
+          },
+          {
+            "kind": "tool_use",
+            "name": "SendMessage",
+            "input": "{\"to\": \"worker\", \"summary\": \"Run proofpunk install, claude-code, no rules\", \"message\": \"Task: run the `/proofpunk:install` skill with args `--platform claude-code --no-rules` in the current project.\\n\\nWorking directory: /private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-peudgn3j"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "[{'type': 'text', 'text': '{\"success\":false,\"message\":\"No agent named \\'worker\\' is reachable.\\\\nCheck the spelling, or use the agent ID from a background agent\\'s spawn result.\"}'}]"
+          },
+          {
+            "kind": "text",
+            "text": "No worker agents reachable \u2014 this session has no spawn tool (only `SendMessage`, `Skill`, `TaskStop`), and `Skill` loaded `/proofpunk:install` read-only. Install NOT run. Status: UNVERIFIED.\n\nDelegation prompt is ready. To proceed, one of:\n\n1. Spawn a worker in this session (Agent tool enabled), then re-issue.\n2. Run it in a session that has Write/Bash \u2014 paste this into that session:\n\n```\nUse the /proofpunk:install skill with args: --platform claude-code --no-rules\nWorking dir: /private/var/fold"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_install.plugin.log"
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false
+        },
+        "elapsed_s": 0.8,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:install",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:install"
+          }
+        ],
+        "log": "evidence/v3-release/l16-commands/cmd_slash_install.control.log"
+      },
+      "classify": {
+        "level": "playbook-recognition",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded + local plugin; no backing skill/script executed (or Skill not required)"
+      }
+    }
+  ]
+}

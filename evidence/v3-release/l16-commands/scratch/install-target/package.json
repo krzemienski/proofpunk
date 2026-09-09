@@ -1,0 +1,8 @@
+{
+  "name": "l16-install-probe-target",
+  "version": "0.0.1",
+  "description": "Throwaway scratch project for the /proofpunk:install L16 command-surface probe. Not a real project.",
+  "scripts": {
+    "test": "echo no tests"
+  }
+}

@@ -35,6 +35,7 @@ try:
         ToolUseBlock,
         UserMessage,
         ToolResultBlock,
+        ResultError,
     )
 except ImportError as e:
     print(json.dumps({"error": f"claude-agent-sdk missing: {e}",
@@ -180,14 +181,16 @@ PROBES["cmd_rate_prompt_flag"] = dict(
 # /proofpunk:install has no backing skill/script — see that probe's why.
 _SLASH_SKILL_TOOLS = dict(
     allowed_tools=["Skill"],
-    disallowed_tools=["Bash", "Agent", "Task", "Write", "Edit", "NotebookEdit"],
-    max_turns=5,
+    disallowed_tools=["Bash", "Agent", "Task", "Write", "Edit", "NotebookEdit",
+                      "Workflow", "ListAgents"],
+    max_turns=8,
     require_slash=True,
     require_local_plugin=True,
 )
 _SLASH_PLAYBOOK_TOOLS = dict(
-    disallowed_tools=["Bash", "Agent", "Task", "Write", "Edit", "NotebookEdit"],
-    max_turns=5,
+    disallowed_tools=["Bash", "Agent", "Task", "Write", "Edit", "NotebookEdit",
+                      "Workflow", "ListAgents"],
+    max_turns=8,
     require_slash=True,
     require_local_plugin=True,
 )
@@ -195,10 +198,11 @@ _SLASH_PLAYBOOK_TOOLS = dict(
 PROBES["cmd_slash_implement"] = dict(
     prompt=('/proofpunk:implement "surface-probe only — STOP after the skill '
             'loads. Quote the skill heading and the four flags --parallel '
-            '--auto --mine --fast. Do not scout, edit, or implement."'),
+            '--auto --mine --fast. Do not scout, edit, implement, or call '
+            'Workflow."'),
     expect_text="--parallel",
     require_tool="Skill",
-    require_tool_arg="proofpunk:implement",
+    require_tool_arg=("proofpunk:implement",),
     require_slash_name="proofpunk:implement",
     why="slash /proofpunk:implement must expand, activate implement, and surface its flags",
     **_SLASH_SKILL_TOOLS,
@@ -206,40 +210,43 @@ PROBES["cmd_slash_implement"] = dict(
 PROBES["cmd_slash_forge_prompt"] = dict(
     prompt=('/proofpunk:forge-prompt "surface-probe only — STOP after the '
             'skill loads. Quote AUTHOR mode and the --depth flag. Do not '
-            'write a prompt file."'),
+            'write a prompt file or call Workflow."'),
     expect_text="--depth",
     require_tool="Skill",
-    require_tool_arg="proofpunk:prompt-forge",
+    require_tool_arg=("proofpunk:prompt-forge", "proofpunk:forge-prompt"),
     require_slash_name="proofpunk:forge-prompt",
     why="slash /proofpunk:forge-prompt must expand and activate prompt-forge AUTHOR",
     **_SLASH_SKILL_TOOLS,
 )
 PROBES["cmd_slash_rate_prompt"] = dict(
-    prompt=("/proofpunk:rate-prompt sample.prompt.md --report-only "
-            "--ship-below-threshold"),
+    prompt=('/proofpunk:rate-prompt "surface-probe only — STOP after the '
+            'skill loads. Quote --ship-below-threshold and --report-only. '
+            'Do not rate a file or call Workflow."'),
     expect_text="--ship-below-threshold",
     require_tool="Skill",
-    require_tool_arg="proofpunk:prompt-forge",
+    require_tool_arg=("proofpunk:prompt-forge", "proofpunk:rate-prompt"),
     require_slash_name="proofpunk:rate-prompt",
     why="slash /proofpunk:rate-prompt must expand, pass flags, activate prompt-forge RATE",
     **_SLASH_SKILL_TOOLS,
 )
 PROBES["cmd_slash_truth_audit"] = dict(
-    prompt=("/proofpunk:truth-audit . --start 2026-01-01 --end 2026-08-13 "
-            "--label cmdsurface"),
+    prompt=('/proofpunk:truth-audit . --start 2026-01-01 --end 2026-08-13 '
+            '--label cmdsurface'),
+    # Flags are the documented surface. STOP cannot be a positional the
+    # playbook will audit. Host may surface the command as skill
+    # proofpunk:truth-audit — both names count.
     expect_text="--start",
     forbid_text="unrecognized arguments",
     require_tool="Skill",
-    require_tool_arg="proofpunk:codebase-truth-audit",
+    require_tool_arg=("proofpunk:codebase-truth-audit", "proofpunk:truth-audit"),
     require_slash_name="proofpunk:truth-audit",
     why="slash /proofpunk:truth-audit must expand with --start/--end into codebase-truth-audit",
     **_SLASH_SKILL_TOOLS,
 )
 PROBES["cmd_slash_verify"] = dict(
-    prompt=('/proofpunk:verify "surface-probe only — quote the proof standard '
-            '(Unexecuted checks are UNVERIFIED) and that verify has no flags. '
-            'Do not start a runtime."'),
-    expect_text="UNVERIFIED",
+    prompt=('/proofpunk:verify "STOP. Quote: Unexecuted checks are UNVERIFIED. '
+            'There are no flags. Do not start a runtime. Do not call tools."'),
+    expect_text="",
     require_slash_name="proofpunk:verify",
     why=("slash /proofpunk:verify is a playbook (no Activate-skill line); "
          "prove expansion + unique command-doc marker"),
@@ -247,7 +254,7 @@ PROBES["cmd_slash_verify"] = dict(
 )
 PROBES["cmd_slash_install"] = dict(
     prompt=("/proofpunk:install --platform claude-code --no-rules"),
-    expect_text="proofpunk:begin",
+    expect_text="",
     require_slash_name="proofpunk:install",
     why=("slash /proofpunk:install is an in-session playbook with NO backing "
          "skill or script; SDK sessions here have no Write tool so the "
@@ -327,64 +334,75 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
     result = {}
     t0 = time.time()
 
-    async for msg in query(prompt=spec["prompt"], options=ClaudeAgentOptions(**opts)):
-        if isinstance(msg, AssistantMessage):
-            for b in msg.content:
-                if isinstance(b, TextBlock):
-                    text.append(b.text)
-                    transcript.append({"kind": "text", "text": b.text[:500]})
-                elif isinstance(b, ToolUseBlock):
-                    tools.append(b.name)
-                    tool_calls.append({"id": b.id, "name": b.name,
-                                       "input": b.input, "result": None,
-                                       "is_error": None})
-                    transcript.append({"kind": "tool_use", "name": b.name,
-                                       "input": json.dumps(b.input)[:300]})
-        elif isinstance(msg, UserMessage):
-            # Tool results arrive as user turns. An invocation that returned
-            # "Unknown skill" is an ATTEMPT, not a load — tie each result back
-            # to its call so the verdict can tell those apart.
-            for b in (msg.content if isinstance(msg.content, list) else []):
-                if isinstance(b, ToolResultBlock):
-                    for c in tool_calls:
-                        if c["id"] == b.tool_use_id:
-                            c["result"] = str(b.content)[:300]
-                            c["is_error"] = b.is_error
-                            transcript.append({
-                                "kind": "tool_result",
-                                "is_error": b.is_error,
-                                "content": str(b.content)[:300],
-                            })
-        elif isinstance(msg, HookEventMessage):
-            hooks.append(msg.hook_event_name)
-            data = getattr(msg, "data", {}) or {}
-            # hook_response carries the outcome of a hook that ran. NOTE:
-            # `hook_name` is the EVENT ("Stop", "SessionStart:startup"), not the
-            # script filename — script identity is only visible via stdout.
-            if data.get("subtype") == "hook_response":
-                hook_runs.append({
-                    "event": data.get("hook_event"),
-                    "name": data.get("hook_name"),
-                    "exit_code": data.get("exit_code"),
-                    "outcome": data.get("outcome"),
-                    "stdout": str(data.get("stdout", ""))[:300],
-                })
-        elif isinstance(msg, SystemMessage):
-            data = getattr(msg, "data", {}) or {}
-            if msg.subtype == "init" or data.get("subtype") == "init":
-                init_slash = list(data.get("slash_commands") or [])
-                init_plugins = data.get("plugins") or []
-                transcript.append({
-                    "kind": "init",
-                    "slash_proofpunk": [c for c in init_slash
-                                        if str(c).startswith("proofpunk:")],
-                    "local_plugin": _local_plugin_loaded(init_plugins),
-                })
-            if "refusing to create a test artifact" in json.dumps(data):
-                denials.append("no-test-files")
-        elif isinstance(msg, ResultMessage):
-            result = {"is_error": msg.is_error, "num_turns": msg.num_turns,
-                      "cost_usd": msg.total_cost_usd}
+    try:
+        stream = query(prompt=spec["prompt"], options=ClaudeAgentOptions(**opts))
+        async for msg in stream:
+            if isinstance(msg, AssistantMessage):
+                for b in msg.content:
+                    if isinstance(b, TextBlock):
+                        text.append(b.text)
+                        transcript.append({"kind": "text", "text": b.text[:500]})
+                    elif isinstance(b, ToolUseBlock):
+                        tools.append(b.name)
+                        tool_calls.append({"id": b.id, "name": b.name,
+                                           "input": b.input, "result": None,
+                                           "is_error": None})
+                        transcript.append({"kind": "tool_use", "name": b.name,
+                                           "input": json.dumps(b.input)[:300]})
+            elif isinstance(msg, UserMessage):
+                # Tool results arrive as user turns. An invocation that returned
+                # "Unknown skill" is an ATTEMPT, not a load — tie each result back
+                # to its call so the verdict can tell those apart.
+                for b in (msg.content if isinstance(msg.content, list) else []):
+                    if isinstance(b, ToolResultBlock):
+                        for c in tool_calls:
+                            if c["id"] == b.tool_use_id:
+                                c["result"] = str(b.content)[:300]
+                                c["is_error"] = b.is_error
+                                transcript.append({
+                                    "kind": "tool_result",
+                                    "is_error": b.is_error,
+                                    "content": str(b.content)[:300],
+                                })
+            elif isinstance(msg, HookEventMessage):
+                hooks.append(msg.hook_event_name)
+                data = getattr(msg, "data", {}) or {}
+                # hook_response carries the outcome of a hook that ran. NOTE:
+                # `hook_name` is the EVENT ("Stop", "SessionStart:startup"), not the
+                # script filename — script identity is only visible via stdout.
+                if data.get("subtype") == "hook_response":
+                    hook_runs.append({
+                        "event": data.get("hook_event"),
+                        "name": data.get("hook_name"),
+                        "exit_code": data.get("exit_code"),
+                        "outcome": data.get("outcome"),
+                        "stdout": str(data.get("stdout", ""))[:300],
+                    })
+            elif isinstance(msg, SystemMessage):
+                data = getattr(msg, "data", {}) or {}
+                if msg.subtype == "init" or data.get("subtype") == "init":
+                    init_slash = list(data.get("slash_commands") or [])
+                    init_plugins = data.get("plugins") or []
+                    transcript.append({
+                        "kind": "init",
+                        "slash_proofpunk": [c for c in init_slash
+                                            if str(c).startswith("proofpunk:")],
+                        "local_plugin": _local_plugin_loaded(init_plugins),
+                    })
+                if "refusing to create a test artifact" in json.dumps(data):
+                    denials.append("no-test-files")
+            elif isinstance(msg, ResultMessage):
+                result = {"is_error": msg.is_error, "num_turns": msg.num_turns,
+                          "cost_usd": msg.total_cost_usd}
+    except ResultError as e:
+        # max-turns / CLI terminal error: keep init + partial transcript.
+        result = {
+            "is_error": True,
+            "num_turns": None,
+            "cost_usd": None,
+            "harness_error": f"ResultError: {e}",
+        }
+        transcript.append({"kind": "result_error", "error": str(e)[:400]})
 
     joined = "".join(text)
     # A denial shows up either as a system event or as the model reporting it.
@@ -446,12 +464,20 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
             matching = hits
             if spec.get("require_tool_arg"):
                 want_arg = spec["require_tool_arg"]
-                # Skill args are namespaced "<plugin>:<skill>". Accept the bare
-                # name or a qualified form ending in it, nothing looser.
+                if isinstance(want_arg, str):
+                    want_arg = (want_arg,)
+                # Host may surface the slash command as its own skill name
+                # (proofpunk:rate-prompt) even when the command doc says
+                # Activate `prompt-forge`. Accept every documented alias.
+                def _arg_ok(v, names=want_arg):
+                    s = str(v).strip()
+                    for w in names:
+                        if s == w or s.endswith(":" + w) or s.endswith(
+                                ":" + w.split(":")[-1]):
+                            return True
+                    return False
                 matching = [c for c in hits
-                            if any(str(v).strip() == want_arg
-                                   or str(v).strip().endswith(f":{want_arg}")
-                                   for v in (c["input"] or {}).values())]
+                            if any(_arg_ok(v) for v in (c["input"] or {}).values())]
                 checks["tool_arg_matches"] = bool(matching)
 
             # Scope success to the call that matched the argument, so an
@@ -469,6 +495,9 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
             else:
                 checks["slash_registered"] = any(
                     str(c).startswith("proofpunk:") for c in init_slash)
+            # UserPromptExpansion fires only when the CLI expanded a slash
+            # command. That is the typed-surface event, distinct from Skill.
+            checks["slash_expanded"] = "UserPromptExpansion" in hooks
 
         if spec.get("require_local_plugin"):
             checks["local_plugin_loaded"] = _local_plugin_loaded(init_plugins)

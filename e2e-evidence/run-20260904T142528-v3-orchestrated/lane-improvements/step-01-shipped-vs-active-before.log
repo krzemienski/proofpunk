@@ -1,0 +1,11 @@
+hooks disk=9 json=9
+PASS hooks
+skills=18 router_calls=17 expected_calls=17
+PASS skill-router
+refs disk=14 cited=75
+commands claude=6 opencode=6
+PASS commands
+ci harnesses=11 wired_tokens=8
+VERDICT: FAIL
+  shared-references | shipped-not-active: run-trace-schema.md | active-not-shipped: agent-eval-strands.md, claude-code-analyzer.md, condition-based-waiting.md, content-quality-checklist.md, context-management.md, cpp-testing-gtest.md, debug-like-expert.md, dependency-health.md, diagnose.md, django-testing-gotchas.md, eval-harness.md, evaluation-frameworks.md, expert-debugging-mindset.md, expert-hypothesis-testing.md, expert-investigation-techniques.md, expert-verification-patterns.md, expert-when-to-research.md, expo-e2e-testing-workflow.md, expo-testing-workflow.md, fastapi-backend-testing.md, go-testing-gotchas.md, interactive-element-audit.md, ios-simulator-control.md, ios-validation-gate.md, ios-validation-runner.md, output-contract.md, playwright-api-reference.md, playwright-browser-automation.md, preflight.md, production-readiness-audit.md, prompt-optimization.md, prompt-patterns.md, pytest-gotchas.md, red-team.md, remediation-sample.md, responsive-audit.md, root-cause-tracing.md, simctl-command-reference.md, spec-compliance.md, springboot-testing-gotchas.md, structured-outputs.md, system-prompts.md, task-file-format.md, trace-competing-hypotheses.md, ultraqa.md, ux-heuristics-checklist.md, webapp-testing.md, xc-mcp-accessibility-patterns.md, xc-mcp-caching-strategy.md, xc-mcp-mcp-configuration.md, xc-mcp-operation-enums.md, xc-mcp-progressive-disclosure.md, xc-mcp-tool-reference.md, xc-mcp-workflow-app-deployment.md, xc-mcp-workflow-build-project.md, xc-mcp-workflow-configure-caching.md, xc-mcp-workflow-debug-failures.md, xc-mcp-workflow-fresh-install.md, xc-mcp-workflow-run-tests.md, xc-mcp-workflow-simulator-management.md, xc-mcp-workflow-ui-automation.md, xc-mcp.md
+  ci-unwired: verify-command-surface.py, verify-mutation-artifact.py, verify-proof-vocab.py, verify-router-links.py, verify-shipped-vs-active.py

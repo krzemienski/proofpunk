@@ -509,19 +509,72 @@ gauge(
 
 # ---------------------------------------------------------------------------
 # Gauge #4 (L16) — commands proven at the real slash-command surface.
+#
+# Rewired 2026-09-04. The prior version read the Phase-3 baseline prose
+# (command-surface-map.md) and hard-returned "0/6 UNMET" by matching the
+# word "zero" in that document. That was correct when written — nothing had
+# been driven yet — but it is a *restatement of a stale document*, not a
+# measurement, and it could never move no matter what was later proven. It
+# is exactly the drift class this repo keeps rediscovering: a number read
+# from prose instead of derived from an artifact.
+#
+# It now reads the sealed artifact produced by a real live-session run
+# (tools/verify-command-surface.py driving tools/sdk_probe.py), which
+# records, per command, a plugin arm and a --no-plugin control arm.
+#
+# Two anti-vacuity rules are enforced here, not assumed:
+#   1. every command's control arm MUST have failed. A control that passes
+#      means the plugin was not what produced the result, and that command's
+#      probe proves nothing.
+#   2. the gauge reports the FULL-CHAIN count (slash typed -> registered ->
+#      mapped skill actually ran -> unique marker observed), never the
+#      softer "plugin arm passed" count. Commands whose honest maximum is
+#      playbook-recognition (no backing skill/script) are reported as such
+#      and are NOT counted toward full-chain.
 # ---------------------------------------------------------------------------
 
 
 def g_command_surface_proven():
-    ev_path = "evidence/v3-release/00-baseline/command-surface-map.md"
+    ev_path = "evidence/v3-release/l16-commands/command-surface-proof.json"
     citation, resolved = cite(ev_path)
     if not resolved:
-        return (None, "UNVERIFIED", [citation], False, "sealed command-surface-map.md missing")
-    text = open(os.path.join(ROOT, ev_path), encoding="utf-8").read()
-    m = re.search(r"\*\*zero\*\* have a\s*\nsingle artifact proving the full chain", text)
-    if not m:
-        return (None, "UNVERIFIED", [citation], True, "expected 'zero' summary claim not found verbatim in sealed artifact")
-    return ("0/6", "UNMET", [citation], True, "no command has a single artifact proving slash-typed -> flag mapping -> real execution -> observed result")
+        return (None, "UNVERIFIED", [citation], False, "sealed command-surface-proof.json missing")
+    try:
+        data = json.load(open(os.path.join(ROOT, ev_path), encoding="utf-8"))
+    except Exception as e:
+        return (None, "UNVERIFIED", [citation], True, f"command-surface-proof.json unreadable: {e!r}")
+
+    cmds = data.get("commands") or []
+    if not cmds:
+        return (None, "UNVERIFIED", [citation], True, "artifact records no commands")
+
+    total = len(cmds)
+    vacuous = [c["command"] for c in cmds if (c.get("control") or {}).get("pass")]
+    if vacuous:
+        return (
+            None,
+            "UNVERIFIED",
+            [citation],
+            True,
+            f"control arm PASSED for {vacuous} — those probes are vacuous, the plugin is not proven to be what produced the result",
+        )
+
+    full_chain = [c["command"] for c in cmds if c.get("reached_level") == "c"]
+    capped = [
+        f"{c['command']}({c.get('max_honest_level')})"
+        for c in cmds
+        if c.get("reached_level") != "c"
+    ]
+    n = len(full_chain)
+    status = "PASS" if n == total else "UNMET"
+    val = f"{n}/{total}"
+    detail = (
+        f"{n}/{total} reached full-chain (slash -> registered -> skill ran -> marker); "
+        f"all {total} control arms failed as required"
+    )
+    if capped:
+        detail += f"; capped at their honest maximum: {capped}"
+    return (val, status, [citation], True, detail)
 
 
 gauge(

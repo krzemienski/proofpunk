@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "count": 7,
+  "artifacts": [
+    {
+      "name": "VERDICT.json",
+      "bytes": 2954,
+      "sha256": "46ffa5838181cefc542d5ecaf72a92f0fae13cf854d5615603e1417135d8a3c1"
+    },
+    {
+      "name": "step-00-sandbox.txt",
+      "bytes": 72,
+      "sha256": "cf9318d3c80e13851844ef177bb71eb3d1c9ff04953d58bda94993f01dccf5aa"
+    },
+    {
+      "name": "step-01-control.log",
+      "bytes": 86,
+      "sha256": "5ae3c76584d25147def67c64237d65ddfd56194e63b8cfe19a3d189a1be595fa"
+    },
+    {
+      "name": "step-02-verify-block.log",
+      "bytes": 1082,
+      "sha256": "45b84bec587cae2dae52f737ad7903a53dccb5ad1a769f623c948d5a8339fbef"
+    },
+    {
+      "name": "step-02-verify-block.rc",
+      "bytes": 18,
+      "sha256": "47cb108a76e387b852beb20eff3f7d0f9c07a1877c6ac2567f1f06099e2422c4"
+    },
+    {
+      "name": "step-03-slash-install.plugin.log",
+      "bytes": 36956,
+      "sha256": "14352cc04c1f47264381972b0d50912973a1b4de5fa5a4b3e607992414f45d84"
+    },
+    {
+      "name": "step-03-slash-install.plugin.rc",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "total_bytes": 41170
+}

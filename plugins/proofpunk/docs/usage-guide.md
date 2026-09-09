@@ -27,7 +27,8 @@ provider, highest precedence).
 **OpenCode** — the installer drops `plugin/proofpunk.ts` (doctrine guard),
 six commands (`/proofpunk-implement`, `/proofpunk-install`,
 `/proofpunk-verify`, `/proofpunk-truth-audit`, `/proofpunk-rate-prompt`,
-`/proofpunk-forge-prompt`), and the `proofpunk` primary agent into
+`/proofpunk-forge-prompt`), and 4 agents (`proofpunk` router plus
+`implement`, `scout`, `end-user-validate`) into
 `~/.config/opencode/`. Skills load through OpenCode's native `skill` tool —
 and because OpenCode reads `~/.claude/skills` too, one
 `--target claude-code` install serves both platforms.

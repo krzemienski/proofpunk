@@ -1,0 +1,14 @@
+=== Step 4 verification block (run verbatim from install.md:77-83) ===
+ 26 CLAUDE.md
+ 26 total
+  22 .claude/rules/evidence-contract.md
+  16 .claude/rules/proof-obligations.md
+  38 total
+CLAUDE.md:2
+==> .claude/rules/proof-obligations.md <==
+---
+description: Task-level proof contract — every task ends with an end-user test artifact or is reported UNVERIFIED
+---
+{"ts": "2026-09-07T21:24:47.424768+00:00", "file_path": "/Users/nick/Desktop/yt-transition-shorts-detector/.claude/rules/hooks-and-integrations.md", "load_reason": "session_start", "cwd": "/Users/nick/Desktop/yt-transition-shorts-detector"}
+{"ts": "2026-09-07T21:24:47.425304+00:00", "file_path": "/Users/nick/Desktop/yt-transition-shorts-detector/.claude/rules/instrument-before-theorize.md", "load_reason": "session_start", "cwd": "/Users/nick/Desktop/yt-transition-shorts-detector"}
+{"ts": "2026-09-07T21:24:47.426636+00:00", "file_path": "/Users/nick/Desktop/yt-transition-shorts-detector/.claude/rules/tui-patterns.md", "load_reason": "session_start", "cwd": "/Users/nick/Desktop/yt-transition-shorts-detector"}

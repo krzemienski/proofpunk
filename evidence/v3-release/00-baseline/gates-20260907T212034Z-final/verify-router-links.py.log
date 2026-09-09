@@ -1,0 +1,6 @@
+VERDICT: PASS
+skills_globbed=18
+non_head_expected=17
+routed=17 unique=17
+doctrine_refs=14 all_resolved=true
+head=/Users/nick/proofpunk/plugins/proofpunk/skills/proofpunk/SKILL.md

@@ -1,0 +1,136 @@
+== group 1: happy path (clean install of all 18 skills)
+  FAIL: clean install — rc=1 out=== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy  (claude-code)
+source     : local checkout /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.jyC4ve7llb/head-clean
+version    : installed=none → source=2.2.0 (source is always the newest main)
+installing : 18 skill(s)
+  INSTALL brainstorm
+  INSTALL codebase-truth-audit
+  INSTALL end-user-testing
+  INSTALL full-functional-audit
+  INSTALL implement
+  INSTALL mobile-validation-runner
+  INSTALL plan-hardening
+  INSTALL production-readiness
+  INSTALL prompt-forge
+  INSTALL proofpunk
+  INSTALL red-team-eval
+  INSTALL root-cause-debugging
+  INSTALL session-intent
+  INSTALL stack-testing
+  INSTALL tui-testing
+  INSTALL ui-experience-audit
+  INSTALL validation-plan
+  INSTALL visual-inspection
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✗ end-user-testing: BROKEN refs after auto-fix: [('run-trace-schema.md', 'references/severity-model.md')]
+  PASS: all 18 skill dirs installed with SKILL.md
+
+== group 2: collision default (second run over same dir does not clobber)
+  FAIL: collision default — rc=1 out=== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy  (claude-code)
+source     : local checkout /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.jyC4ve7llb/head-clean
+version    : installed=pre-versioned → source=2.2.0 (source is always the newest main)
+installing : 18 skill(s)
+  SKIP    brainstorm (already exists; use --override to replace)
+  SKIP    codebase-truth-audit (already exists; use --override to replace)
+  SKIP    end-user-testing (already exists; use --override to replace)
+  SKIP    full-functional-audit (already exists; use --override to replace)
+  SKIP    implement (already exists; use --override to replace)
+  SKIP    mobile-validation-runner (already exists; use --override to replace)
+  SKIP    plan-hardening (already exists; use --override to replace)
+  SKIP    production-readiness (already exists; use --override to replace)
+  SKIP    prompt-forge (already exists; use --override to replace)
+  SKIP    proofpunk (already exists; use --override to replace)
+  SKIP    red-team-eval (already exists; use --override to replace)
+  SKIP    root-cause-debugging (already exists; use --override to replace)
+  SKIP    session-intent (already exists; use --override to replace)
+  SKIP    stack-testing (already exists; use --override to replace)
+  SKIP    tui-testing (already exists; use --override to replace)
+  SKIP    ui-experience-audit (already exists; use --override to replace)
+  SKIP    validation-plan (already exists; use --override to replace)
+  SKIP    visual-inspection (already exists; use --override to replace)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✗ end-user-testing: BROKEN refs after auto-fix: [('run-trace-schema.md', 'references/severity-model.md')]
+  PASS: existing skill dir untouched (canary file survived the second run)
+
+== group 3: --override replaces and reports replaced
+  FAIL: --override — rc=1 out=== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy  (claude-code)
+source     : local checkout /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.jyC4ve7llb/head-clean
+version    : installed=pre-versioned → source=2.2.0 (source is always the newest main)
+installing : 18 skill(s)
+  REPLACE brainstorm (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.brainstorm.bak-20260906-214834)
+  REPLACE codebase-truth-audit (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.codebase-truth-audit.bak-20260906-214834)
+  REPLACE end-user-testing (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.end-user-testing.bak-20260906-214835)
+  REPLACE full-functional-audit (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.full-functional-audit.bak-20260906-214835)
+  REPLACE implement (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.implement.bak-20260906-214835)
+  REPLACE mobile-validation-runner (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.mobile-validation-runner.bak-20260906-214835)
+  REPLACE plan-hardening (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.plan-hardening.bak-20260906-214835)
+  REPLACE production-readiness (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.production-readiness.bak-20260906-214836)
+  REPLACE prompt-forge (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.prompt-forge.bak-20260906-214836)
+  REPLACE proofpunk (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.proofpunk.bak-20260906-214836)
+  REPLACE red-team-eval (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.red-team-eval.bak-20260906-214836)
+  REPLACE root-cause-debugging (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.root-cause-debugging.bak-20260906-214836)
+  REPLACE session-intent (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.session-intent.bak-20260906-214837)
+  REPLACE stack-testing (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.stack-testing.bak-20260906-214837)
+  REPLACE tui-testing (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.tui-testing.bak-20260906-214837)
+  REPLACE ui-experience-audit (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.ui-experience-audit.bak-20260906-214837)
+  REPLACE validation-plan (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.validation-plan.bak-20260906-214838)
+  REPLACE visual-inspection (old copy -> /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/happy/.visual-inspection.bak-20260906-214838)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✗ end-user-testing: BROKEN refs after auto-fix: [('run-trace-schema.md', 'references/severity-model.md')]
+  PASS: --override actually replaced brainstorm (canary file gone from live dir)
+  PASS: --override kept a .bak-* backup containing the pre-override skill content
+
+== group 4: --only <name> installs exactly one skill
+  PASS: --only brainstorm installs exactly that one skill dir
+
+== group 5: --only <nonexistent> exits non-zero and reports missing
+  PASS: --only bogus-name exits 3 and warns the skill was not found
+  PASS: --only bogus-name installed nothing (target dir empty or absent)
+
+== group 6: --dry-run creates no files
+  PASS: --dry-run exits 0 and creates no target directory
+
+== group 7: malformed skill (missing frontmatter) fails verify — the D3 regression
+  PASS: malformed SKILL.md (no frontmatter) is caught: run fails (rc=1), not a green tick
+  PASS: install step still copied the malformed SKILL.md before verify caught it (proves the check ran post-copy, not pre-empted)
+  PASS: no false '✓ bad-skill' green tick in verify output
+  PASS: verify step did not claim 'all skills pass'
+
+== group 8: --hooks registers EVERY proofpunk hook in settings.json
+  PASS: --hooks install succeeded (rc=0) and wrote /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/hooks-home/.claude/settings.json
+  PASS: no-test-files.sh copied to the hook home
+  PASS: no-test-files.sh is REGISTERED in settings.json (not just copied)
+  PASS: evidence-guard.sh copied to the hook home
+  PASS: evidence-guard.sh is REGISTERED in settings.json (not just copied)
+  PASS: capture-guard.sh copied to the hook home
+  PASS: capture-guard.sh is REGISTERED in settings.json (not just copied)
+  PASS: second --hooks run is idempotent: capture-guard.sh appears exactly once
+
+== group 9: fresh_evidence.py strict seal/validate contract
+  PASS: fresh_evidence strict contract: empty/unsealed/tamper refused, clean sealed passes
+== group 10: installed tree matches canonical hooks.json
+  FAIL: canonical hooks.json parity: scripts True [] events True [] regs True 11 11 
+
+== group 11: F-D5-1 installed tree never contains __pycache__ or *.pyc
+  PASS: F-D5-1: source had 3 pycache/pyc entries, installed tree has 0
+
+== group 12: F-D5-2 installed fresh_evidence.py is runnable
+  FAIL: F-D5-2: fresh_evidence.py missing after install rc=1 out=== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ncUCz21G7p/fresh-ev-installed  (claude-code)
+source     : local checkout /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.jyC4ve7llb/head-clean
+version    : installed=none → source=2.2.0 (source is always the newest main)
+installing : 1 skill(s)
+  INSTALL end-user-testing
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✗ end-user-testing: BROKEN refs after auto-fix: [('run-trace-schema.md', 'references/severity-model.md')]
+  PASS: F-D5-2: installed fresh_evidence.py --help exits 0
+INSTALLER TEST FAILS: 5

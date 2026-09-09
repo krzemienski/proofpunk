@@ -1,0 +1,29 @@
+{
+  "arm": "manual playbook execution in Bash \u2014 NOT slash-surface proof",
+  "verdict": "FAIL / UNVERIFIED",
+  "counts_toward_gauge4": false,
+  "why_not": "The acceptance criterion requires the command driven at the real slash surface (typed -> registered -> executed). I hand-ran the playbook's steps in a shell. That proves the playbook's steps are executable; it does not prove the slash surface.",
+  "acceptance": {
+    "A1_memory_file_correct_name_and_size": "PASS (CLAUDE.md, 26 lines <= 200)",
+    "A2_markers_single_pair": "FAIL \u2014 2 begin / 2 end markers",
+    "A2_user_content_preserved": "PASS",
+    "A2_nothing_edited_outside_markers": "PASS",
+    "A3_scoped_rules_written": "PASS (proof-obligations.md, evidence-contract.md)",
+    "A4_verification_block_executed": "PASS (install.md:77-83 run verbatim)"
+  },
+  "A2_root_cause": "MY PROBE'S BUG, not a product defect. plugins/proofpunk/assets/claude-md-template.md already contains <!-- proofpunk:begin --> at line 1 and its matching end marker. My merge wrapped the already-wrapped template, producing a nested pair. install.md Step 2 says substitute placeholders and merge; it never says add markers.",
+  "correct_behavior": "Insert the template verbatim (markers included), replacing any existing marked block.",
+  "next_action": "Drive /proofpunk:install through a live host session (tools/sdk_probe.py) to obtain real slash-surface evidence. Until then gauge 4 stays 4/6 UNMET.",
+  "live_slash_probe": {
+    "probe": "tools/sdk_probe.py cmd_slash_install",
+    "rc": 0,
+    "artifact": "step-03-slash-install.plugin.log",
+    "verdict": "LIMITED / UNVERIFIED for filesystem effects \u2014 NOT a PASS",
+    "what_it_proves": "Slash registration + playbook recognition: plugin_loaded=true, doctrine marker quoted, '/proofpunk:install' evaluated YES as the invoked command.",
+    "what_it_does_NOT_prove": "File-write execution. The probe's own 'why' field states: 'SDK sessions here have no Write tool so the playbook cannot execute a file merge.' The session also stopped before write, reporting 'Detection complete. Stopping before write.'",
+    "cwd_note": "Probe ran at /private/tmp (its own default), not the sandbox I built. Repo verified unmutated: tracked-file count unchanged at 42 M; the single AGENTS.md diff is pre-existing session work adding verify-counts.py to the test list; untracked 46->47 is this run's own sealed evidence dir.",
+    "control_arm": "NOT RUN this session (--no-plugin arm pending).",
+    "gauge4_effect": "None. Still 4/6 UNMET. Level c requires an observed marker from a mapped skill; install maps to no skill and the probe cannot write."
+  },
+  "remaining_work_for_gauge4": "Drive /proofpunk:install in a host session that grants Write/Edit, with --cwd pointed at a fresh mktemp -d sandbox, plus its --no-plugin control arm; then assert the documented on-disk effects (CLAUDE.md merged within markers, .claude/rules/ populated, <=200 lines)."
+}

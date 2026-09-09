@@ -1,6 +1,6 @@
 # gauge-report — recomputed from sealed artifacts
 
-Generated: 2026-09-04T15:20:07Z | Repo HEAD: `73e928ed8d3b62827018ab8ab2e470c5487d0e2d` (working tree dirty)
+Generated: 2026-09-09T17:37:26Z | Repo HEAD: `93c479de800fff7e3ceb0be5ccf96f4d494fdaee` (working tree dirty)
 
 Every row is computed fresh by this script from files under
 `evidence/v3-release/**` and the live skill tree. No number is copied
@@ -15,7 +15,7 @@ is reported UNVERIFIED, never PASS.
 | 8 | L10 | Median skill body size (context-economy proxy) (bytes) | 6,266 | UNMEASURED (no target defined in sealed sources) | 6186 bytes | **UNMEASURED** | `evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1` |
 | 2 | L4 | stop-guard scout-substring false-PASS closed, mutation-proven (cases) | 47 -> 48 cases | mutation-proven (baseline=mutated+1, restored byte-identical to baseline) | baseline=48 mutated=47 restored=48 byte_identical=True | **PASS** | `evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/VERDICT.md@sha256:43646ce82d6a4d2da30824812ac88cbf465833114b95167e2f70a6ccbb787aeb`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-00-root-cause.md@sha256:6aab30d9ceee57b61cd8ee4fa6b60ab3c5a61c67653fd2ce94273b65b53ed791`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-01-baseline-fix-present.log@sha256:e12a0e2d4cd0f0a4b1aa60289f9abae03c4306ad38da0ef77761d3b885907dff`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-02-mutated-fix-reverted.log@sha256:47ae31b428db297c08369770ce251a19b1c4d34ed0dd5f2d592134c55dd212a9`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-03-restored.log@sha256:e12a0e2d4cd0f0a4b1aa60289f9abae03c4306ad38da0ef77761d3b885907dff` |
 | 3 | L1 | Unresolved repo-tree citations (name/desc/fields resolve relative to citing file) (citations) | 30 -> 29 (top-level: 1 -> 0) | 0 | 0 unresolved (top-level: 0) | **PASS** | `evidence/v3-release/00-baseline/citation-integrity-finding.md@sha256:90969b64df5cc23d260e99b276822a09ff4e0123866730802d0004fa2ac04ec3` |
-| 4 | L16 | Commands proven end-to-end at the real slash-command surface (commands) | 0/6 | 6/6 | 0/6 | **UNMET** | `evidence/v3-release/00-baseline/command-surface-map.md@sha256:9d76a58a16eb5246f48818666ba2b7d51a4242be64d8a824150d85636e0d3220` |
+| 4 | L16 | Commands proven end-to-end at the real slash-command surface (commands) | 0/6 | 6/6 | 4/6 | **UNMET** | `evidence/v3-release/l16-commands/command-surface-proof.json@sha256:8233e98327fe37c9440c7f69cbfd35db6d091680607c35273842cb24aba9fd0c` |
 | 5 | L2/L3 | Release gates: all exit 0, exit codes captured separately from stdout (gates) | 4/4 rc=0 | 4/4 rc=0 (this is a sealed snapshot — re-run tools/*.sh/py to confirm current tree) | test-hooks.sh=0, test-installer.sh=0, dry-run-install.sh=0, verify-orchestration.py=0 | **PASS** | `evidence/v3-release/00-baseline/gates-20260904T051258/exit-codes.txt@sha256:c6db6b3274cf4ee0b9a51a2b043d8234fb53e8f4a5d837f005a9aa19abc4a947`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/README.md@sha256:e09021a705dccd4e4e03a73d8a054d72cdaa92c132bab404c0bfdf19c64a1c68`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/test-hooks.sh.log@sha256:563d8e2216ca7699b7021916e6ad8ddd98a050c96eb979e7f9dd8f462da4f8e6`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/test-installer.sh.log@sha256:fac80dddb4814f0852bacac17baa97af6f776b7e78b73e6fab02102a19b981f7`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/dry-run-install.sh.log@sha256:78770467d5cdbf18b7eebdf18803af3006ef12e16084beb65002c948470b6d68`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/verify-orchestration.py.log@sha256:16188c448147dbfe97be37d50c88f76ccceeb5e7b1b8d01e7b5e32c205e3cbf3` |
 | 6 | L14 | Skill count (ground truth, derived not restated) (skills) | 18 | 18 | 18 | **PASS** | `evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1` |
 
@@ -53,8 +53,8 @@ is reported UNVERIFIED, never PASS.
 
 ### Gauge #4 (L16) — Commands proven end-to-end at the real slash-command surface
 - Status: **UNMET**
-- Measured: 0/6
-- Detail: no command has a single artifact proving slash-typed -> flag mapping -> real execution -> observed result
+- Measured: 4/6
+- Detail: 4/6 reached full-chain (slash -> registered -> skill ran -> marker); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']
 
 ### Gauge #5 (L2/L3) — Release gates: all exit 0, exit codes captured separately from stdout
 - Status: **PASS**

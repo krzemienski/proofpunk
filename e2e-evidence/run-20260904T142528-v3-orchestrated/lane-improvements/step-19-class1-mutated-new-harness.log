@@ -1,0 +1,26 @@
+subjects=23 evidence_files=1004
+PASS tools/dry-run-install.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+UNPROVEN-LIVE tools/sdk_probe.py (live-session harness; hermetic gate cannot re-drive)
+PASS tools/test-hooks.sh -> e2e-evidence/FIXES.md
+PASS tools/test-installer.sh -> e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json
+PASS tools/verify-citations.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+PASS tools/verify-command-surface.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+UNPROVEN-SIBLING tools/verify-counts.py (owned by another live lane; no mutation artifact yet)
+PASS tools/verify-harness-integrity.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+PASS tools/verify-mutation-artifact.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+PASS tools/verify-orchestration.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+PASS tools/verify-proof-vocab.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+PASS tools/verify-router-links.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-head/VERDICT.md
+PASS tools/verify-shipped-vs-active.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-improvements/step-14-mutation-artifact-after-tighten.log
+PASS plugins/proofpunk/hooks/bash-write-notice.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/VERDICT.md
+PASS plugins/proofpunk/hooks/bash-write-snapshot.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/capture-guard.sh -> e2e-evidence/run-20260827T210954-capture-guard-after/verdict.json
+PASS plugins/proofpunk/hooks/evidence-guard.sh -> e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json
+PASS plugins/proofpunk/hooks/instructions-loaded.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/no-test-files.sh -> e2e-evidence/run-sdk-probes/VERDICT.md
+PASS plugins/proofpunk/hooks/post-write-walkthrough.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/session-start.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/stop-guard.sh -> e2e-evidence/run-sdk-probes/VERDICT.md
+linked=20 unproven=2 fail=1
+VERDICT: FAIL
+  NEW tools/verify-dummy-mutation.py has no mutation-test artifact under e2e-evidence/ or evidence/

@@ -1,9 +1,8 @@
-⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
 {
   "probe": "cmd_slash_truth_audit",
   "why": "slash /proofpunk:truth-audit must expand with --start/--end into codebase-truth-audit",
   "plugin_loaded": false,
-  "elapsed_s": 0.7,
+  "elapsed_s": 2.3,
   "reply": "Unknown command: /proofpunk:truth-audit",
   "hook_events": [],
   "tools_used": [],
@@ -12,7 +11,7 @@
   "result": {
     "is_error": false,
     "num_turns": 0,
-    "cost_usd": 0
+    "cost_usd": 0.001008
   },
   "transcript": [
     {
@@ -34,6 +33,7 @@
     "tool_arg_matches": false,
     "tool_succeeded": false,
     "slash_registered": false,
+    "slash_expanded": false,
     "local_plugin_loaded": false,
     "forbid_absent": true
   },

@@ -86,33 +86,53 @@ def sha256_of(path):
     return h.hexdigest()
 
 
+ARM_TIMEOUT_S = 180
+
+
+def _parse_probe_json(body):
+    """First complete JSON object in body. Warning prefixes and extra
+    concatenated objects (CLI bg-wait ceiling reprint) must not drop it.
+    """
+    dec = json.JSONDecoder()
+    i = body.find("{")
+    while i >= 0:
+        try:
+            obj, end = dec.raw_decode(body, i)
+        except ValueError:
+            i = body.find("{", i + 1)
+            continue
+        if isinstance(obj, dict) and "probe" in obj:
+            return obj
+        i = body.find("{", end)
+    return None
+
+
 def run_probe(probe, cwd, no_plugin, log_path, rc_path):
     """Run one sdk_probe arm. Capture stdout+stderr to log_path, rc to rc_path.
 
     Never pipes: Popen with files, wait, write rc from the process itself.
+    Kill at ARM_TIMEOUT_S so a wandering plugin arm cannot burn minutes.
     """
     cmd = [sys.executable, PROBE, probe, "--cwd", cwd]
     if no_plugin:
         cmd.append("--no-plugin")
     with open(log_path, "w", encoding="utf-8") as out:
+        env = os.environ.copy()
+        # Do not wait 600s for background workflows the probe already forbade.
+        env["CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS"] = "5000"
         proc = subprocess.Popen(
-            cmd, cwd=ROOT, stdout=out, stderr=subprocess.STDOUT)
-        rc = proc.wait()
+            cmd, cwd=ROOT, stdout=out, stderr=subprocess.STDOUT, env=env)
+        try:
+            rc = proc.wait(timeout=ARM_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+            rc = 124
+            out.write("\nTIMEOUT after %ss\n" % ARM_TIMEOUT_S)
     with open(rc_path, "w", encoding="utf-8") as fh:
         fh.write(str(rc))
     body = open(log_path, encoding="utf-8").read()
-    parsed = None
-    try:
-        parsed = json.loads(body)
-    except ValueError:
-        # stdout may have a trailing warning; take the last JSON object
-        start = body.rfind("{")
-        if start >= 0:
-            try:
-                parsed = json.loads(body[start:])
-            except ValueError:
-                parsed = None
-    return rc, parsed, body
+    return rc, _parse_probe_json(body), body
 
 
 def classify(cmd, plugin, control):
@@ -129,22 +149,25 @@ def classify(cmd, plugin, control):
         )
     slash_ok = bool(p_checks.get("slash_registered"))
     local_ok = bool(p_checks.get("local_plugin_loaded"))
+    expanded = bool(p_checks.get("slash_expanded"))
     skill_ok = bool(p_checks.get("tool_succeeded")) if cmd["skill"] else None
     text_ok = bool(p_checks.get("text_matches"))
-    if cmd["max_level"] == "c" and slash_ok and local_ok and skill_ok and text_ok:
+    if (cmd["max_level"] == "c" and slash_ok and local_ok and expanded
+            and skill_ok and text_ok):
         return dict(
             level="c",
             plugin_pass=True,
             control_failed=True,
-            reason="slash registered, local plugin, Skill succeeded, marker observed",
+            reason=("slash typed+expanded, local plugin, Skill succeeded, "
+                    "marker observed"),
         )
-    if slash_ok and local_ok and text_ok:
+    if slash_ok and local_ok and expanded:
         return dict(
             level="playbook-recognition",
             plugin_pass=True,
             control_failed=True,
-            reason=("slash registered + local plugin + command-doc marker; "
-                    "no backing skill/script executed"),
+            reason=("slash typed+expanded + local plugin; no backing "
+                    "skill/script executed (or Skill not required)"),
         )
     return dict(
         level="partial",

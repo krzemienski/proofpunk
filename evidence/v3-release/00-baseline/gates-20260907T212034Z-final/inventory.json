@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "count": 14,
+  "artifacts": [
+    {
+      "name": "dry-run-install.sh.log",
+      "bytes": 1268,
+      "sha256": "78770467d5cdbf18b7eebdf18803af3006ef12e16084beb65002c948470b6d68"
+    },
+    {
+      "name": "exit-codes.txt",
+      "bytes": 348,
+      "sha256": "901150f277158c2946a6eafcb56ebd707cb0b94452f4ce8d344cd829d324560a"
+    },
+    {
+      "name": "gauge-report.log",
+      "bytes": 1203,
+      "sha256": "52197684b7d592df9f1f5506665460cb1328fbd01f4a92a06e8a5f29821135b9"
+    },
+    {
+      "name": "test-hooks.sh.log",
+      "bytes": 3481,
+      "sha256": "5edc186a55e1842dcad517ddf19cf5e66f97824231b248b4015e34c376ea4c2d"
+    },
+    {
+      "name": "test-installer.sh.log",
+      "bytes": 2799,
+      "sha256": "b4773aed61534b4e77e06fb1678e3811f1fa74b85f2f40427ba97f094064db6c"
+    },
+    {
+      "name": "verify-citations.py.log",
+      "bytes": 644,
+      "sha256": "22f345cc9a4dcc5bc150e2af0d436179be26606cf034d1c4adb9dd1081ba3912"
+    },
+    {
+      "name": "verify-command-surface.py.log",
+      "bytes": 682,
+      "sha256": "3d9e555b5a105ac5617577e76823134d1fc5795219e08332a3161e3e119bf10c"
+    },
+    {
+      "name": "verify-counts.py.log",
+      "bytes": 171,
+      "sha256": "95f5cca8d7617a6ea8dc9a16aba0f470d1e425c8ba2b0830fb9dede387737bf9"
+    },
+    {
+      "name": "verify-harness-integrity.py.log",
+      "bytes": 7075,
+      "sha256": "342b7bbd5109c00a485f62a594ef1807adadeab6b5f8722d35881cc9d0419d7e"
+    },
+    {
+      "name": "verify-mutation-artifact.py.log",
+      "bytes": 2553,
+      "sha256": "20ad2e7e66713949b3cd69a48ba3088ebc3435383aab51f108ec5aebb502f832"
+    },
+    {
+      "name": "verify-orchestration.py.log",
+      "bytes": 10957,
+      "sha256": "16188c448147dbfe97be37d50c88f76ccceeb5e7b1b8d01e7b5e32c205e3cbf3"
+    },
+    {
+      "name": "verify-proof-vocab.py.log",
+      "bytes": 33,
+      "sha256": "c60d186088fd6cbde0c7fcce85304363c1643ce0de7388201e419c4375882f16"
+    },
+    {
+      "name": "verify-router-links.py.log",
+      "bytes": 179,
+      "sha256": "13b264c42709773d327fb29ac42da7fbe53ecbd5554c9182366324d2ce0fd48a"
+    },
+    {
+      "name": "verify-shipped-vs-active.py.log",
+      "bytes": 301,
+      "sha256": "404bf599c590fff661cb16361b68cfca79888421f2182683b884fa16330fa1a6"
+    }
+  ],
+  "total_bytes": 31694
+}

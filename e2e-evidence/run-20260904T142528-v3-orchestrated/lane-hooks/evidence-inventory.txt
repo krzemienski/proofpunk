@@ -1,4 +1,4 @@
-    6476  5ecb9afdc4be0639293d347aa232e4fb87f4818e2fe627b30329ea4ee282ff7a  VERDICT.md
+    7590  22365cb78761bbb92d0863079d90f667b1e082199224e45a7934ed2dbe18ada1  VERDICT.md
     3481  5edc186a55e1842dcad517ddf19cf5e66f97824231b248b4015e34c376ea4c2d  after/step-01-test-hooks.log
        2  9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa  after/step-01-test-hooks.rc
     3527  d0b44e9d6e33de6fdbe269c4e0a386e54dce0eb945c2c52833291acb060d5b1a  after/step-02-pre-fix-hooks.log
@@ -7,6 +7,25 @@
        2  9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa  baseline/step-00-test-hooks.rc
      123  7f5517256dcda27e93b6627c268bd3c645a9325be2a83df15ae182771a1094d0  cap-home/.claude/proofpunk-loads.jsonl
     3507  ca675aa308d2ecab2967efcb19939c071b190170a92e6445d6f6a788db55431b  derived-hooks-parse.json
+      72  093e1a94cb48ccda9b05dcdd8f944777a69ce6e7bb6cffa8616750f153e34eae  live/probe-cwd/.omc/state/agent-replay-c37edb70-2592-456c-8be3-7bb5740d6cca.jsonl
+      46  d63071c5675958b9e562aa6c70e7030d2cf20bf376c412b401d7057035b8dc7d  live/probe-cwd/.omc/state/idle-notif-cooldown.json
+     227  8adca8fe4eea1c5d223dea72cc3ae69e57633a4b167cc98a157572bbc10ad27e  live/probe-cwd/.omc/state/sessions/a0e37e35-ba66-4035-8f22-ce2cf42b38e0/session-started.json
+     227  71e10799e32c8b0f769f0cfa3c12ca97526ca5d0af4662801ef02fdfec65e5bc  live/probe-cwd/.omc/state/sessions/a11ff6c3-31be-436c-82f4-e2e12c145bbd/session-started.json
+     227  4449bcbc30493d5bed7401937e73e2c533ab1edfd17ff57c10334bddd3167d88  live/probe-cwd/.omc/state/sessions/b300c481-27d8-42ea-b84c-ae660a1f0e17/session-started.json
+     227  a85ed5b596aa65b3a48693ecd835f1a270b74b60548c9089fbe4cd441d16df41  live/probe-cwd/.omc/state/sessions/c37edb70-2592-456c-8be3-7bb5740d6cca/session-started.json
+     227  323f02017360ddabd370a715ad76d0b58aaced58f8d790674863a6c0e167ba88  live/probe-cwd/.omc/state/sessions/d607b265-f2f0-4f29-9249-d3e6686b2313/session-started.json
+     227  08a8e380751d208887e2250dc7b1b5fa2091a76a3ca1397e78a588baa63e066c  live/probe-cwd/.omc/state/sessions/ec854326-dfb6-4523-b1f1-48342f1f3490/session-started.json
+   10306  c145b4e7fbc5d54ccfe800ce455b9b74eaf342e543d6f2da627efe7ad28a3611  live/step-01-doctrine.json
+       2  9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa  live/step-01-doctrine.rc
+   10710  d23d99e31bcbfbf4e50c41a8e53679aaaa34460de2fe6426175dd19f5e05ddcb  live/step-02-instructions_loaded.json
+       2  9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa  live/step-02-instructions_loaded.rc
+   13364  45c9a4e11266edade23f7d86b5f037cc8f34ccdec1c68d16f986af040169346a  live/step-03-blocks_test_file.json
+       2  4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865  live/step-03-blocks_test_file.rc
+   11183  ad9a3fd3119c0957eb16082f864b7b1b4e351b031f5f2cc4361c6ec24a3ca731  live/step-04-allows_normal_file.json
+       2  4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865  live/step-04-allows_normal_file.rc
+   16951  78cf40902fd572c180cf4ed15ac09f0da44d72be70a28ce512ec1cd7b7e19baa  live/step-05-stop_guard.json
+       2  9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa  live/step-05-stop_guard.rc
+    1544  da9beeaacf1a3cc3871309a05eb1ea3fa5691060227c9a710615b311661f2821  live/summary-remaining.json
       80  74127a674a3d6fd4e8ba3634799ddeecb435fe31cfe0ba9ff55f4c77b912641c  mutation/step-00-fixed.sha256
     3481  5edc186a55e1842dcad517ddf19cf5e66f97824231b248b4015e34c376ea4c2d  mutation/step-01-baseline.log
        2  9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa  mutation/step-01-baseline.rc

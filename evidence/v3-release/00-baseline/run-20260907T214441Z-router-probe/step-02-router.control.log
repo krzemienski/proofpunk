@@ -1,0 +1,87 @@
+{
+  "probe": "router",
+  "why": "the router is the plugin's only entry point; it must actually load",
+  "plugin_loaded": false,
+  "elapsed_s": 29.5,
+  "reply": "I don't see a skill named `proofpunk` in the available skills list. Let me check whether it exists anywhere on disk before concluding.I can't do this \u2014 there is no skill named `proofpunk`, so there's nothing to load or quote.\n\n**What I checked:**\n\n1. **The available-skills list for this session** \u2014 it contains `dataviz`, `update-config`, `keybindings-help`, `code-review`, `simplify`, `fewer-permis",
+  "hook_events": [],
+  "tools_used": [
+    "Bash"
+  ],
+  "hook_runs": [],
+  "tool_calls": [
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"find ~/.claude/skills /root/.claude/skills . -maxdepth 4 -iname \\\"*proofpunk*\\\" 2>/dev/null | head -20\", \"description\": \"Search for proofpunk skill on disk\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"ls -la /Users/nick/.claude/skills/ 2>/dev/null; echo \\\"---\\\"; ls -la /Users/nick/.claude/skills/proofpunk-doctrine/ 2>/dev/null\", \"description\": \"List skills directory contents\"}"
+    },
+    {
+      "name": "Bash",
+      "input": "{\"command\": \"grep -ril \\\"skill calls\\\" /Users/nick/.claude/skills/proofpunk-doctrine/ 2>/dev/null; echo \\\"--- SKILL.md present?\\\"; ls /Users/nick/.claude/skills/proofpunk-doctrine/SKILL.md 2>&1 | head"
+    }
+  ],
+  "result": {
+    "is_error": false,
+    "num_turns": 4,
+    "cost_usd": 0.4218335000000001
+  },
+  "transcript": [
+    {
+      "kind": "init",
+      "slash_proofpunk": [],
+      "local_plugin": false
+    },
+    {
+      "kind": "text",
+      "text": "I don't see a skill named `proofpunk` in the available skills list. Let me check whether it exists anywhere on disk before concluding."
+    },
+    {
+      "kind": "tool_use",
+      "name": "Bash",
+      "input": "{\"command\": \"find ~/.claude/skills /root/.claude/skills . -maxdepth 4 -iname \\\"*proofpunk*\\\" 2>/dev/null | head -20\", \"description\": \"Search for proofpunk skill on disk\"}"
+    },
+    {
+      "kind": "tool_result",
+      "is_error": false,
+      "content": "./A11_diff_proofpunk-install.md.txt\n./A11_diff_proofpunk-forge-prompt.md.txt\n./diff_proofpunk-forge-prompt.txt\n./diff_proofpunk-verify.txt\n./diff_proofpunk-rate-prompt.txt\n./A11_diff_proofpunk-verify.md.txt\n./proofpunk-evidence\n./A11_diff_proofpunk-implement.md.txt\n./diff_proofpunk-implement.txt\n./A"
+    },
+    {
+      "kind": "tool_use",
+      "name": "Bash",
+      "input": "{\"command\": \"ls -la /Users/nick/.claude/skills/ 2>/dev/null; echo \\\"---\\\"; ls -la /Users/nick/.claude/skills/proofpunk-doctrine/ 2>/dev/null\", \"description\": \"List skills directory contents\"}"
+    },
+    {
+      "kind": "tool_result",
+      "is_error": false,
+      "content": "total 9800\ndrwxr-xr-x@   4 nick  staff      128 Aug  5 12:42 _inventory\ndrwxr-xr-x@ 181 nick  staff     5792 Sep  6 00:38 .\ndrwx------@ 154 nick  staff     4928 Sep  7 17:44 ..\n-rw-r--r--@   1 nick  staff        6 Apr 18 03:16 .api.pid\n-rw-r--r--@   1 nick  staff      247 Jun 16 19:45 .context-engin"
+    },
+    {
+      "kind": "tool_use",
+      "name": "Bash",
+      "input": "{\"command\": \"grep -ril \\\"skill calls\\\" /Users/nick/.claude/skills/proofpunk-doctrine/ 2>/dev/null; echo \\\"--- SKILL.md present?\\\"; ls /Users/nick/.claude/skills/proofpunk-doctrine/SKILL.md 2>&1 | head -2\", \"description\": \"Check for Skill calls table and SKILL.md\"}"
+    },
+    {
+      "kind": "tool_result",
+      "is_error": false,
+      "content": "--- SKILL.md present?\nls: /Users/nick/.claude/skills/proofpunk-doctrine/SKILL.md: No such file or directory"
+    },
+    {
+      "kind": "text",
+      "text": "I can't do this \u2014 there is no skill named `proofpunk`, so there's nothing to load or quote.\n\n**What I checked:**\n\n1. **The available-skills list for this session** \u2014 it contains `dataviz`, `update-config`, `keybindings-help`, `code-review`, `simplify`, `fewer-permission-prompts`, `loop`, `schedule`, `claude-api`, `run`, `init`, `security-review`. No `proofpunk`. Calling `Skill` with a name not in the listing would just error, so I didn't guess.\n\n2. **Disk, in case it was installed but unlisted**"
+    }
+  ],
+  "init_slash_proofpunk": [],
+  "local_plugin_loaded": false,
+  "prompt": "Invoke the skill named exactly 'proofpunk' using the Skill tool. After it loads, quote verbatim the first row of its 'Skill calls' table.",
+  "checks": {
+    "text_matches": false,
+    "tool_invoked": false,
+    "tool_arg_matches": false,
+    "tool_succeeded": false
+  },
+  "expect_text": "brainstorm",
+  "pass": false
+}

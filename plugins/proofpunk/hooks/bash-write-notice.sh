@@ -12,8 +12,8 @@
 # prevention parsed shell to decide a deny and falsely blocked `cp -p`,
 # `mv -f`, `touch -c` and `sed -i -e`.
 #
-# Detection is by EFFECT — bash-write-snapshot.sh hashes protected paths at
-# PreToolUse, this re-hashes them after. A command that changes nothing emits
+# Detection is by EFFECT - bash-write-snapshot.sh records a stat signature
+# (size+mtime+ctime+inode) for protected paths at PreToolUse, this re-reads it after. A command that changes nothing emits
 # nothing, whatever it looked like, so no false positive can interfere with a
 # working command. Content hashing (not mtime+size) means `cp -p` and
 # equal-size substitution are still caught.
@@ -23,7 +23,7 @@ input=$(cat)
 export PROOFPUNK_HOOK_INPUT="$input"
 
 python3 - <<'PYEOF'
-import hashlib, json, os, re, sys
+import fnmatch, hashlib, json, os, re, sys
 
 try:
     data = json.loads(os.environ["PROOFPUNK_HOOK_INPUT"])
@@ -76,25 +76,71 @@ if not base.get("complete", False):
     sys.exit(0)
 
 SKIP = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".next", ".turbo"}
+# Vendored / generated trees are never user-authored, but their bundled test
+# files flooded the scan (10,782 -> 595 false matches on a real repo).
+SKIP_RX = re.compile(
+    r"^(\.?venv[-_.].*|\.?virtualenv.*|site-packages|\.mypy_cache|\.pytest_cache"
+    r"|\.tox|\.eggs|.*\.egg-info|\.ruff_cache|\.ipynb_checkpoints)$"
+)
 PROTECTED_DIR = re.compile(r"(^|/)(e2e-)?evidence(/|$)")
 TEST_PATH = re.compile(
     r"(_?tests?_|__tests__|\.spec\.|\.test\.|/tests?/|/test_|_test\.|/testing/)", re.I
 )
 
-def sha(p):
+def _extra_prunes(root):
+    """Optional per-repo prune list: .proofpunk-ignore at the repo root, one
+    directory-name glob per line, '#' comments allowed. Bulk artifact trees
+    (frame dumps, render caches) can hold tens of thousands of files that never
+    match a protected pattern -- 81,397 walked / 0 matched in one real repo.
+    Pruning them is a pure latency win. Absent file = unchanged behavior."""
+    literals, globs = set(), []
     try:
-        h = hashlib.sha256()
-        with open(p, "rb") as fh:
-            for chunk in iter(lambda: fh.read(65536), b""):
-                h.update(chunk)
-        return h.hexdigest()
+        with open(os.path.join(root, ".proofpunk-ignore")) as fh:
+            for line in fh:
+                line = line.split("#", 1)[0].strip()
+                if not line:
+                    continue
+                # Split literals from globs. fnmatch is ~100x slower than a set
+                # probe and the walk evaluates this for EVERY directory, so a
+                # few hundred literal names must not become a few hundred
+                # fnmatch calls per dir (measured: 2.17s -> 4.99s per Bash call
+                # when 451 literals all went through fnmatch).
+                if any(c in line for c in "*?["):
+                    globs.append(line)
+                else:
+                    literals.add(line)
+    except OSError:
+        pass
+    return literals, globs
+
+
+PRUNE_LIT, PRUNE_GLOB = _extra_prunes(cwd)
+
+
+def sha(p):
+    # Stat signature, not content hash. Content hashing 10k protected files cost
+    # 7.8s per pass (15.5s per Bash call) on a real repo and always blew the cap,
+    # which silently disabled the guard entirely.
+    #
+    # st_ctime_ns is the load-bearing field: it is set by the kernel on any inode
+    # or content change and CANNOT be forged from userspace. Verified empirically:
+    # overwriting content and calling os.utime() to restore mtime leaves
+    # size+mtime+inode byte-identical (attack succeeds) while ctime still moves
+    # (attack detected). So this catches `cp -p` and equal-size substitution --
+    # the exact cases content hashing existed for -- at ~0.02s per pass.
+    try:
+        s = os.stat(p)
+        return f"{s.st_size}:{s.st_mtime_ns}:{s.st_ctime_ns}:{s.st_ino}"
     except OSError:
         return None
 
 now = {}
 try:
     for dirpath, dirnames, filenames in os.walk(cwd):
-        dirnames[:] = [d for d in dirnames if d not in SKIP]
+        dirnames[:] = [d for d in dirnames
+                   if d not in SKIP and not SKIP_RX.match(d)
+                   and d not in PRUNE_LIT
+                   and not any(fnmatch.fnmatch(d, q) for q in PRUNE_GLOB)]
         rel_dir = os.path.relpath(dirpath, cwd)
         in_protected = bool(PROTECTED_DIR.search("/" + rel_dir.replace(os.sep, "/")))
         for fn in filenames:
@@ -165,8 +211,9 @@ if not findings:
 
 msg = (
     "proofpunk: a Bash command changed protected files without passing the PreToolUse "
-    "guards, which are registered on Write|Edit only. Detected by hashing before and "
-    "after the call — not by parsing the command. "
+    "guards, which are registered on Write|Edit only. Detected by comparing a "
+    "size+mtime+ctime+inode signature before and after the call - not by parsing "
+    "the command. "
     + " | ".join(findings[:5])
     + ". This is a NOTICE, not a block: the write already happened and nothing was "
     "undone. Remediate now if it broke a rule you meant to honor."

@@ -10,7 +10,10 @@ This document does not restate `hooks-and-init-design.md` — that file is
 the *design rationale* for the hook set as it existed at v1.10.0 (research
 citations, the case for command hooks over prompt hooks, the original
 4-event/5-script layout). This document describes the **current** system
-(v2.2.0) as it actually ships, and calls out where the two have diverged.
+(v3.0.0 shipping from this tree) as it actually ships, and calls out where
+the two have diverged. Hook event/script/registration counts are derived
+in `docs/hook-enforcement-map.md` — this file cites that map rather than
+duplicating its per-script table.
 
 ## 1. The layers, and what each is for
 
@@ -24,29 +27,44 @@ through a subset of these layers depending on what kind of request it is.
 | Skills | `skills/*/SKILL.md` | 18 (17 delivery skills + 1 router) | `skills/proofpunk/SKILL.md` is the single entry point: it classifies a request's *shape* and hands off to exactly one (or a short ordered chain of) delivery skills, never re-executing their logic itself (§2). The other 17 are the actual methods — brainstorming, planning, implementing, auditing, debugging, red-teaming, proving — organized as a DAG so each method is owned by exactly one skill (§3). |
 | Commands | `commands/*.md` | 6 (+6 OpenCode) | Slash-command surfaces (`/proofpunk:implement`, `:verify`, `:truth-audit`, `:rate-prompt`, `:forge-prompt`, `:install`) that activate a skill with the user's arguments. One-to-one with the OpenCode variants in `opencode/commands/proofpunk-*.md`, which carry the `proofpunk-` prefix OpenCode's flat command namespace requires. |
 | Agents | `agents/*.md` | 3 Claude Code, 3 OMP (`omp/agents/`), 4 OpenCode (`opencode/agents/`) | Pre-configured subagent personas (`implement`, `scout`, `end-user-validate`) that bundle a skill's doctrine into a spawnable role, so a session can delegate a whole implement-and-prove loop to a dedicated agent instead of running it inline. OpenCode carries one extra agent, `proofpunk.md` — the router itself, spawnable as a persona there (Claude Code and OMP route through the skill directly). |
-| Hooks | `hooks/*.sh` + `hooks.json` | 7 scripts, 6 events | Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, and blocking an unproven completion claim (§4). |
-| Shared references | `references/*.md` | 13 | The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, and more. Skills cite these as `../../references/X`; the installer flattens the citation depth and bundles a self-contained copy per skill (§6). |
+| Hooks | `hooks/*.sh` + `hooks.json` | 9 scripts, 7 event keys, 11 registrations | Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, and blocking an unproven completion claim. Full per-registration map: `docs/hook-enforcement-map.md` (cited, not restated, in §4). |
+| Shared references | `references/*.md` | 14 | The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, the run-trace schema, and more. Skills cite these as `../../references/X`; the installer flattens the citation depth and bundles a self-contained copy per skill (§6). |
 | Assets | `assets/` | 5 files (2 templates + 3 scoped rule files) | `claude-md-template.md` and `agents-md-template.md` are the merge templates `/proofpunk:install` injects into a target project's memory file. `rules/{evidence-contract,proof-obligations,tui-driving}.md` are `paths:`-scoped rule fragments for the same install flow. |
 | Installer | `tools/proofpunk-install.sh` | 1 script | The only path that turns this repo into an installed skill set on a user's machine, for four target platforms. Not part of the shipped plugin tree itself — it lives at the repo root under `tools/` and consumes `plugins/proofpunk/` as its source (§6). |
 
 **Two other things worth naming alongside these layers, because they
-gate everything above:** `tools/verify-orchestration.py` is a script a
-contributor runs by hand — `AGENTS.md`'s testing requirement names it,
-alongside `test-hooks.sh` and `dry-run-install.sh`, as the trio to run
-from the repo root "before claiming any change here done." It proves the
-18-skill DAG in §3 is real: it parses every `SKILL.md`'s `## Skill calls`
-table directly and fails if the skill tables themselves — not this
-document — encode a cycle, an edge to a nonexistent skill, or a
-`Called by` line that doesn't match a real edge. It never reads this
-document or any other prose file: the DAG's source of truth is the
-`SKILL.md` tables, and this document is a description of what those
-tables said when it was written, not an input the verifier checks — so
-this document, specifically, can still drift from them if a skill's
-table changes and this file isn't updated to match. §3's call graph
-below was produced by reading those same 18 tables directly, for that
-reason. `themes/` (20 flat-black cyberpunk themes, rendered to
-OMP/OpenCode/Hyper formats from one `palettes.json` source of truth) is
-presentation-only and does not affect any of the above.
+gate everything above:** the harness layer. `tools/verify-orchestration.py`
+proves the 18-skill DAG in §3 is real: it parses every `SKILL.md`'s
+`## Skill calls` table directly and fails on a cycle, an edge to a
+nonexistent skill, or a `Called by` line that doesn't match a real edge.
+It never reads this document — the DAG's source of truth is the `SKILL.md`
+tables. Alongside it, four additional gates now sit in `tools/` and in
+`.github/workflows/gates.yml`:
+
+- `verify-citations.py` — repo-tree citation resolution (ERROR on a
+  broken `references/` cite in a top-level `SKILL.md`; WARN baseline on
+  vendored bundled copies).
+- `verify-harness-integrity.py` — every harness must actually invoke its
+  declared subject (closes the historical miss where `dry-run-install.sh`
+  was labelled the installer driver while invoking it zero times).
+- `verify-router-links.py` — the router head's skill-call table is
+  derived as N−1 from a glob of `skills/*/SKILL.md`; every delivery skill
+  is linked, none extra.
+- `gauge-report.py` — the v3 gauge board; exits non-zero while any gauge
+  is unmet.
+
+`tools/verify-counts.py` is the Class-2 detector for this document's own
+failure mode: a number-adjacent count word in live `.md` that disagrees
+with the tree. Historical provenance prose (dated release reports,
+before/after rows, consolidation logs) is excluded by construction.
+
+`AGENTS.md`'s testing requirement still names the original trio
+(`test-hooks.sh`, `dry-run-install.sh`, `verify-orchestration.py`) plus
+`test-installer.sh`. CI runs those plus the citation, harness-integrity,
+and gauge gates. §3's call graph below was produced by reading those
+same 18 tables directly. `themes/` (20 flat-black cyberpunk themes,
+rendered to OMP/OpenCode/Hyper formats from one `palettes.json` source
+of truth) is presentation-only and does not affect any of the above.
 
 ### Request flow
 
@@ -120,7 +138,7 @@ to confirm this property still holds (parses the same tables, asserts
 closure, acyclicity, and that "Called by" claims match real edges) — see
 §1 for why this is a manual, not automatic, gate in this repo.
 
-### Call table (18 skills, 47 edges total: 17 from the router to every skill, plus 30 among the 17 delivery skills)
+### Call table (18 skills, 48 edges total: 17 from the router to every delivery skill, plus 31 among the 17 delivery skills — derived from `verify-orchestration.py`'s `CALLS` parse of every `## Skill calls` table, not restated)
 
 | Skill | Calls | Called by |
 |---|---|---|
@@ -138,10 +156,10 @@ closure, acyclicity, and that "Called by" claims match real edges) — see
 | `root-cause-debugging` | `end-user-testing` | `codebase-truth-audit`, `full-functional-audit`, `implement`, `stack-testing`, `proofpunk` |
 | `visual-inspection` | `end-user-testing` | `mobile-validation-runner`, `ui-experience-audit`, `proofpunk` |
 | `brainstorm` | — (leaf) | `implement`, `proofpunk` |
-| `end-user-testing` | — (leaf) | `codebase-truth-audit`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `ui-experience-audit`, `validation-plan`, `visual-inspection`, `proofpunk` (12 callers — the most-depended-on skill in the plugin) |
+| `end-user-testing` | — (leaf) | `codebase-truth-audit`, `full-functional-audit`, `implement`, `mobile-validation-runner`, `plan-hardening`, `production-readiness`, `red-team-eval`, `root-cause-debugging`, `tui-testing`, `ui-experience-audit`, `validation-plan`, `visual-inspection`, `proofpunk` (13 callers — the most-depended-on skill in the plugin) |
 | `prompt-forge` | — (leaf) | `implement`, `proofpunk` |
 | `session-intent` | — (leaf) | `codebase-truth-audit`, `implement`, `proofpunk` |
-| `tui-testing` | — (leaf) | `implement`, `full-functional-audit`, `proofpunk` |
+| `tui-testing` | `end-user-testing` | `implement`, `full-functional-audit`, `proofpunk` |
 
 ### Method ownership (what each owner actually owns)
 
@@ -171,8 +189,8 @@ depth 4  production-readiness
 depth 3  full-functional-audit
 depth 2  codebase-truth-audit, implement, mobile-validation-runner,
          plan-hardening, stack-testing, ui-experience-audit
-depth 1  red-team-eval, root-cause-debugging, validation-plan, visual-inspection
-depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
+depth 1  red-team-eval, root-cause-debugging, tui-testing, validation-plan, visual-inspection
+depth 0  brainstorm, end-user-testing, prompt-forge, session-intent
 ```
 
 ### A contradiction found while writing this section
@@ -192,30 +210,31 @@ version, precisely so this kind of drift cannot survive a rewrite.
 
 ## 4. The hook system
 
-Configuration lives in one file, `hooks/hooks.json`, read directly for
-this section. It declares **6 events** and **7 scripts**, wired into
-**8 registrations** (one event fires 3 scripts under a single matcher):
+Configuration lives in one file, `hooks/hooks.json`. Counts are derived,
+never restated: **9** on-disk `.sh` scripts, **7** event keys, **11**
+registrations (two scripts registered twice: `stop-guard.sh` on Stop and
+SubagentStop; `bash-write-notice.sh` on PostToolUse and PostToolUseFailure).
+The per-registration table — matcher, timeout, can-deny, observes, doctrine
+enforced — lives in `docs/hook-enforcement-map.md` (hashed parse of
+`hooks.json`). This section does not duplicate that table.
 
-| Event | Matcher | Script(s) | Timeout |
-|---|---|---|---|
-| `SessionStart` | `startup\|resume\|clear` | `session-start.sh` | 5s |
-| `Stop` | (none) | `stop-guard.sh` | 10s |
-| `SubagentStop` | (none) | `stop-guard.sh` | 10s |
-| `PreToolUse` | `Write\|Edit` | `no-test-files.sh`, `evidence-guard.sh`, `capture-guard.sh` | 5s each |
-| `InstructionsLoaded` | (none) | `instructions-loaded.sh` | 5s |
-| `PostToolUse` | `Write\|Edit` | `post-write-walkthrough.sh` | 5s |
+What this section still owns: the parallel-not-sequential execution model,
+the Bash-write matcher gap, and the decision-surface summary a contributor
+needs without opening the map.
 
 ### Decision surface per script
 
 | Script | Event | Deny path | Otherwise |
 |---|---|---|---|
 | `session-start.sh` | SessionStart | never denies | always emits `hookSpecificOutput.additionalContext` with the one-paragraph doctrine summary and the six command names |
-| `stop-guard.sh` | Stop, SubagentStop | scans the last 40 transcript lines, assistant-authored only; emits `{"decision":"block","reason":...}` if a completion CLAIM appears with no PROOF citation, **or** if CLAIM+PROOF appear with no SCOUT record | silent — exit 0, no output at all (a stop hook that speaks on every stop is noise across a multi-plugin session) |
+| `stop-guard.sh` | Stop, SubagentStop | scans the last 40 transcript lines, assistant-authored only; emits `{"decision":"block","reason":...}` if a completion CLAIM appears with no PROOF citation, **or** if CLAIM+PROOF appear with no SCOUT record | silent exit 0 when the heuristic ran and found nothing. Fail-open paths (missing/unreadable transcript, no python3) still exit 0 but now emit `additionalContext` containing `enforcement OFF (<reason>)` — see `docs/hook-enforcement-map.md` |
 | `evidence-guard.sh` | PreToolUse | `exit 2` + stderr if the write targets an evidence directory **and** the payload matches a secret-shaped pattern (API keys, GitHub tokens, AWS keys, private-key headers, or a generic `key/secret/token = value` assignment) | `exit 0` (allow) for everything else |
 | `capture-guard.sh` | PreToolUse | `exit 2` + stderr if the target is an **already-existing** file, under an evidence directory, with a raw-capture extension (`.txt .log .out .err .jsonl .png .har .csv`) — captures are immutable once written | `exit 0` for new files, sidecar `.md`/`.json` files, and anything outside evidence directories |
 | `no-test-files.sh` | PreToolUse | `exit 2` + stderr if the path matches a test-file shape (`*test*`, `*.spec.*`, `*.test.*`, `__tests__/`, etc.) | `exit 0` for everything else |
 | `instructions-loaded.sh` | InstructionsLoaded | never denies | always appends one JSONL line (`ts`, `file_path`, `load_reason`, `cwd`) to `~/.claude/proofpunk-loads.jsonl` — this is the measurement tap that proves `/proofpunk:install`'s memory injection actually loads |
-| `post-write-walkthrough.sh` | PostToolUse | never denies | if the written path is production code (not evidence, docs, `.planning/`, or config) — emits `additionalContext` reminding the agent to drive the real system and cite evidence before any completion claim; silent otherwise |
+| `post-write-walkthrough.sh` | PostToolUse (`Write\|Edit`) | never denies | if the written path is production code (not evidence, docs, `.planning/`, or config) — emits `additionalContext` reminding the agent to drive the real system and cite evidence before any completion claim; silent otherwise |
+| `bash-write-snapshot.sh` | PreToolUse (`Bash`) | never denies (a deny here would re-open the abandoned shell parser) | hashes protected paths (evidence dirs + test-shaped paths) before the command runs; leaves a per-session baseline for the notice hook. Cite `docs/hook-enforcement-map.md` |
+| `bash-write-notice.sh` | PostToolUse + PostToolUseFailure (`Bash`) | never denies (host: the tool already ran) | re-hashes protected paths vs the snapshot; reports test files written, capture tamper, evidence delete, secret-shaped evidence content. Detection, not prevention |
 
 ### These hooks run in parallel, not in sequence
 
@@ -376,7 +395,10 @@ any single skill.
 
 ### Hooks: `hooks.json` is now the single source of truth
 
-With `--hooks` (automatic on plugin installs), the installer no longer
+`--hooks` is **opt-in on the plain-skills channel** (`WITH_HOOKS=0` is
+the default in `tools/proofpunk-install.sh`; marketplace/plugin installs
+load hooks from the plugin cache's own `hooks.json` and never write
+`settings.json`). When `--hooks` is passed, the installer no longer
 hardcodes which scripts to copy or which events to register — both are
 **derived from `hooks/hooks.json` at install time**, via a small inline
 Python step that:
@@ -494,15 +516,23 @@ live tree while writing it — re-run any of them to re-verify:
   `glob plugins/proofpunk/omp/agents/*.md` → 3;
   `glob plugins/proofpunk/opencode/agents/*.md` → 4 (the extra file is
   `proofpunk.md`, the router agent, OpenCode-only).
-- 9 hook scripts / 7 events / 11 registrations: read
-  `plugins/proofpunk/hooks/hooks.json` directly and counted the events
-  object's keys and each event's `hooks[].hooks[]` entries. The count grew
-  from 7/6/8 when `bash-write-snapshot.sh` (PreToolUse:Bash) and
-  `bash-write-notice.sh` (PostToolUse:Bash and PostToolUseFailure:Bash) were
-  added as detection-only mitigation for the Bash write bypass (§4).
-- 13 references: `glob plugins/proofpunk/references/*.md` → 13.
+- 9 hook scripts / 7 events / 11 registrations: derived in
+  `docs/hook-enforcement-map.md` from a hashed parse of
+  `plugins/proofpunk/hooks/hooks.json`. This document cites that map.
+  The count grew from 7/6/8 when `bash-write-snapshot.sh`
+  (PreToolUse:Bash) and `bash-write-notice.sh` (PostToolUse:Bash and
+  PostToolUseFailure:Bash) were added as detection-only mitigation for
+  the Bash write bypass (§4).
+- 14 references: `glob plugins/proofpunk/references/*.md` → 14
+  (the 14th is `run-trace-schema.md`; the previous "13" count predated it).
 - 5 assets: `read plugins/proofpunk/assets/` → 2 top-level template files
   + `rules/` containing 3 files.
-- The call graph in §3: `grep '## Skill calls'` (and the table rows under
-  it) across all 18 `SKILL.md` files individually — not copied from any
-  prior document.
+- 48 DAG edges: the same `## Skill calls` parse `verify-orchestration.py`
+  uses (`CALLS[s] = rows` of `` `| \`name\` |` ``). Router contributes 17;
+  the 17 delivery skills contribute 31. The previous "47 edges / 30 among
+  delivery" figure omitted `tui-testing → end-user-testing`.
+- The call graph in §3: that parse across all 18 `SKILL.md` files —
+  not copied from any prior document.
+- Harness layer: `tools/verify-citations.py`, `verify-harness-integrity.py`,
+  `verify-router-links.py`, `gauge-report.py`, `verify-counts.py` (this
+  document's own Class-2 detector).

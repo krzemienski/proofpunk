@@ -145,6 +145,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 |---|---|---|
 | *(default)* | **SKIP** and report; exit notes the count | Never clobber your existing work silently — a same-name skill might be yours, not ours |
 | `--override` | Replace existing same-name skills | Intentional upgrade path |
+| `--backup` | Explicitly keep `.bak-TIMESTAMP` copies on `--override` (already the default, `BACKUP=1`) | Named so a caller can restore the default after composing flags |
 | `--no-backup` | With `--override`: don't keep `.bak-TIMESTAMP` | Backups are on by default because "replace" should always be reversible; disable only when the target is disposable |
 
 The old copy moves to `.<name>.bak-YYYYMMDD-HHMMSS` next to the skills, so a
@@ -156,16 +157,20 @@ bad upgrade is one `mv` away from undone.
 |---|---|---|
 | *(default: on)* | Installs/refreshes `<target>/proofpunk-doctrine/` | The skills defer to these rulings — the Iron Rule (fix the real system, never mocks), the End-User Actor Mandate (validation is driven: `curl` the running server for JSON backends, browser for UI, simulator for mobile; test runners are regression tooling, NEVER validation), what **remediation** means (reproduce → fix the root cause, never the symptom → re-validate the failure AND its blast radius with fresh evidence), the evidence contract, and the severity model |
 | `--no-doctrine` | Skips the doctrine bundle | Only for updates where doctrine is unchanged and you want minimal churn |
-| `--inject-claude-md FILE` | Appends the rules block to `FILE` (e.g. `~/.claude/CLAUDE.md`) | Puts the rulings directly in the agent's standing instructions. **Opt-in** because it modifies your file; the block is marked `BEGIN/END PROOFPUNK RULES` and re-running never duplicates it (verified idempotent) |
+| `--with-doctrine` | Explicitly enables the doctrine bundle (this is already the default) | Named so a caller can restore the default after composing flags; `WITH_DOCTRINE=1` in the script |
+| `--inject-memory [FILE]` | Appends the rules block to the memory file of `--target`: `CLAUDE.md` for claude-code/omp, `AGENTS.md` for opencode/agents. No value = `auto` (./<memory-file> of the cwd project). An explicit path overrides | The flag the 60-second examples actually pass. Opt-in; the block is marked and re-running never duplicates it |
+| `--inject-claude-md FILE` | Legacy alias of `--inject-memory FILE` | Kept so older docs and scripts still run; prefer `--inject-memory` |
 
 ## Inspection options
 
 | Option | Effect | Why it exists |
 |---|---|---|
+| `--hooks` | Copy hook scripts to `~/.proofpunk/hooks` and merge every `hooks.json` registration into the platform settings file (`~/.claude/settings.json` for Claude Code). Default is off (`WITH_HOOKS=0`) | Opt-in because hooks write a shared settings file. Idempotent; expect 11 registrations. OpenCode/OMP get enforcement via plugin/extension glue instead — this flag prints guidance there, it does not merge their settings |
 | `--dry-run` | Prints the full plan, changes nothing | See exactly what a command would do — including which skills would SKIP vs INSTALL vs REPLACE — before you let it |
-| `--no-verify` | Skips post-install checks | The verifier asserts every installed skill has valid SKILL.md frontmatter AND that every cited `references/`,`scripts/`,`assets/`,`examples/` path resolves. It's on by default because an unverified install is an UNVERIFIED install; skip only on systems without python3 (frontmatter checks still run, reference checks are skipped with a note) |
+| `--verify` | Explicitly enables post-install checks (already the default, `VERIFY=1`) | Named so a caller can restore the default after composing flags |
+| `--no-verify` | Skips post-install checks | The verifier asserts every installed skill has valid SKILL.md frontmatter AND that every cited `references/`,`scripts/`,`assets/`,`examples/` path resolves. It's on by default because an unverified install is an UNVERIFIED install |
 | `--quiet` | Minimal output | CI/log-friendly |
-| `-h, --help` | Usage summary | | |
+| `-h, --help` | Usage summary | |
 
 ## Literal examples, with what happens
 
@@ -196,18 +201,20 @@ bash proofpunk-install.sh --target claude-code
 #   == summary: 0 installed, 0 replaced, 18 skipped (collision), 0 missing ==
 
 # 6) Offline / dev loop — install your local edits:
-git clone https://github.com/krzemienski/proofpunk && cd Proofpunk
+git clone https://github.com/krzemienski/proofpunk && cd proofpunk
 #   …edit a skill…
 bash tools/proofpunk-install.sh --source-dir . --dir /tmp/test-skills
 #   verify     : all installed skills pass … (fails loudly if you broke a link)
 
 # 7) Put the rules in the agent's standing instructions (opt-in, idempotent):
-bash proofpunk-install.sh --inject-claude-md ~/.claude/CLAUDE.md
-bash proofpunk-install.sh --inject-claude-md ~/.claude/CLAUDE.md   # second run:
+bash proofpunk-install.sh --inject-memory ~/.claude/CLAUDE.md
+bash proofpunk-install.sh --inject-memory ~/.claude/CLAUDE.md   # second run:
 #   already present — left unchanged
+# `--inject-claude-md FILE` is a legacy alias of the same flag and still runs.
 
 # 8) CI pin — exact ref, minimal output, non-zero exit on any gap:
-bash proofpunk-install.sh --ref v1.8.0 --quiet || exit 1
+#    Live tags on this repo are v2.1.0 and v2.2.0 (v1.8.0 does not resolve).
+bash proofpunk-install.sh --ref v2.2.0 --quiet || exit 1
 
 # 9) Themes only, into whatever TUIs exist on this machine:
 bash proofpunk-install.sh --skip-skills --themes
@@ -226,9 +233,8 @@ bash tools/proofpunk-install.sh --source-dir . --target opencode --themes --plug
 
 | Code | Meaning |
 |---|---|
-| 0 | All selected skills installed (or would-be, with `--dry-run`) |
-| 1 | Usage error, download failure, missing source, or post-install verification failed |
-| 2 | No transcripts/source found where expected |
+| 0 | All selected skills installed (or would-be, with `--dry-run`); `--list` and `--help` also exit 0 |
+| 1 | Usage error (`die`), download failure, missing source, missing `tar`/`curl`, or post-install verification failed |
 | 3 | A `--only` name doesn't exist in the source (nothing partial is claimed) |
 
 ## Requirements

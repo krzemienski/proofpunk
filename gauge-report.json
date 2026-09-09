@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-04T15:20:07Z",
-  "head": "73e928ed8d3b62827018ab8ab2e470c5487d0e2d",
+  "generated": "2026-09-09T17:37:26Z",
+  "head": "93c479de800fff7e3ceb0be5ccf96f4d494fdaee",
   "dirty": true,
   "gauges": [
     {
@@ -98,12 +98,12 @@
       "unit": "commands",
       "baseline": "0/6",
       "target": "6/6",
-      "measured": "0/6",
+      "measured": "4/6",
       "status": "UNMET",
       "evidence": [
-        "evidence/v3-release/00-baseline/command-surface-map.md@sha256:9d76a58a16eb5246f48818666ba2b7d51a4242be64d8a824150d85636e0d3220"
+        "evidence/v3-release/l16-commands/command-surface-proof.json@sha256:8233e98327fe37c9440c7f69cbfd35db6d091680607c35273842cb24aba9fd0c"
       ],
-      "detail": "no command has a single artifact proving slash-typed -> flag mapping -> real execution -> observed result"
+      "detail": "4/6 reached full-chain (slash -> registered -> skill ran -> marker); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']"
     },
     {
       "num": 5,

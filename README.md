@@ -417,7 +417,7 @@ graph TD
     M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
     P --> S["skills/ — 18 skills"]
-    P --> R["references/ — 13 shared doctrine files"]
+    P --> R["references/ — 14 shared doctrine files"]
     P --> D["docs/ — consolidation + validation records"]
     R -.->|cited by| S
 ```

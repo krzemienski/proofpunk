@@ -308,6 +308,20 @@ def main(argv=None) -> int:
         else:
             warns.append(row)
 
+    # The shared-doctrine tree itself. Previously unscanned, which is how a
+    # real break (run-trace-schema.md citing `references/severity-model.md`
+    # from INSIDE references/, resolving to references/references/) stayed
+    # invisible here while failing 7 assertions in tools/test-installer.sh.
+    # A doctrine file has no foreign-donor namespace, so any unresolved
+    # citation in this tree is ERROR — there is no vendored WARN case.
+    doctrine_root = os.path.join(root, 'plugins', 'proofpunk', 'references')
+    if os.path.isdir(doctrine_root):
+        for path, lineno, cite, resolved in find_citations(doctrine_root):
+            if resolved:
+                continue
+            rel = os.path.relpath(path, root).replace(os.sep, '/')
+            errors.append((rel, lineno, cite))
+
     errors.sort()
     warns.sort()
 

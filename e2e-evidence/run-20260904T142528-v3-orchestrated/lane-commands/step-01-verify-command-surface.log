@@ -9,3 +9,6 @@
 == /proofpunk:verify plugin arm
 == /proofpunk:verify --no-plugin control
 == /proofpunk:install plugin arm
+== /proofpunk:install --no-plugin control
+ARTIFACT evidence/v3-release/l16-commands/command-surface-proof.json sha256:eee7662929040f312ef2fc68da9bfde4c69e9f69ad811056252581f788ebe3db
+full_chain=0/6 plugin_pass=0/6 control_fail=6/6 honest_max=0/6

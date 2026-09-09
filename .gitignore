@@ -17,3 +17,6 @@ banks/
 # Local probe/baseline artifacts from gate runs — cited evidence lives in
 # e2e-evidence/ and evidence/, which stay tracked.
 .debug/
+
+# Scratch fixture repos created by probe runs (embedded git repos, not evidence)
+evidence/v3-release/l16-commands/scratch/truth-audit-target/

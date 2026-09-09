@@ -1,0 +1,11 @@
+verify-citations: scanning /Users/nick/proofpunk/plugins/proofpunk/skills
+shared doctrine set (14): api-validation.md, ci-gates.md, cli-validation.md, defect-pattern-database.md, end-user-actor.md, evidence-contract.md, ios-hig-checklist.md, ios-validation.md, platform-routing.md, preflight-checks.md, run-trace-schema.md, severity-model.md, web-validation.md, web-wcag-checklist.md
+
+ERROR (1) — unresolved doctrine citation or SKILL.md citation:
+  plugins/proofpunk/references/run-trace-schema.md:269 -> references/severity-model.md
+
+WARN (0) — unresolved foreign-layout citation in a vendored file:
+
+summary: 1 ERROR, 0 WARN (WARN count is derived, not a frozen baseline)
+
+RESULT: FAIL (default: ERROR-only)
