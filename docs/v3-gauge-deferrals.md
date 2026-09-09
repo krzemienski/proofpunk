@@ -35,7 +35,12 @@ as a regression rail).
 
 | # | Lane | Blocker | Token |
 |---|------|---------|-------|
-| 6–8 | work-order gauge specs #10–#12 of the unimplemented set | not recoverable as named gauges from any sealed source; re-derive under v4 | DEFER-TO-V4 (operator, 2026-09-09) |
+| 6 | work-order gauge spec, unimplemented set item 1 of 3 | not recoverable as a named gauge from any sealed source; re-derive under v4 | DEFER-TO-V4 (operator, 2026-09-09) |
+| 7 | work-order gauge spec, unimplemented set item 2 of 3 | not recoverable as a named gauge from any sealed source; re-derive under v4 | DEFER-TO-V4 (operator, 2026-09-09) |
+| 8 | work-order gauge spec, unimplemented set item 3 of 3 | not recoverable as a named gauge from any sealed source; re-derive under v4 | DEFER-TO-V4 (operator, 2026-09-09) |
+
+Token count: 8 individual tokens (rows 1–8 above), matching
+`17 - len(GAUGES) == 8` against `tools/gauge-report.py`'s 9 wired gauges.
 
 ## Consequence for the release gate
 
