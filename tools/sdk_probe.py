@@ -16,11 +16,17 @@ import argparse
 import asyncio
 import json
 import os
+import secrets
 import sys
 import time
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PLUGIN = os.path.join(REPO, "plugins", "proofpunk")
+# Counterfactual support: verify-command-surface.py points this at a scratch
+# copy of the plugin with commands/install.md's body neutered, to prove the
+# install effect probe's checks disappear when the playbook itself cannot
+# act — never set outside that one arm, so every other probe invocation
+# resolves to the real tree under test.
+PLUGIN = os.environ.get("PROOFPUNK_PLUGIN_DIR") or os.path.join(REPO, "plugins", "proofpunk")
 
 try:
     from claude_agent_sdk import (
@@ -264,6 +270,76 @@ PROBES["cmd_slash_install"] = dict(
     **_SLASH_PLAYBOOK_TOOLS,
 )
 
+# Effect probes (level "d" — playbook-recognition PLUS the observed real
+# effect, not the model's narration of it). install/verify have no backing
+# skill/script to reach level (c) via a Skill-tool call, so their higher
+# proof bar is: did the documented playbook ACTUALLY produce its effect on
+# disk (install) or actually RUN a real command against the sandbox
+# (verify)?
+#
+# Reviewer gap #1: the SEALED cmd_slash_install evidence shows the plugin
+# arm writing via an AMBIENT mcp__filesystem__write_file MCP tool
+# (command-surface-proof.json:888), not first-party Write — `_SLASH_
+# PLAYBOOK_TOOLS`'s `disallowed_tools=[..., "Write", "Edit", ...]` only
+# removes THOSE named tools; it does nothing to stop an ambient MCP
+# filesystem server (loaded via default `setting_sources` from project
+# .mcp.json / user or plugin config) from satisfying the same effect.
+# `allowed_tools` only auto-approves tools already present — with
+# `permission_mode="bypassPermissions"` every tool is already
+# auto-approved regardless, so `allowed_tools` grants nothing here either.
+#
+# The hermetic fix: `strict_mcp_config=True` with no `mcp_servers` passed
+# excludes ALL ambient MCP configuration the CLI would otherwise load
+# (project .mcp.json, user/global settings, plugin-provided servers) —
+# per ClaudeAgentOptions' own doc for that field. With no MCP server
+# reachable, the only way the model can write or run a command is a real
+# first-party Write/Edit/Bash call, which the checks below verify landed
+# on disk / executed for real rather than being narrated.
+_EFFECT_TOOLS_INSTALL = dict(
+    disallowed_tools=["Agent", "Task", "NotebookEdit", "Workflow", "ListAgents"],
+    strict_mcp_config=True,
+    max_turns=12,
+)
+_EFFECT_TOOLS_VERIFY = dict(
+    disallowed_tools=["Write", "Edit", "Agent", "Task", "Workflow", "ListAgents"],
+    strict_mcp_config=True,
+    max_turns=10,
+)
+PROBES["cmd_slash_install_effect"] = dict(
+    prompt=("/proofpunk:install --platform claude-code --no-rules"),
+    expect_text="",
+    require_slash_name="proofpunk:install",
+    require_local_plugin=True,
+    effect_kind="install",
+    why=("does /proofpunk:install actually WRITE the memory file via a "
+         "real first-party Write/Edit call, not an ambient MCP tool and "
+         "not just narration? strict_mcp_config excludes every ambient "
+         "MCP server so no mcp__filesystem__write_file substitute is "
+         "reachable. The verdict rests on the sandbox filesystem "
+         "afterwards — CLAUDE.md exists, both proofpunk:begin/end markers "
+         "present, at or under the documented 200-line ceiling, and every "
+         "{{PLACEHOLDER}} substituted — never on the model's self-report."),
+    **_EFFECT_TOOLS_INSTALL,
+)
+PROBES["cmd_slash_verify_effect"] = dict(
+    prompt=('/proofpunk:verify "use the Bash tool to run `ls -la` in this '
+            'directory and report exactly what it prints"'),
+    expect_text="",
+    require_slash_name="proofpunk:verify",
+    require_local_plugin=True,
+    effect_kind="verify",
+    why=("does /proofpunk:verify actually RUN Bash against the sandbox, "
+         "not just recognize the slash command and narrate what it would "
+         "do? A per-run cryptographically random sentinel filename is "
+         "seeded into the sandbox before the session starts — the model "
+         "cannot know or guess it. Verdict rests on that exact sentinel "
+         "appearing in a genuinely-executed (is_error is not True, non-empty) "
+         "Bash tool_result payload, which only the real host/CLI executing "
+         "`ls` against this sandbox can populate; the model's reply text "
+         "is never inspected for this check, so narration cannot forge it."),
+    **_EFFECT_TOOLS_VERIFY,
+)
+
 
 def _realpath(p):
     try:
@@ -299,6 +375,20 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         if os.path.exists(artifact):
             os.remove(artifact)
 
+    # Verify-effect sentinel: an unguessable per-run filename seeded into
+    # the sandbox BEFORE the session starts. A model that never actually
+    # runs a real command against this cwd has no way to know it — a
+    # hallucinated "I see 3 files" narration cannot name it. Only a
+    # genuine Bash listing/read against THIS cwd can surface it.
+    verify_sentinel = None
+    if spec.get("effect_kind") == "verify":
+        verify_sentinel = f"pp-sentinel-{secrets.token_hex(8)}.txt"
+        try:
+            with open(os.path.join(cwd, verify_sentinel), "w", encoding="utf-8") as fh:
+                fh.write("proofpunk-verify-effect-sentinel\n")
+        except OSError:
+            verify_sentinel = None
+
     opts = dict(
         cwd=cwd,
         permission_mode="bypassPermissions",
@@ -317,6 +407,12 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         opts["allowed_tools"] = spec["allowed_tools"]
     if "disallowed_tools" in spec:
         opts["disallowed_tools"] = spec["disallowed_tools"]
+    if spec.get("strict_mcp_config"):
+        # Exclude every ambient MCP server (project .mcp.json, user/global
+        # settings, plugin-provided servers) so an unnamed MCP tool cannot
+        # substitute for the first-party tool under test. No mcp_servers
+        # dict is passed, so the effective MCP surface is empty.
+        opts["strict_mcp_config"] = True
 
     text, hooks, tools, denials = [], [], [], []
     hook_runs = []           # identity + outcome of each hook script that ran
@@ -332,77 +428,92 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
             loads_before = sum(1 for _ in fh)
     tool_calls = []          # name + real input dict, so arguments are checkable
     result = {}
+    session_completed = False  # set ONLY on ResultMessage / ResultError,
+                               # never inferred from result being non-empty
     t0 = time.time()
 
     try:
-        stream = query(prompt=spec["prompt"], options=ClaudeAgentOptions(**opts))
-        async for msg in stream:
-            if isinstance(msg, AssistantMessage):
-                for b in msg.content:
-                    if isinstance(b, TextBlock):
-                        text.append(b.text)
-                        transcript.append({"kind": "text", "text": b.text[:500]})
-                    elif isinstance(b, ToolUseBlock):
-                        tools.append(b.name)
-                        tool_calls.append({"id": b.id, "name": b.name,
-                                           "input": b.input, "result": None,
-                                           "is_error": None})
-                        transcript.append({"kind": "tool_use", "name": b.name,
-                                           "input": json.dumps(b.input)[:300]})
-            elif isinstance(msg, UserMessage):
-                # Tool results arrive as user turns. An invocation that returned
-                # "Unknown skill" is an ATTEMPT, not a load — tie each result back
-                # to its call so the verdict can tell those apart.
-                for b in (msg.content if isinstance(msg.content, list) else []):
-                    if isinstance(b, ToolResultBlock):
-                        for c in tool_calls:
-                            if c["id"] == b.tool_use_id:
-                                c["result"] = str(b.content)[:300]
-                                c["is_error"] = b.is_error
-                                transcript.append({
-                                    "kind": "tool_result",
-                                    "is_error": b.is_error,
-                                    "content": str(b.content)[:300],
-                                })
-            elif isinstance(msg, HookEventMessage):
-                hooks.append(msg.hook_event_name)
-                data = getattr(msg, "data", {}) or {}
-                # hook_response carries the outcome of a hook that ran. NOTE:
-                # `hook_name` is the EVENT ("Stop", "SessionStart:startup"), not the
-                # script filename — script identity is only visible via stdout.
-                if data.get("subtype") == "hook_response":
-                    hook_runs.append({
-                        "event": data.get("hook_event"),
-                        "name": data.get("hook_name"),
-                        "exit_code": data.get("exit_code"),
-                        "outcome": data.get("outcome"),
-                        "stdout": str(data.get("stdout", ""))[:300],
-                    })
-            elif isinstance(msg, SystemMessage):
-                data = getattr(msg, "data", {}) or {}
-                if msg.subtype == "init" or data.get("subtype") == "init":
-                    init_slash = list(data.get("slash_commands") or [])
-                    init_plugins = data.get("plugins") or []
-                    transcript.append({
-                        "kind": "init",
-                        "slash_proofpunk": [c for c in init_slash
-                                            if str(c).startswith("proofpunk:")],
-                        "local_plugin": _local_plugin_loaded(init_plugins),
-                    })
-                if "refusing to create a test artifact" in json.dumps(data):
-                    denials.append("no-test-files")
-            elif isinstance(msg, ResultMessage):
-                result = {"is_error": msg.is_error, "num_turns": msg.num_turns,
-                          "cost_usd": msg.total_cost_usd}
-    except ResultError as e:
-        # max-turns / CLI terminal error: keep init + partial transcript.
-        result = {
-            "is_error": True,
-            "num_turns": None,
-            "cost_usd": None,
-            "harness_error": f"ResultError: {e}",
-        }
-        transcript.append({"kind": "result_error", "error": str(e)[:400]})
+        try:
+            stream = query(prompt=spec["prompt"], options=ClaudeAgentOptions(**opts))
+            async for msg in stream:
+                if isinstance(msg, AssistantMessage):
+                    for b in msg.content:
+                        if isinstance(b, TextBlock):
+                            text.append(b.text)
+                            transcript.append({"kind": "text", "text": b.text[:500]})
+                        elif isinstance(b, ToolUseBlock):
+                            tools.append(b.name)
+                            tool_calls.append({"id": b.id, "name": b.name,
+                                               "input": b.input, "result": None,
+                                               "is_error": None})
+                            transcript.append({"kind": "tool_use", "name": b.name,
+                                               "input": json.dumps(b.input)[:300]})
+                elif isinstance(msg, UserMessage):
+                    # Tool results arrive as user turns. An invocation that returned
+                    # "Unknown skill" is an ATTEMPT, not a load — tie each result back
+                    # to its call so the verdict can tell those apart.
+                    for b in (msg.content if isinstance(msg.content, list) else []):
+                        if isinstance(b, ToolResultBlock):
+                            for c in tool_calls:
+                                if c["id"] == b.tool_use_id:
+                                    c["result"] = str(b.content)[:300]
+                                    c["is_error"] = b.is_error
+                                    transcript.append({
+                                        "kind": "tool_result",
+                                        "is_error": b.is_error,
+                                        "content": str(b.content)[:300],
+                                    })
+                elif isinstance(msg, HookEventMessage):
+                    hooks.append(msg.hook_event_name)
+                    data = getattr(msg, "data", {}) or {}
+                    # hook_response carries the outcome of a hook that ran. NOTE:
+                    # `hook_name` is the EVENT ("Stop", "SessionStart:startup"), not the
+                    # script filename — script identity is only visible via stdout.
+                    if data.get("subtype") == "hook_response":
+                        hook_runs.append({
+                            "event": data.get("hook_event"),
+                            "name": data.get("hook_name"),
+                            "exit_code": data.get("exit_code"),
+                            "outcome": data.get("outcome"),
+                            "stdout": str(data.get("stdout", ""))[:300],
+                        })
+                elif isinstance(msg, SystemMessage):
+                    data = getattr(msg, "data", {}) or {}
+                    if msg.subtype == "init" or data.get("subtype") == "init":
+                        init_slash = list(data.get("slash_commands") or [])
+                        init_plugins = data.get("plugins") or []
+                        transcript.append({
+                            "kind": "init",
+                            "slash_proofpunk": [c for c in init_slash
+                                                if str(c).startswith("proofpunk:")],
+                            "local_plugin": _local_plugin_loaded(init_plugins),
+                        })
+                    if "refusing to create a test artifact" in json.dumps(data):
+                        denials.append("no-test-files")
+                elif isinstance(msg, ResultMessage):
+                    session_completed = True
+                    result = {"is_error": msg.is_error, "num_turns": msg.num_turns,
+                              "cost_usd": msg.total_cost_usd}
+        except ResultError as e:
+            # max-turns / CLI terminal error: keep init + partial transcript.
+            session_completed = True
+            result = {
+                "is_error": True,
+                "num_turns": None,
+                "cost_usd": None,
+                "harness_error": f"ResultError: {e}",
+            }
+            transcript.append({"kind": "result_error", "error": str(e)[:400]})
+    finally:
+        # The sentinel exists solely to prove real Bash execution DURING
+        # this run; leaving it behind could pollute a directory listing a
+        # later check inspects (e.g. install's cwd scan) or a reused
+        # sandbox. Always attempt cleanup, success or failure.
+        if verify_sentinel:
+            try:
+                os.remove(os.path.join(cwd, verify_sentinel))
+            except OSError:
+                pass
 
     joined = "".join(text)
     # A denial shows up either as a system event or as the model reporting it.
@@ -410,6 +521,14 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
 
     out = {
         "probe": name, "why": spec["why"], "plugin_loaded": use_plugin,
+        # Resolved PLUGIN path this process actually used (module-level
+        # constant, which already honors PROOFPUNK_PLUGIN_DIR). Exposed so
+        # a caller can assert counterfactual identity precisely — that a
+        # scratch/neutered copy, not the real tree, was what loaded —
+        # rather than inferring it indirectly from local_plugin_loaded
+        # (which is True for ANY plugin whose path matches PLUGIN,
+        # including a scratch one under PROOFPUNK_PLUGIN_DIR).
+        "plugin_path": PLUGIN,
         "elapsed_s": round(time.time() - t0, 1),
         "reply": joined.strip()[:400],
         "hook_events": sorted(set(hooks)), "tools_used": sorted(set(tools)),
@@ -448,8 +567,16 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
             "blocked": blocked, "expected_blocked": spec["expect_blocked"],
             "artifact": artifact, "artifact_exists": exists,
             "artifact_content": content, "checks": checks,
-            "pass": all(checks.values()),
         })
+        # A harness/API failure (ResultError, auth flap) can coexist with
+        # init-level checks reading True — slash registration arrives
+        # before the model call fails. No probe passes on a harness error.
+        checks["no_harness_error"] = not bool(result.get("harness_error"))
+        # And no probe passes when the stream ended with no ResultMessage
+        # at all — an empty result means the session died silently, which
+        # is UNVERIFIED, not a pass.
+        checks["session_completed"] = session_completed
+        out["pass"] = all(checks.values())
     else:
         # A text match alone is the model's self-report. When the probe names a
         # required tool, an actual invocation must be observed, its argument
@@ -502,6 +629,79 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         if spec.get("require_local_plugin"):
             checks["local_plugin_loaded"] = _local_plugin_loaded(init_plugins)
 
+        if spec.get("effect_kind") == "install":
+            # Verdict rests on the sandbox filesystem, never the model's
+            # self-report. cwd is this arm's fresh per-arm sandbox (see
+            # verify-command-surface.py); the memory file the command doc
+            # says to write lands there if the playbook actually executed.
+            claude_md = os.path.join(cwd, "CLAUDE.md")
+            exists = os.path.isfile(claude_md)
+            content = ""
+            if exists:
+                try:
+                    with open(claude_md, encoding="utf-8") as fh:
+                        content = fh.read()
+                except OSError:
+                    content = ""
+            write_calls = [c for c in tool_calls if c["name"] in ("Write", "Edit")]
+            checks["write_attempted"] = bool(write_calls)
+            # A call with no result yet (is_error is None, result is None)
+            # is an in-flight attempt, not a success — require a REAL
+            # non-error result to have actually come back.
+            checks["write_succeeded"] = any(
+                c["result"] is not None and c["is_error"] is not True
+                and str(c["result"] or "").strip()
+                for c in write_calls)
+            checks["claude_md_exists"] = exists
+            checks["markers_present"] = (
+                "proofpunk:begin" in content and "proofpunk:end" in content)
+            checks["within_200_lines"] = bool(content) and len(content.splitlines()) <= 200
+            # Template substitution: the shipped template uses {{NAME}} form
+            # placeholders (assets/claude-md-template.md); a genuine merge
+            # substitutes or omits every one, never leaves the literal token.
+            checks["template_substituted"] = bool(content) and "{{" not in content
+            out["install_artifact"] = claude_md
+            out["install_artifact_exists"] = exists
+            out["install_artifact_lines"] = len(content.splitlines()) if content else 0
+
+        if spec.get("effect_kind") == "verify":
+            # Verdict rests on an observed real Bash command execution
+            # against THIS sandbox, never narration. bash_attempted alone
+            # is not proof — an attempt whose call never got a matched
+            # result is indistinguishable from one still in flight.
+            bash_calls = [c for c in tool_calls if c["name"] == "Bash"]
+            checks["bash_attempted"] = bool(bash_calls)
+            executed = [
+                c for c in bash_calls
+                if c["result"] is not None and c["is_error"] is not True
+                and str(c["result"] or "").strip()
+            ]
+            checks["bash_executed"] = bool(executed)
+            # Distinct from sentinel_surfaced below: this only proves the
+            # HARNESS successfully seeded the sandbox before the session
+            # started. If this is False the run is a harness fault (disk
+            # write failed), not evidence about the model's behavior —
+            # keeping it a separate check makes that failure mode legible
+            # in the artifact instead of silently folded into a False
+            # sentinel_surfaced that looks identical to a real narration-
+            # only failure.
+            checks["sentinel_seeded"] = verify_sentinel is not None
+            # sentinel_surfaced is the load-bearing anti-narration check:
+            # `verify_sentinel` is a per-run, cryptographically random
+            # filename seeded into cwd BEFORE query() ran — the model has
+            # no way to know or guess it without a real Bash call actually
+            # listing/reading this exact sandbox. Scoping the search to
+            # `executed` (Bash-only, is_error is False, non-empty result)
+            # means a Read/Glob/Skill result, or the model's own narration
+            # of the doctrine text, cannot satisfy this — only a genuine
+            # command execution whose real stdout contains the sentinel
+            # can.
+            checks["sentinel_surfaced"] = bool(
+                verify_sentinel and any(
+                    verify_sentinel in str(c["result"] or "") for c in executed))
+            out["verify_sentinel"] = verify_sentinel
+            out["verify_bash_calls"] = len(bash_calls)
+
         # forbid_text on slash probes only — the older skill-load probes
         # stored forbid_text in the spec but never asserted it; do not change
         # their historical contract.
@@ -544,6 +744,11 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
 
         out["checks"] = checks
         out["expect_text"] = spec["expect_text"]
+        # Same fail-closed rule as the expect_blocked branch: a harness/API
+        # failure voids every check, including init-level ones that arrive
+        # before the model call dies.
+        checks["no_harness_error"] = not bool(result.get("harness_error"))
+        checks["session_completed"] = session_completed
         out["pass"] = all(checks.values())
     return out
 

@@ -531,6 +531,24 @@ gauge(
 #      softer "plugin arm passed" count. Commands whose honest maximum is
 #      playbook-recognition (no backing skill/script) are reported as such
 #      and are NOT counted toward full-chain.
+#
+# Extended 2026-09-09 (v3(b) gauge-4 promotion). install/verify have no
+# backing skill/script — their honest MAXIMUM was 'playbook-recognition'
+# (slash registered + doc marker, no further chain to run), and neither
+# reached level 'c'. They now additionally run an EFFECT probe (does the
+# playbook actually WRITE the memory file / actually RUN a real command,
+# not just recognize the slash and narrate?) and, for install, a
+# COUNTERFACTUAL (does the effect disappear when the command doc's own
+# body is neutered, proving it — not ambient host behavior — is the
+# cause?). Reaching that bar is reported as level 'd' (effect-proven) in
+# the sealed artifact's `reached_level` field. Both 'c' and 'd' now count
+# toward full-chain: 'c' is proven via a Skill-tool call succeeding, 'd'
+# is proven via an observed real effect — they are DIFFERENT proof
+# mechanisms for the SAME underlying claim (the command doc's documented
+# behavior actually happened), never an inflation of one into the other.
+# A command capped at 'playbook-recognition' (the effect probe failed, or
+# — for install — the counterfactual did not isolate the command doc as
+# cause) still does NOT count, exactly as before this change.
 # ---------------------------------------------------------------------------
 
 
@@ -559,17 +577,19 @@ def g_command_surface_proven():
             f"control arm PASSED for {vacuous} — those probes are vacuous, the plugin is not proven to be what produced the result",
         )
 
-    full_chain = [c["command"] for c in cmds if c.get("reached_level") == "c"]
+    full_chain = [c["command"] for c in cmds if c.get("reached_level") in ("c", "d")]
     capped = [
         f"{c['command']}({c.get('max_honest_level')})"
         for c in cmds
-        if c.get("reached_level") != "c"
+        if c.get("reached_level") not in ("c", "d")
     ]
     n = len(full_chain)
     status = "PASS" if n == total else "UNMET"
     val = f"{n}/{total}"
     detail = (
-        f"{n}/{total} reached full-chain (slash -> registered -> skill ran -> marker); "
+        f"{n}/{total} reached full-chain (c: slash -> registered -> skill "
+        f"ran -> marker; or d: playbook-recognition + observed real "
+        f"effect, install additionally counterfactual-isolated); "
         f"all {total} control arms failed as required"
     )
     if capped:

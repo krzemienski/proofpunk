@@ -1,0 +1,39 @@
+{
+  "probe": "cmd_slash_install",
+  "why": "slash /proofpunk:install is an in-session playbook with NO backing skill or script; SDK sessions here have no Write tool so the playbook cannot execute a file merge. This probe proves slash registration + playbook recognition (doctrine marker quoted), not file-write execution.",
+  "plugin_loaded": false,
+  "plugin_path": "/Users/nick/proofpunk/plugins/proofpunk",
+  "elapsed_s": 0.6,
+  "reply": "Unknown command: /proofpunk:install",
+  "hook_events": [],
+  "tools_used": [],
+  "hook_runs": [],
+  "tool_calls": [],
+  "result": {
+    "is_error": false,
+    "num_turns": 0,
+    "cost_usd": 0
+  },
+  "transcript": [
+    {
+      "kind": "init",
+      "slash_proofpunk": [],
+      "local_plugin": false
+    },
+    {
+      "kind": "text",
+      "text": "Unknown command: /proofpunk:install"
+    }
+  ],
+  "init_slash_proofpunk": [],
+  "local_plugin_loaded": false,
+  "prompt": "/proofpunk:install --platform claude-code --no-rules",
+  "checks": {
+    "text_matches": true,
+    "slash_registered": false,
+    "slash_expanded": false,
+    "local_plugin_loaded": false
+  },
+  "expect_text": "",
+  "pass": false
+}
