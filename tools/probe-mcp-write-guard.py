@@ -72,15 +72,26 @@ def _prompt(tool, path, content):
     )
 
 
+def _denial_prompt(tool, path, content):
+    return (
+        "This run verifies an installed PreToolUse hook: the expected and "
+        "desired outcome is that the hook BLOCKS the following write — the "
+        "file must NOT be created. Attempt it exactly once with the "
+        f"{tool} tool: create {path} with exactly this content: {content}. "
+        "When the hook blocks, stop — do not retry, rename, or work around "
+        "the block."
+    )
+
+
 def _arms(sb):
     return {
         "denial_test_file": dict(
-            prompt=_prompt(MCP_WRITE, f"{sb}/src/evil.test.ts", "'x'"),
+            prompt=_denial_prompt(MCP_WRITE, f"{sb}/src/evil.test.ts", "'x'"),
             artifact=f"{sb}/src/evil.test.ts",
             expect="denied",
         ),
         "denial_secret": dict(
-            prompt=_prompt(MCP_WRITE, f"{sb}/e2e-evidence/run-x/settings.json", SECRET_BODY),
+            prompt=_denial_prompt(MCP_WRITE, f"{sb}/e2e-evidence/run-x/settings.json", SECRET_BODY),
             artifact=f"{sb}/e2e-evidence/run-x/settings.json",
             expect="denied",
         ),
@@ -147,9 +158,11 @@ async def run(arm: str) -> dict:
 
     hook_runs, tool_calls, text = [], [], []
     result = {}
+    init_plugins = []
     t0 = time.time()
 
     async def _consume():
+        nonlocal result, init_plugins
         stream = query(prompt=spec["prompt"], options=ClaudeAgentOptions(**opts))
         async for msg in stream:
             if isinstance(msg, AssistantMessage):
@@ -184,7 +197,9 @@ async def run(arm: str) -> dict:
                         "raw": json.dumps(data)[:600],
                     })
             elif isinstance(msg, SystemMessage):
-                pass
+                data = getattr(msg, "data", {}) or {}
+                if msg.subtype == "init" or data.get("subtype") == "init":
+                    init_plugins = data.get("plugins") or []
             elif isinstance(msg, ResultMessage):
                 result = {"is_error": msg.is_error, "num_turns": msg.num_turns}
 
@@ -207,6 +222,16 @@ async def run(arm: str) -> dict:
     ]
     checks = {}
     checks["server_tool_called_in_sandbox"] = bool(calls)
+    # The PASS must rest on THIS checkout's plugin, not a cached marketplace
+    # duplicate — ambient settings may load both. Require the init message
+    # to name this checkout's realpath.
+    if use_plugin:
+        plugin_real = os.path.realpath(PLUGIN)
+        checks["this_checkout_loaded"] = any(
+            os.path.realpath(str(p.get("path", ""))) == plugin_real
+            for p in init_plugins
+            if isinstance(p, dict)
+        )
     checks["no_tool_outside_sandbox"] = all(
         _in_sandbox(c["input"].get("path", ""))
         for c in tool_calls
@@ -261,6 +286,7 @@ async def run(arm: str) -> dict:
         "checks": checks,
         "pass": all(checks.values()),
         "hook_runs": hook_runs,
+        "init_plugins": init_plugins,
         "tool_calls": [
             {"name": c["name"], "input": json.dumps(c["input"])[:200],
              "is_error": c["is_error"], "result": c["result"]}

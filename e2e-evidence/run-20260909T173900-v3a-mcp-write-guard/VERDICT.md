@@ -16,12 +16,32 @@ Run: 2026-09-09T17:39Z, this session. HEAD at run time: 8537b3f + uncommitted D-
 ## AC1 — live arms (tools/probe-mcp-write-guard.py, real claude_agent_sdk
 sessions, real MCP filesystem server scoped to a canonical per-arm sandbox)
 
+**Final artifacts** (harness v3: result capture, plugin-identity assertion,
+block-is-goal denial prompts):
+
 | Arm | Artifact | Result |
 |---|---|---|
-| denial_test_file | step-11-denial-testfile-canonical.json | PASS — PreToolUse exit 2, guard identified in hook payload, tool result is_error, file absent |
-| denial_secret | step-10-denial-secret-canonical.json | PASS |
-| control_write | step-07-control-write-canonical.json | PASS — compliant MCP write landed, sha256(file) == sha256(successful call's content) |
-| control_read | step-09-control-read-fixed.json | PASS — MCP read unimpeded (matcher does not route reads) |
+| denial_test_file | step-17-denial-testfile-v3.json | PASS — PreToolUse exit 2, guard identified in hook payload, tool result is_error, file absent, this checkout's plugin path proven in init |
+| denial_secret | step-18-denial-secret-v3.json | PASS — same check set |
+| control_write | step-15-control-write-v2.json | PASS — compliant MCP write landed, sha256(file) == sha256(successful call's content) |
+| control_read | step-16-control-read-v2.json | PASS — MCP read unimpeded |
+| control_no_plugin | — | **UNVERIFIED** — requires `setting_sources=[]` for a clean no-plugin arm, which breaks OAuth on this host (step-03). Attribution does not rest on this arm: the denying hook payload names the proofpunk guard and the init message proves this checkout loaded. |
+
+Superseded (kept as harness-development record, not cited as proof):
+step-02, step-05..step-11 (v1/v2 harness: `result` lost to a missing
+`nonlocal`, no plugin-identity capture, sandbox spelling not canonical).
+step-13 (v2 test-file arm) FAILED honestly: the model refused preemptively
+citing an ambient host `block-test-files` rule — a model-level refusal,
+not a guard signal; the block-is-goal prompt framing resolved it.
+
+Earlier summary (superseded artifact numbers):
+
+| Arm | Artifact | Result |
+|---|---|---|
+| denial_test_file | step-11-denial-testfile-canonical.json | PASS (v1 harness) |
+| denial_secret | step-10-denial-secret-canonical.json | PASS (v1 harness) |
+| control_write | step-07-control-write-canonical.json | PASS (v1 harness) |
+| control_read | step-09-control-read-fixed.json | PASS (v1 harness) |
 | control_no_plugin | — | **UNVERIFIED** — requires `setting_sources=[]` for a clean no-plugin arm, which breaks OAuth on this host ("OAuth session expired and could not be refreshed", step-03). The denial arms identify the denying guard by name in the hook payload, so attribution does not rest on this arm. |
 
 ## AC2 — mutation proof
