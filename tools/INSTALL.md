@@ -165,7 +165,7 @@ bad upgrade is one `mv` away from undone.
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| `--hooks` | Copy hook scripts to `~/.proofpunk/hooks` and merge every `hooks.json` registration into the platform settings file (`~/.claude/settings.json` for Claude Code). Default is off (`WITH_HOOKS=0`) | Opt-in because hooks write a shared settings file. Idempotent; expect 11 registrations. OpenCode/OMP get enforcement via plugin/extension glue instead — this flag prints guidance there, it does not merge their settings |
+| `--hooks` | Copy hook scripts to `~/.proofpunk/hooks` and merge every `hooks.json` registration into the platform settings file (`~/.claude/settings.json` for Claude Code). Default is off (`WITH_HOOKS=0`) | Opt-in because hooks write a shared settings file. Idempotent; expect 12 registrations. OpenCode/OMP get enforcement via plugin/extension glue instead — this flag prints guidance there, it does not merge their settings |
 | `--dry-run` | Prints the full plan, changes nothing | See exactly what a command would do — including which skills would SKIP vs INSTALL vs REPLACE — before you let it |
 | `--verify` | Explicitly enables post-install checks (already the default, `VERIFY=1`) | Named so a caller can restore the default after composing flags |
 | `--no-verify` | Skips post-install checks | The verifier asserts every installed skill has valid SKILL.md frontmatter AND that every cited `references/`,`scripts/`,`assets/`,`examples/` path resolves. It's on by default because an unverified install is an UNVERIFIED install |

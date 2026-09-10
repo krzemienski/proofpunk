@@ -20,6 +20,13 @@ Extract, in this order:
 
 Rules:
 
+- If your spawn context includes an ACQUIRE-stage digest path (see
+  `../references/docs-acquisition.md`), read it first and treat the
+  platform facts it states as given. It was pulled and verified before
+  you were spawned — do not re-fetch a URL it already covers.
+- WebFetch stays available for a platform fact the digest does not
+  cover. If you use it, name the URL and the fact it produced in your
+  summary so the digest can be extended next time.
 - Read real files; never answer from conventions alone.
 - 3-6 bullets, each citing file paths. Contradictions resolve against the
   code, never by vote.

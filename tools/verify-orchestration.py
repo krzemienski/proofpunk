@@ -108,7 +108,10 @@ impl = bodies.get("implement", "")
 stage_secs = re.split(r"(?m)^(## Stage \d[^\n]*)$", impl)
 stage_text = {}
 for i in range(1, len(stage_secs), 2):
-    num = re.search(r"Stage (\d)", stage_secs[i]).group(1)
+    # \d+(?:\.\d+)? so a fractional stage ("## Stage 1.5 — ACQUIRE...")
+    # gets its own key instead of truncating to "1" and colliding with
+    # (overwriting) Stage 1's own section in the dict below.
+    num = re.search(r"Stage (\d+(?:\.\d+)?)", stage_secs[i]).group(1)
     stage_text[num] = stage_secs[i] + (stage_secs[i+1] if i+1 < len(stage_secs) else "")
 stage_expect = [
     ("1", "session-intent"), ("2", "brainstorm"), ("3", "prompt-forge"),
@@ -119,7 +122,7 @@ for num, callee in stage_expect:
     check(f"implement Stage {num} invokes `{callee}`",
           num in stage_text and callee in stage_text[num],
           "" if num in stage_text else f"Stage {num} heading not found")
-nums = [int(n) for n in stage_text]
+nums = [float(n) for n in stage_text]  # float: keys may now be fractional ("1.5")
 check("stage sections appear in declared order", nums == sorted(nums), f"order={nums}")
 rail = re.search(r"regression (posture|rail)[^\n]*", impl, re.I)
 check("regression posture declared (existing suites stay green, never proof)", bool(rail))

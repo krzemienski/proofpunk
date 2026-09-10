@@ -24,6 +24,7 @@ description: >
 Copy this checklist and track your progress:
 
 - [ ] Distill TRUE success criteria (user approval if unclear)
+- [ ] ACQUIRE platform docs before scouting (skipped only with `--fast`)
 - [ ] SCOUT the real codebase with subagents (mandatory — never skipped)
 - [ ] MINE past sessions; FORGE the build prompt; DECOMPOSE the task graph
 - [ ] EXECUTE loop: task → end-user validation (inline) → proof in the ledger
@@ -82,6 +83,25 @@ With `--mine`, or when the goal smells like past work, mine previous
 sessions via `session-intent`. Output: a previous-implementations matrix
 feeding the scouts (where past runs touched) and the forge (what framing
 worked). `implement mine` alone prints only the matrix.
+
+## Stage 1.5 — ACQUIRE (docs-first, before scouting)
+
+Before any codebase scouting, pull down and digest the authoritative
+platform documentation for whichever host(s) the target repo or task
+touches — Claude Code, OMP, OpenCode, or any agent platform whose
+skill/hook/agent surface the goal will touch. This is the positive
+definition of the research sub-step `--fast` skips entirely (Command
+Surface, above).
+
+Output: one digest file per relevant host — `.planning/docs-<host>.md`
+— conforming to `../../references/docs-acquisition.md`. A task touching
+no recognizable platform surface produces no digest; Stage 2 proceeds
+directly.
+
+Digests are handed to every Stage 2 scout subagent as **spawn
+context** — not re-fetched by each scout, not re-derived per
+`--parallel` lane. Same "wire the contract, don't re-derive it"
+discipline the lane contract (below) already applies one level up.
 
 ## Stage 2 — SCOUT (mandatory, subagents)
 
@@ -179,10 +199,17 @@ stay green, but they prove nothing here.
 
 **With `--parallel`**: lanes run concurrently, each its own todo chain.
 Before lanes start, the orchestrator writes a **lane contract** per
-boundary — an executable file stating the exact public interface each lane
-may expose and consume. Every lane's end-user validation includes
-conformance against that file, so a merge conflict surfaces as a failed
-validation with evidence, not a review debate.
+boundary — an executable file stating the exact public interface each
+lane may expose and consume, plus two more binding fields: which
+ACQUIRE digest file that lane consumes (conforming to
+`../../references/docs-acquisition.md`), and which
+`references/*-validation.md` runbook that lane's proof obligation must
+use. Both new fields are resolvable paths, never placeholders. Every
+lane's end-user validation includes conformance against all three
+fields, so a merge conflict on the interface or a cross-lane assumption
+mismatch — two lanes silently building against different hosts, or one
+validating with the wrong runbook — surfaces as a failed validation
+with evidence, not a review debate.
 
 ## Stage 6 — The stuck protocol
 
@@ -240,6 +267,8 @@ re-enters the loop.
 | `root-cause-debugging` | Stage 6 stuck protocol rung 2 | root cause of any unproven task |
 
 The platform runbooks (`api/web/cli/ios-validation.md`) are shared doctrine
-in `references/`, not a skill — Stage 5 loads them directly.
+in `references/`, not a skill — Stage 5 loads them directly. Stage 1.5
+ACQUIRE works the same way: `../../references/docs-acquisition.md` is a
+shared reference, not a skill call.
 
 Called by: `proofpunk`.

@@ -63,6 +63,11 @@
             "type": "command",
             "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/bash-write-snapshot.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "sh ${CLAUDE_PLUGIN_ROOT}/hooks/platform-steer.sh",
+            "timeout": 5
           }
         ]
       }

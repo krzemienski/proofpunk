@@ -2,8 +2,11 @@
 
 Derived 2026-09-04 from a parse of `plugins/proofpunk/hooks/hooks.json`
 (`sha256:e0227d5b825d2d5f943722e4a41c70914b4d7e116dff65b838d6b39457c2ec92`,
-2707 bytes) plus a full read of the 9 on-disk `.sh` files. Counts below
-are computed, never retyped. Parse dump:
+2707 bytes at original derivation) plus a full read of the 9 on-disk `.sh`
+files that existed at that time. `platform-steer.sh` was added to both
+`hooks.json` (`PreToolUse`/`Bash`) and the hooks dir afterward; counts
+below are re-derived against the current tree (10 on-disk `.sh` files,
+12 registrations) rather than retyped from the original parse. Parse dump:
 `e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/derived-hooks-parse.json`.
 
 Host semantics that constrain every row: `docs/skill-canon.md` §2.4–§2.6
@@ -16,9 +19,9 @@ ran; `PreToolUse` is the only write-path deny surface; plugin hooks
 | Quantity | Value | How derived |
 |---|---|---|
 | Event keys | **7** | `len(json["hooks"])` → `SessionStart`, `Stop`, `SubagentStop`, `PreToolUse`, `InstructionsLoaded`, `PostToolUse`, `PostToolUseFailure` |
-| Registrations | **11** | count of `{type,command,timeout}` objects nested under every group |
-| Distinct scripts registered | **9** | unique basename of `hooks/<name>.sh` in those 11 commands |
-| On-disk `.sh` files | **9** | `plugins/proofpunk/hooks/*.sh` glob; set-equal to the 9 registered names |
+| Registrations | **12** | count of `{type,command,timeout}` objects nested under every group |
+| Distinct scripts registered | **10** | unique basename of `hooks/<name>.sh` in those 12 commands |
+| On-disk `.sh` files | **10** | `plugins/proofpunk/hooks/*.sh` glob; set-equal to the 10 registered names |
 | Scripts registered twice | **2** | `stop-guard.sh` ×2, `bash-write-notice.sh` ×2 |
 
 No script is registered without an on-disk file. No on-disk `.sh` is
@@ -39,11 +42,12 @@ column.
 | 4 | `PreToolUse` | `Write\|Edit` | `no-test-files.sh` | 5 | Yes — exit 2 + stderr on test-shaped **path**. Content heuristic is warn-only (exit 0) | `tool_input.file_path`; `content` / `new_string` | Bash-authored writes; files already on disk; `old_string` of an Edit | No new test artifacts on the Write/Edit path. Soft warn on `class Fake*/Mock*/Stub*`, `jest.mock`, `unittest.mock`, `sinon.stub`, `@patch`, `MagicMock`, `raise NotImplementedError`, `TODO: implement` | no |
 | 5 | `PreToolUse` | `Write\|Edit` | `evidence-guard.sh` | 5 | Yes — exit 2 when path is under `(e2e-)?evidence` **and** payload matches a secret shape | `file_path` + `content`/`new_string` | Bash-authored writes; secrets written outside evidence dirs (explicitly out of lane) | Secret hygiene for evidence dirs | no |
 | 6 | `PreToolUse` | `Write\|Edit` | `capture-guard.sh` | 5 | Yes — exit 2 when the target already exists, is under evidence, and has a capture extension | `file_path` + `os.path.exists` | Bash overwrites (`>` / `cp` / `mv`); sidecar `.md`/`.json` (authored, allowed); brand-new captures | Captures are immutable once written | no |
-| 7 | `PreToolUse` | `Bash` | `bash-write-snapshot.sh` | 10 | **No** — always exit 0, no stdout. A deny here would re-open the abandoned shell parser | `cwd` tree, hashed; scoped to evidence dirs + test-shaped paths; cap 4000 files | the Bash command text (deliberately unread) | None by itself. Leaves a per-`session_id:tool_use_id:cwd` baseline for #10/#11 | no |
-| 8 | `InstructionsLoaded` | (none) | `instructions-loaded.sh` | 5 | No — always exit 0 | `file_path`/`filePath`, `load_reason`/`loadReason`, `cwd` | whether the loaded file's contents match `/proofpunk:install` output | Observability tap only (`~/.claude/proofpunk-loads.jsonl`) | no |
-| 9 | `PostToolUse` | `Write\|Edit` | `post-write-walkthrough.sh` | 5 | **No** (host: tool already ran). Speaks via `additionalContext` | `file_path` | whether the subsequent walkthrough actually happens | Reminds: production-code change ⇒ drive the real system next. Silent on evidence/docs/plans/hooks | no |
-| 10 | `PostToolUse` | `Bash` | `bash-write-notice.sh` | 10 | **No** (host: tool already ran). NOTICE via `additionalContext` | post-command hashes of protected paths vs the #7 baseline | the Bash command text; writes outside evidence/test paths; a call whose baseline was truncated (`complete:false` → coverage-OFF notice) | Detects (does not undo) Bash bypass of #4/#5/#6: test files, capture tamper, evidence delete, secret-shaped evidence content | **yes — PostToolUse + PostToolUseFailure** |
-| 11 | `PostToolUseFailure` | `Bash` | `bash-write-notice.sh` | 10 | **No** (host: tool already ran, then failed). Same NOTICE, `hookEventName` echoed as `PostToolUseFailure` | same as #10 | PreToolUse denials (this event does not fire for rejected-before-execution calls — skill-canon §2.4) | Same as #10 for a Bash call that started and then failed | **yes — same script as #10** |
+| 7 | `PreToolUse` | `Bash` | `bash-write-snapshot.sh` | 10 | **No** — always exit 0, no stdout. A deny here would re-open the abandoned shell parser | `cwd` tree, hashed; scoped to evidence dirs + test-shaped paths; cap 4000 files | the Bash command text (deliberately unread) | None by itself. Leaves a per-`session_id:tool_use_id:cwd` baseline for #11/#12 | no |
+| 8 | `PreToolUse` | `Bash` | `platform-steer.sh` | 5 | **No** — advisory/steering only, always exit 0, never blocks | `tool_input.command` text (regex signal only: `xcrun simctl`, a browser-automation tool name, a repo-local built-binary invocation, or `curl` + an http(s) URL); the project's detected platform, derived by walking up from `cwd` per `references/platform-routing.md`'s Detection table | shell grammar/tokenization (deliberately unparsed — rule 10); ambiguous or multi-tag directories; any case where either side is undetected | Not a doctrine rule by itself — a **steering nudge**: when exactly one command-shape signal fires and it names a runbook (`references/{api,web,cli,ios}-validation.md`) incompatible with the one detected platform, injects `hookSpecificOutput.additionalContext` naming the correct runbook. Silent on no signal, ambiguity, or any error | no |
+| 9 | `InstructionsLoaded` | (none) | `instructions-loaded.sh` | 5 | No — always exit 0 | `file_path`/`filePath`, `load_reason`/`loadReason`, `cwd` | whether the loaded file's contents match `/proofpunk:install` output | Observability tap only (`~/.claude/proofpunk-loads.jsonl`) | no |
+| 10 | `PostToolUse` | `Write\|Edit` | `post-write-walkthrough.sh` | 5 | **No** (host: tool already ran). Speaks via `additionalContext` | `file_path` | whether the subsequent walkthrough actually happens | Reminds: production-code change ⇒ drive the real system next. Silent on evidence/docs/plans/hooks | no |
+| 11 | `PostToolUse` | `Bash` | `bash-write-notice.sh` | 10 | **No** (host: tool already ran). NOTICE via `additionalContext` | post-command hashes of protected paths vs the #7 baseline | the Bash command text; writes outside evidence/test paths; a call whose baseline was truncated (`complete:false` → coverage-OFF notice) | Detects (does not undo) Bash bypass of #4/#5/#6: test files, capture tamper, evidence delete, secret-shaped evidence content | **yes — PostToolUse + PostToolUseFailure** |
+| 12 | `PostToolUseFailure` | `Bash` | `bash-write-notice.sh` | 10 | **No** (host: tool already ran, then failed). Same NOTICE, `hookEventName` echoed as `PostToolUseFailure` | same as #11 | PreToolUse denials (this event does not fire for rejected-before-execution calls — skill-canon §2.4) | Same as #11 for a Bash call that started and then failed | **yes — same script as #11** |
 
 ### Why the two double registrations exist
 
@@ -152,7 +156,8 @@ fresh-evidence naming, and "never parse shell to decide a deny."
 | Mock/stub **content** on a production path | `no-test-files.sh` | **warn only** (exit 0) |
 | Secrets not written into evidence via Write/Edit | `evidence-guard.sh` | hard deny |
 | Existing captures not overwritten via Write/Edit | `capture-guard.sh` | hard deny |
-| Bash bypass of the three Write/Edit guards | `#7 + #10/#11` | **notice only** (cannot deny; write already happened) |
+| Bash bypass of the three Write/Edit guards | `#7 + #11/#12` | **notice only** (cannot deny; write already happened) |
+| Bash command shape contradicts detected project platform | `platform-steer.sh` (#8) | **advisory only** (never blocks; injects `additionalContext` naming the correct runbook) |
 | Production Write/Edit ⇒ walkthrough reminder | `post-write-walkthrough.sh` | reminder only |
 | Doctrine visible at session start | `session-start.sh` | injection only |
 | Memory-load tap | `instructions-loaded.sh` | log only |
@@ -218,13 +223,17 @@ and PASS against HEAD (mutation-mock-warn ARM2: rc=1, FAIL=1):
 
 - no-test-files warns on FakeGateway in production content
 
-Every one of the 9 scripts has a block-shaped arm and an allow arm
-captured with unpiped rc under
+Every one of the 9 scripts that existed at the time of this lane's
+harness run has a block-shaped arm and an allow arm captured with
+unpiped rc under
 `e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/per-script/`.
 Scripts that structurally cannot deny (`session-start`, `instructions-loaded`,
 `bash-write-snapshot`, `post-write-walkthrough`, `bash-write-notice`) use
 "did work / spoke" vs "silent no-op" as the two arms — claiming a deny
-there would be a false claim against skill-canon §2.5.
+there would be a false claim against skill-canon §2.5. `platform-steer.sh`
+is a 10th script, added after that run; it has no per-script arm capture
+yet and is not claimed proven by this harness section — see its row (#8)
+in the event table above for its own evidence.
 
 ## Live-session vs script-level proof
 
@@ -256,6 +265,7 @@ Write-path probes could not attempt a write.
 | `evidence-guard.sh` | PASS | no probe — **UNVERIFIED live** |
 | `capture-guard.sh` | PASS | no probe — **UNVERIFIED live** |
 | `bash-write-snapshot.sh` | PASS | no probe — **UNVERIFIED live** |
+| `platform-steer.sh` | no script-level arm capture yet — added after this lane's harness run | no probe — **UNVERIFIED live** |
 | `bash-write-notice.sh` | PASS | no probe — **UNVERIFIED live** |
 | `post-write-walkthrough.sh` | PASS | no probe — **UNVERIFIED live** |
 | `instructions-loaded.sh` | PASS | **PASS** for the tap (cwd-attributed JSONL append). Event-name `InstructionsLoaded` itself is **UNVERIFIED** — the probe keys off SessionStart (`live/step-02-instructions_loaded.json`) |

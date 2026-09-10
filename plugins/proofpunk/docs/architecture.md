@@ -27,8 +27,8 @@ through a subset of these layers depending on what kind of request it is.
 | Skills | `skills/*/SKILL.md` | 18 (17 delivery skills + 1 router) | `skills/proofpunk/SKILL.md` is the single entry point: it classifies a request's *shape* and hands off to exactly one (or a short ordered chain of) delivery skills, never re-executing their logic itself (§2). The other 17 are the actual methods — brainstorming, planning, implementing, auditing, debugging, red-teaming, proving — organized as a DAG so each method is owned by exactly one skill (§3). |
 | Commands | `commands/*.md` | 6 (+6 OpenCode) | Slash-command surfaces (`/proofpunk:implement`, `:verify`, `:truth-audit`, `:rate-prompt`, `:forge-prompt`, `:install`) that activate a skill with the user's arguments. One-to-one with the OpenCode variants in `opencode/commands/proofpunk-*.md`, which carry the `proofpunk-` prefix OpenCode's flat command namespace requires. |
 | Agents | `agents/*.md` | 3 Claude Code, 3 OMP (`omp/agents/`), 4 OpenCode (`opencode/agents/`) | Pre-configured subagent personas (`implement`, `scout`, `end-user-validate`) that bundle a skill's doctrine into a spawnable role, so a session can delegate a whole implement-and-prove loop to a dedicated agent instead of running it inline. OpenCode carries one extra agent, `proofpunk.md` — the router itself, spawnable as a persona there (Claude Code and OMP route through the skill directly). |
-| Hooks | `hooks/*.sh` + `hooks.json` | 9 scripts, 7 event keys, 11 registrations | Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, and blocking an unproven completion claim. Full per-registration map: `docs/hook-enforcement-map.md` (cited, not restated, in §4). |
-| Shared references | `references/*.md` | 14 | The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, the run-trace schema, and more. Skills cite these as `../../references/X`; the installer flattens the citation depth and bundles a self-contained copy per skill (§6). |
+| Hooks | `hooks/*.sh` + `hooks.json` | 10 scripts, 7 event keys, 12 registrations | Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, blocking an unproven completion claim, and steering a mismatched validation runbook back onto the right platform. Full per-registration map: `docs/hook-enforcement-map.md` (cited, not restated, in §4). |
+| Shared references | `references/*.md` | 15 | The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, the run-trace schema, the docs-acquisition workflow, and more. Skills cite these as `../../references/X`; the installer flattens the citation depth and bundles a self-contained copy per skill (§6). |
 | Assets | `assets/` | 5 files (2 templates + 3 scoped rule files) | `claude-md-template.md` and `agents-md-template.md` are the merge templates `/proofpunk:install` injects into a target project's memory file. `rules/{evidence-contract,proof-obligations,tui-driving}.md` are `paths:`-scoped rule fragments for the same install flow. |
 | Installer | `tools/proofpunk-install.sh` | 1 script | The only path that turns this repo into an installed skill set on a user's machine, for four target platforms. Not part of the shipped plugin tree itself — it lives at the repo root under `tools/` and consumes `plugins/proofpunk/` as its source (§6). |
 
@@ -161,6 +161,16 @@ closure, acyclicity, and that "Called by" claims match real edges) — see
 | `session-intent` | — (leaf) | `codebase-truth-audit`, `implement`, `proofpunk` |
 | `tui-testing` | `end-user-testing` | `implement`, `full-functional-audit`, `proofpunk` |
 
+`implement`'s table row above lists its *skill* calls only. Before Stage 2
+SCOUT, `implement` also runs a Stage 1.5 ACQUIRE step that is not a skill
+call: it pulls the authoritative platform documentation for the target
+repo's host(s) into `.planning/docs-<host>.md`, per the shared reference
+`../../references/docs-acquisition.md` (§1's "Shared references" row),
+then hands that digest to every Stage 2 scout as spawn context. A task
+touching no recognizable platform surface produces no digest and Stage 2
+proceeds directly — this is doctrine ACQUIRE cites, not a DAG edge, the
+same way Stage 5's platform runbooks are cited doctrine rather than calls.
+
 ### Method ownership (what each owner actually owns)
 
 Read straight from the "What it hands over" column of the tables above —
@@ -211,7 +221,7 @@ version, precisely so this kind of drift cannot survive a rewrite.
 ## 4. The hook system
 
 Configuration lives in one file, `hooks/hooks.json`. Counts are derived,
-never restated: **9** on-disk `.sh` scripts, **7** event keys, **11**
+never restated: **10** on-disk `.sh` scripts, **7** event keys, **12**
 registrations (two scripts registered twice: `stop-guard.sh` on Stop and
 SubagentStop; `bash-write-notice.sh` on PostToolUse and PostToolUseFailure).
 The per-registration table — matcher, timeout, can-deny, observes, doctrine
@@ -235,6 +245,7 @@ needs without opening the map.
 | `post-write-walkthrough.sh` | PostToolUse (`Write\|Edit`) | never denies | if the written path is production code (not evidence, docs, `.planning/`, or config) — emits `additionalContext` reminding the agent to drive the real system and cite evidence before any completion claim; silent otherwise |
 | `bash-write-snapshot.sh` | PreToolUse (`Bash`) | never denies (a deny here would re-open the abandoned shell parser) | hashes protected paths (evidence dirs + test-shaped paths) before the command runs; leaves a per-session baseline for the notice hook. Cite `docs/hook-enforcement-map.md` |
 | `bash-write-notice.sh` | PostToolUse + PostToolUseFailure (`Bash`) | never denies (host: the tool already ran) | re-hashes protected paths vs the snapshot; reports test files written, capture tamper, evidence delete, secret-shaped evidence content. Detection, not prevention |
+| `platform-steer.sh` | PreToolUse (`Bash`) | never denies | if a Bash command's shape (e.g. `xcrun simctl`, a browser-automation tool, a repo-local built binary, `curl`) implies a validation platform that conflicts with the platform detected by walking up from `cwd`, emits `additionalContext` naming the correct `references/*-validation.md` runbook; silent when either side is ambiguous |
 
 ### These hooks run in parallel, not in sequence
 
@@ -516,15 +527,18 @@ live tree while writing it — re-run any of them to re-verify:
   `glob plugins/proofpunk/omp/agents/*.md` → 3;
   `glob plugins/proofpunk/opencode/agents/*.md` → 4 (the extra file is
   `proofpunk.md`, the router agent, OpenCode-only).
-- 9 hook scripts / 7 events / 11 registrations: derived in
+- 10 hook scripts / 7 events / 12 registrations: derived in
   `docs/hook-enforcement-map.md` from a hashed parse of
   `plugins/proofpunk/hooks/hooks.json`. This document cites that map.
   The count grew from 7/6/8 when `bash-write-snapshot.sh`
   (PreToolUse:Bash) and `bash-write-notice.sh` (PostToolUse:Bash and
   PostToolUseFailure:Bash) were added as detection-only mitigation for
-  the Bash write bypass (§4).
-- 14 references: `glob plugins/proofpunk/references/*.md` → 14
-  (the 14th is `run-trace-schema.md`; the previous "13" count predated it).
+  the Bash write bypass (§4), then to 10/7/12 when `platform-steer.sh`
+  (PreToolUse:Bash) was added as a non-blocking platform-mismatch
+  steering guard (v4 W5).
+- 15 references: `glob plugins/proofpunk/references/*.md` → 15
+  (the 15th is `docs-acquisition.md`, added for `implement`'s Stage 1.5
+  ACQUIRE; the previous "14" count predated it).
 - 5 assets: `read plugins/proofpunk/assets/` → 2 top-level template files
   + `rules/` containing 3 files.
 - 48 DAG edges: the same `## Skill calls` parse `verify-orchestration.py`

@@ -587,6 +587,52 @@ else
 fi
 rm -rf "$BW"
 
+echo "== platform-steer.sh (Bash PreToolUse steering — never denies)"
+# Steering only: it must always exit 0, and on a mismatch it prints an
+# additionalContext nudge naming the correct runbook — it never emits a
+# decision/block field (see the hook's own header comment).
+PSD="$TMP/ps-proj"
+mkdir -p "$PSD"
+echo '// swift-tools-version:5.9' > "$PSD/Package.swift"
+
+# Case P1: mismatch — command looks browser-automation-shaped (web-only)
+# but the project at cwd is unambiguously iOS (Package.swift) -> emits
+# additionalContext naming references/ios-validation.md, still exit 0.
+out=$(sh "$HOOKS/platform-steer.sh" 2>&1 <<EOF
+{"tool_name":"Bash","tool_input":{"command":"npx playwright test"},"cwd":"$PSD"}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q '"hookEventName": "PreToolUse"' && printf '%s' "$out" | grep -q 'references/ios-validation\.md'; then
+  case_ok "platform-steer mismatch nudges toward ios-validation.md"
+else
+  case_fail "platform-steer mismatch — rc=$rc out=$out"
+fi
+
+# Case P2: no recognized validation-shaped signal in the command text ->
+# silent, rc 0 (never speaks on an ordinary command, even inside a
+# project the detector could classify).
+out=$(sh "$HOOKS/platform-steer.sh" 2>&1 <<EOF
+{"tool_name":"Bash","tool_input":{"command":"ls -la"},"cwd":"$PSD"}
+EOF
+)
+rc=$?
+if [ "$rc" -eq 0 ] && [ -z "$out" ]; then
+  case_ok "platform-steer silent on no-signal command"
+else
+  case_fail "platform-steer no-signal — rc=$rc out=$out"
+fi
+
+# Case P3: malformed stdin JSON -> fails open silently, rc 0 (this is a
+# steering hook, never a blocking one — see the hook's own header).
+out=$(printf 'not-json' | sh "$HOOKS/platform-steer.sh" 2>&1)
+rc=$?
+if [ "$rc" -eq 0 ] && [ -z "$out" ]; then
+  case_ok "platform-steer fails open silently on malformed stdin"
+else
+  case_fail "platform-steer malformed stdin — rc=$rc out=$out"
+fi
+
 echo "HOOK TEST FAILS: $FAILS"
 rm -rf "$TMP"
 exit "$FAILS"
