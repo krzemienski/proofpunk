@@ -1,9 +1,18 @@
 # Proofpunk
 
+<!-- proofpunk:counts:begin -->
 An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCode**:
 18 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
+
+The `proofpunk` entry router hands off to 17 of them; `references/` holds 15 shared
+doctrine files cited across the set; `--themes` ships 20 flat-black cyberpunk
+variations. Every skill has a Claude Code command (6 command files) mirrored by an
+OpenCode command (6 files); 10 hook scripts register 12 hooks across
+7 lifecycle events. Plugin-bundled agents: 3 on Claude Code, 4 on
+OpenCode, 3 on OMP.
+<!-- proofpunk:counts:end -->
 
 ## Install
 
@@ -22,7 +31,7 @@ omp plugin marketplace add krzemienski/proofpunk
 omp plugin install proofpunk@proofpunk
 ```
 
-**OpenCode** — the installer drops the plugin, commands, 4 agents, and skills into
+**OpenCode** — the installer drops the plugin, commands, its bundled agents, and skills into
 `~/.config/opencode/`, or use the full plugin via the same catalog above.
 **Any agent** — plain skills into any directory:
 
@@ -47,9 +56,9 @@ enforcement was silently inert for that hook. Fixed in v2.2.0 (`99c72fb`). Re-ru
 `bash tools/proofpunk-install.sh --hooks` to activate it. To check your own state, open
 `settings.json` and confirm `evidence-guard.sh` appears in the `hooks` array, not just on disk.
 
-## Themes — 20 flat-black cyberpunk variations
+## Themes — the flat-black cyberpunk pack
 
-`plugins/proofpunk/themes/` ships 20 themes (neon-tokyo, acid-rain, vapor-grid,
+`plugins/proofpunk/themes/` ships the theme pack (neon-tokyo, acid-rain, vapor-grid,
 code-fall, static-noir, …) inspired by the Hyper terminal's theme contract: pure
 `#000000` canvas, two-neon accent systems, tuned status colors. One canonical
 palette source (`themes/palettes.json`) renders to three formats via
@@ -69,7 +78,7 @@ for the other surfaces you run beside it.
 
 | Skill | What it enforces |
 |-------|------------------|
-| `proofpunk` | Entry router: classifies the request and hands off to the shortest ordered chain across the 17 delivery skills it routes to |
+| `proofpunk` | Entry router: classifies the request and hands off to the shortest ordered chain across the delivery skills it routes to |
 | `brainstorm` | Scout-first, exact-requirements, present-before-asking discipline; no code before an approved design |
 | `prompt-forge` | Prompt AUTHOR / RATE (7-dimension /100 rubric) / OPTIMIZE / PIPELINE modes with a scored quality bar |
 | `validation-plan` | BRIEF → ROADMAP → per-phase PLAN/SUMMARY/VALIDATION with blocking **cumulative** proof obligations |
@@ -118,7 +127,7 @@ skill's own Related Skills / delegation contract.
 | `fresh_evidence.py init-run\|next-step\|seal\|validate` | `end-user-testing` | none (leaf tool) |
 | `with_server.py --server ... --port ... -- <check>` | `stack-testing` | none (leaf tool) |
 | `/proofpunk:install [--clobber] [--no-rules]` | project memory installer (command) | writes CLAUDE.md + `.claude/rules/` from `assets/` |
-| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all 18 skills + doctrine |
+| `proofpunk-install.sh [flags]` | installer (tools/, not a skill) | installs all skills + doctrine |
 
 ---
 
@@ -373,8 +382,8 @@ why-it-exists lives in `tools/INSTALL.md`; the flags:
 
 | Invocation | What happens |
 |------------|--------------|
-| `proofpunk-install.sh --target claude-code` | first-time: all 18 skills + doctrine + verify, from GitHub |
-| `--target omp --themes --plugins` | 18 skills + 20 themes + doctrine-guard extension for oh-my-pi |
+| `proofpunk-install.sh --target claude-code` | first-time: all skills + doctrine + verify, from GitHub |
+| `--target omp --themes --plugins` | all skills + the full theme pack + doctrine-guard extension for oh-my-pi |
 | `--only prompt-forge,implement --override` | surgical refresh of two skills, backups taken |
 | `--source local --source-dir /path/to/repo --no-verify` | offline install from a checkout, self-check skipped |
 | `--inject-claude-md ~/.claude/CLAUDE.md` | rules block appended once; re-running leaves it unchanged (idempotent) |
@@ -416,8 +425,8 @@ graph TD
     M --> P["plugins/proofpunk<br/>the plugin"]
     M --> T["tools/<br/>proofpunk-install.sh + INSTALL.md"]
     M --> E["examples/mood-ring<br/>the sealed live walkthrough"]
-    P --> S["skills/ — 18 skills"]
-    P --> R["references/ — 14 shared doctrine files"]
+    P --> S["skills/ — the skill set"]
+    P --> R["references/ — shared doctrine files"]
     P --> D["docs/ — consolidation + validation records"]
     R -.->|cited by| S
 ```
@@ -607,7 +616,7 @@ inspection caught (and the loop fixed) a blue-on-blue invisible "All" filter lab
 
 ```
 .claude-plugin/marketplace.json   marketplace manifest
-plugins/proofpunk/              the plugin (18 skills + references + docs)
+plugins/proofpunk/              the plugin (skills + references + docs)
 examples/mood-ring/               the live walkthrough (app + plans + evidence)
 ```
 

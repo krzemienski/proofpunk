@@ -1,6 +1,6 @@
 # Proofpunk installer — usage, options, and why they exist
 
-`tools/proofpunk-install.sh` installs the 18 Proofpunk skills as **plain
+`tools/proofpunk-install.sh` installs the Proofpunk skills as **plain
 skills** (not a plugin, not a marketplace) into the skills directory of your
 choice, injects the ruling doctrine alongside them, and verifies the result.
 Everything below was executed against the real script before shipping — the
@@ -28,6 +28,7 @@ without that flag installs skills and doctrine but **zero enforcement**. That
 is a deliberate default — hooks write to a shared settings file — but it does
 mean you have to ask for them.
 
+<!-- proofpunk:counts:begin -->
 To confirm hooks actually registered rather than merely landing on disk:
 
 ```bash
@@ -37,14 +38,22 @@ import json, os
 h = json.load(open(os.path.expanduser("~/.claude/settings.json"))).get("hooks", {})
 n = sum(1 for ev in h for b in h[ev] for e in b.get("hooks", [])
         if "proofpunk" in e.get("command", ""))
-print(f"proofpunk hook registrations: {n}")   # expect 11
+print(f"proofpunk hook registrations: {n}")   # expect 12
 EOF
 ```
 
-Eleven registrations across seven event keys is the full set. That count comes
-from `plugins/proofpunk/hooks/hooks.json`, the single source of truth for both
-which scripts get copied and which events get registered. Re-running with
-`--hooks` is idempotent — the second run leaves `settings.json` byte-identical.
+10 hook scripts register 12 registrations across 7 event keys —
+the full set. That count comes from `plugins/proofpunk/hooks/hooks.json`, the
+single source of truth for both which scripts get copied and which events get
+registered. Re-running with `--hooks` is idempotent — the second run leaves
+`settings.json` byte-identical.
+
+This installer ships 18 skills backed by 15 shared doctrine references in
+`plugins/proofpunk/references/`; `--themes` copies 20 flat-black cyberpunk
+variations. The OpenCode/OMP `--plugins` glue adds 6 commands and 4
+agents to `~/.config/opencode/` (the plugin bundles 3 agents for Claude Code and
+3 for OMP overall).
+<!-- proofpunk:counts:end -->
 
 ## The 60-second version
 
@@ -52,10 +61,10 @@ which scripts get copied and which events get registered. Re-running with
 # Claude Code user, latest GitHub main, everything included:
 bash proofpunk-install.sh --target claude-code
 
-# oh-my-pi user — skills, 20 themes, and the doctrine-guard extension:
+# oh-my-pi user — skills, the theme pack, and the doctrine-guard extension:
 bash proofpunk-install.sh --target omp --themes --plugins
 
-# OpenCode user — skills, 20 themes, plugin + commands + 4 agents:
+# OpenCode user — skills, the theme pack, plugin + commands + agents:
 bash proofpunk-install.sh --target opencode --themes --plugins
 
 # Themes only, no skills:
@@ -87,7 +96,7 @@ plugin cache's own `hooks/hooks.json` instead — that channel never writes
 
 ```
 <target>/
-├── brainstorm/            # 18 skill dirs, each SELF-CONTAINED:
+├── brainstorm/            # one of many skill dirs, each SELF-CONTAINED:
 │   ├── SKILL.md           #    citations rewritten to references/X
 │   └── references/        #    cited doctrine bundled inside the skill
 │   ...
@@ -96,7 +105,7 @@ plugin cache's own `hooks/hooks.json` instead — that channel never writes
     ├── README.md          #   Iron Rule / End-User Actor / remediation / evidence
     ├── end-user-actor.md  #   incl. "test runners are never validation"
     ├── evidence-contract.md
-    └── ... (13 ruling references)
+    └── ... (plus the rest of the ruling references)
 ```
 
 **Why self-contained copies:** the repo's plugin layout cites shared doctrine
@@ -128,7 +137,7 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| `--only a,b,c` | Installs just those skills (default: all 18) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
+| `--only a,b,c` | Installs just those skills (default: all of them) | Surgical updates — e.g. after a doctrine change you only need `--override` on skills that cite it, or you want just `session-intent` today |
 | `--list` | Prints skills in the source and exits | Answer "what would I get?" without touching anything |
 | `--skip-skills` | Installs no skills (doctrine is skipped too) | Themes-only or plugins-only runs — `--skip-skills --themes` touches nothing but theme directories |
 
@@ -136,8 +145,8 @@ the exact flaw the installer's own `--verify` pass caught during development.)
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| `--themes` | Copies the 20 flat-black cyberpunk themes into every detected platform: `~/.omp/agent/themes/` (oh-my-pi), `~/.config/opencode/themes/` (OpenCode), and the Hyper modules into `~/.config/proofpunk/hyper-themes/` | One command themes every TUI you run; detection = the platform's config dir exists, its binary is on PATH, or it is the `--target` |
-| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/proofpunk.ts`; OpenCode plugin + 6 commands + 4 agents into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/proofpunk/extensions/`, `plugins/proofpunk/opencode/`); this copies them to the auto-discovery locations |
+| `--themes` | Copies the flat-black cyberpunk theme pack into every detected platform: `~/.omp/agent/themes/` (oh-my-pi), `~/.config/opencode/themes/` (OpenCode), and the Hyper modules into `~/.config/proofpunk/hyper-themes/` | One command themes every TUI you run; detection = the platform's config dir exists, its binary is on PATH, or it is the `--target` |
+| `--plugins` | Installs the platform glue: OMP doctrine-guard extension to `~/.omp/agent/extensions/proofpunk.ts`; OpenCode plugin + its commands and agents into `~/.config/opencode/`; and prints the Claude Code marketplace command | The extension/plugin files live in the repo (`plugins/proofpunk/extensions/`, `plugins/proofpunk/opencode/`); this copies them to the auto-discovery locations |
 
 ## Collision options — same-name skill already exists
 
@@ -165,7 +174,7 @@ bad upgrade is one `mv` away from undone.
 
 | Option | Effect | Why it exists |
 |---|---|---|
-| `--hooks` | Copy hook scripts to `~/.proofpunk/hooks` and merge every `hooks.json` registration into the platform settings file (`~/.claude/settings.json` for Claude Code). Default is off (`WITH_HOOKS=0`) | Opt-in because hooks write a shared settings file. Idempotent; expect 12 registrations. OpenCode/OMP get enforcement via plugin/extension glue instead — this flag prints guidance there, it does not merge their settings |
+| `--hooks` | Copy hook scripts to `~/.proofpunk/hooks` and merge every `hooks.json` registration into the platform settings file (`~/.claude/settings.json` for Claude Code). Default is off (`WITH_HOOKS=0`) | Opt-in because hooks write a shared settings file. Idempotent. OpenCode/OMP get enforcement via plugin/extension glue instead — this flag prints guidance there, it does not merge their settings |
 | `--dry-run` | Prints the full plan, changes nothing | See exactly what a command would do — including which skills would SKIP vs INSTALL vs REPLACE — before you let it |
 | `--verify` | Explicitly enables post-install checks (already the default, `VERIFY=1`) | Named so a caller can restore the default after composing flags |
 | `--no-verify` | Skips post-install checks | The verifier asserts every installed skill has valid SKILL.md frontmatter AND that every cited `references/`,`scripts/`,`assets/`,`examples/` path resolves. It's on by default because an unverified install is an UNVERIFIED install |
@@ -175,12 +184,12 @@ bad upgrade is one `mv` away from undone.
 ## Literal examples, with what happens
 
 ```bash
-# 1) First-time Claude Code install — 18 skills + doctrine, verified:
+# 1) First-time Claude Code install — all skills + doctrine, verified:
 bash proofpunk-install.sh --target claude-code
 #   INSTALL brainstorm … INSTALL visual-inspection
 #   doctrine   : ~/.claude/skills/proofpunk-doctrine
 #   verify     : all installed skills pass frontmatter + reference checks
-#   == summary: 18 installed, 0 replaced, 0 skipped (collision), 0 missing ==
+#   == summary: all installed, 0 replaced, 0 skipped (collision), 0 missing ==
 
 # 2) oh-my-pi, look before you leap — nothing is written:
 bash proofpunk-install.sh --target omp --themes --plugins --dry-run
@@ -197,8 +206,8 @@ bash proofpunk-install.sh --target claude-code --only session-intent
 
 # 5) Re-run after a full install — everything collides, everything skips:
 bash proofpunk-install.sh --target claude-code
-#   SKIP brainstorm (already exists; use --override to replace) ×17
-#   == summary: 0 installed, 0 replaced, 18 skipped (collision), 0 missing ==
+#   SKIP brainstorm (already exists; use --override to replace) ...
+#   == summary: 0 installed, 0 replaced, all skipped (collision), 0 missing ==
 
 # 6) Offline / dev loop — install your local edits:
 git clone https://github.com/krzemienski/proofpunk && cd proofpunk
@@ -218,15 +227,15 @@ bash proofpunk-install.sh --ref v3.0.0 --quiet || exit 1
 
 # 9) Themes only, into whatever TUIs exist on this machine:
 bash proofpunk-install.sh --skip-skills --themes
-#   themes     : 20 flat-black cyberpunk themes
-#     OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml
-#     OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json
-#     Hyper    -> ~/.config/proofpunk/hyper-themes (20 .js modules)
+#   themes     : the full flat-black cyberpunk pack
+#     OMP      -> ~/.omp/agent/themes — select via /theme or theme.dark in config.yml
+#     OpenCode -> ~/.config/opencode/themes — select via /themes or tui.json
+#     Hyper    -> ~/.config/proofpunk/hyper-themes (.js modules)
 
 # 10) Full OpenCode setup from a local checkout:
 bash tools/proofpunk-install.sh --source-dir . --target opencode --themes --plugins
-#   skills + doctrine into ~/.config/opencode/skills, 20 themes,
-#   plugin/proofpunk.ts + 6 commands + 4 agents into ~/.config/opencode/
+#   skills + doctrine into ~/.config/opencode/skills, the theme pack,
+#   plugin/proofpunk.ts + its commands and agents into ~/.config/opencode/
 ```
 
 ## Exit codes
