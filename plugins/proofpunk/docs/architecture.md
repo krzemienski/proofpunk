@@ -550,6 +550,11 @@ live tree while writing it — re-run any of them to re-verify:
 - Harness layer: `tools/verify-citations.py`, `verify-harness-integrity.py`,
   `verify-router-links.py`, `gauge-report.py`, `verify-counts.py` (this
   document's own Class-2 detector).
-- 22 tools: `ls tools/` (excluding `__pycache__/`) → 22 entries at the
-  repo root — scripts, harness gates, and the two doc files
-  (`AGENTS.md`, `INSTALL.md`) that live alongside them in that directory.
+- 22 entries in `tools/`: `ls tools/` (excluding `__pycache__/`) → 22
+  files — 20 executables (`.py`/`.sh`) plus the two doc files
+  (`AGENTS.md`, `INSTALL.md`) that live alongside them. Deliberately
+  **not** a canonical "tool count": `render-counts.py` defines no tools
+  metric, so this is a raw directory listing with its method stated, not
+  a derived figure any consumer should treat as authoritative. Read it as
+  "what is in that directory", and prefer naming specific scripts over
+  citing this number.

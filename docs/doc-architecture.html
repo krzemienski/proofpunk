@@ -460,7 +460,7 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent</code></pre>
 <li>48 DAG edges: the same <code>## Skill calls</code> parse <code>verify-orchestration.py</code> uses (<code>CALLS[s] = rows</code> of <code>`| \`name\` |`</code>). Router contributes 17; the 17 delivery skills contribute 31. The previous "47 edges / 30 among delivery" figure omitted <code>tui-testing → end-user-testing</code>.</li>
 <li>The call graph in §3: that parse across all 18 <code>SKILL.md</code> files — not copied from any prior document.</li>
 <li>Harness layer: <code>tools/verify-citations.py</code>, <code>verify-harness-integrity.py</code>, <code>verify-router-links.py</code>, <code>gauge-report.py</code>, <code>verify-counts.py</code> (this document's own Class-2 detector).</li>
-<li>22 tools: <code>ls tools/</code> (excluding <code>__pycache__/</code>) → 22 entries at the repo root — scripts, harness gates, and the two doc files (<code>AGENTS.md</code>, <code>INSTALL.md</code>) that live alongside them in that directory.</li>
+<li>22 entries in <code>tools/</code>: <code>ls tools/</code> (excluding <code>__pycache__/</code>) → 22 files — 20 executables (<code>.py</code>/<code>.sh</code>) plus the two doc files (<code>AGENTS.md</code>, <code>INSTALL.md</code>) that live alongside them. Deliberately <strong>not</strong> a canonical "tool count": <code>render-counts.py</code> defines no tools metric, so this is a raw directory listing with its method stated, not a derived figure any consumer should treat as authoritative. Read it as "what is in that directory", and prefer naming specific scripts over citing this number.</li>
 </ul>
 
   </div>
