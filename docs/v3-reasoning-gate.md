@@ -57,8 +57,8 @@ Measured, not recalled:
 
 | Fact | Value | Source |
 |---|---|---|
-| Skills / references / commands | 18 / 13 / 6+6 | `d6-d7-measurement.md` |
-| Hook events / registrations / scripts | 7 / **11** / 9 | verified from `hooks.json` |
+| Skills / references / commands | 18 / 15 / 6+6 | `d6-d7-measurement.md` |
+| Hook events / registrations / scripts | 7 / **12** / 10 | verified from `hooks.json` |
 | Gates green | 4/4 rc=0 | `00-baseline/gates-20260904T051258/` |
 | Spec-basic conformance | 18/18 | `description-budget-baseline.md` |
 | Descriptions vs listing budget | 13,949 vs 1,536 (**9.1×**) | same |
@@ -66,7 +66,7 @@ Measured, not recalled:
 | Unresolved repo citations | 30 → **29** (top-level: 1 → 0) | `citation-integrity-finding.md` |
 
 Two work-order claims were **refuted** by measurement, and neither should
-generate work: the "9 registrations" figure (true: 11), and the supposed risk
+generate work: the "9 registrations" figure (true: 12), and the supposed risk
 that the head's folded description breaches 1024 (it is the *shortest*, 718).
 An improvement program that "fixed" either would have been fixing nothing.
 

@@ -1,3 +1,10 @@
+> **Superseded — 2026-09-11.** The counts below describe the repository as
+> it stood at the time of writing and are no longer accurate at HEAD
+> `46ebae6`. Measured current values: **7** hook event keys, **6+6**
+> commands (claude + opencode), **12** hook script registrations across
+> **10** distinct hook files. The original record is retained unchanged
+> below.
+
 # Proofpunk v1.10.0 — Hooks + `/proofpunk:install` — Measured Improvement Report (Round 3, 2026-08-13)
 
 > **SUPERSEDED 2026-09-04 — historical record, retained intact.**

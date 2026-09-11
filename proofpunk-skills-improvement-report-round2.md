@@ -1,3 +1,8 @@
+> **Superseded — 2026-09-11.** The counts below describe the repository as
+> it stood at the time of writing and are no longer accurate at HEAD
+> `46ebae6`. Measured current values: **18** skills, **15** shared
+> references. The original record is retained unchanged below.
+
 # Proofpunk Skills — Measured Improvement Report (Round 2, 2026-08-12)
 
 Basis: the aperant-tui build (krzemienski/aperant-tui), where the proofpunk

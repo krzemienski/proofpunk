@@ -513,14 +513,22 @@ applies only to the `name` field).
    task (§2.4), and is reported here as a courtesy, not as this document's
    primary deliverable** (the assignment's ground-truth section already
    states this fact as settled; C7's canon task did not ask this document
-   to re-derive it). Cross-check result: reading the raw file (`hooks.json`
-   L1-116) shows 9 distinct script basenames referenced across the `command`
-   fields (`session-start.sh`, `stop-guard.sh` ×2 — L21 and L32,
-   `no-test-files.sh`, `evidence-guard.sh`, `capture-guard.sh`,
-   `bash-write-snapshot.sh`, `instructions-loaded.sh`,
-   `post-write-walkthrough.sh`, `bash-write-notice.sh` ×2 — L97 and L109),
-   and counting every individual `{"type": "command", …}` object in the
-   file yields 11 total hook-handler objects. This is **consistent with**
-   the work order's stated ground truth (11 registrations / 9 distinct
-   scripts, with `stop-guard.sh` and `bash-write-notice.sh` each registered
-   twice) and required no correction.
+   to re-derive it). **This item is now stale relative to the current repo
+   state and is corrected here rather than deleted, to preserve the audit
+   trail.** At the time that cross-check was performed, reading the raw
+   file showed 9 distinct script basenames and 11 total hook-handler
+   objects, consistent with the work order's then-stated ground truth (11
+   registrations / 9 distinct scripts, with `stop-guard.sh` and
+   `bash-write-notice.sh` each registered twice). **As measured against the
+   current repo (`hooks.json`, 10 hook files under `plugins/proofpunk/hooks/`),
+   this has since changed: there are now 12 total hook-handler objects
+   across 10 distinct script basenames** (`session-start.sh`,
+   `stop-guard.sh` ×2, `no-test-files.sh`, `evidence-guard.sh`,
+   `capture-guard.sh`, `bash-write-snapshot.sh`, `instructions-loaded.sh`,
+   `post-write-walkthrough.sh`, `bash-write-notice.sh` ×2, and
+   `platform-steer.sh` — the added script), registered across the file's 7
+   top-level event keys (`SessionStart`, `PreToolUse`, `PostToolUse`,
+   `PostToolUseFailure`, `Stop`, `SubagentStop`, `InstructionsLoaded`).
+   The current canonical totals for this repo are: **12 registrations, 10
+   distinct scripts, 10 hook files, 7 event keys, 15 shared references
+   under `plugins/proofpunk/references/`, and 18 skills.**
