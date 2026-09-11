@@ -19,7 +19,7 @@
     <span class="branch">⑂ main</span><span class="sep">│</span>
     <span class="meta"><span class="led ok"></span>18 skills</span>
     <span class="meta"><span class="led ok"></span>6+6 commands</span>
-    <span class="meta"><span class="led warn"></span>14 doctrine refs</span>
+    <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -30,7 +30,7 @@
   <div class="doc">
 <h1 id="proofpunk-plugin-architecture">Proofpunk Plugin Architecture</h1>
 <p>This is the map a new contributor reads first: what each layer of the plugin is for, how a request flows through them, and how the pieces are wired to enforce one non-negotiable rule — <strong>end-user testing is the only PASS</strong>. Every number below was counted from the tree, not remembered; see "How this was measured" at the end.</p>
-<p>This document does not restate <code>hooks-and-init-design.md</code> — that file is the <em>design rationale</em> for the hook set as it existed at v1.10.0 (research citations, the case for command hooks over prompt hooks, the original 4-event/5-script layout). This document describes the <strong>current</strong> system (v2.2.0) as it actually ships, and calls out where the two have diverged.</p>
+<p>This document does not restate <code>hooks-and-init-design.md</code> — that file is the <em>design rationale</em> for the hook set as it existed at v1.10.0 (research citations, the case for command hooks over prompt hooks, the original 4-event/5-script layout). This document describes the <strong>current</strong> system (v3.0.0 shipping from this tree) as it actually ships, and calls out where the two have diverged. Hook event/script/registration counts are derived in <code>docs/hook-enforcement-map.md</code> — this file cites that map rather than duplicating its per-script table.</p>
 <h2 id="1-the-layers-and-what-each-is-for">1. The layers, and what each is for</h2>
 <p>Proofpunk ships as one plugin directory (<code>plugins/proofpunk/</code>) with seven distinct layers. A request — a user typing <code>/proofpunk:implement "add checkout"</code>, or Claude Code loading the plugin at session start — moves through a subset of these layers depending on what kind of request it is.</p>
 <table>
@@ -64,14 +64,14 @@
 <tr>
 <td>Hooks</td>
 <td><code>hooks/*.sh</code> + <code>hooks.json</code></td>
-<td>7 scripts, 6 events</td>
-<td>Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, and blocking an unproven completion claim (§4).</td>
+<td>10 scripts, 7 event keys, 12 registrations</td>
+<td>Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, blocking an unproven completion claim, and steering a mismatched validation runbook back onto the right platform. Full per-registration map: <code>docs/hook-enforcement-map.md</code> (cited, not restated, in §4).</td>
 </tr>
 <tr>
 <td>Shared references</td>
 <td><code>references/*.md</code></td>
-<td>13</td>
-<td>The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, and more. Skills cite these as <code>../../references/X</code>; the installer flattens the citation depth and bundles a self-contained copy per skill (§6).</td>
+<td>15</td>
+<td>The doctrine every skill defers to instead of restating: the End-User Actor Mandate, the evidence contract, per-platform validation runbooks (API/CLI/iOS/web), severity model, WCAG/HIG checklists, the run-trace schema, the docs-acquisition workflow, and more. Skills cite these as <code>../../references/X</code>; the installer flattens the citation depth and bundles a self-contained copy per skill (§6).</td>
 </tr>
 <tr>
 <td>Assets</td>
@@ -87,7 +87,15 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Two other things worth naming alongside these layers, because they gate everything above:</strong> <code>tools/verify-orchestration.py</code> is a script a contributor runs by hand — <code>AGENTS.md</code>'s testing requirement names it, alongside <code>test-hooks.sh</code> and <code>dry-run-install.sh</code>, as the trio to run from the repo root "before claiming any change here done." It proves the 18-skill DAG in §3 is real: it parses every <code>SKILL.md</code>'s <code>## Skill calls</code> table directly and fails if the skill tables themselves — not this document — encode a cycle, an edge to a nonexistent skill, or a <code>Called by</code> line that doesn't match a real edge. It never reads this document or any other prose file: the DAG's source of truth is the <code>SKILL.md</code> tables, and this document is a description of what those tables said when it was written, not an input the verifier checks — so this document, specifically, can still drift from them if a skill's table changes and this file isn't updated to match. §3's call graph below was produced by reading those same 18 tables directly, for that reason. <code>themes/</code> (20 flat-black cyberpunk themes, rendered to OMP/OpenCode/Hyper formats from one <code>palettes.json</code> source of truth) is presentation-only and does not affect any of the above.</p>
+<p><strong>Two other things worth naming alongside these layers, because they gate everything above:</strong> the harness layer. <code>tools/verify-orchestration.py</code> proves the 18-skill DAG in §3 is real: it parses every <code>SKILL.md</code>'s <code>## Skill calls</code> table directly and fails on a cycle, an edge to a nonexistent skill, or a <code>Called by</code> line that doesn't match a real edge. It never reads this document — the DAG's source of truth is the <code>SKILL.md</code> tables. Alongside it, four additional gates now sit in <code>tools/</code> and in <code>.github/workflows/gates.yml</code>:</p>
+<ul>
+<li><code>verify-citations.py</code> — repo-tree citation resolution (ERROR on a broken <code>references/</code> cite in a top-level <code>SKILL.md</code>; WARN baseline on vendored bundled copies).</li>
+<li><code>verify-harness-integrity.py</code> — every harness must actually invoke its declared subject (closes the historical miss where <code>dry-run-install.sh</code> was labelled the installer driver while invoking it zero times).</li>
+<li><code>verify-router-links.py</code> — the router head's skill-call table is derived as N−1 from a glob of <code>skills/*/SKILL.md</code>; every delivery skill is linked, none extra.</li>
+<li><code>gauge-report.py</code> — the v3 gauge board; exits non-zero while any gauge is unmet.</li>
+</ul>
+<p><code>tools/verify-counts.py</code> is the Class-2 detector for this document's own failure mode: a number-adjacent count word in live <code>.md</code> that disagrees with the tree. Historical provenance prose (dated release reports, before/after rows, consolidation logs) is excluded by construction.</p>
+<p><code>AGENTS.md</code>'s testing requirement still names the original trio (<code>test-hooks.sh</code>, <code>dry-run-install.sh</code>, <code>verify-orchestration.py</code>) plus <code>test-installer.sh</code>. CI runs those plus the citation, harness-integrity, and gauge gates. §3's call graph below was produced by reading those same 18 tables directly. <code>themes/</code> (20 flat-black cyberpunk themes, rendered to OMP/OpenCode/Hyper formats from one <code>palettes.json</code> source of truth) is presentation-only and does not affect any of the above.</p>
 <h3 id="request-flow">Request flow</h3>
 <pre><code>user request
     │
@@ -113,10 +121,10 @@ verdict: PASS / FAIL / BLOCKED / UNVERIFIED, cited by full path</code></pre>
 <li><strong>Routing rule</strong>: classify by the ask's <em>shape</em>, not by keyword-matching; on ambiguity, prefer the narrower skill over the broader one; a compound ask chains skills left to right, and each named skill still runs its own full workflow — the router never shortcuts a downstream skill's process.</li>
 </ul>
 <p>Its <code>## Skill calls</code> table has 17 rows — one per delivery skill, each with an explicit <strong>When</strong> (the request shape that routes there) and <strong>What it hands over</strong> (exactly what context crosses the handoff, e.g. <code>brainstorm</code> gets "the raw ask, unfiltered"; <code>red-team-eval</code> gets "the artifact to attack"). This is the "explicit handoff column" a contributor should read before anything else in this plugin.</p>
-<p>Below the routing table sits a second table, <strong>Shared doctrine — what every skill defers to</strong>: 13 rows, one per file in <code>references/</code>, each with one line naming what it owns (<code>evidence-contract.md</code> → "run-scoped, sealed, non-empty evidence"; <code>end-user-actor.md</code> → "the Actor Mandate — who drives the system"). This is the doctrine layer from §1 made concrete: routing tells you <em>which</em> skill; this table tells you <em>which rule</em> that skill will apply and where it's canonically defined. The router's own comment on this table is exact: "the installer rewrites these citations to self-contained copies, so they resolve both in this repo and in an installed tree" — see §6.</p>
+<p>Below the routing table sits a second table, <strong>Shared doctrine — what every skill defers to</strong>: 15 rows, one per file in <code>references/</code>, each with one line naming what it owns (<code>evidence-contract.md</code> → "run-scoped, sealed, non-empty evidence"; <code>end-user-actor.md</code> → "the Actor Mandate — who drives the system"). This is the doctrine layer from §1 made concrete: routing tells you <em>which</em> skill; this table tells you <em>which rule</em> that skill will apply and where it's canonically defined. The router's own comment on this table is exact: "the installer rewrites these citations to self-contained copies, so they resolve both in this repo and in an installed tree" — see §6.</p>
 <h2 id="3-the-skill-call-graph">3. The skill call graph</h2>
 <p>Method ownership in this plugin is a <strong>DAG, not a document</strong>: a method (the Actor Mandate, the proof-obligation XML format, the scout-first gate, etc.) lives in exactly one skill, and every other skill that needs it <em>calls</em> the owner — reads its <code>SKILL.md</code> at the invocation point and applies the method verbatim, never restating it in its own body. This section is derived directly from every skill's own <code>## Skill calls</code> table (18 files read, not summarized from a prior doc), and <code>tools/verify-orchestration.py</code> is the machine check a contributor runs to confirm this property still holds (parses the same tables, asserts closure, acyclicity, and that "Called by" claims match real edges) — see §1 for why this is a manual, not automatic, gate in this repo.</p>
-<h3 id="call-table-18-skills-47-edges-total-17-from-the-router-to-every-skill-plus-30-among-the-17-delivery-skills">Call table (18 skills, 47 edges total: 17 from the router to every skill, plus 30 among the 17 delivery skills)</h3>
+<h3 id="call-table-18-skills-48-edges-total-17-from-the-router-to-every-delivery-skill-plus-31-among-the-17-delivery-skills--derived-from-verify-orchestrationpys-calls-parse-of-every--skill-calls-table-not-restated">Call table (18 skills, 48 edges total: 17 from the router to every delivery skill, plus 31 among the 17 delivery skills — derived from <code>verify-orchestration.py</code>'s <code>CALLS</code> parse of every <code>## Skill calls</code> table, not restated)</h3>
 <table>
 <thead>
 <tr>
@@ -199,7 +207,7 @@ verdict: PASS / FAIL / BLOCKED / UNVERIFIED, cited by full path</code></pre>
 <tr>
 <td><code>end-user-testing</code></td>
 <td>— (leaf)</td>
-<td><code>codebase-truth-audit</code>, <code>full-functional-audit</code>, <code>implement</code>, <code>mobile-validation-runner</code>, <code>plan-hardening</code>, <code>production-readiness</code>, <code>red-team-eval</code>, <code>root-cause-debugging</code>, <code>ui-experience-audit</code>, <code>validation-plan</code>, <code>visual-inspection</code>, <code>proofpunk</code> (12 callers — the most-depended-on skill in the plugin)</td>
+<td><code>codebase-truth-audit</code>, <code>full-functional-audit</code>, <code>implement</code>, <code>mobile-validation-runner</code>, <code>plan-hardening</code>, <code>production-readiness</code>, <code>red-team-eval</code>, <code>root-cause-debugging</code>, <code>tui-testing</code>, <code>ui-experience-audit</code>, <code>validation-plan</code>, <code>visual-inspection</code>, <code>proofpunk</code> (13 callers — the most-depended-on skill in the plugin)</td>
 </tr>
 <tr>
 <td><code>prompt-forge</code></td>
@@ -213,11 +221,12 @@ verdict: PASS / FAIL / BLOCKED / UNVERIFIED, cited by full path</code></pre>
 </tr>
 <tr>
 <td><code>tui-testing</code></td>
-<td>— (leaf)</td>
+<td><code>end-user-testing</code></td>
 <td><code>implement</code>, <code>full-functional-audit</code>, <code>proofpunk</code></td>
 </tr>
 </tbody>
 </table>
+<p><code>implement</code>'s table row above lists its <em>skill</em> calls only. Before Stage 2 SCOUT, <code>implement</code> also runs a Stage 1.5 ACQUIRE step that is not a skill call: it pulls the authoritative platform documentation for the target repo's host(s) into <code>.planning/docs-&lt;host&gt;.md</code>, per the shared reference <code>../../references/docs-acquisition.md</code> (§1's "Shared references" row), then hands that digest to every Stage 2 scout as spawn context. A task touching no recognizable platform surface produces no digest and Stage 2 proceeds directly — this is doctrine ACQUIRE cites, not a DAG edge, the same way Stage 5's platform runbooks are cited doctrine rather than calls.</p>
 <h3 id="method-ownership-what-each-owner-actually-owns">Method ownership (what each owner actually owns)</h3>
 <p>Read straight from the "What it hands over" column of the tables above — this is the doctrine each caller applies verbatim rather than restating:</p>
 <table>
@@ -273,60 +282,13 @@ depth 4  production-readiness
 depth 3  full-functional-audit
 depth 2  codebase-truth-audit, implement, mobile-validation-runner,
          plan-hardening, stack-testing, ui-experience-audit
-depth 1  red-team-eval, root-cause-debugging, validation-plan, visual-inspection
-depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing</code></pre>
+depth 1  red-team-eval, root-cause-debugging, tui-testing, validation-plan, visual-inspection
+depth 0  brainstorm, end-user-testing, prompt-forge, session-intent</code></pre>
 <h3 id="a-contradiction-found-while-writing-this-section">A contradiction found while writing this section</h3>
 <p>The previous revision of this file's call graph included the edge <code>implement --&gt; stack-testing</code> in its mermaid diagram. The live <code>implement/SKILL.md</code> "Skill calls" table has <strong>no such row</strong> — a <code>grep</code> for <code>stack-testing</code> inside that file returns zero matches. <code>implement</code>'s real callees are the seven listed above; <code>stack-testing</code> is called only by <code>production-readiness</code> and the router, matching <code>stack-testing/SKILL.md</code>'s own <code>Called by:</code> line. The old doc's <em>prose</em> depth table (which placed <code>implement</code> at depth 2, not the depth 3 the stale edge would force) was actually consistent with the correct graph — only the diagram carried the stale edge. This section was regenerated from the 18 live <code>SKILL.md</code> files rather than edited from the prior version, precisely so this kind of drift cannot survive a rewrite.</p>
 <h2 id="4-the-hook-system">4. The hook system</h2>
-<p>Configuration lives in one file, <code>hooks/hooks.json</code>, read directly for this section. It declares <strong>6 events</strong> and <strong>7 scripts</strong>, wired into <strong>8 registrations</strong> (one event fires 3 scripts under a single matcher):</p>
-<table>
-<thead>
-<tr>
-<th>Event</th>
-<th>Matcher</th>
-<th>Script(s)</th>
-<th>Timeout</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>SessionStart</code></td>
-<td><code>startup|resume|clear</code></td>
-<td><code>session-start.sh</code></td>
-<td>5s</td>
-</tr>
-<tr>
-<td><code>Stop</code></td>
-<td>(none)</td>
-<td><code>stop-guard.sh</code></td>
-<td>10s</td>
-</tr>
-<tr>
-<td><code>SubagentStop</code></td>
-<td>(none)</td>
-<td><code>stop-guard.sh</code></td>
-<td>10s</td>
-</tr>
-<tr>
-<td><code>PreToolUse</code></td>
-<td><code>Write|Edit</code></td>
-<td><code>no-test-files.sh</code>, <code>evidence-guard.sh</code>, <code>capture-guard.sh</code></td>
-<td>5s each</td>
-</tr>
-<tr>
-<td><code>InstructionsLoaded</code></td>
-<td>(none)</td>
-<td><code>instructions-loaded.sh</code></td>
-<td>5s</td>
-</tr>
-<tr>
-<td><code>PostToolUse</code></td>
-<td><code>Write|Edit</code></td>
-<td><code>post-write-walkthrough.sh</code></td>
-<td>5s</td>
-</tr>
-</tbody>
-</table>
+<p>Configuration lives in one file, <code>hooks/hooks.json</code>. Counts are derived, never restated: <strong>10</strong> on-disk <code>.sh</code> scripts, <strong>7</strong> event keys, <strong>12</strong> registrations (two scripts registered twice: <code>stop-guard.sh</code> on Stop and SubagentStop; <code>bash-write-notice.sh</code> on PostToolUse and PostToolUseFailure). The per-registration table — matcher, timeout, can-deny, observes, doctrine enforced — lives in <code>docs/hook-enforcement-map.md</code> (hashed parse of <code>hooks.json</code>). This section does not duplicate that table.</p>
+<p>What this section still owns: the parallel-not-sequential execution model, the Bash-write matcher gap, and the decision-surface summary a contributor needs without opening the map.</p>
 <h3 id="decision-surface-per-script">Decision surface per script</h3>
 <table>
 <thead>
@@ -348,7 +310,7 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 <td><code>stop-guard.sh</code></td>
 <td>Stop, SubagentStop</td>
 <td>scans the last 40 transcript lines, assistant-authored only; emits <code>{"decision":"block","reason":...}</code> if a completion CLAIM appears with no PROOF citation, <strong>or</strong> if CLAIM+PROOF appear with no SCOUT record</td>
-<td>silent — exit 0, no output at all (a stop hook that speaks on every stop is noise across a multi-plugin session)</td>
+<td>silent exit 0 when the heuristic ran and found nothing. Fail-open paths (missing/unreadable transcript, no python3) still exit 0 but now emit <code>additionalContext</code> containing <code>enforcement OFF (&lt;reason&gt;)</code> — see <code>docs/hook-enforcement-map.md</code></td>
 </tr>
 <tr>
 <td><code>evidence-guard.sh</code></td>
@@ -376,9 +338,27 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 </tr>
 <tr>
 <td><code>post-write-walkthrough.sh</code></td>
-<td>PostToolUse</td>
+<td>PostToolUse (<code>Write|Edit</code>)</td>
 <td>never denies</td>
 <td>if the written path is production code (not evidence, docs, <code>.planning/</code>, or config) — emits <code>additionalContext</code> reminding the agent to drive the real system and cite evidence before any completion claim; silent otherwise</td>
+</tr>
+<tr>
+<td><code>bash-write-snapshot.sh</code></td>
+<td>PreToolUse (<code>Bash</code>)</td>
+<td>never denies (a deny here would re-open the abandoned shell parser)</td>
+<td>hashes protected paths (evidence dirs + test-shaped paths) before the command runs; leaves a per-session baseline for the notice hook. Cite <code>docs/hook-enforcement-map.md</code></td>
+</tr>
+<tr>
+<td><code>bash-write-notice.sh</code></td>
+<td>PostToolUse + PostToolUseFailure (<code>Bash</code>)</td>
+<td>never denies (host: the tool already ran)</td>
+<td>re-hashes protected paths vs the snapshot; reports test files written, capture tamper, evidence delete, secret-shaped evidence content. Detection, not prevention</td>
+</tr>
+<tr>
+<td><code>platform-steer.sh</code></td>
+<td>PreToolUse (<code>Bash</code>)</td>
+<td>never denies</td>
+<td>if a Bash command's shape (e.g. <code>xcrun simctl</code>, a browser-automation tool, a repo-local built binary, <code>curl</code>) implies a validation platform that conflicts with the platform detected by walking up from <code>cwd</code>, emits <code>additionalContext</code> naming the correct <code>references/*-validation.md</code> runbook; silent when either side is ambiguous</td>
 </tr>
 </tbody>
 </table>
@@ -441,7 +421,7 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 <p>For each of the 18 skills selected (all of them, by default, or a <code>--only a,b,c</code> subset), the installer does more than a file copy: it <strong>tar-copies the skill directory</strong>, then <strong>rewrites doctrine citations</strong> (<code>../../references/X</code> at repo depth becomes <code>references/X</code> at install depth), then runs a <strong>fixed-point sweep</strong> over <code>references/</code> — copying every file cited anywhere inside the skill (backticked or bare prose, any citation depth) into the skill's own bundled <code>references/</code> subdirectory, and repeating that sweep until nothing new gets added. This last step exists because doctrine files cite each other (e.g. <code>evidence-contract.md</code> cites <code>end-user-actor.md</code>) — one pass would leave a dangling reference. The result is what <code>AGENTS.md</code> calls "self- contained copies": an installed skill resolves its own doctrine without ever reaching outside its own directory, in contrast to this repo's layout where skills deliberately cite <code>../../references/</code> and rely on the installer to widen those paths.</p>
 <p>Doctrine also lands as a standalone bundle at <code>$DIR/proofpunk-doctrine/</code> — a full copy of <code>references/</code> plus a generated <code>README.md</code> summarizing the five ruling rules (the Iron Rule, the End-User Actor Mandate, remediation, fresh evidence, severities) in plain prose, independent of any single skill.</p>
 <h3 id="hooks-hooksjson-is-now-the-single-source-of-truth">Hooks: <code>hooks.json</code> is now the single source of truth</h3>
-<p>With <code>--hooks</code> (automatic on plugin installs), the installer no longer hardcodes which scripts to copy or which events to register — both are <strong>derived from <code>hooks/hooks.json</code> at install time</strong>, via a small inline Python step that:</p>
+<p><code>--hooks</code> is <strong>opt-in on the plain-skills channel</strong> (<code>WITH_HOOKS=0</code> is the default in <code>tools/proofpunk-install.sh</code>; marketplace/plugin installs load hooks from the plugin cache's own <code>hooks.json</code> and never write <code>settings.json</code>). When <code>--hooks</code> is passed, the installer no longer hardcodes which scripts to copy or which events to register — both are <strong>derived from <code>hooks/hooks.json</code> at install time</strong>, via a small inline Python step that:</p>
 <ol type="1">
 <li>Parses <code>hooks.json</code>, collects every <code>*.sh</code> filename referenced across every event's every matcher, and hard-fails (<code>sys.exit(...)</code>) if any named script doesn't actually exist on disk — a name mismatch aborts the install rather than silently installing an incomplete set.</li>
 <li>Copies exactly those scripts (and only those) into <code>~/.proofpunk/hooks</code>.</li>
@@ -471,13 +451,16 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 <li>18 skills: <code>glob plugins/proofpunk/skills/*/SKILL.md</code> → 18 directories, matching <code>ALL_SKILLS</code> in <code>tools/proofpunk-install.sh</code> verbatim.</li>
 <li>6+6 commands: <code>glob plugins/proofpunk/commands/*.md</code> → 6; <code>glob plugins/proofpunk/opencode/commands/*.md</code> → 6.</li>
 <li>3+3+4 agents: <code>glob plugins/proofpunk/agents/*.md</code> → 3; <code>glob plugins/proofpunk/omp/agents/*.md</code> → 3; <code>glob plugins/proofpunk/opencode/agents/*.md</code> → 4 (the extra file is <code>proofpunk.md</code>, the router agent, OpenCode-only).</li>
-<li>9 hook scripts / 7 events / 11 registrations: read <code>plugins/proofpunk/hooks/hooks.json</code> directly and counted the events object's keys and each event's <code>hooks[].hooks[]</code> entries. The count grew from 7/6/8 when <code>bash-write-snapshot.sh</code> (PreToolUse:Bash) and <code>bash-write-notice.sh</code> (PostToolUse:Bash and PostToolUseFailure:Bash) were added as detection-only mitigation for the Bash write bypass (§4).</li>
-<li>13 references: <code>glob plugins/proofpunk/references/*.md</code> → 13.</li>
+<li>10 hook scripts / 7 events / 12 registrations: derived in <code>docs/hook-enforcement-map.md</code> from a hashed parse of <code>plugins/proofpunk/hooks/hooks.json</code>. This document cites that map. The count grew from 7/6/8 when <code>bash-write-snapshot.sh</code> (PreToolUse:Bash) and <code>bash-write-notice.sh</code> (PostToolUse:Bash and PostToolUseFailure:Bash) were added as detection-only mitigation for the Bash write bypass (§4), then to 10/7/12 when <code>platform-steer.sh</code> (PreToolUse:Bash) was added as a non-blocking platform-mismatch steering guard (v4 W5).</li>
+<li>15 references: <code>glob plugins/proofpunk/references/*.md</code> → 15 (the 15th is <code>docs-acquisition.md</code>, added for <code>implement</code>'s Stage 1.5 ACQUIRE; the previous "14" count predated it).</li>
 <li>5 assets: <code>read plugins/proofpunk/assets/</code> → 2 top-level template files
 <ul>
 <li><code>rules/</code> containing 3 files.</li>
 </ul></li>
-<li>The call graph in §3: <code>grep '## Skill calls'</code> (and the table rows under it) across all 18 <code>SKILL.md</code> files individually — not copied from any prior document.</li>
+<li>48 DAG edges: the same <code>## Skill calls</code> parse <code>verify-orchestration.py</code> uses (<code>CALLS[s] = rows</code> of <code>`| \`name\` |`</code>). Router contributes 17; the 17 delivery skills contribute 31. The previous "47 edges / 30 among delivery" figure omitted <code>tui-testing → end-user-testing</code>.</li>
+<li>The call graph in §3: that parse across all 18 <code>SKILL.md</code> files — not copied from any prior document.</li>
+<li>Harness layer: <code>tools/verify-citations.py</code>, <code>verify-harness-integrity.py</code>, <code>verify-router-links.py</code>, <code>gauge-report.py</code>, <code>verify-counts.py</code> (this document's own Class-2 detector).</li>
+<li>22 tools: <code>ls tools/</code> (excluding <code>__pycache__/</code>) → 22 entries at the repo root — scripts, harness gates, and the two doc files (<code>AGENTS.md</code>, <code>INSTALL.md</code>) that live alongside them in that directory.</li>
 </ul>
 
   </div>
@@ -485,13 +468,13 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent, tui-testing
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 14 refs · generated 2026-09-04</span></div>
+  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v2.2.0 · MIT license
+    &nbsp;· plugin v3.0.0 · MIT license
   </div>
 </footer>
 </div>

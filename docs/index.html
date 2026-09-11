@@ -19,7 +19,7 @@
     <span class="branch">⑂ main</span><span class="sep">│</span>
     <span class="meta"><span class="led ok"></span>18 skills</span>
     <span class="meta"><span class="led ok"></span>6+6 commands</span>
-    <span class="meta"><span class="led warn"></span>14 doctrine refs</span>
+    <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class="on"><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class=""><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -36,12 +36,12 @@
   <div class="cmdline">
     <div><span class="p">~$</span> <span class="c">/plugin marketplace add krzemienski/proofpunk</span></div>
     <div><span class="p">~$</span> <span class="c">/plugin install proofpunk@proofpunk-marketplace</span></div>
-    <div class="out">proofpunk v2.2.0 │ 18 skills · 6 commands · doctrine hook · <span class="hl">20 flat-black themes</span></div>
+    <div class="out">proofpunk v3.0.0 │ 18 skills · 6 commands · doctrine hook · <span class="hl">20 flat-black themes</span></div>
   </div>
   <div class="chips">
     <span class="chip"><b>18</b> skills</span>
     <span class="chip"><b>6</b> slash commands <i>+6 opencode</i></span>
-    <span class="chip"><b>14</b> doctrine references</span>
+    <span class="chip"><b>15</b> doctrine references</span>
     <span class="chip"><b>7</b> architecture docs</span>
     <span class="chip"><b>20</b> cyberpunk themes</span>
     <span class="chip"><b>3</b> platforms</span>
@@ -61,7 +61,7 @@
 </section>
 <section>
   <div class="marker">02 / THE SKILL STACK</div>
-  <h2>18 skills, five layers, one closed graph</h2>
+  <h2>18 skills, 5 layers, one closed graph</h2>
   <p>Every referenced skill ships — the Related Skills graph is closed. Layers from the repository
   architecture: orchestration composes prompt &amp; plan, execution, proof, and deep analysis;
   every verdict cites the shared doctrine in <code>references/</code>.</p>
@@ -139,8 +139,8 @@
     M --&gt; P[&quot;plugins/proofpunk&lt;br/&gt;the plugin&quot;]
     M --&gt; T[&quot;tools/&lt;br/&gt;proofpunk-install.sh + INSTALL.md&quot;]
     M --&gt; E[&quot;examples/mood-ring&lt;br/&gt;the sealed live walkthrough&quot;]
-    P --&gt; S[&quot;skills/ — 18 skills&quot;]
-    P --&gt; R[&quot;references/ — 13 shared doctrine files&quot;]
+    P --&gt; S[&quot;skills/ — the skill set&quot;]
+    P --&gt; R[&quot;references/ — shared doctrine files&quot;]
     P --&gt; D[&quot;docs/ — consolidation + validation records&quot;]
     R -.-&gt;|cited by| S
 </code></pre><p class="mmd-note">(diagram source — pre-renderer unavailable)</p><pre class="mermaid"><code>graph TB
@@ -286,13 +286,13 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>OVERVIEW</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 14 refs · generated 2026-09-04</span></div>
+  <div class="statusline"><span><b>OVERVIEW</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v2.2.0 · MIT license
+    &nbsp;· plugin v3.0.0 · MIT license
   </div>
 </footer>
 </div>

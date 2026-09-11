@@ -114,7 +114,7 @@ attack"). This is the "explicit handoff column" a contributor should read
 before anything else in this plugin.
 
 Below the routing table sits a second table, **Shared doctrine — what
-every skill defers to**: 13 rows, one per file in `references/`, each with
+every skill defers to**: 15 rows, one per file in `references/`, each with
 one line naming what it owns (`evidence-contract.md` → "run-scoped,
 sealed, non-empty evidence"; `end-user-actor.md` → "the Actor Mandate —
 who drives the system"). This is the doctrine layer from §1 made concrete:
@@ -550,3 +550,6 @@ live tree while writing it — re-run any of them to re-verify:
 - Harness layer: `tools/verify-citations.py`, `verify-harness-integrity.py`,
   `verify-router-links.py`, `gauge-report.py`, `verify-counts.py` (this
   document's own Class-2 detector).
+- 22 tools: `ls tools/` (excluding `__pycache__/`) → 22 entries at the
+  repo root — scripts, harness gates, and the two doc files
+  (`AGENTS.md`, `INSTALL.md`) that live alongside them in that directory.

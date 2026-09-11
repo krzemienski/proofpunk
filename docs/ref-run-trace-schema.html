@@ -19,7 +19,7 @@
     <span class="branch">⑂ main</span><span class="sep">│</span>
     <span class="meta"><span class="led ok"></span>18 skills</span>
     <span class="meta"><span class="led ok"></span>6+6 commands</span>
-    <span class="meta"><span class="led warn"></span>14 doctrine refs</span>
+    <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -308,7 +308,7 @@
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p>Required non-null: <code>artifact</code>.</p>
 <h3 id="verdict--a-criterion-gate-or-checkpoint-verdict"><code>verdict</code> — a criterion, gate, or checkpoint verdict</h3>
-<p><code>decision</code> for this event type is a bare string, one of <code>PASS</code>, <code>FAIL</code>, <code>BLOCKED</code>, <code>UNVERIFIED</code> — the same four-state vocabulary the rest of Proofpunk uses (<code>references/severity-model.md</code>). <code>stage</code> conventionally carries the dotted path matching how the ledger names the same claim (<code>gates.&lt;name&gt;</code> for release gates, <code>criteria.&lt;ID&gt;</code> for numbered criteria) — <code>reconcile</code> depends on this convention to match trace verdicts against ledger claims; see below.</p>
+<p><code>decision</code> for this event type is a bare string, one of <code>PASS</code>, <code>FAIL</code>, <code>BLOCKED</code>, <code>UNVERIFIED</code> — the same four-state vocabulary the rest of Proofpunk uses (<code>severity-model.md</code>). <code>stage</code> conventionally carries the dotted path matching how the ledger names the same claim (<code>gates.&lt;name&gt;</code> for release gates, <code>criteria.&lt;ID&gt;</code> for numbered criteria) — <code>reconcile</code> depends on this convention to match trace verdicts against ledger claims; see below.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;schema_version&quot;</span><span class="fu">:</span> <span class="st">&quot;1.0&quot;</span><span class="fu">,</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;run_id&quot;</span><span class="fu">:</span> <span class="st">&quot;run-20260904T054443-l2-trace-proof&quot;</span><span class="fu">,</span></span>
@@ -371,13 +371,13 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>REF:RUN-TRACE-SCHEMA</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 14 refs · generated 2026-09-04</span></div>
+  <div class="statusline"><span><b>REF:RUN-TRACE-SCHEMA</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v2.2.0 · MIT license
+    &nbsp;· plugin v3.0.0 · MIT license
   </div>
 </footer>
 </div>

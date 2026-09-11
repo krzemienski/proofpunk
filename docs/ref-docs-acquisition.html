@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACQUIRE-Stage Digest Contract (shared) — proofpunk doctrine</title>
+<meta name="description" content="Defines what a v4 ACQUIRE-stage digest must contain to be citable by a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="chrome">
+  <div class="chrome-bar">
+    <span class="brand">PROOFPUNK</span><span class="sep">│</span>
+    <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
+    <span class="branch">⑂ main</span><span class="sep">│</span>
+    <span class="meta"><span class="led ok"></span>18 skills</span>
+    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
+    <span class="meta"><span class="led idle"></span>20 themes</span>
+  </div>
+  <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
+<main>
+
+<section>
+  <div class="marker">DOCTRINE / DOCS-ACQUISITION</div>
+  <div class="doc">
+<h1 id="acquire-stage-digest-contract-shared">ACQUIRE-Stage Digest Contract (shared)</h1>
+<p>Defines what a v4 ACQUIRE-stage digest must contain to be citable by a scout subagent, a <code>--parallel</code> lane contract, or a steering-guard verdict. Closes the gap <code>v4-spec.md</code> §2a names: <code>implement</code>'s research sub-step had no positive definition anywhere in the skill body before v4. This document is that definition's <em>output shape</em> — not the stage's own procedure (that belongs to the ACQUIRE stage text in <code>plugins/proofpunk/skills/implement/SKILL.md</code>, inserted between Stage 1 MINE and Stage 2 SCOUT per <code>v4-spec.md</code> §2a/§3), and not <em>which</em> end-user validation runbook applies once a target application's platform is known (that is <code>platform-routing.md</code>'s job — see "Host vs. Platform" below).</p>
+<h2 id="the-anti-pattern">The Anti-Pattern</h2>
+<p><strong>A digest whose claims carry no source is not a digest — it is memory, and memory is exactly what the ACQUIRE stage exists to replace.</strong> <code>v4-spec.md</code> §2a's cited gap is the reason this matters: the scout subagent was granted <code>WebFetch</code> (<code>plugins/proofpunk/agents/scout.md:6</code>) but nothing told it to use it, so platform facts came from training-data recall — discovered wrong mid-scout, or never discovered at all. A digest that restates what the model already believed, with no URL or doc path attached to each claim, reproduces that exact failure one layer earlier. Such a document may not be treated as satisfying this contract, no matter how confident or plausible its claims read.</p>
+<h2 id="required-contents">Required Contents</h2>
+<p>A conforming digest states, at minimum, all six of the following. The three worked examples below satisfy all six, in this order or folded together per the patterns shown:</p>
+<ol type="1">
+<li><strong>Host</strong> — which platform-<em>documentation source</em> this digest covers: <code>Claude Code</code>, <code>oh-my-pi (OMP)</code>, <code>OpenCode</code>, or another host a future task targets. One digest per host, never a merged multi-host file. (See "Host vs. Platform" below — this is not the same axis as <code>platform-routing.md</code>'s iOS/Web/API/CLI table.)</li>
+<li><strong>One numbered section per platform surface the host actually has.</strong> There is no fixed template across hosts — the section list mirrors each host's real capability set, not a checklist forced onto every host. See the table below for the three real lists on file; none of them matches another exactly, and that is correct, not a defect.</li>
+<li><strong>A source on every load-bearing claim</strong> — a vendor doc URL (<code>https://...</code>) or a local path (<code>omp://...</code>, <code>~/.omp/...</code>, a repo <code>path:line</code>) the claim was actually read from in this session. A claim with no citation is not load-bearing content and does not belong in the digest, hedged or not.</li>
+<li><strong>A retrieval date</strong> — the date the cited web docs were actually fetched <em>this session</em>, not inherited from a prior digest.</li>
+<li><strong>An explicit method line</strong> stating how the docs were obtained: web fetch of live vendor pages, a local <code>omp://</code>/config read, or a mix — and if a source turned out to be unauthoritative (a third-party page, a compatibility shim), that it was excluded from the body and moved to Gaps rather than kept with a caveat. Items 4 and 5 are usually one sentence, not two separate lines — see the worked examples.</li>
+<li><strong>A mandatory <code>## Gaps</code> section.</strong> Lists what the author could not confirm from the sources read: an assumption the docs did not settle, a claim needing dynamic testing the author could not run, or a fact two sources contradict. <strong>An empty Gaps section must say so explicitly</strong> — e.g. "No unconfirmed claims in this digest; every assertion above cites a source read this session." An omitted heading reads as "not written," not "nothing to report," and a reviewer cannot tell the two apart from a missing section.</li>
+</ol>
+<h2 id="worked-examples-this-repo">Worked Examples (this repo)</h2>
+<p>Three digests already meet this contract, written during <code>v4-spec.md</code>'s own research phase and cited by its §4 table: <code>.planning/v4-architecture/docs-claude.md</code>, <code>.planning/v4-architecture/docs-omp.md</code>, <code>.planning/v4-architecture/docs-opencode.md</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Digest</th>
+<th>Numbered sections (item 2)</th>
+<th>Extra sections beyond the floor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs-claude.md</code></td>
+<td>6: Plugins, Skills, Hooks, Subagents, Slash commands, Settings/permissions</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>docs-omp.md</code></td>
+<td>5: Skill discovery, Rules system, Hooks/extensions/plugin surface, Subagent/model routing, proofpunk's OMP-specific glue</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>docs-opencode.md</code></td>
+<td>5: Agents, Commands, Plugins, Config, MCP/tools surface</td>
+<td>Mismatches summary (shipped files vs. current docs)</td>
+</tr>
+</tbody>
+</table>
+<p>Every row ends in a <code>## Gaps</code> section (item 6) — the one section present in all three regardless of how differently the rest are shaped. A digest may add sections beyond the floor (<code>docs-opencode.md</code>'s "Mismatches summary" is a real example) — the six items above are a minimum, not a ceiling.</p>
+<p><code>docs-omp.md</code>'s own header is a worked example of item 5's discipline in practice, not just compliance with it: <em>"Web search was used once during drafting and has been removed as evidence — third-party/compatibility- package material is not an authoritative OMP source; that uncertainty is now confined to the Gaps section."</em> The author didn't cite an unauthoritative source with a caveat; they retracted it from the body entirely and named the retraction in Gaps.</p>
+<p>This repo's citation discipline predates the ACQUIRE stage: <code>docs/skill-canon.md:1-16</code> is the same "dated retrieval, sourced URL list, explicit method line" pattern, applied to a different artifact (a committed multi-host conformance matrix, not a per-run ACQUIRE digest) — named as the discipline model by <code>v4-spec.md</code> §5's W2 item, not as another <code>docs-&lt;host&gt;.md</code> instance.</p>
+<h2 id="file-naming-and-location">File Naming and Location</h2>
+<ul>
+<li><strong>Filename</strong>: <code>docs-&lt;host&gt;.md</code>, lowercase host token matching the filenames <code>v4-spec.md</code> §4's own table already establishes: <code>claude</code>, <code>omp</code>, <code>opencode</code> (and whatever token a future host's digest adopts, by the same pattern).</li>
+<li><strong>Location for a live ACQUIRE run</strong>: <code>.planning/docs-&lt;host&gt;.md</code> — sibling of <code>.planning/execution-ledger.json</code> (<code>plugins/proofpunk/skills/implement/SKILL.md:205</code>) and <code>validation-plan</code>'s own <code>.planning/BRIEF.md</code>/<code>.planning/ROADMAP.md</code> siblings (<code>plugins/proofpunk/skills/validation-plan/SKILL.md:36-37</code>). Flat, not run-slug-namespaced — the execution ledger itself isn't namespaced per run either.</li>
+<li>The three worked examples above live under <code>.planning/v4-architecture/</code> instead of <code>.planning/</code> directly because that directory is this architecture proposal's own research output, not an <code>implement</code> run. The naming convention (<code>docs-&lt;host&gt;.md</code>) is identical either way; only the parent directory differs by context.</li>
+</ul>
+<h2 id="host-vs-platform--do-not-conflate">Host vs. Platform — do not conflate</h2>
+<p>This document's "host" (item 1) is the AI coding harness whose own documentation the digest summarizes: Claude Code, OMP, OpenCode. <code>platform-routing.md</code>'s "Platform" column is a different axis entirely — the <em>target application's</em> platform (iOS/macOS, Web, Flutter, API, CLI) that a validation runbook routes against. A steering-guard verdict (<code>v4-spec.md</code> §2d) may need both at once — the digest for the harness running the task, and <code>platform-routing.md</code>'s detection table for the app being built — but they are never the same lookup, and a digest citation is never a substitute for a <code>platform-routing.md</code> citation or vice versa.</p>
+<h2 id="who-cites-a-digest">Who Cites a Digest</h2>
+<p>Per <code>v4-spec.md</code> §2b–§2d, a digest is consumed, never re-derived, by:</p>
+<ul>
+<li><strong>The scout subagent</strong> — already wired, not hypothetical: <code>plugins/proofpunk/agents/scout.md:23-29</code> instructs the scout to read a digest named in its spawn context before scouting and treat its platform facts as given, falling back to <code>WebFetch</code> only for a fact the digest doesn't cover (and naming the URL and fact produced, so the digest can be extended next time rather than silently re-fetched).</li>
+<li><strong>A <code>--parallel</code> lane contract</strong> — the extended schema (<code>v4-spec.md</code> §2c) binds which digest a lane consumes, so two lanes building for different hosts don't cross-pollinate assumptions.</li>
+<li><strong>A steering-guard verdict</strong> — the <code>PreToolUse</code> guard (<code>v4-spec.md</code> §2d) cross-checks a validation-shaped Bash call against the digest for the task's target host(s), in addition to <code>platform-routing.md</code>'s detection table (see "Host vs. Platform" above).</li>
+</ul>
+<p>A citation into a digest that does not meet this contract — no source on a claim, no retrieval date, no <code>## Gaps</code> section — is not valid grounding for any of the three consumers above. Treat it the same as no digest at all: the consumer must re-fetch or escalate, never proceed on an uncited claim because a file happened to exist at the expected path.</p>
+
+  </div>
+  <p style="font-size:12.5px"><a href="https://github.com/krzemienski/proofpunk/blob/main/plugins/proofpunk/references/docs-acquisition.md">source → plugins/proofpunk/references/docs-acquisition.md</a> · <a href="docs.html">← all docs</a></p>
+</section>
+
+</main>
+  <div class="statusline"><span><b>REF:DOCS-ACQUISITION</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
+</div>
+<footer>
+  <div class="wrap" style="padding:0">
+    <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
+    &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
+    &nbsp;· plugin v3.0.0 · MIT license
+  </div>
+</footer>
+</div>
+</body>
+</html>

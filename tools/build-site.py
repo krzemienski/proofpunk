@@ -293,7 +293,7 @@ index_main = f"""
 </section>
 <section>
   <div class="marker">02 / THE SKILL STACK</div>
-  <h2>{N_SKILLS} skills, five layers, one closed graph</h2>
+  <h2>{N_SKILLS} skills, {len(LAYERS)} layers, one closed graph</h2>
   <p>Every referenced skill ships — the Related Skills graph is closed. Layers from the repository
   architecture: orchestration composes prompt &amp; plan, execution, proof, and deep analysis;
   every verdict cites the shared doctrine in <code>references/</code>.</p>
@@ -447,7 +447,7 @@ commands_main = f"""
 </section>
 <section>
   <div class="marker">02 / OPENCODE VARIANTS</div>
-  <h2>The same six, prefixed for OpenCode</h2>
+  <h2>The same {N_OPCMDS}, prefixed for OpenCode</h2>
   <p>OpenCode commands live in <code>plugins/proofpunk/opencode/commands/</code> and invoke the
   same skills under the <code>proofpunk-</code> prefix.</p>
   <div class="board">
@@ -524,7 +524,7 @@ docs_main = f"""
 <section>
   <div class="marker">01 / PROJECT DOCS</div>
   <h1>Architecture &amp; decisions<span class="cursor"></span></h1>
-  <p>The four documents from <code>plugins/proofpunk/docs/</code>, rendered in full as subpages —
+  <p>The {N_DOCS} documents from <code>plugins/proofpunk/docs/</code>, rendered in full as subpages —
   how the {N_SKILLS} skills execute as one system, how they were consolidated from a 664-skill
   universe scan, hands-on invocation examples, and the v1.0.0 validation record.</p>
   <div class="board">
@@ -541,7 +541,7 @@ docs_main = f"""
 </section>
 """
 write("docs.html", chrome("docs — architecture & doctrine — proofpunk",
-                          "Proofpunk architecture, usage guide, consolidation decisions, validation results, and the 13 ruling doctrine references.",
+                          f"Proofpunk architecture, usage guide, consolidation decisions, validation results, and the {N_REFS} ruling doctrine references.",
                           "docs", docs_main, "DOCS"))
 
 # ---------------- install.html ----------------

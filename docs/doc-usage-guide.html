@@ -19,7 +19,7 @@
     <span class="branch">⑂ main</span><span class="sep">│</span>
     <span class="meta"><span class="led ok"></span>18 skills</span>
     <span class="meta"><span class="led ok"></span>6+6 commands</span>
-    <span class="meta"><span class="led warn"></span>14 doctrine refs</span>
+    <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
   <nav class="tabs"><a href="index.html" class=""><span class="n">1</span>overview</a><a href="skills.html" class=""><span class="n">2</span>skills</a><a href="commands.html" class=""><span class="n">3</span>commands</a><a href="docs.html" class="on"><span class="n">4</span>docs</a><a href="install.html" class=""><span class="n">5</span>install</a></nav>
@@ -36,7 +36,7 @@
 <h2 id="how-invocation-works-per-platform">How invocation works per platform</h2>
 <p><strong>Claude Code</strong> — plugin commands are namespaced: <code>/proofpunk:implement</code>, <code>/proofpunk:verify</code>, <code>/proofpunk:truth-audit</code>, <code>/proofpunk:rate-prompt</code>, <code>/proofpunk:forge-prompt</code>. Skills also fire directly (<code>/implement</code>, <code>/verify</code>, …) or from natural language. A SessionStart hook injects the doctrine once per session.</p>
 <p><strong>oh-my-pi (OMP)</strong> — after <code>omp plugin install proofpunk@proofpunk</code>, the same command names work (<code>/proofpunk:implement</code>). Skills are discovered from the plugin's <code>skills/</code> directory and load on demand; <code>/skill:&lt;name&gt;</code> opens one interactively. The doctrine-guard extension (<code>extensions/proofpunk.ts</code>, declared in <code>package.json</code> <code>omp.extensions</code>) blocks destructive commands and secret-file reads in every session. Plain installs via <code>proofpunk-install.sh --target omp</code> land in <code>~/.omp/agent/skills</code> (native provider, highest precedence).</p>
-<p><strong>OpenCode</strong> — the installer drops <code>plugin/proofpunk.ts</code> (doctrine guard), six commands (<code>/proofpunk-implement</code>, <code>/proofpunk-install</code>, <code>/proofpunk-verify</code>, <code>/proofpunk-truth-audit</code>, <code>/proofpunk-rate-prompt</code>, <code>/proofpunk-forge-prompt</code>), and the <code>proofpunk</code> primary agent into <code>~/.config/opencode/</code>. Skills load through OpenCode's native <code>skill</code> tool — and because OpenCode reads <code>~/.claude/skills</code> too, one <code>--target claude-code</code> install serves both platforms.</p>
+<p><strong>OpenCode</strong> — the installer drops <code>plugin/proofpunk.ts</code> (doctrine guard), six commands (<code>/proofpunk-implement</code>, <code>/proofpunk-install</code>, <code>/proofpunk-verify</code>, <code>/proofpunk-truth-audit</code>, <code>/proofpunk-rate-prompt</code>, <code>/proofpunk-forge-prompt</code>), and 4 agents (<code>proofpunk</code> router plus <code>implement</code>, <code>scout</code>, <code>end-user-validate</code>) into <code>~/.config/opencode/</code>. Skills load through OpenCode's native <code>skill</code> tool — and because OpenCode reads <code>~/.claude/skills</code> too, one <code>--target claude-code</code> install serves both platforms.</p>
 <h2 id="how-invocation-works-in-claude-code">How invocation works in Claude Code</h2>
 <ol type="1">
 <li><strong>Slash command</strong>: <code>/skill-name &lt;arguments&gt;</code> — the arguments string is passed to the skill as its input. Positional arguments and CLI-style flags work exactly as each skill's command surface defines them.</li>
@@ -191,13 +191,13 @@
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:USAGE-GUIDE</b></span><span>v2.2.0 · ⑂ main · 18 skills · 6+6 commands · 14 refs · generated 2026-09-04</span></div>
+  <div class="statusline"><span><b>DOC:USAGE-GUIDE</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v2.2.0 · MIT license
+    &nbsp;· plugin v3.0.0 · MIT license
   </div>
 </footer>
 </div>
