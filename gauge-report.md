@@ -1,6 +1,6 @@
 # gauge-report — recomputed from sealed artifacts
 
-Generated: 2026-09-11T17:29:04Z | Repo HEAD: `42ff1bf19cb8095689639c85268d928aff503e76` (working tree dirty)
+Generated: 2026-09-11T18:25:47Z | Repo HEAD: `639168a25a92400b2855bbc9da90c991874cc842` (working tree dirty)
 
 Every row is computed fresh by this script from files under
 `evidence/v3-release/**` and the live skill tree. No number is copied
