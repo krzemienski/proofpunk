@@ -1,6 +1,6 @@
 # gauge-report — recomputed from sealed artifacts
 
-Generated: 2026-09-09T17:37:26Z | Repo HEAD: `93c479de800fff7e3ceb0be5ccf96f4d494fdaee` (working tree dirty)
+Generated: 2026-09-11T17:29:04Z | Repo HEAD: `42ff1bf19cb8095689639c85268d928aff503e76` (working tree dirty)
 
 Every row is computed fresh by this script from files under
 `evidence/v3-release/**` and the live skill tree. No number is copied
@@ -54,7 +54,7 @@ is reported UNVERIFIED, never PASS.
 ### Gauge #4 (L16) — Commands proven end-to-end at the real slash-command surface
 - Status: **UNMET**
 - Measured: 4/6
-- Detail: 4/6 reached full-chain (slash -> registered -> skill ran -> marker); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']
+- Detail: 4/6 reached full-chain (c: slash -> registered -> skill ran -> marker; or d: playbook-recognition + observed real effect, install additionally counterfactual-isolated); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']
 
 ### Gauge #5 (L2/L3) — Release gates: all exit 0, exit codes captured separately from stdout
 - Status: **PASS**

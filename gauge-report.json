@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-09T17:37:26Z",
-  "head": "93c479de800fff7e3ceb0be5ccf96f4d494fdaee",
+  "generated": "2026-09-11T17:29:04Z",
+  "head": "42ff1bf19cb8095689639c85268d928aff503e76",
   "dirty": true,
   "gauges": [
     {
@@ -103,7 +103,7 @@
       "evidence": [
         "evidence/v3-release/l16-commands/command-surface-proof.json@sha256:8233e98327fe37c9440c7f69cbfd35db6d091680607c35273842cb24aba9fd0c"
       ],
-      "detail": "4/6 reached full-chain (slash -> registered -> skill ran -> marker); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']"
+      "detail": "4/6 reached full-chain (c: slash -> registered -> skill ran -> marker; or d: playbook-recognition + observed real effect, install additionally counterfactual-isolated); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']"
     },
     {
       "num": 5,
