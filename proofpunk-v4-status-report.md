@@ -13,21 +13,21 @@ that document's line 41.
 |---|---|---|---|
 | P1 | Installer defects identified with reproduction | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-06-p1-installer-blocker-hunt.md` |
 | P2 | Installer installs complete surface on clean HOME | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-01-p2-count-reconciliation.md` |
-| P3 | Installed `../../references/` citations resolve | PASS | `tools/verify-citations.py` rc=0, recorded in `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-11-gates-green-after-fixture-fix.md` |
+| P3 | Installed `../../references/` citations resolve | PASS | `tools/verify-citations.py` rc=0 run from an archive of committed HEAD: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
 | P4 | Installer is idempotent | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-04-p4-idempotency-recaptured.md` |
-| P5 | Router head links all 17 other skills | PASS | inherited from `run-20260912T172034-v4-criteria-final`; unchanged this session |
+| P5 | Router head links all 17 other skills | UNVERIFIED | The PASS was inherited from `e2e-evidence/run-20260912T172034-v4-criteria-final`, a prior session's run, and was not re-driven here. Inheritance is not proof, so it is downgraded rather than carried forward |
 | P6 | Router routes correctly when invoked | UNVERIFIED | `tools/verify-command-surface.py` has still never run to completion |
 | P7 | ≥10 improvements ranked, then implemented | UNVERIFIED | Recomputed against the task's own window `d5a50b1..f6141f9` (11 commits): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-08-p7-recomputed-prompt-window.md`. Counting generously gives 11; counting only substantive changes gives 8 (two are gauge-snapshot refreshes, one a figure-caption fix). The threshold sits inside that spread, so the grading choice decides the outcome — an operator judgement, not mine |
 | P8 | Each implemented improvement individually proven | UNVERIFIED | This session's 4 commits are each proven by driving (table below). The 11 in P7's window are not: they predate this session and were not re-driven. Gate rc=0 is not P8 evidence — the central finding here is that seven green gates coexisted with a plugin broken on every python3-less machine |
 | P9 | Hooks fire correctly, 14 block+allow cases | **FAIL** | not satisfiable as written — see "Corrections" |
 | P10 | Doctrine rules have hook enforcement or a stated gap | UNVERIFIED | no interaction/precedence map produced |
 | P11 | Documentation explains architecture | UNVERIFIED | 22/22 script citations resolve and execute (`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-02-w4-skill-script-citations.md`); the prose correctness review that would settle this was not done |
-| P12 | Counts/version strings accurate everywhere | PASS | `tools/verify-counts.py` rc=0 |
-| P13 | Existing harnesses still pass | PASS | Combined matrix, not one run: macOS ran all 6 gates (rc=0 each) and Linux ran 5 of them in both root and non-root arms — `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-11-gates-green-after-fixture-fix.md`. The 6th gate (`tools/test-installer.sh`) was added for Linux separately, 28 PASS / 0 FAIL in both arms — `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-14-linux-installer-parity-full.md` |
-| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — init-run → seal → validate, `validate` rc=0, and no artifact was removed or edited after sealing. Cited alone. The other two runs are NOT cited for P14: `run-20260912T172922-w2-installer-p1p2p4` fails `validate` (rc=2), and `run-20260912T173858-w2-p2-surface-reconciled` validates rc=0 but had `step-13` deleted post-seal, which is the violation under "Run-integrity violation" |
+| P12 | Counts/version strings accurate everywhere | PASS | `tools/verify-counts.py` rc=0 from an archive of committed HEAD: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
+| P13 | Existing harnesses still pass | PASS | All 7 gates rc=0 run from `git archive HEAD` — the clone surface, not my working tree — on macOS and in both Linux arms (0 of 7 failing each): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md`. This supersedes the earlier working-tree matrices, which could not have caught the digest defect fixed in `c2e4734` |
+| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — init-run → seal → `validate --run <dir>` rc=0, sealed after its final artifact, with nothing removed or edited post-seal. Cited alone. The other two runs are NOT cited: `run-20260912T172922-w2-installer-p1p2p4` fails `validate` (rc=2), and `run-20260912T173858-w2-p2-surface-reconciled` validates rc=0 but had `step-13` deleted post-seal — the violation under "Run-integrity violation" |
 | P15 | Success is measured, not asserted | **FAIL** | I mutated a sealed run — see "Run-integrity violation" |
 
-PASS=8 FAIL=2 UNVERIFIED=5
+PASS=7 FAIL=2 UNVERIFIED=6
 
 Verdicts use only the four values `.planning/plugin-improvement-criteria.md:41`
 permits. An earlier draft of this report used "PARTIAL" three times; that is
