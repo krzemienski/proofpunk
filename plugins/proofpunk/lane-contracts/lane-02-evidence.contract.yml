@@ -1,0 +1,57 @@
+# Lane contract — evidence tooling
+#
+# Authority: plugins/proofpunk/skills/implement/references/execution-loop.md:49-63
+# Three binding fields: interface, acquire_digest, validation_runbook.
+# Checked by tools/verify-lane-contracts.py.
+
+lane: evidence
+boundary: plugins/proofpunk/skills/end-user-testing/scripts/
+
+interface:
+  exposes:
+    - name: fresh_evidence.py init-run <slug>
+      returns: run id on stdout, rc 0; rc 2 on a malformed slug
+    - name: fresh_evidence.py next-step <slug>
+      returns: next sequential step-NN-<slug> path prefix on stdout, rc 0
+    - name: fresh_evidence.py seal
+      returns: inventory path on stdout; rc 2 if the run has zero artifacts
+    - name: fresh_evidence.py validate
+      returns: >
+        rc 0 only if every artifact is fresh, larger than MIN_SIZE_BYTES,
+        sealed, and digest-matched. rc 2 otherwise, with the reason on stderr.
+      note: >
+        The size bound is EXCLUSIVE (> 1024), per
+        plugins/proofpunk/references/evidence-contract.md rule 3. A 1024-byte
+        artifact is refused.
+  consumes:
+    - name: ./e2e-evidence/
+      note: >
+        The active run is the most recently modified run-* subdirectory of the
+        CWD. Callers that cd elsewhere mid-command will target a different run.
+  owns:
+    - plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py
+  may_not_touch:
+    - plugins/proofpunk/hooks/
+    - e2e-evidence/run-*/          # captures are immutable once written
+
+acquire_digest: .planning/v4-architecture/docs-claude.md
+acquire_digest_rationale: >
+  The evidence layer's only platform dependency is where a skill's scripts/
+  directory lives in an installed layout, which this digest's Skills section
+  is the cited source for.
+
+validation_runbook: plugins/proofpunk/references/cli-validation.md
+validation_runbook_rationale: >
+  fresh_evidence.py is a CLI. Its proof is driving each subcommand and reading
+  the unpiped exit code.
+
+proof_obligation:
+  end_user_validation: >
+    Drive init-run, next-step, seal, validate against a real temp directory.
+    Probe the size bound at 1023, 1024, and 1025 bytes. Probe tamper detection
+    with a same-length content substitution.
+  assertion: >
+    1023 refused, 1024 refused, 1025 accepted. A same-size substitution after
+    sealing is refused by digest, proving size alone is not the check. An empty
+    run is refused rather than greened.
+  artifact: e2e-evidence/run-*/step-*-minsize-boundary-proof.md

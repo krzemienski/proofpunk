@@ -1,0 +1,77 @@
+# Lane contract — hooks layer
+#
+# Authority: plugins/proofpunk/skills/implement/references/execution-loop.md:49-63
+# "the orchestrator writes a lane contract per boundary — an executable file
+#  stating the exact public interface each lane may expose and consume, plus
+#  two more binding fields: which ACQUIRE digest file that lane consumes
+#  (conforming to references/docs-acquisition.md), and which
+#  references/*-validation.md runbook that lane's proof obligation must use.
+#  Both new fields are resolvable paths, never placeholders."
+#
+# This file is executable in the sense that matters: tools/verify-lane-contracts.py
+# resolves every path and asserts every ownership claim against the real tree.
+# A contract that cannot be checked is a comment.
+
+lane: hooks
+boundary: plugins/proofpunk/hooks/
+
+# --- Field 1: the exact public interface this lane may expose and consume ---
+interface:
+  exposes:
+    # The only contract a hook has with the host is (exit code, stdout, stderr).
+    - name: exit-code
+      values:
+        0: allow — the tool call proceeds
+        2: deny — PreToolUse only; stderr is fed back to the model
+      note: >
+        Any other exit code is a hook error surfaced to the user. A hook that
+        exits 127 because an interpreter is missing breaks every matched tool
+        call, which is the defect 6363c5f fixed.
+    - name: stdout-json
+      shape: '{"hookSpecificOutput": {"hookEventName": <event>, "additionalContext": <string>}}'
+      note: >
+        Stop/SubagentStop also accept {"decision":"block","reason":<string>}.
+        A PreToolUse hook MUST NOT emit Stop-shaped hookSpecificOutput.
+    - name: stderr-notice
+      note: >
+        Advisory text. For a deny-capable hook that cannot enforce (no
+        interpreter), stderr MUST carry "enforcement OFF (<reason>)" so a
+        silently unenforced machine is distinguishable from an approved write.
+  consumes:
+    - name: stdin-json
+      keys: [hook_event_name, tool_name, tool_input, cwd, session_id, transcript_path]
+      note: >
+        tool_input carries file_path for first-party Write/Edit and path for
+        MCP filesystem tools. Both keys must be read.
+  owns:
+    - plugins/proofpunk/hooks/*.sh
+    - plugins/proofpunk/hooks/hooks.json
+  may_not_touch:
+    - plugins/proofpunk/skills/
+    - tools/verify-*.py
+
+# --- Field 2: the ACQUIRE digest this lane consumes (resolvable path) ---
+acquire_digest: .planning/v4-architecture/docs-claude.md
+acquire_digest_rationale: >
+  The hook event names, matcher semantics, and settings.json registration
+  shape are Claude Code platform facts. This digest's "Hooks" section is the
+  cited source; conforms to plugins/proofpunk/references/docs-acquisition.md.
+
+# --- Field 3: the validation runbook this lane's proof obligation must use ---
+validation_runbook: plugins/proofpunk/references/cli-validation.md
+validation_runbook_rationale: >
+  A hook is driven by piping a real payload to a real script and reading its
+  unpiped exit code and streams. That is the CLI runbook, not web or api.
+
+proof_obligation:
+  end_user_validation: >
+    Pipe a real payload to every script named in hooks.json. For each
+    deny-capable hook, drive both a must-deny and a must-allow payload. Repeat
+    the whole matrix on a machine with no python3 (debian:stable-slim), as root
+    and as uid 1000.
+  assertion: >
+    Every hook exits 0 or 2, never 127. Every deny-capable hook returns 2 on
+    its deny payload and 0 on its allow payload. With no interpreter, every
+    deny-capable hook returns 0 AND emits a non-empty enforcement-OFF notice,
+    while every genuinely non-denying hook stays silent.
+  artifact: e2e-evidence/run-*/step-*-hookfix-redriven-in-valid-run.md
