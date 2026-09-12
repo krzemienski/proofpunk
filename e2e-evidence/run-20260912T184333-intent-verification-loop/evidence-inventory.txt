@@ -11,4 +11,5 @@ step-09-failure-policy-correction.md 1869 02977724ad2775fe8eb6d5ae6d288bd50ba76c
 step-10-omp-guard-enforces-nothing.md 2913 21dd11ad11ee9d21e4da51700f92e1af7fee270ec7c7450521553e0ffb7859b4
 step-11-omp-claim-downgraded.md 2323 cf4ad1a5979cc9c105bd86c91f88db91d5334d9982b86d826d0951c3ce2305cc
 step-12-capture-command-driven.md 2510 73fc400a1299012b99f8123b6c452c3c7bdfb10ebfdeee9a9c0740540cd2f6eb
-sealed=2026-09-12T19:43:22Z count=12 total_bytes=33028
+step-13-test-pollution-of-user-state.md 1977 cdd7b912e8421d4dfa045886ad9c41fa91839adc1d3f4c599d3883df85daf5e3
+sealed=2026-09-12T19:45:03Z count=13 total_bytes=35005
