@@ -1,0 +1,8 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-criteria-approved.md 2945 8ac8c79ea286cbc2f034f47c1f194fdf7b8ae27576d80bf4a06f9c75f9bba048
+step-02-transcript-reachability.md 2345 c79b1fd0dff5d64b7ec3d45838006f7e8886a2b477ce73f3043de19de68bdd22
+step-03-intent-helper-driven.md 2105 c140283e5e0837115a069908fd1d12114636029036d3e182355feb10aba6673e
+step-04-runtime-verifiability-limit.md 4054 a605c2cffc57ea96f18cc43d864c5bd958ec858358124a56322ee81ad61494b4
+step-05-runtime-contracts-from-digests.md 3374 5934334359d31521bae829fea04dcdfcb240ec48fb2588017c102fbb43674df8
+step-06-hook-adapter-reverted.md 2801 cf47cde3983ec6d67ce93f11d47e7cc2ccc2965e80bb78b8617c973bbd86f0ed
+sealed=2026-09-12T19:07:31Z count=6 total_bytes=17624
