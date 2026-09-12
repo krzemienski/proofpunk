@@ -238,13 +238,13 @@ needs without opening the map.
 |---|---|---|---|
 | `session-start.sh` | SessionStart | never denies | always emits `hookSpecificOutput.additionalContext` with the one-paragraph doctrine summary and the six command names |
 | `stop-guard.sh` | Stop, SubagentStop | scans the last 40 transcript lines, assistant-authored only; emits `{"decision":"block","reason":...}` if a completion CLAIM appears with no PROOF citation, **or** if CLAIM+PROOF appear with no SCOUT record | silent exit 0 when the heuristic ran and found nothing. Fail-open paths (missing/unreadable transcript, no python3) still exit 0 but now emit `additionalContext` containing `enforcement OFF (<reason>)` — see `docs/hook-enforcement-map.md` |
-| `evidence-guard.sh` | PreToolUse | `exit 2` + stderr if the write targets an evidence directory **and** the payload matches a secret-shaped pattern (API keys, GitHub tokens, AWS keys, private-key headers, or a generic `key/secret/token = value` assignment) | `exit 0` (allow) for everything else |
-| `capture-guard.sh` | PreToolUse | `exit 2` + stderr if the target is an **already-existing** file, under an evidence directory, with a raw-capture extension (`.txt .log .out .err .jsonl .png .har .csv`) — captures are immutable once written | `exit 0` for new files, sidecar `.md`/`.json` files, and anything outside evidence directories |
-| `no-test-files.sh` | PreToolUse | `exit 2` + stderr if the path matches a test-file shape (`*test*`, `*.spec.*`, `*.test.*`, `__tests__/`, etc.) | `exit 0` for everything else |
+| `evidence-guard.sh` | PreToolUse | `exit 2` + stderr if the write targets an evidence directory **and** the payload matches a secret-shaped pattern (API keys, GitHub tokens, AWS keys, private-key headers, or a generic `key/secret/token = value` assignment) | `exit 0` (allow) for everything else. Without python3 it allows but prints `enforcement OFF (python3-not-found)` to stderr — a lost deny is never silent |
+| `capture-guard.sh` | PreToolUse | `exit 2` + stderr if the target is an **already-existing** file, under an evidence directory, with a raw-capture extension (`.txt .log .out .err .jsonl .png .har .csv`) — captures are immutable once written | `exit 0` for new files, sidecar `.md`/`.json` files, and anything outside evidence directories. Without python3 it allows but prints `enforcement OFF (python3-not-found)` to stderr |
+| `no-test-files.sh` | PreToolUse | `exit 2` + stderr if the path matches a test-file shape (`*test*`, `*.spec.*`, `*.test.*`, `__tests__/`, etc.) | `exit 0` for everything else. Without python3 it allows but prints `enforcement OFF (python3-not-found)` to stderr |
 | `instructions-loaded.sh` | InstructionsLoaded | never denies | always appends one JSONL line (`ts`, `file_path`, `load_reason`, `cwd`) to `~/.claude/proofpunk-loads.jsonl` — this is the measurement tap that proves `/proofpunk:install`'s memory injection actually loads |
 | `post-write-walkthrough.sh` | PostToolUse (`Write\|Edit`) | never denies | if the written path is production code (not evidence, docs, `.planning/`, or config) — emits `additionalContext` reminding the agent to drive the real system and cite evidence before any completion claim; silent otherwise |
-| `bash-write-snapshot.sh` | PreToolUse (`Bash`) | never denies (a deny here would re-open the abandoned shell parser) | hashes protected paths (evidence dirs + test-shaped paths) before the command runs; leaves a per-session baseline for the notice hook. Cite `docs/hook-enforcement-map.md` |
-| `bash-write-notice.sh` | PostToolUse + PostToolUseFailure (`Bash`) | never denies (host: the tool already ran) | re-hashes protected paths vs the snapshot; reports test files written, capture tamper, evidence delete, secret-shaped evidence content. Detection, not prevention |
+| `bash-write-snapshot.sh` | PreToolUse (`Bash`) | never denies (a deny here would re-open the abandoned shell parser) | records a `size:mtime_ns:ctime_ns:inode` stat signature (`bash-write-snapshot.sh:98-113`) for protected paths (evidence dirs + test-shaped paths) before the command runs; leaves a per-session baseline for the notice hook. Cite `docs/hook-enforcement-map.md` |
+| `bash-write-notice.sh` | PostToolUse + PostToolUseFailure (`Bash`) | never denies (host: the tool already ran) | re-reads those stat signatures and diffs them against the snapshot; reports test files written, capture tamper, evidence delete, secret-shaped evidence content. Detection, not prevention |
 | `platform-steer.sh` | PreToolUse (`Bash`) | never denies | if a Bash command's shape (e.g. `xcrun simctl`, a browser-automation tool, a repo-local built binary, `curl`) implies a validation platform that conflicts with the platform detected by walking up from `cwd`, emits `additionalContext` naming the correct `references/*-validation.md` runbook; silent when either side is ambiguous |
 
 ### These hooks run in parallel, not in sequence
@@ -299,13 +299,18 @@ shell to decide a deny and falsely blocked `cp -p`, `mv -f`, `touch -c`, and
 on a guess at shell semantics is worse than the gap it closes.
 
 So detection works by **effect, never by parsing the command**: a diff of
-content hashes taken before and after. A command that changes nothing emits
-nothing, whatever it looked like, which means no false positive can interfere
-with a working command. Content hashing rather than mtime+size is what
-catches `cp -p` (which preserves mtime) and equal-size substitution when the
-target is a protected path — a verdict artifact flipped from `PASSED` to
-`FAILED` keeps its byte count. A `cp -p` outside the protected set is not
-watched at all, and stays silent.
+per-file **stat signatures** taken before and after. A command that changes
+nothing emits nothing, whatever it looked like, which means no false positive
+can interfere with a working command. The signature is
+`size:mtime_ns:ctime_ns:inode` (`bash-write-snapshot.sh:98-113`), not a
+content hash: hashing 10k protected files cost 7.8s per pass and always blew
+the scan cap, which silently disabled the guard altogether. `st_ctime_ns` is
+the load-bearing field — the kernel sets it on any inode or content change and
+userspace cannot forge it, so the signature still catches `cp -p` (which
+preserves mtime) and equal-size substitution when the target is a protected
+path: a verdict artifact flipped from `PASSED` to `FAILED` keeps its byte
+count but moves its ctime. A `cp -p` outside the protected set is not watched
+at all, and stays silent.
 Baselines are keyed per session and tool-use id, written atomically, and
 consumed on read, so parallel Bash calls cannot clobber each other. A failed
 command still consumes its state, because the notice is registered on

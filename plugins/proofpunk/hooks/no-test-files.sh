@@ -19,11 +19,17 @@ set -eu
 input=$(cat)
 
 # Fail open when python3 is unavailable. Without this guard `set -eu` plus
-# the python heredoc below exits 127, which PreToolUse/PostToolUse surface
-# as a hook error -- breaking every matched tool call on a machine with no
-# python3. This hook is documented as "never denies"/"allows everything
-# else", so the only contract-correct behaviour is a silent allow.
+# the python heredoc below exits 127, which PreToolUse surfaces as a hook
+# error -- breaking every matched tool call on a machine with no python3.
+#
+# Fail-open is correct (a missing interpreter must never block the user's
+# work) but a SILENT fail-open is not: this hook DOES deny (exit 2 below),
+# so exiting 0 with zero output makes a machine with no enforcement look
+# byte-identical to a machine where the write was approved. That is the
+# false green this plugin exists to prevent. Announce the loss on stderr
+# the way stop-guard.sh:37-46 already does, then allow.
 if ! command -v python3 >/dev/null 2>&1; then
+  printf '%s\n' "Proofpunk: no-test-files enforcement OFF (python3-not-found) — test-file writes are NOT being blocked on this machine." >&2
   exit 0
 fi
 

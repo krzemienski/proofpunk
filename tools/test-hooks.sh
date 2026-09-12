@@ -657,6 +657,61 @@ else
 fi
 rm -rf "$PP_NOPY" 2>/dev/null || true
 
+# ---------------------------------------------------------------------------
+# Case 5b: a deny-capable hook must fail open LOUDLY, never silently.
+#
+# Case 5 above proves no hook exits nonzero without python3. That is not
+# enough. Three PreToolUse hooks DENY (exit 2) when python3 is present:
+# no-test-files, evidence-guard, capture-guard. Before this case they
+# exited 0 with ZERO bytes of output when python3 was absent -- so a
+# machine with no enforcement was byte-identical to a machine that
+# approved the write. Silence is the false green this plugin exists to
+# prevent; stop-guard.sh already had the right pattern (emit_off).
+#
+# Each hook is driven with a payload it MUST deny. The case is
+# non-vacuous because the same payload is first proven to deny (rc=2)
+# with python3 present -- a payload that never denies would make the
+# absence arm prove nothing.
+PP_NOPY2="$(mktemp -d)"
+for _b in cat grep sed head tail awk cut tr wc sort mkdir rm date ls basename dirname mv cp touch chmod find env sh test expr uname id; do
+  _p=$(command -v "$_b" 2>/dev/null) && ln -sf "$_p" "$PP_NOPY2/$_b" 2>/dev/null || true
+done
+DG="$TMP/denyguard"
+mkdir -p "$DG/e2e-evidence/run-x"
+printf 'existing capture\n' > "$DG/e2e-evidence/run-x/step-01-a.log"
+if PATH="$PP_NOPY2" /bin/sh -c 'command -v python3' >/dev/null 2>&1; then
+  case_fail "case5b fixture invalid: hermetic PATH still resolves python3"
+else
+  # hook|payload that MUST be denied
+  for _spec in \
+    "no-test-files.sh|{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$DG/src/thing_test.py\",\"content\":\"x\"}}" \
+    "evidence-guard.sh|{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$DG/e2e-evidence/run-x/step-01-a.md\",\"content\":\"Authorization: Bearer sk-live-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}}" \
+    "capture-guard.sh|{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$DG/e2e-evidence/run-x/step-01-a.log\",\"content\":\"overwrite\"}}" \
+  ; do
+    _n=${_spec%%|*}
+    _pay=${_spec#*|}
+    # Arm 1 -- python3 present: the payload must actually deny, or arm 2
+    # is measuring nothing.
+    printf '%s' "$_pay" | sh "$HOOKS/$_n" >/dev/null 2>&1
+    _rc_with=$?
+    # Arm 2 -- python3 absent: allow (rc 0) but say so.
+    _out=$(printf '%s' "$_pay" | PATH="$PP_NOPY2" /bin/sh "$HOOKS/$_n" 2>&1)
+    _rc_without=$?
+    if [ "$_rc_with" -ne 2 ]; then
+      case_fail "case5b payload for $_n does not deny with python3 present (rc=$_rc_with) — fixture proves nothing"
+    elif [ "$_rc_without" -ne 0 ]; then
+      case_fail "$_n must still exit 0 without python3 — rc=$_rc_without out=$_out"
+    elif [ -z "$_out" ]; then
+      case_fail "$_n fails open SILENTLY without python3 — lost enforcement is invisible"
+    elif printf '%s' "$_out" | grep -q 'enforcement OFF (python3-not-found)'; then
+      case_ok "$_n announces enforcement loss without python3"
+    else
+      case_fail "$_n emitted output without python3 but not the enforcement-OFF notice — got: $_out"
+    fi
+  done
+fi
+rm -rf "$PP_NOPY2" "$DG" 2>/dev/null || true
+
 echo "== platform-steer.sh (Bash PreToolUse steering — never denies)"
 # Steering only: it must always exit 0, and on a mismatch it prints an
 # additionalContext nudge naming the correct runbook — it never emits a
