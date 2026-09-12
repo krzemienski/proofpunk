@@ -211,21 +211,38 @@ echo
 echo "== group 9: fresh_evidence.py strict seal/validate contract"
 # Guards the vacuous-pass defect: validate() returned OK on runs with zero
 # artifacts, on unsealed runs, and on same-size content substitution.
+#
+# The artifacts must exceed MIN_SIZE_BYTES (1024): evidence-contract.md
+# rule 3 requires every artifact to be > 1024 bytes, and validate enforces
+# it. A bare `echo PASSED` (7 bytes) is now correctly refused, so the
+# fixture pads both the clean and the tampered body to the same length
+# above the threshold -- which also PRESERVES the property this group
+# exists to test: the substitution is same-size, so only the sha256 can
+# catch it. A `thin_rc` case is added so the size rule itself is covered.
 FE="$(cd "$(dirname "$0")/.." && pwd)/plugins/proofpunk/skills/end-user-testing/scripts/fresh_evidence.py"
 EV=$(mktemp -d); ( cd "$EV"
+  # 1100 bytes of filler, identical for both bodies.
+  PAD=$(python3 -c "print('.' * 1100)")
   python3 "$FE" init-run harness >/dev/null 2>&1
   python3 "$FE" seal >/dev/null 2>&1; echo "empty_seal_rc=$?"
   python3 "$FE" validate >/dev/null 2>&1; echo "empty_validate_rc=$?"
-  echo PASSED > "$(python3 "$FE" next-step verdict).txt"
+  # A thin artifact must be refused even when sealed -- rule 3.
+  echo PASSED > "$(python3 "$FE" next-step thin).txt"
+  python3 "$FE" seal >/dev/null 2>&1
+  python3 "$FE" validate >/dev/null 2>&1; echo "thin_rc=$?"
+  rm -f e2e-evidence/run-*/step-01-thin.txt
+  printf 'PASSED %s\n' "$PAD" > "$(python3 "$FE" next-step verdict).txt"
   python3 "$FE" validate >/dev/null 2>&1; echo "unsealed_rc=$?"
   python3 "$FE" seal >/dev/null 2>&1
   python3 "$FE" validate >/dev/null 2>&1; echo "sealed_clean_rc=$?"
-  d=$(ls -d e2e-evidence/run-*); echo FAILED > "$d/step-01-verdict.txt"
+  # Same byte count as the clean body, different content: size alone
+  # cannot catch this, only the sealed digest can.
+  d=$(ls -d e2e-evidence/run-*); printf 'FAILED %s\n' "$PAD" > "$d/step-01-verdict.txt"
   python3 "$FE" validate >/dev/null 2>&1; echo "samesize_tamper_rc=$?"
 ) > "$EV/out.txt" 2>&1
-exp="empty_seal_rc=2 empty_validate_rc=2 unsealed_rc=2 sealed_clean_rc=0 samesize_tamper_rc=2"
+exp="empty_seal_rc=2 empty_validate_rc=2 thin_rc=2 unsealed_rc=2 sealed_clean_rc=0 samesize_tamper_rc=2"
 got=$(tr '\n' ' ' < "$EV/out.txt" | sed 's/  */ /g;s/ $//')
-if [ "$got" = "$exp" ]; then ok "fresh_evidence strict contract: empty/unsealed/tamper refused, clean sealed passes"
+if [ "$got" = "$exp" ]; then ok "fresh_evidence strict contract: empty/thin/unsealed/tamper refused, clean sealed passes"
 else bad "fresh_evidence contract drift — expected [$exp] got [$got]"; fi
 rm -rf "$EV"
 
