@@ -110,26 +110,25 @@ elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-gu
 elif printf '%s' "$out" | grep -q 'enforcement OFF (python3-not-found)'; then case_ok "stop-guard announces fail-open on missing python3"
 else case_fail "stop-guard python3-absent was silent (must be observable) — got: $out"; fi
 
-# Case 4c: non-regular transcript path. Pre-fix: `[ -f ]` succeeded and
-# python opened with errors=ignore / OSError → empty lines → silent
-# exit 0. Now must emit transcript-missing-or-unreadable.
+# Case 4c: non-regular transcript path. A path that exists but is not a
+# regular file must emit transcript-missing-or-unreadable, never a block
+# and never silence.
 #
-# chmod 000 alone is not portable proof: root ignores mode bits, so in a
-# root container (CI images, Docker default) the file stays readable and
-# the case silently tests nothing. Recording that as OK would be a
-# PASS-by-skip — the exact false green this plugin exists to prevent.
+# A directory is used because `[ -f ]` is false for it for every user,
+# root included, so this assertion is deterministic on every platform
+# and always executes. The earlier fixture used a regular file with
+# chmod 000, which root reads straight through — in a root container it
+# passed while testing nothing. Replacing it with a skip recorded as
+# case_ok was equally wrong: PASS-by-skip is the false green this plugin
+# exists to prevent.
 #
-# Use a directory instead: `[ -f ]` is false for every user, root
-# included, so the assertion is real on all platforms and always
-# executes.
-#
-# COVERAGE NOTE — this exercises the shell-side guard at stop-guard.sh:56
-# (non-regular path), NOT the python-side open() failure. `[ -f ]`
-# short-circuits before python runs, so IsADirectoryError is never
-# raised. A regular-but-unreadable file is the only way to reach the
-# python branch, and that cannot be modelled portably as root. Both
-# reach the same emit_off notice; the python path remains covered only
-# when this suite runs unprivileged.
+# COVERAGE NOTE — this exercises the shell-side guard at
+# stop-guard.sh:56 only. `[ -f ]` short-circuits before python runs, so
+# the python-side open()/OSError path in the transcript reader is NOT
+# exercised here, and no other case in this suite covers it either: a
+# regular-but-unreadable file is the only way in, and that cannot be
+# modelled portably while root. That branch is currently UNTESTED.
+# Closing it needs a case gated on a verified-unprivileged run.
 mkdir -p "$TMP/t4c.jsonl"
 out=$(printf '{"session_id":"s4c","transcript_path":"%s","cwd":"/tmp","hook_event_name":"Stop"}' "$TMP/t4c.jsonl" | sh "$HOOKS/stop-guard.sh")
 rc=$?
