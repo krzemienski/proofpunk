@@ -20,6 +20,17 @@
 set -eu
 
 input=$(cat)
+
+# Fail open when python3 is unavailable. Without this guard `set -eu` plus
+# the python heredoc below exits 127, which the harness surfaces as a hook
+# error on every matched tool call. This hook never denies, so it emits an
+# observable enforcement-OFF notice and exits 0 -- silence would be
+# indistinguishable from a clean run.
+if ! command -v python3 >/dev/null 2>&1; then
+  printf '%s\n' "{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Proofpunk: bash-write-notice enforcement OFF (python3-not-found).\"}}"
+  exit 0
+fi
+
 export PROOFPUNK_HOOK_INPUT="$input"
 
 python3 - <<'PYEOF'

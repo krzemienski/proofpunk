@@ -17,6 +17,16 @@
 set -eu
 
 input=$(cat)
+
+# Fail open when python3 is unavailable. Without this guard `set -eu` plus
+# the python heredoc below exits 127, which PreToolUse/PostToolUse surface
+# as a hook error -- breaking every matched tool call on a machine with no
+# python3. This hook is documented as "never denies"/"allows everything
+# else", so the only contract-correct behaviour is a silent allow.
+if ! command -v python3 >/dev/null 2>&1; then
+  exit 0
+fi
+
 export PROOFPUNK_HOOK_INPUT="$input"
 
 python3 - <<'PYEOF'

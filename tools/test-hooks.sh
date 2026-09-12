@@ -618,6 +618,45 @@ else
 fi
 rm -rf "$BW"
 
+# ---------------------------------------------------------------------------
+# Case 5: EVERY hook must fail open when python3 is absent.
+#
+# Regression for a real defect: 7 of 10 hooks ran `python3 - <<EOF` under
+# `set -eu` with no availability guard, so a machine without python3 got
+# exit 127 from each. On PreToolUse that surfaces as a hook error on every
+# matched Write/Edit/Bash call -- the opposite of the documented
+# "never denies / allows everything else" contract.
+#
+# Hermetic PATH: symlink the coreutils the hooks legitimately use, and
+# deliberately omit python3. Absence is structural, so this is identical
+# for root and non-root on every platform.
+PP_NOPY="$(mktemp -d)"
+for _b in cat grep sed head tail awk cut tr wc sort mkdir rm date ls basename dirname mv cp touch chmod find env sh test expr uname id; do
+  _p=$(command -v "$_b" 2>/dev/null) && ln -sf "$_p" "$PP_NOPY/$_b" 2>/dev/null || true
+done
+# `PATH=x command -v y` does NOT work: `command` is a shell builtin, so the
+# prefix assignment does not affect its own lookup and it searches the
+# caller's real PATH. Probe in a child shell instead, where the assignment
+# is genuinely in effect.
+if PATH="$PP_NOPY" /bin/sh -c 'command -v python3' >/dev/null 2>&1; then
+  case_fail "case5 fixture invalid: hermetic PATH still resolves python3"
+else
+  _payload='{"session_id":"s5","cwd":"/tmp","hook_event_name":"PostToolUse","tool_name":"Write","tool_input":{"file_path":"/tmp/x.py","content":"x"}}'
+  for _h in "$HOOKS"/*.sh; do
+    _n=$(basename "$_h")
+    _out=$(printf '%s' "$_payload" | PATH="$PP_NOPY" /bin/sh "$_h" 2>&1)
+    _rc=$?
+    if [ "$_rc" -ne 0 ]; then
+      case_fail "$_n must exit 0 without python3 (fail-open) — rc=$_rc out=$_out"
+    elif printf '%s' "$_out" | grep -q 'command not found'; then
+      case_fail "$_n leaked a shell error without python3 — got: $_out"
+    else
+      case_ok "$_n fails open without python3"
+    fi
+  done
+fi
+rm -rf "$PP_NOPY" 2>/dev/null || true
+
 echo "== platform-steer.sh (Bash PreToolUse steering — never denies)"
 # Steering only: it must always exit 0, and on a mismatch it prints an
 # additionalContext nudge naming the correct runbook — it never emits a

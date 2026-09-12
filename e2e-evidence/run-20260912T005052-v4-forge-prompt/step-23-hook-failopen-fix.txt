@@ -1,0 +1,20 @@
+# DEFECT FOUND: 7/10 hooks exited 127 without python3 (set -eu + unguarded heredoc)
+# On PreToolUse that surfaces as a hook error on EVERY matched Write/Edit/Bash call,
+# contradicting the documented 'never denies / allows everything else' contract.
+# FIX: command -v python3 guard in all 7. Deny paths verified unchanged (rc=2).
+# Case 5 regression added: every hook must exit 0 under a hermetic no-python3 PATH.
+
+## macOS rc=0 | HOOK TEST FAILS: 0
+
+## Linux
+ROOT: HOOK TEST FAILS: 0
+NONROOT: HOOK TEST FAILS: 0
+case5 count (nonroot):
+10
+
+## macOS full gate matrix after fix
+test-hooks.sh                  rc=0   HOOK TEST FAILS: 0
+dry-run-install.sh             rc=0   INSTALL DRY-RUN FAILS: 0
+verify-counts.py               rc=0   VERDICT: PASS — live .md counts match the tree
+verify-orchestration.py        rc=0   documented order, with methods owned exactly onc
+verify-citations.py            rc=0   RESULT: PASS (default: ERROR-only)
