@@ -18,4 +18,6 @@ step-16-criteria-downgraded-c3-c7.md 2420 c2f4f549035c68a590be325c30b92e854dda60
 step-17-scout-both-surfaces-measured.md 2660 ba7c2c1e68f78d6cf4bbaeab80c82bf926aad78f1a5332e69bcfd9b0e00e87a3
 step-18-both-surfaces-implemented.md 3498 2b3af04ce388c072b0747eb605fd32f7f6b8c7219c4876fe8e81a0f705e119ad
 step-19-real-handlers-driven.md 2975 68fd2e8692b755a172d86df8bcea0d0e308eafb4e479af687dc23d5525293c4a
-sealed=2026-09-12T23:29:59Z count=19 total_bytes=51060
+step-20-omp-handler-driven.md 2158 4637823d53ca2c6acdf1f7f68d6ff0b4d2fe36978e738a1cae00dca44993f756
+step-21-stop-hook-active-semantics.md 2315 4fb5cdd26cd625576775d7344aa88c82b58d32f97904cbc99265a7f20e88d1e6
+sealed=2026-09-12T23:32:58Z count=21 total_bytes=55533
