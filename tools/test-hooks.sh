@@ -11,6 +11,33 @@ mkdir -p "$HOME/.claude" "$HOME/.proofpunk/bash-baselines"
 case_ok() { echo "  PASS: $1"; }
 case_fail() { echo "  FAIL: $1"; FAILS=$((FAILS+1)); }
 
+# Intent verdicts for the cases that assert a fully-proven claim stops
+# SILENTLY. Those fixtures predate the intent gate: they encode the old
+# contract (claim + evidence + scout = may stop), and the new contract adds a
+# fourth conjunct — the original intent was verified as met.
+#
+# Recording MET for exactly those session ids keeps each case asserting what
+# it was written to assert (the evidence and scout logic) without also
+# asserting the absence of intent verification, which is the behaviour this
+# change exists to remove.
+#
+# The alternative — making the hook silent when no verdict exists — would turn
+# absence into consent, and a session that never asked whether it did the
+# right thing is the common failure the gate is for. Cases that SHOULD block
+# for a missing verdict deliberately get no entry here.
+#
+# HOME is already redirected to $TMP/home above, so these never touch real state.
+#
+# --cwd MUST be $TMP, not $PWD: the verdict key is sha256(session_id + ":" +
+# cwd), and those payloads send "cwd":"$TMP". Recording against $PWD produces
+# a different key and the fixture silently does nothing -- which is exactly
+# what happened on the first attempt, and is the same key-derivation trap that
+# produced the cross-session bypass this gate was written to close.
+INTENT_HELPER="$(cd "$(dirname "$0")/../plugins/proofpunk/skills/end-user-testing/scripts" && pwd)/intent_verdict.py"
+for _sid in s2 s6 s11 s15 s15c; do
+  PROOFPUNK_SESSION_ID="$_sid" python3 "$INTENT_HELPER" --cwd "$TMP" record --verdict MET >/dev/null 2>&1 || true
+done
+
 echo "== bash -n syntax check"
 for f in "$HOOKS"/*.sh; do
   if bash -n "$f" 2>/dev/null; then case_ok "syntax $(basename "$f")"; else case_fail "syntax $(basename "$f")"; fi
@@ -711,6 +738,76 @@ else
   done
 fi
 rm -rf "$PP_NOPY2" "$DG" 2>/dev/null || true
+
+# ---------------------------------------------------------------------------
+# Intent gate: a completion claim must also carry an intent verdict.
+#
+# Evidence proves a task RAN. It does not prove the asked-for thing HAPPENED --
+# a session can cite real artifacts for work nobody requested and every other
+# check goes green. These cases pin the fourth conjunct.
+#
+# Each payload carries a REAL on-disk evidence path and a real scout record, so
+# the evidence and scout branches PASS and the intent branch is what decides.
+# The MET case is the control: if it blocked, the test would be measuring the
+# evidence branch instead.
+IG="$TMP/intent-gate"
+mkdir -p "$IG"
+# The proof path must be a REAL file under an evidence dir, or the evidence
+# branch fires first and these cases measure it instead of the intent gate.
+mkdir -p "$TMP/e2e-evidence/run-ig"
+printf 'x\n' > "$TMP/e2e-evidence/run-ig/step-01-a.md"
+IG_EVIDENCE="$TMP/e2e-evidence/run-ig/step-01-a.md"
+printf '%s\n' "$(python3 - "$IG" "$IG_EVIDENCE" <<'PYJ'
+import json, sys
+t = ("All done. Evidence at " + sys.argv[2] + " and I scouted "
+     "plugins/proofpunk/hooks/stop-guard.sh as the touchpoint.")
+print(json.dumps({"type": "assistant",
+                  "message": {"role": "assistant",
+                              "content": [{"type": "text", "text": t}]}}))
+PYJ
+)" > "$IG/t.jsonl"
+
+_ig_drive() {
+  printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s"}' \
+    "$1" "$IG/t.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh" 2>/dev/null
+}
+
+# IG-1 control: MET must allow silently. Without this the rest proves nothing.
+PROOFPUNK_SESSION_ID=ig-met python3 "$INTENT_HELPER" --cwd "$TMP" record --verdict MET >/dev/null 2>&1
+out=$(_ig_drive ig-met)
+if [ -z "$out" ]; then case_ok "intent gate: MET verdict stops silently"
+else case_fail "intent gate: MET verdict was blocked — got: $out"; fi
+
+# IG-2: no verdict recorded must BLOCK. Absence is never consent.
+out=$(_ig_drive "ig-none-$$")
+if printf '%s' "$out" | grep -q 'no intent verdict recorded'; then
+  case_ok "intent gate: missing verdict blocks the stop"
+else case_fail "intent gate: missing verdict did not block — got: $out"; fi
+
+# IG-3: UNMET below the cap must BLOCK and name what is unmet.
+PROOFPUNK_SESSION_ID=ig-unmet python3 "$INTENT_HELPER" --cwd "$TMP" record --verdict UNMET --unmet "the adapter was never written" >/dev/null 2>&1
+out=$(_ig_drive ig-unmet)
+if printf '%s' "$out" | grep -q 'adapter was never written'; then
+  case_ok "intent gate: UNMET blocks and names the gap"
+else case_fail "intent gate: UNMET did not block with its reason — got: $out"; fi
+
+# IG-4: cross-session isolation. A session with no verdict must NOT inherit
+# another session's MET in the same cwd. This is the regression test for a
+# real bypass: an earlier draft derived the key from an empty session id, so
+# every session in a directory hashed alike and one MET authorized all stops.
+out=$(_ig_drive "ig-other-$$")
+if printf '%s' "$out" | grep -q 'no intent verdict recorded'; then
+  case_ok "intent gate: verdicts do not leak across sessions in one cwd"
+else case_fail "intent gate: a foreign session inherited a verdict — got: $out"; fi
+
+# IG-5: fail CLOSED when the session cannot be identified. Unlike the python3
+# guards (which allow and announce, because a missing interpreter must not
+# break a tool call), here the guard IS the check -- an unverifiable check is
+# a failed check.
+out=$(printf '{"transcript_path":"%s","cwd":"%s"}' "$IG/t.jsonl" "$TMP" | sh "$HOOKS/stop-guard.sh" 2>/dev/null)
+if printf '%s' "$out" | grep -q 'no session_id'; then
+  case_ok "intent gate: missing session_id fails closed"
+else case_fail "intent gate: missing session_id did not fail closed — got: $out"; fi
 
 echo "== platform-steer.sh (Bash PreToolUse steering — never denies)"
 # Steering only: it must always exit 0, and on a mismatch it prints an

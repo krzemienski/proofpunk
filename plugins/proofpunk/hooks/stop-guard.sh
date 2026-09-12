@@ -74,13 +74,35 @@ except Exception:
 " ) || true
 [ -n "$event" ] || event=Stop
 
+# session_id identifies WHICH session's intent verdict applies. It is present
+# in every Stop payload and was previously unread. Reading it matters: an
+# earlier attempt at the intent check derived the verdict key from an empty
+# id, so the key collapsed to sha256(":" + cwd) -- identical for every session
+# in a directory, letting one session's MET verdict authorize any other's
+# stop. Extract it the same way as cwd and event, and fail to empty so a
+# missing id can never silently match a real one.
+session_id=$(printf '%s' "$input" | python3 -c "
+import json, sys
+try:
+    print(json.load(sys.stdin).get('session_id', ''))
+except Exception:
+    print('')
+" ) || true
+
 set +e
-python3 - "$transcript" "$cwd" "$event" <<'PYEOF' 2>/dev/null
+# The helper path is resolved HERE, where $0 is the real script path, and
+# passed in. Inside a heredoc-piped script __file__ does not exist, so the
+# block cannot locate its own directory.
+_hookdir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+helper="$_hookdir/../skills/end-user-testing/scripts/intent_verdict.py"
+python3 - "$transcript" "$cwd" "$event" "$session_id" "$helper" <<'PYEOF' 2>/dev/null
 import json, os, re, sys
 
 path = sys.argv[1]
 cwd = sys.argv[2] if len(sys.argv) > 2 else ""
 event = sys.argv[3] if len(sys.argv) > 3 else "Stop"
+session_id = sys.argv[4] if len(sys.argv) > 4 else ""
+helper = os.path.normpath(sys.argv[5]) if len(sys.argv) > 5 else ""
 
 CLAIM = re.compile(r"\b(done|complete|completed|finished|shipped|works now|fixed it)\b", re.I)
 # Non-path proof: an inline assertion that names no file and needs none.
@@ -236,9 +258,57 @@ elif claim and proof and not scout:
               "codebase — run the scout pass and record its context summary, or state why it was not needed.")
     print(json.dumps({"decision": "block", "reason": reason}))
 else:
-    # claim-with-proof or no claim: silent. No additionalContext — a stop hook
-    # that speaks on every stop is noise in multi-plugin sessions (14+ hooks).
-    pass
+    # claim-with-proof, or no claim at all. The evidence question is settled.
+    #
+    # But evidence proves a task RAN, not that the asked-for thing HAPPENED.
+    # A session can cite real artifacts for work nobody requested, or for one
+    # clause of a four-clause request, and every gate goes green. So when a
+    # completion is claimed, ask the second question: was the ORIGINAL intent
+    # met? Contract: references/intent-verification.md
+    #
+    # This hook does not judge that — judging it is a natural-language
+    # comparison, and a regex attempting it would be a guard faking
+    # comprehension. It asks the helper that owns the rule. Delegation is
+    # deliberate: an earlier draft reimplemented the key derivation and the
+    # attempt cap here, which is two implementations of one rule and a
+    # guarantee they drift.
+    if claim:
+        # Fail CLOSED. Every branch below that cannot establish "intent was
+        # met" blocks, because this guard's failure mode is authorizing a stop
+        # it should have refused. That is the opposite of the python3-absent
+        # policy elsewhere in this hook set: there, a missing interpreter must
+        # not break a user's tool call, so those guards allow and announce.
+        # Here the guard IS the check, and an unverifiable check is a failed
+        # check.
+        block = None
+        if not session_id:
+            block = ("Proofpunk: a completion was claimed but this session has no "
+                     "session_id, so its intent verdict cannot be identified. Without "
+                     "it, one session's verdict could authorize another's stop. "
+                     "Record the verdict explicitly with intent_verdict.py.")
+        elif not (helper and os.path.isfile(helper)):
+            block = ("Proofpunk: a completion was claimed but the intent-verification "
+                     "helper is missing (skills/end-user-testing/scripts/"
+                     "intent_verdict.py). Intent cannot be checked, so the claim "
+                     "cannot be accepted. Reinstall the skills or downgrade to "
+                     "UNVERIFIED.")
+        else:
+            import subprocess
+            try:
+                r = subprocess.run(
+                    [sys.executable, helper, "--session-id", session_id,
+                     "--cwd", cwd, "may-stop"],
+                    capture_output=True, text=True, timeout=5)
+                if r.returncode != 0:
+                    block = (r.stderr or "").strip() or (
+                        "Proofpunk: the original intent was not met.")
+            except (OSError, subprocess.SubprocessError) as exc:
+                block = (f"Proofpunk: the intent-verification helper could not run "
+                         f"({type(exc).__name__}), so the completion claim cannot be "
+                         "checked against the original request. Fix the helper or "
+                         "downgrade the claim to UNVERIFIED.")
+        if block:
+            print(json.dumps({"decision": "block", "reason": block}))
 PYEOF
 py_rc=$?
 set -e
