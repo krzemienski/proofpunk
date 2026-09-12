@@ -11,10 +11,10 @@ that document's line 41.
 
 | ID | Criterion | Verdict | Evidence (full path) |
 |---|---|---|---|
-| P1 | Installer defects identified with reproduction | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-06-p1-installer-blocker-hunt.md` |
-| P2 | Installer installs complete surface on clean HOME | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-01-p2-count-reconciliation.md` |
+| P1 | Installer defects identified with reproduction | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-06-p1-installer-blocker-hunt.md` — captured at `a2fdeb9`, still current: `git log a2fdeb9..HEAD -- tools/proofpunk-install.sh` is empty, verified in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-17-evidence-provenance-at-4ab9d1a.md` |
+| P2 | Installer installs complete surface on clean HOME | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-01-p2-count-reconciliation.md` — captured at `a2fdeb9`; the surface counts it asserts (18 skills, 10 hooks) are re-confirmed from an archive of HEAD in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
 | P3 | Installed `../../references/` citations resolve | PASS | `tools/verify-citations.py` rc=0 run from an archive of committed HEAD: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
-| P4 | Installer is idempotent | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-04-p4-idempotency-recaptured.md` |
+| P4 | Installer is idempotent | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-04-p4-idempotency-recaptured.md` — captured at `a2fdeb9`, and the installer is unchanged since (same empty `git log`, `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-17-evidence-provenance-at-4ab9d1a.md`) |
 | P5 | Router head links all 17 other skills | UNVERIFIED | The PASS was inherited from `e2e-evidence/run-20260912T172034-v4-criteria-final`, a prior session's run, and was not re-driven here. Inheritance is not proof, so it is downgraded rather than carried forward |
 | P6 | Router routes correctly when invoked | UNVERIFIED | `tools/verify-command-surface.py` has still never run to completion |
 | P7 | ≥10 improvements ranked, then implemented | UNVERIFIED | Recomputed against the task's own window `d5a50b1..f6141f9` (11 commits): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-08-p7-recomputed-prompt-window.md`. Counting generously gives 11; counting only substantive changes gives 8 (two are gauge-snapshot refreshes, one a figure-caption fix). The threshold sits inside that spread, so the grading choice decides the outcome — an operator judgement, not mine |
@@ -24,10 +24,20 @@ that document's line 41.
 | P11 | Documentation explains architecture | UNVERIFIED | 22/22 script citations resolve and execute (`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-02-w4-skill-script-citations.md`); the prose correctness review that would settle this was not done |
 | P12 | Counts/version strings accurate everywhere | PASS | `tools/verify-counts.py` rc=0 from an archive of committed HEAD: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
 | P13 | Existing harnesses still pass | PASS | All 7 gates rc=0 run from `git archive HEAD` — the clone surface, not my working tree — on macOS and in both Linux arms (0 of 7 failing each): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md`. This supersedes the earlier working-tree matrices, which could not have caught the digest defect fixed in `c2e4734` |
-| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — init-run → seal → `validate --run <dir>` rc=0, sealed after its final artifact, with nothing removed or edited post-seal. Cited alone. The other two runs are NOT cited: `run-20260912T172922-w2-installer-p1p2p4` fails `validate` (rc=2), and `run-20260912T173858-w2-p2-surface-reconciled` validates rc=0 but had `step-13` deleted post-seal — the violation under "Run-integrity violation" |
+| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — `seal --run` was the final act after its last artifact (`step-17`), so the inventory covers all 17 steps with 0 unsealed on disk, and `validate --run` returns rc=0. Cited alone. The other two runs are NOT cited: `run-20260912T172922-w2-installer-p1p2p4` fails `validate` (rc=2), and `run-20260912T173858-w2-p2-surface-reconciled` validates rc=0 but had `step-13` deleted post-seal — the violation under "Run-integrity violation" |
 | P15 | Success is measured, not asserted | **FAIL** | I mutated a sealed run — see "Run-integrity violation" |
 
 PASS=7 FAIL=2 UNVERIFIED=6
+
+**Provenance, stated precisely.** Not every PASS was captured against the
+current HEAD, and claiming so would be its own overstatement. P3, P12 and P13
+come from an archive of the committed tree. P1, P2 and P4 were captured at
+`a2fdeb9` and remain valid because the code they exercise —
+`tools/proofpunk-install.sh` — has not changed since, which is verified by an
+empty `git log a2fdeb9..HEAD` rather than assumed. P14 rests on a seal taken
+after the final artifact. The full map, including what DID change since
+`a2fdeb9` and why it does not touch these three, is
+`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-17-evidence-provenance-at-4ab9d1a.md`.
 
 Verdicts use only the four values `.planning/plugin-improvement-criteria.md:41`
 permits. An earlier draft of this report used "PARTIAL" three times; that is
