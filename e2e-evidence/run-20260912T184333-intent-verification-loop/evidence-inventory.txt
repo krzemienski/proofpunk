@@ -13,4 +13,5 @@ step-11-omp-claim-downgraded.md 2323 cf4ad1a5979cc9c105bd86c91f88db91d5334d9982b
 step-12-capture-command-driven.md 2510 73fc400a1299012b99f8123b6c452c3c7bdfb10ebfdeee9a9c0740540cd2f6eb
 step-13-test-pollution-of-user-state.md 1977 cdd7b912e8421d4dfa045886ad9c41fa91839adc1d3f4c599d3883df85daf5e3
 step-14-unmet-blocks-proven-after-false-alarm.md 1973 3920d3d796016296bb98a1af835eaa9647c16e3df1ce1fc709d36b17162a7ace
-sealed=2026-09-12T19:47:48Z count=14 total_bytes=36978
+step-15-fix-prompt-emitter.md 2529 5d1ff8191407eadf979881febbac3ffd8721e3c98695d1c09236291f2d0d4f3b
+sealed=2026-09-12T19:50:37Z count=15 total_bytes=39507

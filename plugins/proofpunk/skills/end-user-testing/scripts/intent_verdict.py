@@ -346,6 +346,93 @@ def cmd_recover(args) -> int:
     return 0
 
 
+def cmd_fix_prompt(args) -> int:
+    """Write the next-session fix prompt from RECORDED state.
+
+    Stage 8 told the model to "write the fix prompt", which made the one
+    artifact that carries the goal across a restart a freehand paraphrase --
+    the exact drift the original-intent rule exists to stop. The prompt is
+    therefore composed from the verdict file: the intent is reproduced
+    verbatim and the gaps are the recorded clauses, so a restart cannot
+    inherit a softened goal.
+    """
+    state = load(args.session_id, args.cwd)
+    if not state:
+        print("no verdict recorded; nothing to carry forward", file=sys.stderr)
+        return 2
+    if state.get("verdict") == "MET":
+        # Nothing is missing, so a fix prompt would invent work.
+        print("verdict is MET; no fix prompt needed", file=sys.stderr)
+        return 2
+    intent = state.get("original_intent", "")
+    if not intent:
+        print("no original intent recorded; cannot carry the goal forward",
+              file=sys.stderr)
+        return 2
+
+    unmet = [u for u in state.get("unmet", []) if str(u).strip()]
+    attempt = state.get("attempt", 0)
+    gaps = "\n".join(f"{i}. {u}" for i, u in enumerate(unmet, 1)) or \
+        "(none recorded — re-derive the gap from the original request)"
+
+    body = f"""# Fix prompt — attempt {attempt + 1}
+
+A previous session set out to do the following and did not finish it. This
+is the ORIGINAL request, reproduced verbatim. Do not work from a summary of
+it, including this file's own wording below it.
+
+## Original request
+
+{intent}
+
+## What was left unmet
+
+{gaps}
+
+## How to proceed
+
+1. Re-read the original request above before planning anything.
+2. Close the unmet clauses. They are obligations, not suggestions; a clause
+   done well beside one untouched is still UNMET.
+3. Do not re-do work that is already proven. Read the prior evidence run
+   first and build on it.
+4. Prove each clause by driving the real system as the end user. An
+   unexecuted claim is UNVERIFIED, never PASS.
+5. This is attempt {attempt + 1}. At attempt {MAX_ATTEMPTS} the run escalates to a
+   human instead of restarting again, so treat this as a bounded retry.
+"""
+
+    out = Path(args.out).expanduser() if args.out else None
+    if out is None:
+        print(body, end="")
+        return 0
+    try:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        # Atomic for the same reason save() is: a truncated fix prompt still
+        # parses as a fix prompt, so the next session would silently inherit
+        # a goal cut off mid-sentence.
+        fd, tmp = tempfile.mkstemp(dir=str(out.parent))
+        try:
+            with os.fdopen(fd, "w") as fh:
+                fh.write(body)
+            os.replace(tmp, out)
+        except BaseException:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
+            raise
+    except OSError as exc:
+        print(f"could not write {out}: {exc}", file=sys.stderr)
+        return 2
+    # Point the verdict file at the prompt so the next session can find it
+    # without being told where it is.
+    state["next_prompt"] = str(out)
+    save(args.session_id, args.cwd, state)
+    print(f"wrote fix prompt for attempt {attempt + 1} to {out}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--session-id", default=os.environ.get("PROOFPUNK_SESSION_ID", ""))
@@ -376,6 +463,12 @@ def main(argv: list[str]) -> int:
 
     p = sub.add_parser("may-stop")
     p.set_defaults(fn=cmd_may_stop)
+
+    # Composed from recorded state, never freehand: the restart must inherit
+    # the original goal, not a paraphrase of it.
+    p = sub.add_parser("fix-prompt")
+    p.add_argument("--out")
+    p.set_defaults(fn=cmd_fix_prompt)
 
     args = ap.parse_args(argv[1:])
     return args.fn(args)

@@ -237,10 +237,13 @@ report then grades the reading. So the last act compares the outcome to the
 4. **Judge each clause separately.** "Do X and also Y" is two obligations.
    X done well and Y untouched is UNMET, not partially met.
 5. **Record the verdict**: `intent_verdict.py record --verdict MET|UNMET|UNVERIFIABLE`.
-6. **If UNMET** — write the next-session fix prompt naming exactly what is
-   missing, then restart. Bounded: attempts 1-2 restart, the 3rd escalates with
-   a blocker report. The counter persists in the verdict file, so it survives
-   the restart it bounds.
+6. **If UNMET** — emit the fix prompt with
+   `intent_verdict.py fix-prompt --out <path>`, then restart. Never hand-write
+   it: the emitter composes from the recorded state, so the restart inherits
+   the original request verbatim and the recorded gaps. A hand-written prompt
+   is a paraphrase, which is the drift this stage exists to stop. Bounded:
+   attempts 1-2 restart, the 3rd escalates with a blocker report. The counter
+   persists in the verdict file, so it survives the restart it bounds.
 
 Full contract, including how each stop surface enforces this:
 `../../references/intent-verification.md`.
