@@ -13,7 +13,7 @@ that document's line 41.
 |---|---|---|---|
 | P1 | Installer defects identified with reproduction | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-06-p1-installer-blocker-hunt.md` |
 | P2 | Installer installs complete surface on clean HOME | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-01-p2-count-reconciliation.md` |
-| P3 | Installed `../../references/` citations resolve | PASS | `tools/verify-citations.py` rc=0, recorded in `.../step-11-gates-green-after-fixture-fix.md` |
+| P3 | Installed `../../references/` citations resolve | PASS | `tools/verify-citations.py` rc=0, recorded in `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-11-gates-green-after-fixture-fix.md` |
 | P4 | Installer is idempotent | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-04-p4-idempotency-recaptured.md` |
 | P5 | Router head links all 17 other skills | PASS | inherited from `run-20260912T172034-v4-criteria-final`; unchanged this session |
 | P6 | Router routes correctly when invoked | UNVERIFIED | `tools/verify-command-surface.py` has still never run to completion |
@@ -23,8 +23,8 @@ that document's line 41.
 | P10 | Doctrine rules have hook enforcement or a stated gap | UNVERIFIED | no interaction/precedence map produced |
 | P11 | Documentation explains architecture | UNVERIFIED | 22/22 script citations resolve and execute (`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-02-w4-skill-script-citations.md`); the prose correctness review that would settle this was not done |
 | P12 | Counts/version strings accurate everywhere | PASS | `tools/verify-counts.py` rc=0 |
-| P13 | Existing harnesses still pass | PASS | 6 gates macOS + Linux root/non-root: `.../step-11-...md`, `.../step-14-linux-installer-parity-full.md` |
-| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — init-run → seal → validate, rc=0, unmutated. Cited alone; the two earlier runs are disclosed as unusable below |
+| P13 | Existing harnesses still pass | PASS | 6 gates macOS + Linux root/non-root: `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-11-gates-green-after-fixture-fix.md`, `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-14-linux-installer-parity-full.md` |
+| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — init-run → seal → validate, `validate` rc=0, and no artifact was removed or edited after sealing. Cited alone. The other two runs are NOT cited for P14: `run-20260912T172922-w2-installer-p1p2p4` fails `validate` (rc=2), and `run-20260912T173858-w2-p2-surface-reconciled` validates rc=0 but had `step-13` deleted post-seal, which is the violation under "Run-integrity violation" |
 | P15 | Success is measured, not asserted | **FAIL** | I mutated a sealed run — see "Run-integrity violation" |
 
 PASS=8 FAIL=2 UNVERIFIED=5
@@ -44,8 +44,8 @@ parity" from one image alone would be wrong in either direction:
 
 | Image | Question it answers | Result |
 |---|---|---|
-| `debian:stable-slim` | how the product behaves with **no python3** | 10/10 hooks exit 0; the 3 fixed guards announce enforcement loss; skills install 18/18; `--hooks` fails closed with a clear error. `.../step-01-debian-image-and-window-reconcile.md` |
-| `python:3.12-slim` | whether the **gates** pass on Linux | 6/6 gates rc=0, root and non-root; installer harness 28 PASS / 0 FAIL in both arms. `.../step-14-linux-installer-parity-full.md` |
+| `debian:stable-slim` | how the product behaves with **no python3** | 10/10 hooks exit 0; the 3 fixed guards announce enforcement loss; skills install 18/18; `--hooks` fails closed with a clear error. `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-01-debian-image-and-window-reconcile.md` |
+| `python:3.12-slim` | whether the **gates** pass on Linux | 6/6 gates rc=0, root and non-root; installer harness 28 PASS / 0 FAIL in both arms. `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-14-linux-installer-parity-full.md` |
 
 P13 rests on both. Neither is "the Linux matrix" by itself, and the task's
 requested image is the one that structurally cannot run the gates.
@@ -72,19 +72,19 @@ failure mode. Disclosed in full, with the deleted content reproduced, at
    that range matches every other figure given (120 files, +9,155/-419, 1
    SKILL.md, 2 hook files — four for four). My range included the prior
    session's work, which the task explicitly lists separately. Retraction:
-   `.../step-06-commit-window-retraction.md`. This is why P7 is UNVERIFIED: the
+   `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-06-commit-window-retraction.md`. This is why P7 is UNVERIFIED: the
    inherited ledger counted 13 improvements across the wrong range.
 
 2. **`echo -e` portability defect — retracted.** Four scripts appeared to
    print a literal `-e`. All declare `#!/usr/bin/env bash`; my probe invoked
    them with `sh`. The instrument produced the finding, not the product.
-   `.../step-03-w4-retraction-and-real-defects.md`.
+   `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-03-w4-retraction-and-real-defects.md`.
 
 3. **P9 restatement is not a verdict.** I first reported "PASS as P9′". The
    approved criteria permit four verdicts and that is not one of them. P9 as
    written is FAIL: it assumes 7 scripts each with a block case, but there are
    10 scripts and only 4 have any deny path. The taxonomy restatement in
-   `.../step-12-p9-restatement.md` is a recommendation for the operator, not a
+   `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-12-p9-restatement.md` is a recommendation for the operator, not a
    verdict.
 
 ## Defects found and fixed, each proven by driving
