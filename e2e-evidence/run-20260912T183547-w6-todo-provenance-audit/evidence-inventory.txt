@@ -1,3 +1,4 @@
 # fresh-evidence-inventory v2 (name size sha256)
 step-01-closure-provenance.md 2809 4f99bff067afa9613516f2b5853e9dd7aa7623fdec8070128cd6f0bd28e22df0
-sealed=2026-09-12T18:35:47Z count=1 total_bytes=2809
+step-02-ledger-standard-applied-unevenly.md 2390 d7f1958b29d830fa7a27a1a54e242ca878342f9d08cc3e3fd4a9dabfc8e7908f
+sealed=2026-09-12T18:38:48Z count=2 total_bytes=5199

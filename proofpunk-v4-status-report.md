@@ -200,8 +200,8 @@ UNVERIFIED rather than resting on a green `validate`.
 
 ## Repository state
 
-- **13 commits**, all from this session, measured by `git rev-list --count a2fdeb9..HEAD` where `a2fdeb9` was the session-start HEAD.
-- **13 unpushed** (`git rev-list --count origin/main..HEAD`) — the two figures match because `origin/main` is that same session-start commit.
+- **20 commits**, all from this session, measured by `git rev-list --count a2fdeb9..HEAD` where `a2fdeb9` was the session-start HEAD. (This figure has been stale twice; it is re-measured, not recalled.)
+- **20 unpushed** (`git rev-list --count origin/main..HEAD`) — the two figures match because `origin/main` is that same session-start commit.
 - **No tag was created this session.** Two tags exist locally, `v2.1.0` and `v2.2.0`, both dated 2026-08-27 and predating this work. There is no `v3` or `v4` tag in the repository.
 
 Pushing and tagging are authorization boundaries under
