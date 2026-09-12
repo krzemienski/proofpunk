@@ -75,7 +75,25 @@ def check_slug(slug: str) -> str:
     return slug
 
 
-def active_run() -> Path:
+def active_run(explicit: str | None = None) -> Path:
+    """Resolve the run to operate on.
+
+    `explicit` wins when given. Otherwise the active run is the most recently
+    modified run-* directory -- which is ambiguous the moment two runs share
+    an mtime. That is not hypothetical: validating three runs in a loop by
+    touching each one in turn put all three on the same second, so every
+    iteration validated whichever directory won the tie, and a run that
+    genuinely fails reported rc=0. Pass --run to remove the guess.
+    """
+    if explicit:
+        p = Path(explicit)
+        if not p.is_dir():
+            p = ROOT / explicit
+        if not p.is_dir():
+            raise refuse(f"no such run directory: {explicit}")
+        if not p.name.startswith("run-"):
+            raise refuse(f"not a run directory (must be named run-*): {explicit}")
+        return p
     if not ROOT.is_dir():
         raise refuse("no active run")
     runs = [p for p in ROOT.glob("run-*") if p.is_dir()]
@@ -95,15 +113,15 @@ def cmd_init_run(slug: str) -> str:
     return run_id
 
 
-def cmd_next_step(slug: str) -> str:
+def cmd_next_step(slug: str, run: str | None = None) -> str:
     slug = check_slug(slug)
-    run_dir = active_run()
+    run_dir = active_run(run)
     n = len(list(run_dir.glob("step-*")))
     return str(run_dir / f"step-{n + 1:02d}-{slug}")
 
 
-def cmd_seal() -> str:
-    run_dir = active_run()
+def cmd_seal(run: str | None = None) -> str:
+    run_dir = active_run(run)
     steps = sorted(p for p in run_dir.glob("step-*") if p.is_file())
     if not steps:
         raise refuse(f"refusing to seal {run_dir}: it contains zero step-* artifacts")
@@ -124,8 +142,8 @@ def cmd_seal() -> str:
     return str(inv)
 
 
-def cmd_validate() -> str:
-    run_dir = active_run()
+def cmd_validate(run: str | None = None) -> str:
+    run_dir = active_run(run)
     meta = run_dir / ".run-meta"
     if not meta.is_file():
         raise refuse(f"no .run-meta in {run_dir}")
@@ -257,12 +275,16 @@ def cmd_validate() -> str:
 
 USAGE = """Usage:
   fresh_evidence.py init-run <slug>
-  fresh_evidence.py next-step <slug>
-  fresh_evidence.py seal
-  fresh_evidence.py validate
+  fresh_evidence.py next-step <slug> [--run <run-dir>]
+  fresh_evidence.py seal            [--run <run-dir>]
+  fresh_evidence.py validate        [--run <run-dir>]
 
 All operations work against ./e2e-evidence/ in the current working directory.
-The "active run" is the most recently modified run-* subdirectory.
+Without --run, the target is the most recently modified run-* subdirectory.
+That is AMBIGUOUS when two runs share an mtime -- validating several runs in
+a loop by touching each in turn puts them all on the same second, and every
+iteration then targets whichever directory wins the tie. Pass --run whenever
+more than one run exists and you mean a specific one.
 """
 
 
@@ -271,19 +293,60 @@ def main(argv: list[str]) -> int:
         sys.stdout.write(USAGE)
         return 0 if len(argv) >= 2 else 0
     command = argv[1]
+    # --run <dir> may appear anywhere after the command. Pulled out before
+    # positional handling so `next-step <slug> --run <dir>` and
+    # `next-step --run <dir> <slug>` behave identically.
+    rest = list(argv[2:])
+    run: str | None = None
+    positionals: list[str] = []
+    i = 0
+    while i < len(rest):
+        tok = rest[i]
+        if tok == "--run":
+            if i + 1 >= len(rest):
+                print("--run requires a run directory", file=sys.stderr)
+                return 2
+            if run is not None:
+                # Silently honouring the first and dropping the second is how
+                # a caller ends up operating on a run they did not name.
+                print("--run given more than once", file=sys.stderr)
+                return 2
+            run = rest[i + 1]
+            i += 2
+            continue
+        if tok.startswith("-"):
+            print(f"unknown option: {tok}", file=sys.stderr)
+            return 2
+        positionals.append(tok)
+        i += 1
+
+    # Arity is checked per command. Tolerating a stray positional means
+    # `validate junk` runs as though it were `validate`, which hides a typo
+    # in exactly the tool whose job is to refuse things.
+    expected = {"init-run": 1, "next-step": 1, "seal": 0, "validate": 0}
+    if command in expected and len(positionals) != expected[command]:
+        print(
+            f"{command} takes {expected[command]} positional argument(s), "
+            f"got {len(positionals)}: {positionals}",
+            file=sys.stderr,
+        )
+        return 2
+    argv = [argv[0], command, *positionals]
     try:
         if command == "init-run":
             if len(argv) < 3:
                 raise refuse("init-run requires a slug")
+            if run is not None:
+                raise refuse("init-run creates a run; --run does not apply")
             print(cmd_init_run(argv[2]))
         elif command == "next-step":
             if len(argv) < 3:
                 raise refuse("next-step requires a slug describing this step")
-            print(cmd_next_step(argv[2]))
+            print(cmd_next_step(argv[2], run))
         elif command == "seal":
-            print(cmd_seal())
+            print(cmd_seal(run))
         elif command == "validate":
-            print(cmd_validate())
+            print(cmd_validate(run))
         else:
             sys.stderr.write(USAGE)
             return 2

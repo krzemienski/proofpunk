@@ -69,8 +69,10 @@ failure mode. Disclosed in full, with the deleted content reproduced, at
 
 1. **Commit window — I was wrong, the task text was right.** I reported the
    v4 window as 17 commits, not 11. Measured: `d5a50b1..f6141f9` = **11**, and
-   that range matches every other figure given (120 files, +9,155/-419, 1
-   SKILL.md, 2 hook files — four for four). My range included the prior
+   that range reproduces every other figure the task gives for it — 120 files
+   changed, +9,155/-419 lines, a single `SKILL.md` touched, and a pair of
+   files under `plugins/proofpunk/hooks/` touched. Four figures, four exact
+   matches. My range included the prior
    session's work, which the task explicitly lists separately. Retraction:
    `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-06-commit-window-retraction.md`. This is why P7 is UNVERIFIED: the
    inherited ledger counted 13 improvements across the wrong range.

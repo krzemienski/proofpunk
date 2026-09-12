@@ -246,6 +246,38 @@ if [ "$got" = "$exp" ]; then ok "fresh_evidence strict contract: empty/thin/unse
 else bad "fresh_evidence contract drift — expected [$exp] got [$got]"; fi
 rm -rf "$EV"
 
+# Group 9b: --run targets a specific run, and the parser refuses junk.
+#
+# Without --run the target is the most recently modified run-* directory,
+# which is a TIE when two runs share an mtime -- and touching several runs in
+# a loop to inspect them puts them all on the same second. That tie made a
+# genuinely failing run report rc=0. The regression pins both halves: explicit
+# targeting works under tied mtimes, and malformed invocations refuse instead
+# of silently operating on some other run.
+EV2=$(mktemp -d); ( cd "$EV2"
+  PAD=$(python3 -c "print('.' * 1100)")
+  python3 "$FE" init-run alpha >/dev/null 2>&1
+  python3 "$FE" init-run beta  >/dev/null 2>&1
+  A=$(ls -d e2e-evidence/run-*alpha); B=$(ls -d e2e-evidence/run-*beta)
+  printf 'GOOD %s\n' "$PAD" > "$A/step-01-good.log"   # > 1024, must pass
+  printf 'thin\n'          > "$B/step-01-thin.log"    # < 1024, must fail
+  python3 "$FE" seal --run "$A" >/dev/null 2>&1
+  python3 "$FE" seal --run "$B" >/dev/null 2>&1
+  touch "$A" "$B"                                     # force the mtime tie
+  python3 "$FE" validate --run "$A" >/dev/null 2>&1; echo "targeted_good_rc=$?"
+  python3 "$FE" validate --run "$B" >/dev/null 2>&1; echo "targeted_thin_rc=$?"
+  python3 "$FE" validate junk       >/dev/null 2>&1; echo "junk_positional_rc=$?"
+  python3 "$FE" validate --bogus    >/dev/null 2>&1; echo "unknown_option_rc=$?"
+  python3 "$FE" validate --run      >/dev/null 2>&1; echo "run_no_value_rc=$?"
+  python3 "$FE" validate --run "$A" --run "$B" >/dev/null 2>&1; echo "double_run_rc=$?"
+  python3 "$FE" validate --run e2e-evidence/nope >/dev/null 2>&1; echo "bad_target_rc=$?"
+) > "$EV2/out.txt" 2>&1
+exp2="targeted_good_rc=0 targeted_thin_rc=2 junk_positional_rc=2 unknown_option_rc=2 run_no_value_rc=2 double_run_rc=2 bad_target_rc=2"
+got2=$(tr '\n' ' ' < "$EV2/out.txt" | sed 's/  */ /g;s/ $//')
+if [ "$got2" = "$exp2" ]; then ok "fresh_evidence --run targets a specific run under tied mtimes; parser refuses junk"
+else bad "fresh_evidence --run drift — expected [$exp2] got [$got2]"; fi
+rm -rf "$EV2"
+
 
 echo "== group 10: installed tree matches canonical hooks.json"
 # Derive-don't-restate: the installer must install exactly what hooks.json
