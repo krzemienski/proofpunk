@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-p-criteria.md 1998 8d8460ab0343f4a2d09f5a6b31719f4a9d29429eeb3a7cb4c0ce2814e4728d43
+sealed=2026-09-12T17:21:13Z count=1 total_bytes=1998

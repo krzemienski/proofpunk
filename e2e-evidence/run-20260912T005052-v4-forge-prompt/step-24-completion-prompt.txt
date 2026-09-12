@@ -1,0 +1,12 @@
+# .planning/v4-completion.prompt.md
+bytes=7898
+sha256=06fcd36adda34176083df9fcde759895a29f31f753a1843a9088623fbac262bc
+C1=PASS C3=PASS
+resolve=5 future=1 defects=0
+
+## resolved
+  OK   plugins/proofpunk/docs/architecture.md
+  OK   plugins/proofpunk/hooks/hooks.json
+  OK   plugins/proofpunk/hooks/stop-guard.sh
+  OK   tools/gauge-report.py
+  OK   tools/test-hooks.sh

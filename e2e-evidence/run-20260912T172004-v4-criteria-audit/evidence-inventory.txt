@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-p-criteria-verdicts.md 2026 4405d53182ab5198b08cb987193d6d21049f3ee005b5e7660c15744369e96044
+sealed=2026-09-12T17:20:10Z count=1 total_bytes=2026
