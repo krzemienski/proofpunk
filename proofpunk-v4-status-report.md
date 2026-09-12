@@ -151,7 +151,9 @@ have had no equivalent scrutiny, and two of them — `prompt-forge` (17,307 B)
 and `codebase-truth-audit` (15,330 B) — are larger than anything in the task's
 disclosure-debt table and were therefore absent from its plan entirely.
 
-Also open: P5, P6, P7, P8, P10, P14.
+Also open: P5, P6, P7, P8, P10, P14 — and **P11**, which is the criterion
+this whole section is about: the skill correctness review. Seven UNVERIFIED
+rows, seven names.
 
 ## Evidence runs
 
