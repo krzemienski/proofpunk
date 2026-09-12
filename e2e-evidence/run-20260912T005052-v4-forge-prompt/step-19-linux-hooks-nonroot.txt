@@ -1,0 +1,7 @@
+# Linux hook gate, non-root — isolates root/chmod-000 test artifact
+
+== as NON-ROOT (id=1000) ==
+  PASS: platform-steer mismatch nudges toward ios-validation.md
+  PASS: platform-steer silent on no-signal command
+  PASS: platform-steer fails open silently on malformed stdin
+HOOK TEST FAILS: 1

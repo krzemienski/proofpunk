@@ -1,0 +1,21 @@
+# Case 4c uses a DIRECTORY path: open() fails for every user incl. root.
+# No skip, no PASS-by-skip; the assertion executes in all 3 environments.
+
+## macOS arm64 non-root
+rc=0 | HOOK TEST FAILS: 0
+
+## Linux debian aarch64
+== ROOT ==
+  PASS: stop-guard announces fail-open on unreadable transcript
+  PASS: no-test-files fails open on empty path
+  PASS: hooks.json matcher routes MCP writes, skips reads (both groups)
+  PASS: instructions-loaded fails open on malformed stdin
+  PASS: platform-steer fails open silently on malformed stdin
+HOOK TEST FAILS: 0
+== NON-ROOT ==
+  PASS: stop-guard announces fail-open on unreadable transcript
+  PASS: no-test-files fails open on empty path
+  PASS: hooks.json matcher routes MCP writes, skips reads (both groups)
+  PASS: instructions-loaded fails open on malformed stdin
+  PASS: platform-steer fails open silently on malformed stdin
+HOOK TEST FAILS: 0

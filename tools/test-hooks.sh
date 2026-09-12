@@ -82,12 +82,29 @@ if printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guar
 # Case 4b: python3 absent from PATH. Pre-fix: python3 missing made the
 # `transcript=$(... python3 ... 2>/dev/null || true)` pipeline empty, then
 # the `[ -n "$transcript" ] || exit 0` branch exited silently — same as a
-# clean run. Isolated PATH=/bin (no python3 there) must emit python3-not-found.
-out=$(PATH=/bin /bin/sh "$HOOKS/stop-guard.sh" <<'EOF'
+# clean run. Must emit python3-not-found.
+#
+# Isolation must be portable: `PATH=/bin` hides python3 on macOS
+# (/usr/bin/python3) but NOT on Debian, where /bin/python3 exists as a
+# symlink into /usr/bin. An empty PATH is also wrong: it strips `cat` and
+# the other coreutils the hook legitimately uses, turning this into a
+# rc=127 failure that proves nothing. A mode-000 shim is wrong too:
+# `command -v` tests presence, not executability, and root ignores the
+# mode bits — so the hook would still take its python3 path.
+#
+# Build a PATH holding exactly the coreutils the hook needs, symlinked
+# from wherever they really live, and deliberately NOT python3. Absence
+# is then structural: identical for root and non-root, on any platform.
+PP_SHADOW="$(mktemp -d)"
+for _b in cat grep sed printf head tail awk cut tr wc sort; do
+  _p=$(command -v "$_b" 2>/dev/null) && ln -sf "$_p" "$PP_SHADOW/$_b" 2>/dev/null || true
+done
+out=$(PATH="$PP_SHADOW" /bin/sh "$HOOKS/stop-guard.sh" <<'EOF'
 {"session_id":"s4b","transcript_path":"/tmp/whatever.jsonl","cwd":"/tmp","hook_event_name":"Stop"}
 EOF
 )
 rc=$?
+rm -rf "$PP_SHADOW" 2>/dev/null || true
 if [ "$rc" -ne 0 ]; then case_fail "stop-guard python3-absent must exit 0 — rc=$rc out=$out"
 elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard python3-absent must never block — got: $out"
 elif printf '%s' "$out" | grep -q 'enforcement OFF (python3-not-found)'; then case_ok "stop-guard announces fail-open on missing python3"
@@ -97,11 +114,19 @@ else case_fail "stop-guard python3-absent was silent (must be observable) — go
 # succeeded and python opened with errors=ignore / OSError → empty lines →
 # silent exit 0. Now must emit transcript-missing-or-unreadable (or the
 # python-side transcript-unreadable notice).
-touch "$TMP/t4c.jsonl"
-chmod 000 "$TMP/t4c.jsonl" 2>/dev/null || true
+#
+# chmod 000 alone is not portable proof: root ignores mode bits, so in a
+# root container (CI images, Docker default) the file stays readable and
+# the case silently tests nothing. Recording that as OK would be a
+# PASS-by-skip — the exact false green this plugin exists to prevent.
+#
+# Use a directory instead. `[ -f ]` is false and any open() raises
+# IsADirectoryError for every user, root included, so the assertion is
+# real on all platforms and always executes.
+mkdir -p "$TMP/t4c.jsonl"
 out=$(printf '{"session_id":"s4c","transcript_path":"%s","cwd":"/tmp","hook_event_name":"Stop"}' "$TMP/t4c.jsonl" | sh "$HOOKS/stop-guard.sh")
 rc=$?
-chmod 644 "$TMP/t4c.jsonl" 2>/dev/null || true
+rmdir "$TMP/t4c.jsonl" 2>/dev/null || true
 if [ "$rc" -ne 0 ]; then case_fail "stop-guard unreadable transcript must exit 0 — rc=$rc out=$out"
 elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard unreadable transcript must never block — got: $out"
 elif printf '%s' "$out" | grep -q 'enforcement OFF'; then case_ok "stop-guard announces fail-open on unreadable transcript"

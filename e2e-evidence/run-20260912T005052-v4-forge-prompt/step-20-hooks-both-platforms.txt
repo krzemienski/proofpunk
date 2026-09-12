@@ -1,0 +1,20 @@
+# test-hooks.sh — hermetic PATH isolation (coreutils symlinked, python3 absent)
+# precondition on macOS: PATH=hermetic -> command -v python3 rc=1, cat rc=0
+
+## macOS arm64
+rc=0 | HOOK TEST FAILS: 0
+  PASS: stop-guard announces fail-open on missing python3
+
+## Linux debian aarch64 (root and non-root)
+== ROOT ==
+  PASS: stop-guard announces fail-open on missing python3
+  PASS: no-test-files fails open on empty path
+  PASS: instructions-loaded fails open on malformed stdin
+  PASS: platform-steer fails open silently on malformed stdin
+HOOK TEST FAILS: 1
+== NON-ROOT ==
+  PASS: stop-guard announces fail-open on missing python3
+  PASS: no-test-files fails open on empty path
+  PASS: instructions-loaded fails open on malformed stdin
+  PASS: platform-steer fails open silently on malformed stdin
+HOOK TEST FAILS: 0

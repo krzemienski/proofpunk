@@ -1,0 +1,13 @@
+# Linux (debian:stable-slim, aarch64) platform gate run
+# host: macOS arm64 via Docker 29.6.2
+
+== platform ==
+Linux aarch64
+GNU bash, version 5.2.37(1)-release (aarch64-unknown-linux-gnu)
+sed (GNU sed) 4.9
+Python 3.13.5
+bash tools/dry-run-install.sh          rc=0 | INSTALL DRY-RUN FAILS: 0
+bash tools/test-hooks.sh               rc=2 | HOOK TEST FAILS: 2
+python3 tools/verify-counts.py         rc=0 | VERDICT: PASS — live .md counts match the tree
+python3 tools/verify-orchestration.py  rc=0 | documented order, with methods owned exactly onc
+python3 tools/verify-citations.py      rc=0 | RESULT: PASS (default: ERROR-only)

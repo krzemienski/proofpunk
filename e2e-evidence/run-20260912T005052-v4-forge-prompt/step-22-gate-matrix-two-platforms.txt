@@ -1,0 +1,22 @@
+# Gate matrix: macOS arm64 + Linux debian aarch64
+
+## macOS
+test-hooks.sh                    rc=0       HOOK TEST FAILS: 0
+dry-run-install.sh               rc=0       INSTALL DRY-RUN FAILS: 0
+verify-counts.py                 rc=0       VERDICT: PASS — live .md counts match the tree
+verify-orchestration.py          rc=0       documented order, with methods owned exactly once.
+verify-citations.py              rc=0       RESULT: PASS (default: ERROR-only)
+
+## Linux
+bash                             rc=0       HOOK TEST FAILS: 0
+bash                             rc=0       INSTALL DRY-RUN FAILS: 0
+python3                          rc=0       VERDICT: PASS — live .md counts match the tree
+python3                          rc=0       documented order, with methods owned exactly once.
+python3                          rc=0       RESULT: PASS (default: ERROR-only)
+
+## macOS re-run after Case 4c directory fixture
+test-hooks.sh                  rc=0    HOOK TEST FAILS: 0
+dry-run-install.sh             rc=0    INSTALL DRY-RUN FAILS: 0
+verify-counts.py               rc=0    VERDICT: PASS — live .md counts match the tree
+verify-orchestration.py        rc=0    documented order, with methods owned exactly once.
+verify-citations.py            rc=0    RESULT: PASS (default: ERROR-only)
