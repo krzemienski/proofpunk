@@ -1,0 +1,19 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-debian-image-and-window-reconcile.md 4145 5323dedbddb653f1ee99222d833ab6e2a2f8e2fdc064a63617a0f482c1967d8a
+step-02-w4-skill-script-citations.md 4792 44290cb3913fb4b4ea670ec1b578a667b768c9a94007b97aaed334fa0bec4bd0
+step-03-w4-retraction-and-real-defects.md 2995 678d7c32faaa8d506b4fef600f88088a5c4fbfecf1e3130037430e5c2ecdbd96
+step-04-lane-contracts-emitted-and-checked.md 3043 50162f682e85ecf00676ede5ec82e7fc5bc79f3514617a5ee5f3baa1b0b0b1ba
+step-05-disclosure-run-integrity-and-p9-p14-p15.md 3587 faf4be281ab01cbb35f16672b2e68929d6c6337652eaeeec1938b86e8710bf3d
+step-06-commit-window-retraction.md 2321 434ab290d10650b39b7fdccf576b796db1f082389176e00f1467d5cdb6893f4c
+step-07-lane-contracts-post-relocation.md 2762 d95505453ece14a2a7a76492a5bbd1b19363fd2597fa24fecfd320538413d439
+step-08-p7-recomputed-prompt-window.md 4672 a6abb69058924f89842c3a6b04cfff1376bcdfa07f72f4ddbc256387ed6b0d7e
+step-09-validate-targeting-defect.md 2965 9ae85690fba6e8875efd26e9ecb05a0339cfdae18d8316549daef2e0696d30c7
+step-10-run-targeting-fix-proof.md 1673 1027819a686c933ee684f6a3ae750ae551d0dd817be171ae55e6387c296e9269
+step-11-strict-arg-parsing.md 1626 67da8d747ebed892b873ac8422b65b412212220bca0d2efd108ee8b15c245627
+step-12-gates-final-all-seven.md 1719 d7128647ab6086de2818740e2f0977eff12737ea52cc805f4244a25ca018f4e6
+step-13-post-commit-verification-at-head.md 2275 06379b3f72f3414a1f15ed53b10d2e6785173596b6d910b95122e77de117449f
+step-14-gates-at-head-final.md 1533 9f926cecf2cf62113921b71d4be8fc7fc5bc0b69a20bfddad77fe790ac7d130b
+step-15-gates-from-archive-of-head.md 1447 cdf052c16000f379bbb76ea225eb76e03265720403d877ceda4f552689d82ab4
+step-16-tie-equality-exact-proof.md 1929 c5fc69ca536683a8a4c3c2de57f68b6e568df8a787bdd9b18421061986d7e692
+step-17-evidence-provenance-at-4ab9d1a.md 3572 42aa8a32e49b810192aa38069df4269d9cd42645bc941771b2237eea93db5d5e
+sealed=2026-09-12T18:16:37Z count=17 total_bytes=47056

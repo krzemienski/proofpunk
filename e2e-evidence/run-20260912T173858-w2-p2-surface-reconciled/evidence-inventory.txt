@@ -1,0 +1,15 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-p2-count-reconciliation.md 1880 fcafdcc7ca7ae10a13954fd5df12d0055568b7e88036912cd8b3c193de2cd7b7
+step-02-minsize-boundary-proof.md 1239 a2eb94a8db11156536e8253dd65bb64a123e5743bfb3345ac03de8d8182590d5
+step-03-minsize-boundary-proof.md 1679 135cefb704739edf0bffb1d6c319e22e789d9e812b15516b08d0b02aa8ebee23
+step-04-p4-idempotency-recaptured.md 2645 f810666de9649827655f9d67fa6b76bb5ff32ccbd35b028c0da3645754297117
+step-05-case5b-mutation-recaptured.md 1788 fd46083dedc2ebf6fa2b19b373897541d868744355dc9e460a14b54828df7597
+step-06-p1-installer-blocker-hunt.md 4646 686508e3698f6ac87d3c88b6b7745add4890b78dda05f7d4a9ed931e54983ed1
+step-07-p1-p2-p4-verdicts.md 1936 28b1df42d9d693c9ce89b89de6ed0dbf92b58465ed2419459610cd00e9b9b60e
+step-08-run-revalidation-after-c169831.md 1981 327d4c844ac67f561d6d6dca67669b9e3717a1e62342a909ad73b3f6d4557fda
+step-09-hookfix-redriven-in-valid-run.md 3231 62ffdcda96b3c2b5c7e0d141d09b8311f2088fe71d02bd2b5502c6ef7bed56bf
+step-10-gates-and-p9-taxonomy.md 2615 79d26aebfca90b4d83c2b16234989e958bd6aacff6295ad813d9c8cf332ca0d5
+step-11-gates-green-after-fixture-fix.md 1754 a079535efbd56c3f498f01322827267572853e759db70047965ead66eb435d32
+step-12-p9-restatement.md 3025 7b26d208d465c7180b0c5679aff310abab1291a0922352a3280923a0f869857c
+step-14-linux-installer-parity-full.md 3880 e633a9671d7d7dd17f9f9fbad1b4e5248ba8b5ffd82f39520f005fa747cc3b7c
+sealed=2026-09-12T17:53:10Z count=13 total_bytes=32299

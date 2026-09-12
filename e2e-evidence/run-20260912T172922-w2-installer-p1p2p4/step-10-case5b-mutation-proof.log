@@ -1,0 +1,21 @@
+# Case 5b non-vacuity proof (mutation test)
+
+A regression test that cannot fail is not a test. Case 5b is run twice:
+once against the FIXED hooks, once against a temporarily reverted copy.
+
+## Arm A — current (fixed) hooks
+unpiped rc=0
+    PASS: no-test-files.sh announces enforcement loss without python3
+    PASS: evidence-guard.sh announces enforcement loss without python3
+    PASS: capture-guard.sh announces enforcement loss without python3
+  HOOK TEST FAILS: 0
+
+## Arm B — fix reverted in a scratch copy (silent exit 0 restored)
+mutation applied to 3 hooks (notice line removed, bare exit 0 restored)
+unpiped rc=3
+    FAIL: no-test-files.sh fails open SILENTLY without python3 — lost enforcement is invisible
+    FAIL: evidence-guard.sh fails open SILENTLY without python3 — lost enforcement is invisible
+    FAIL: capture-guard.sh fails open SILENTLY without python3 — lost enforcement is invisible
+  HOOK TEST FAILS: 3
+
+Case 5b is non-vacuous iff Arm A passes and Arm B fails.

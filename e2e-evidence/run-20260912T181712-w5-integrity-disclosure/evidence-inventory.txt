@@ -1,0 +1,9 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-second-mutation-disclosure.md 2884 403844a1bf4870018f11a5e24a5af40c93a040e54c765c28f6af06268401b607
+step-02-w4-scout-claims-adjudicated.md 5375 dd03f66dc3a6c53f7e01a447fb845c4b9e586d1502687433c73ad2f5c4c46111
+step-03-orchestration-invariant-corrected.md 3734 2ea144e9236487f92e59d03f803073c974c8c86b47b05357560029a8c104b4da
+step-04-w4-fixes-proof-standard.md 2946 fb46568facfffd63f0a414f7ecf1b2f0a32a72edb4df295f2a673991f9b1dfab
+step-05-c2e4734-discriminating-arms.md 1728 5dc4d96028b77b0df345d0585f1dfbbfba4cd22dd15fd8f2ee95d5672f1945d0
+step-06-e180035-discriminating-arms.md 1229 4e468c2da8e0eccd8cfde1f678a850d6563192731f78d47382c83a19fda7c8fb
+step-07-e180035-arms-corrected-probe.md 1643 4f3bb95911253f8b5d43cfde7df89bd6f83b5b406b0552271a5a5121a3cf46f6
+sealed=2026-09-12T18:33:48Z count=7 total_bytes=19539

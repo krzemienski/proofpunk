@@ -1,0 +1,13 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-install-run1-claude-code.md 3277 82ef3b97afe91b7266a9aa89d34204f1991559b24368c321dc7fb823c6641803
+step-02-install-run1-clean-home.log 3056 a8ff6221551626dba2abf5b6d55e9b139b39a70cd69b6183e161ca8c00f6d7e5
+step-03-surface-inventory-run1.md 3392 e7e8db194486b4c8be1bb5709948d38696a903fba94ca86198d54ba6d5edefaf
+step-04-install-run2-idempotency.log 4029 e3df829a37ede86b4c429d87a17f8e3e8da2c6c82a289b343218f06487cead3a
+step-05-p4-idempotency-verdict.md 903 8bca5cffc7a7367915e5fd249f90b6532dd048f9504382e78dee8ebb814d6af6
+step-06-deny-hooks-fail-open-silently.md 1472 803b5456df7912f3ea5ec9f73a85f620659ef59e25c7ca4869e8177b5a0a2367
+step-07-fix-proof-enforcement-observable.md 1867 8489e504139390b9dd710f626a0b72009fde364815d968432ae6ed5fa91336c3
+step-08-gates-after-hook-fix.log 1103 af8a292952f2b1cf9868447d7104785b0693192d6b5de82258314eecd12ad694
+step-09-linux-parity-root-nonroot.log 1182 f6b32501344d35ffdee27710b17592e12bee00aff022d9e29fad3cf4b3b46619
+step-10-case5b-mutation-proof.log 996 c8384a55e19edaab4a6eb34e4c84dde4cd0ea53f1b677676fd7730d108afb906
+step-11-gates-final-w1.log 1122 48908ab4f5cb8965b390a6a2e6f3dbcd35f74c13268f2615275872a656254ed7
+sealed=2026-09-12T17:36:24Z count=11 total_bytes=22399

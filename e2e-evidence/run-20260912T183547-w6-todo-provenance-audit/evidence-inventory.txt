@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-closure-provenance.md 2809 4f99bff067afa9613516f2b5853e9dd7aa7623fdec8070128cd6f0bd28e22df0
+sealed=2026-09-12T18:35:47Z count=1 total_bytes=2809

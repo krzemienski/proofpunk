@@ -1,0 +1,23 @@
+# Linux parity — debian:stable-slim, root AND non-root
+The hook fix must behave identically off macOS; last release's defects were visible in exactly one arm.
+
+## arm=root
+whoami=0
+python3: ABSENT
+no-test-files rc=0
+  output: Proofpunk: no-test-files enforcement OFF (python3-not-found) — test-file writes are NOT being blocked on this machine. 
+evidence-guard rc=0
+  output: Proofpunk: evidence-guard enforcement OFF (python3-not-found) — secret material in evidence writes is NOT being blocked on this 
+stop-guard rc=0
+  output: {"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"Proofpunk: stop-guard enforcement OFF (python3-not-found). A ra
+
+## arm=nonroot
+whoami=1000
+python3: ABSENT
+no-test-files rc=0
+  output: Proofpunk: no-test-files enforcement OFF (python3-not-found) — test-file writes are NOT being blocked on this machine. 
+evidence-guard rc=0
+  output: Proofpunk: evidence-guard enforcement OFF (python3-not-found) — secret material in evidence writes is NOT being blocked on this 
+stop-guard rc=0
+  output: {"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"Proofpunk: stop-guard enforcement OFF (python3-not-found). A ra
+

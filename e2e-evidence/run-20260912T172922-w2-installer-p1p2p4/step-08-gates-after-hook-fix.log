@@ -1,0 +1,35 @@
+# Gate matrix after the enforcement-notice fix (macOS)
+## python3 tools/verify-counts.py
+unpiped rc=0
+  canon: skills=18 refs=15 cmds=7+7 hooks.sh=10 events=7 regs=12 agents=3/4/3 edges=48 (router=17)
+  scanned 56 live .md files
+  VERDICT: PASS — live .md counts match the tree
+
+## python3 tools/verify-orchestration.py
+unpiped rc=0
+    [PASS] end-user-testing carries the canonical mandate section
+  
+  VERDICT: PASS — the 18 skills execute as one delegation DAG, in the
+  documented order, with methods owned exactly once.
+
+## python3 tools/verify-citations.py
+unpiped rc=0
+  
+  summary: 0 ERROR, 0 WARN (WARN count is derived, not a frozen baseline)
+  
+  RESULT: PASS (default: ERROR-only)
+
+## bash tools/test-hooks.sh
+unpiped rc=0
+    PASS: platform-steer mismatch nudges toward ios-validation.md
+    PASS: platform-steer silent on no-signal command
+    PASS: platform-steer fails open silently on malformed stdin
+  HOOK TEST FAILS: 0
+
+## bash tools/dry-run-install.sh
+unpiped rc=0
+    PASS: opencode rules dir written
+    PASS: AGENTS.md placeholders substituted
+  
+  INSTALL DRY-RUN FAILS: 0
+
