@@ -27,8 +27,8 @@ description: >
 
 17 narrow delivery skills — 18 counting this router — each cross-referencing
 neighbors in its own "Not for..." clause. That is enough once you are inside
-one skill's context, and not enough cold. This is the one lookup before the
-17 file reads.
+one skill's context, and not enough cold. This is the one lookup before
+reading any of the 17 other skill files.
 
 ## How to route
 
