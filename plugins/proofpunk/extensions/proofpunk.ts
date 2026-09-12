@@ -57,7 +57,11 @@ async function intentBlockReason(
   const { promise, resolve } = Promise.withResolvers<Outcome>();
   const child = execFile(
     INTERPRETER,
-    [helper, "--session-id", sessionId, "--cwd", cwd ?? process.cwd(), "may-stop"],
+    // --consume: this guard re-fires on every settle pass, so each block must
+    // spend an attempt or the session is held until the runtime's own
+    // continuation cap (8) instead of reaching proofpunk's escalation at 3.
+    [helper, "--session-id", sessionId, "--cwd", cwd ?? process.cwd(),
+     "may-stop", "--consume"],
     { timeout: 5000 },
     (err) => {
       if (!err) return resolve({ kind: "allow" });
@@ -228,18 +232,18 @@ export default function proofpunk(pi: ExtensionAPI) {
   // matched no claim: the guard had never blocked anything. The session
   // transcript lives on SessionStopEvent.messages (shared-events.d.ts:83-86).
   pi.on("session_stop", async (event, ctx) => {
-    // The runtime re-fires session_stop after a forced continuation. Without
-    // this, a guard that returns continue:true re-enters itself on the next
-    // settle and the session can never end.
-    if (event?.stop_hook_active) return undefined;
-
     const text = JSON.stringify(event?.messages ?? []).slice(-6000);
     const CLAIM =
       /\b(done|complete|completed|finished|shipped|works now|fixed it)\b/i;
     const PROOF =
       /(e2e-evidence\/|evidence-inventory|step-\d+[-.]|screenshot|verdict|curl\s+\S+\s+200|validate\s+OK)/i;
     const claimed = CLAIM.test(text);
-    if (claimed && !PROOF.test(text)) {
+
+    // The evidence guard does NOT re-fire on a continuation pass. Its
+    // question ("is there a cited artifact?") is answered by the same
+    // transcript, so re-asking would loop on an unchanged input until the
+    // runtime's cap.
+    if (claimed && !PROOF.test(text) && !event?.stop_hook_active) {
       return {
         continue: true,
         reason:
@@ -257,6 +261,17 @@ export default function proofpunk(pi: ExtensionAPI) {
     // Scoped to the claim path on purpose. A turn that never claimed
     // completion has nothing to verify intent against, and gating it would
     // force a continuation on every ordinary stop.
+    // The intent gate DOES re-fire. Its question ("was the original request
+    // met?") has a changing answer: the continuation exists precisely so the
+    // session can go meet it. Escaping on stop_hook_active would let an
+    // UNMET session settle one turn later, which is not "keep working until
+    // it actually implements" — it is one interruption and then silence.
+    //
+    // This does not loop: intent_verdict.py caps attempts at 3 and then
+    // returns may-stop, so the gate stops blocking on its own. That bound
+    // (3) is well inside the runtime's SESSION_STOP_CONTINUATION_CAP of 8
+    // (agent-session.ts:385), so the escalation is reached before the
+    // runtime ever intervenes.
     if (claimed) {
       const intent = await intentBlockReason(event.session_id, ctx?.cwd);
       if (intent?.block) return { continue: true, reason: intent.reason };

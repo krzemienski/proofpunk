@@ -59,6 +59,14 @@ async function intentState(
   >();
   const child = execFile(
     INTERPRETER,
+    // No --consume here, deliberately. OMP's guard re-fires once per settle
+    // pass, so each block must spend an attempt or the loop never reaches
+    // escalation. This one fires per TOOL CALL, which is a different rate
+    // entirely: consuming an attempt per call would spend the whole cap on
+    // three ordinary writes, and the session would be released having never
+    // been asked to fix anything. The bound here is the session's own
+    // progress -- it stays blocked at the tool boundary until a verdict is
+    // recorded, which is the action the block is asking for.
     [helper, "--session-id", sessionId, "--cwd", cwd, "may-stop"],
     { timeout: 5000 },
     (err) => {

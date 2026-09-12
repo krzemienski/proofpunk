@@ -325,6 +325,20 @@ def cmd_may_stop(args) -> int:
 
     unmet = data.get("unmet") or []
     detail = ("; ".join(unmet))[:400] if unmet else "see the recorded verdict"
+
+    # A stop guard that re-asks on every settle pass needs the counter to move,
+    # or it blocks forever: attempts advance on `record`, and a model that
+    # never re-records would be held until the runtime's own continuation cap.
+    # With --consume the block itself spends an attempt, so a re-gating guard
+    # is bounded by MAX_ATTEMPTS whether or not the model records again.
+    if args.consume:
+        data["attempt"] = attempt + 1
+        try:
+            save(args.session_id, args.cwd, data)
+        except OSError:
+            pass  # a bookkeeping failure must not change the verdict
+        attempt = data["attempt"]
+
     print(
         f"Proofpunk: the original intent was not met (verdict={verdict}, "
         f"attempt {attempt} of {MAX_ATTEMPTS}). Unmet: {detail}. "
@@ -462,6 +476,9 @@ def main(argv: list[str]) -> int:
     p.set_defaults(fn=cmd_status)
 
     p = sub.add_parser("may-stop")
+    # Opt-in: only a guard that re-fires on every settle pass needs this, and
+    # it must be explicit so a plain status check never mutates the counter.
+    p.add_argument("--consume", action="store_true")
     p.set_defaults(fn=cmd_may_stop)
 
     # Composed from recorded state, never freehand: the restart must inherit

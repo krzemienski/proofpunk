@@ -20,4 +20,5 @@ step-18-both-surfaces-implemented.md 3498 2b3af04ce388c072b0747eb605fd32f7f6b8c7
 step-19-real-handlers-driven.md 2975 68fd2e8692b755a172d86df8bcea0d0e308eafb4e479af687dc23d5525293c4a
 step-20-omp-handler-driven.md 2158 4637823d53ca2c6acdf1f7f68d6ff0b4d2fe36978e738a1cae00dca44993f756
 step-21-stop-hook-active-semantics.md 2315 4fb5cdd26cd625576775d7344aa88c82b58d32f97904cbc99265a7f20e88d1e6
-sealed=2026-09-12T23:32:58Z count=21 total_bytes=55533
+step-22-regate-and-bounding.md 3153 4e0e214011707182f2aa9ca42ae9b9a6525fa24c06c3dd9472532b2b4b98da09
+sealed=2026-09-12T23:37:22Z count=22 total_bytes=58686
