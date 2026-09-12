@@ -1,0 +1,83 @@
+$ python3 tools/verify-harness-integrity.py
+[exit 0]
+== harness-integrity: checking 13 declared harness(es) under /Users/nick/proofpunk/tools
+
+-- dry-run-install.sh
+   SUBJECT:        the /proofpunk:install command's template + scoped-rules assets (plugins/proofpunk/assets/*.md and assets/rules/*.md) — NOT tools/proofpunk-install.sh, which this harness never invokes
+   CAN OBSERVE:    whether the command playbook's template substitution ({{PLACEHOLDER}} -> value), marker-preserving CLAUDE.md/AGENTS.md merge (existing user content survives, markers found and replaced idempotently), and scoped .claude/rules or .opencode/rules copy logic behave correctly against a sandbox fixture, for both claude-code and opencode platform shapes
+   CANNOT OBSERVE: whether an actual agent executing the /proofpunk:install slash command performs these same steps in the same order — this harness models the documented playbook in shell, it does not drive an agent session through the real command; it also proves nothing about tools/proofpunk-install.sh
+   [PASS] invokes its declared subject
+
+-- sdk_probe.py
+   SUBJECT:        a live Claude Agent SDK session with the proofpunk plugin loaded (query() driven by ClaudeAgentOptions)
+   CAN OBSERVE:    whether hooks actually fire (by hook_event_name in the observed message stream), whether skills actually load (by an observed Skill tool call plus successful result), and whether guarded writes actually land or are actually blocked on disk, in a real running session with the plugin config passed to the SDK
+   CANNOT OBSERVE: determinism across SDK/model versions — probes rely on live model behavior for prompt-following and are the least reproducible harness in tools/; a probe FAIL can mean the model did not attempt the requested action rather than the guard being broken (require_write_attempt distinguishes these)
+   [PASS] invokes its declared subject
+
+-- test-hooks.sh
+   SUBJECT:        every hook script under plugins/proofpunk/hooks/*.sh
+   CAN OBSERVE:    each hook script's stdout/decision/exit-code behavior against realistic hand-built JSON stdin, run in isolation via `sh`
+   CANNOT OBSERVE: whether the HOST (Claude Code) actually wires these scripts to the declared hook events at runtime, or delivers real (not hand-built) transcript/tool_input payloads — that requires driving a live session (sdk_probe.py's stop_guard/instructions_loaded/blocks_test_file probes)
+   [PASS] invokes its declared subject
+
+-- test-installer.sh
+   SUBJECT:        the real installer binary tools/proofpunk-install.sh
+   CAN OBSERVE:    real exit codes and on-disk state produced by actually running the installer against scratch source/target directories and an isolated HOME (happy path, collision default, --override, --only, malformed-skill/no-frontmatter detection, --hooks registration with settings.json parity, and idempotent re-runs)
+   CANNOT OBSERVE: behavior against a user's real home directory, interactive prompts, or an install performed by an agent following commands/install.md rather than a direct binary invocation
+   [PASS] invokes its declared subject
+
+-- verify-citations.py
+   SUBJECT:        every *.md file under plugins/proofpunk/skills/** (top-level SKILL.md files and bundled references/*.md files), read directly off disk via os.walk + open — deliberately bypassing the installer's citation-rewrite/bundle step (see this harness's own header: the installer's --verify pass structurally cannot see a repo-level broken citation because install rewrites+repairs it before verify ever inspects it)
+   CAN OBSERVE:    every references/*.md citation actually present in repo source text, resolved literally relative to the citing file against the real on-disk tree, split by severity (ERROR: unresolved in a top-level SKILL.md; WARN: unresolved in a bundled references/ file) with a frozen baseline so new WARNs are distinguishable from the known 29
+   CANNOT OBSERVE: whether a citation resolves correctly in an INSTALLED tree (that is the installer's own --verify pass, a different subject entirely — this harness exists because that pass is structurally blind to repo-level breakage); also does not distinguish a genuine local doctrine break from a donor-skill provenance citation without --explain-vendor
+   [PASS] invokes its declared subject
+
+-- verify-command-surface.py
+   SUBJECT:        (inline-declared)
+   CAN OBSERVE:    (inline-declared; see harness source)
+   CANNOT OBSERVE: (inline-declared; see harness source)
+   [PASS] invokes its declared subject
+
+-- verify-counts.py
+   SUBJECT:        (inline-declared)
+   CAN OBSERVE:    (inline-declared; see harness source)
+   CANNOT OBSERVE: (inline-declared; see harness source)
+   [PASS] invokes its declared subject
+
+-- verify-harness-integrity.py
+   SUBJECT:        the tools/ directory's harness source files themselves — this gate's subject is every other declared harness in tools/
+   CAN OBSERVE:    static source-level co-occurrence of a declared subject basename/token with an invocation keyword inside each other harness's source — proves a harness's source CONTAINS an invocation, not that running the harness succeeds
+   CANNOT OBSERVE: runtime behavior of any harness (whether it actually passes when run); dataflow between a discovery call site and a consumption call site in python_file_level mode (see LIMITATIONS in the module docstring); and correctness of a harness's assertions, only whether it reaches its subject
+   [PASS] invokes its declared subject
+
+-- verify-mutation-artifact.py
+   SUBJECT:        (inline-declared)
+   CAN OBSERVE:    (inline-declared; see harness source)
+   CANNOT OBSERVE: (inline-declared; see harness source)
+   [PASS] invokes its declared subject
+
+-- verify-orchestration.py
+   SUBJECT:        every SKILL.md under plugins/proofpunk/skills/*/SKILL.md
+   CAN OBSERVE:    structural properties of the skill-call graph parsed from every SKILL.md body: closure (every callee exists, no self-calls), acyclicity + topological depth, 'Called by' claims match real edges, implement's stage order matches the DAG, and a 12-word shingle duplication sweep
+   CANNOT OBSERVE: whether the Skill tool actually loads these files at runtime, whether a live agent follows the documented call order, or whether the plugin (not a same-named local copy) is the thing that loaded — those require sdk_probe.py's router/skill_* probes
+   [PASS] invokes its declared subject
+
+-- verify-proof-vocab.py
+   SUBJECT:        (inline-declared)
+   CAN OBSERVE:    (inline-declared; see harness source)
+   CANNOT OBSERVE: (inline-declared; see harness source)
+   [PASS] invokes its declared subject
+
+-- verify-router-links.py
+   SUBJECT:        (inline-declared)
+   CAN OBSERVE:    (inline-declared; see harness source)
+   CANNOT OBSERVE: (inline-declared; see harness source)
+   [PASS] invokes its declared subject
+
+-- verify-shipped-vs-active.py
+   SUBJECT:        (inline-declared)
+   CAN OBSERVE:    (inline-declared; see harness source)
+   CANNOT OBSERVE: (inline-declared; see harness source)
+   [PASS] invokes its declared subject
+
+HARNESS INTEGRITY FAILS: 0

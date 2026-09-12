@@ -1,0 +1,36 @@
+# FINAL validation — .planning/v4-release.prompt.md
+
+bytes: 19646
+
+## C1 skeleton tags
+  OK   <task> 1/1
+  OK   <context> 1/1
+  OK   <skills_to_activate> 1/1
+  OK   <mcp_tools> 1/1
+  OK   <sequential_thinking> 1/1
+  OK   <todos> 1/1
+  OK   <authorization> 1/1
+  OK   <constraints> 1/1
+  OK   <output_contract> 1/1
+  OK   <validation> 1/1
+  OK   <example> 1/1
+  => C1 PASS
+
+## C2 placeholders: 0 => PASS
+
+## C3 cited-path resolution
+  existing resolved : 22/22
+  declared-future   : 4 (expected absent)
+  defects           : 0
+  => C3 PASS
+
+## Added requirements
+  OK   no-retry scout loop explicitly unauthorized
+  OK   blocked receipts stay blocked
+  OK   live vs structural ledger split
+  OK   ls-remote as tag authority
+  OK   authoring-time drift caveat
+  OK   W-D4 report is a deliverable
+
+## Defects
+  (none)

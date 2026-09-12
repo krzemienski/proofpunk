@@ -1,0 +1,3 @@
+canon: skills=18 refs=15 cmds=7+7 hooks.sh=10 events=7 regs=12 agents=3/4/3 edges=48 (router=17)
+scanned 56 live .md files
+VERDICT: PASS — live .md counts match the tree

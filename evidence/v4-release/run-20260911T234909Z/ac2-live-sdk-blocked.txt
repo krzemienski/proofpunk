@@ -1,0 +1,6 @@
+AC2 LIVE SDK PROBE — BLOCKED/UNVERIFIED
+Command: python3 tools/sdk_probe.py router --cwd .
+Observed: claude_agent_sdk importable; live session completed without the local plugin loaded; namespaced plugin skill was Unknown skill.
+Environment: no ANTHROPIC_API_KEY; Claude host plugin is not enabled in the SDK session.
+Exit: 1 (probe expectation failed; not a harness error).
+This artifact is a blocked receipt, not a PASS claim.

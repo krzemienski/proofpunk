@@ -1,0 +1,11 @@
+V4 SCOUT LANE — BLOCKED/UNVERIFIED
+
+Four read-only scout lanes were dispatched through the configured OmniRoute provider with bounded max-time and explicit model routing. No lane produced a report.
+
+Observed result: provider reported that credentials for the requested model were cooling down. Exit status: 1.
+
+The earlier 9router scout attempts are invalid for this workflow and are not used. No scout findings are reconciled or cited. No retry loop is authorized.
+
+Sanitized evidence only; provider credentials, configuration files, and environment diagnostics are intentionally excluded.
+
+Consequence: scout-based validation is BLOCKED/UNVERIFIED. Direct local checks may continue only against the explicit v4 allowlist and ambient no-touch boundary.

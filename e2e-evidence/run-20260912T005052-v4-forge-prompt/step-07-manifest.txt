@@ -1,0 +1,14 @@
+# run working evidence manifest (NOT sealed release evidence)
+# artifact: .planning/v4-release.prompt.md bytes=23001 sha256=b8427d3529d65b8cec0600e8f5b9af1b63af3880971a089b9a9fb416757116f5
+# inventory: 10 evidence files (manifest excludes itself; dir holds 11)
+
+4959835705c76ff003b3b876c0da541a42813fa87fcd8052faed93733e3779a5    6536  step-00-stage-conformance.md
+56d64608e02048ded3ae3e87b924bc17125aa3317b1f9519d592cb230d740f0f    1245  step-01-cited-paths.txt
+e47143349ddd7089172375ce9f5651907b9d435b75584083322b8535bff877c2    1275  step-02-criteria-c1-c2-c4-c5.txt
+1ab3eedbd7e318f9ec11f47fa88dbfcefd3804ec9b3d35234f71d5e73a916f23    5739  step-03-verdict.md
+92a2609fbe9dd126afc43c63a1dc0508a3809baf47bee227747772a7b0aebff3     817  step-04-final-revalidation.txt
+fc45024cd0dd7af65dba148ac40d128c2737b3e694aad1733450c503f1ca1dff     448  step-05-raw-command-capture.txt
+9954077887404cc4b5defc99eb672992de0c2abf49ee8179525695ffd7678634    1534  step-06-final-validation-hashed.txt
+d527e48601515561d5b89c7c7442f493ad08cd2755a4f90a287c04a407e4b398     501  step-08-final-after-level-d.txt
+1b849a50fca42af654c09fa335fe3ef0cacbc85d329d0f0abd7f0d50c63d7f36     733  step-09-final-reconciled.txt
+6ba7ab8d61057ea355eab7f1a4c14aceb5885070e0c50929a8fa7529390bf069     603  step-10-final-acquire-complete.txt

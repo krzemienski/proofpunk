@@ -1,0 +1,37 @@
+V4 RELEASE ALLOWLIST
+
+Intended v4 source paths (pre-existing candidate changes; inspect before any release decision):
+.claude-plugin/marketplace.json
+.omp-plugin/marketplace.json
+plugins/proofpunk/.claude-plugin/plugin.json
+plugins/proofpunk/.omp-plugin/plugin.json
+plugins/proofpunk/package.json
+tools/proofpunk-install.sh
+tools/test-installer.sh
+
+Intended fresh v4 evidence paths:
+evidence/v4-release/ambient-boundary-20260911T2356Z.txt
+evidence/v4-release/v4-release-allowlist-20260911T2357Z.txt
+evidence/v4-release/e2e-evidence/run-20260911T235357-v4-release/.run-meta
+evidence/v4-release/e2e-evidence/run-20260911T235357-v4-release/evidence-inventory.txt
+evidence/v4-release/e2e-evidence/run-20260911T235357-v4-release/step-01-structural-and-blocked-receipts.txt
+evidence/v4-release/run-20260911T234909Z/ac1-ac6-live-flow-blocked.txt
+evidence/v4-release/run-20260911T234909Z/ac2-live-sdk-blocked.txt
+evidence/v4-release/run-20260911T234909Z/counts.txt
+evidence/v4-release/run-20260911T234909Z/harness-integrity.txt
+evidence/v4-release/run-20260911T234909Z/hooks-orchestration-integrity.txt
+evidence/v4-release/run-20260911T234909Z/installer.txt
+evidence/v4-release/run-20260911T234909Z/orchestration.txt
+evidence/v4-release/run-20260911T234909Z/reconciliation.md
+evidence/v4-release/run-20260911T234909Z/render-counts.txt
+
+EXPLICIT EXCLUSIONS
+- evidence/v3-release/**
+- gauge-report.json
+- gauge-report.md
+- all docs/** generated/ambient changes
+- evidence/v4-release/run-20260911T234909Z/e2e-evidence/** duplicate nested tree
+- evidence/v4-release/e2e-evidence/run-20260911T235357-v4-release/step-01-structural-and-blocked-receipts/ stale nested directory
+- every other untracked path not listed above
+
+No broad git add, restore, reset, cleanup, commit, tag, push, or publication. This allowlist records scope only; it does not stage files or assert release readiness.

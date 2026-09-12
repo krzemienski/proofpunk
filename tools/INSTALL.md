@@ -50,7 +50,7 @@ registered. Re-running with `--hooks` is idempotent — the second run leaves
 
 This installer ships 18 skills backed by 15 shared doctrine references in
 `plugins/proofpunk/references/`; `--themes` copies 20 flat-black cyberpunk
-variations. The OpenCode/OMP `--plugins` glue adds 6 commands and 4
+variations. The OpenCode/OMP `--plugins` glue adds 7 commands and 4
 agents to `~/.config/opencode/` (the plugin bundles 3 agents for Claude Code and
 3 for OMP overall).
 <!-- proofpunk:counts:end -->
@@ -222,8 +222,9 @@ bash proofpunk-install.sh --inject-memory ~/.claude/CLAUDE.md   # second run:
 # `--inject-claude-md FILE` is a legacy alias of the same flag and still runs.
 
 # 8) CI pin — exact ref, minimal output, non-zero exit on any gap:
-#    Live tags on this repo are v2.1.0, v2.2.0, and v3.0.0 (v1.8.0 does not resolve).
-bash proofpunk-install.sh --ref v3.0.0 --quiet || exit 1
+#    Live tags on this repo are v2.1.0 and v2.2.0 — confirm with
+#    `git ls-remote --tags origin`. v1.8.0 and v3.0.0 do NOT resolve.
+bash proofpunk-install.sh --ref v2.2.0 --quiet || exit 1
 
 # 9) Themes only, into whatever TUIs exist on this machine:
 bash proofpunk-install.sh --skip-skills --themes

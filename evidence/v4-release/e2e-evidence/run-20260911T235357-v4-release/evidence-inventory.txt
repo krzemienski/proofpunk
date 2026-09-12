@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-structural-and-blocked-receipts.txt 83 b57a58c02e18670e24ee1b005fd97672517fcbb8427892ca7f5ac277f5605891
+sealed=2026-09-11T23:55:31Z count=1 total_bytes=83

@@ -5,7 +5,7 @@
 
 ## Purpose
 
-The shippable plugin unit: 18 skills, 6 commands, 10 enforcement hook scripts (12 registrations across 7 event keys), platform agents, the shared doctrine references, the 20-theme pack, and the OMP/OpenCode glue. This entire subtree is what the marketplaces (`source: ./plugins/proofpunk`) and `tools/proofpunk-install.sh` deliver to user machines.
+The shippable plugin unit: 18 skills, 7 commands, 10 enforcement hook scripts (12 registrations across 7 event keys), platform agents, the shared doctrine references, the 20-theme pack, and the OMP/OpenCode glue. This entire subtree is what the marketplaces (`source: ./plugins/proofpunk`) and `tools/proofpunk-install.sh` deliver to user machines.
 
 ## Key Files
 

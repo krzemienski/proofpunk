@@ -1,0 +1,6 @@
+AC1/AC6 LIVE FLOW — BLOCKED/UNVERIFIED
+Command: python3 tools/sdk_probe.py skill_implement --cwd .
+Observed: process timed out after 120 seconds before producing a usable session artifact.
+Environment: claude_agent_sdk is importable, but no ANTHROPIC_API_KEY is available and the live host/plugin flow cannot complete.
+No executable ACQUIRE command or generated lane-contract artifact was produced by the shipped surface.
+This artifact is a blocked receipt, not a PASS claim.

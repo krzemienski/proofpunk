@@ -1,0 +1,19 @@
+# FINAL validation — after level-(d) correction
+
+bytes  : 21629
+sha256 : 59f05288b63b9f0e91f750b10af841fa9f3a47b5a8002b8f24abb584d438265f
+
+C1 skeleton    : PASS (11/11)
+C2 placeholders: PASS (0)
+C3 paths       : PASS (23 resolve, 4 future, 0 defects)
+
+## Requirements
+  OK   level (d) effect-proven encoded
+  OK   gauge target NOT lowered
+  OK   no-retry scoped to unattended
+  OK   credential redaction rule
+  OK   blocked receipts stay blocked
+  OK   live vs structural split
+
+## Defects
+  (none)

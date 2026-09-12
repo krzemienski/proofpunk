@@ -18,7 +18,7 @@
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
     <span class="meta"><span class="led ok"></span>18 skills</span>
-    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led ok"></span>7+7 commands</span>
     <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
@@ -30,7 +30,7 @@
   <div class="doc">
 <h1 id="proofpunk-plugin-architecture">Proofpunk Plugin Architecture</h1>
 <p>This is the map a new contributor reads first: what each layer of the plugin is for, how a request flows through them, and how the pieces are wired to enforce one non-negotiable rule — <strong>end-user testing is the only PASS</strong>. Every number below was counted from the tree, not remembered; see "How this was measured" at the end.</p>
-<p>This document does not restate <code>hooks-and-init-design.md</code> — that file is the <em>design rationale</em> for the hook set as it existed at v1.10.0 (research citations, the case for command hooks over prompt hooks, the original 4-event/5-script layout). This document describes the <strong>current</strong> system (v3.0.0 shipping from this tree) as it actually ships, and calls out where the two have diverged. Hook event/script/registration counts are derived in <code>docs/hook-enforcement-map.md</code> — this file cites that map rather than duplicating its per-script table.</p>
+<p>This document does not restate <code>hooks-and-init-design.md</code> — that file is the <em>design rationale</em> for the hook set as it existed at v1.10.0 (research citations, the case for command hooks over prompt hooks, the original 4-event/5-script layout). This document describes the <strong>current</strong> system (v4.0.0 shipping from this tree) as it actually ships, and calls out where the two have diverged. Hook event/script/registration counts are derived in <code>docs/hook-enforcement-map.md</code> — this file cites that map rather than duplicating its per-script table.</p>
 <h2 id="1-the-layers-and-what-each-is-for">1. The layers, and what each is for</h2>
 <p>Proofpunk ships as one plugin directory (<code>plugins/proofpunk/</code>) with seven distinct layers. A request — a user typing <code>/proofpunk:implement "add checkout"</code>, or Claude Code loading the plugin at session start — moves through a subset of these layers depending on what kind of request it is.</p>
 <table>
@@ -449,7 +449,7 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent</code></pre>
 <p>Every count in this document came from one of these, run against the live tree while writing it — re-run any of them to re-verify:</p>
 <ul>
 <li>18 skills: <code>glob plugins/proofpunk/skills/*/SKILL.md</code> → 18 directories, matching <code>ALL_SKILLS</code> in <code>tools/proofpunk-install.sh</code> verbatim.</li>
-<li>6+6 commands: <code>glob plugins/proofpunk/commands/*.md</code> → 6; <code>glob plugins/proofpunk/opencode/commands/*.md</code> → 6.</li>
+<li>7+7 commands: <code>glob plugins/proofpunk/commands/*.md</code> → 7; <code>glob plugins/proofpunk/opencode/commands/*.md</code> → 7.</li>
 <li>3+3+4 agents: <code>glob plugins/proofpunk/agents/*.md</code> → 3; <code>glob plugins/proofpunk/omp/agents/*.md</code> → 3; <code>glob plugins/proofpunk/opencode/agents/*.md</code> → 4 (the extra file is <code>proofpunk.md</code>, the router agent, OpenCode-only).</li>
 <li>10 hook scripts / 7 events / 12 registrations: derived in <code>docs/hook-enforcement-map.md</code> from a hashed parse of <code>plugins/proofpunk/hooks/hooks.json</code>. This document cites that map. The count grew from 7/6/8 when <code>bash-write-snapshot.sh</code> (PreToolUse:Bash) and <code>bash-write-notice.sh</code> (PostToolUse:Bash and PostToolUseFailure:Bash) were added as detection-only mitigation for the Bash write bypass (§4), then to 10/7/12 when <code>platform-steer.sh</code> (PreToolUse:Bash) was added as a non-blocking platform-mismatch steering guard (v4 W5).</li>
 <li>15 references: <code>glob plugins/proofpunk/references/*.md</code> → 15 (the 15th is <code>docs-acquisition.md</code>, added for <code>implement</code>'s Stage 1.5 ACQUIRE; the previous "14" count predated it).</li>
@@ -468,13 +468,13 @@ depth 0  brainstorm, end-user-testing, prompt-forge, session-intent</code></pre>
 </section>
 
 </main>
-  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
+  <div class="statusline"><span><b>DOC:ARCHITECTURE</b></span><span>v4.0.0 · ⑂ main · 18 skills · 7+7 commands · 15 refs · generated 2026-09-12</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v3.0.0 · MIT license
+    &nbsp;· plugin v4.0.0 · MIT license
   </div>
 </footer>
 </div>

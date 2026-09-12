@@ -1,0 +1,18 @@
+# step-05 — raw command capture for embedded prompt claims
+# captured: 2026-09-12T00:55:20Z
+
+$ git rev-list --count origin/main..HEAD
+17
+rc=0
+
+$ git ls-remote --tags origin
+28401c5e2cb2470d7c27fb4a4c9126c42698ee7a	refs/tags/v2.1.0
+5e5150b82784eb1b3470d81277cfd6d8019114d5	refs/tags/v2.1.0^{}
+dc4672c6828b417de4ddd2906debd4fcb8601fa8	refs/tags/v2.2.0
+99c72fbe72690bcd382163abd24ce97d4d89ee70	refs/tags/v2.2.0^{}
+rc=0
+
+$ git tag
+v2.1.0
+v2.2.0
+rc=0

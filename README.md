@@ -8,8 +8,8 @@ is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasse
 
 The `proofpunk` entry router hands off to 17 of them; `references/` holds 15 shared
 doctrine files cited across the set; `--themes` ships 20 flat-black cyberpunk
-variations. Every skill has a Claude Code command (6 command files) mirrored by an
-OpenCode command (6 files); 10 hook scripts register 12 hooks across
+variations. Every skill has a Claude Code command (7 command files) mirrored by an
+OpenCode command (7 files); 10 hook scripts register 12 hooks across
 7 lifecycle events. Plugin-bundled agents: 3 on Claude Code, 4 on
 OpenCode, 3 on OMP.
 <!-- proofpunk:counts:end -->
@@ -45,10 +45,12 @@ bash tools/proofpunk-install.sh --target agents                 # ~/.agents/skil
 Or download `proofpunk-marketplace.tar.gz` from this repo's release artifacts and
 extract it into your marketplaces directory.
 
-**Version labels vs. real tags:** only `v2.1.0`, `v2.2.0`, and `v3.0.0` exist as
-git tags in this repository. Earlier versions (`v1.x`, `v2.0.x`) were labeled in commit
-messages only, so `--ref v1.10.0` does not resolve. To pin a pre-tag install,
-pass the full commit SHA — `--ref` accepts branch, bare SHA, or tag.
+**Version labels vs. real tags:** only `v2.1.0` and `v2.2.0` exist as git tags in
+this repository — verify with `git ls-remote --tags origin`. Other versions
+(`v1.x`, `v2.0.x`, `v3.0.0`) were labeled in commit messages and manifests only,
+so `--ref v1.10.0` and `--ref v3.0.0` do not resolve. To pin an install to an
+untagged version, pass the full commit SHA — `--ref` accepts branch, bare SHA,
+or tag.
 
 **Upgrading from v1.10.0–v2.1.0?** `--hooks` installs on those versions copied
 `evidence-guard.sh` to disk but never registered it in `settings.json` — secrets-in-evidence

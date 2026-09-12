@@ -315,6 +315,13 @@ for skill in $SELECTED; do
           # were silently dropped before, shipping unresolvable doctrine refs.
           if grep -rqE "(^|[^A-Za-z0-9._/-])(\./)*(\.\./)*(references/)?$name" "$dst" --include='*.md'; then
             cp "$ref" "$dst/references/$name"
+            # Normalize newly copied references before the next sweep. A
+            # transitive citation must be resolvable from the bundled depth,
+            # not merely discoverable by the fixed-point matcher.
+            sed -i.bak \
+              -e 's|\(\.\./\)*references/\([A-Za-z0-9._-]*\)|\2|g' \
+              "$dst/references/$name"
+            rm -f "$dst/references/$name.bak"
             added=$((added+1))
           fi
         done

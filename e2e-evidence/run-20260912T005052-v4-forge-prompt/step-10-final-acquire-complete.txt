@@ -1,0 +1,22 @@
+# FINAL validation — ACQUIRE-complete run (post filename fix)
+
+bytes  : 23001
+sha256 : b8427d3529d65b8cec0600e8f5b9af1b63af3880971a089b9a9fb416757116f5
+
+C1 skeleton      : PASS (11/11)
+C2 placeholders  : PASS (0)
+C3 paths         : PASS (26 resolve, 1 declared-future, 0 defects)
+C7 W-0 in contract: PASS
+
+## Tree accounting
+  tracked modified : 40
+  untracked        : 12
+  total dirty      : 52
+
+## ACQUIRE digests on disk
+  .planning/docs-claude.md  6878 bytes  exists=True
+  .planning/docs-omp.md  7038 bytes  exists=True
+  .planning/docs-opencode.md  6880 bytes  exists=True
+
+## Defects
+  (none)

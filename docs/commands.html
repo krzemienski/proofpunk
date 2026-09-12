@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>commands — 6+6 commands — proofpunk</title>
+<title>commands — 7+7 commands — proofpunk</title>
 <meta name="description" content="Proofpunk slash command reference: implement, install, verify, forge-prompt, rate-prompt, truth-audit">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
     <span class="meta">krzemienski/proofpunk</span><span class="sep">│</span>
     <span class="branch">⑂ main</span><span class="sep">│</span>
     <span class="meta"><span class="led ok"></span>18 skills</span>
-    <span class="meta"><span class="led ok"></span>6+6 commands</span>
+    <span class="meta"><span class="led ok"></span>7+7 commands</span>
     <span class="meta"><span class="led warn"></span>15 doctrine refs</span>
     <span class="meta"><span class="led idle"></span>20 themes</span>
   </div>
@@ -27,13 +27,42 @@
 
 <section>
   <div class="marker">01 / CLAUDE CODE COMMANDS</div>
-  <h1>6 slash commands<span class="cursor"></span></h1>
+  <h1>7 slash commands<span class="cursor"></span></h1>
   <p>Each command activates its skill with a strict contract. These are the real command files
   from <code>plugins/proofpunk/commands/</code>, rendered verbatim. Conventions:
   <code>&lt;angle&gt;</code> required, <code>[bracket]</code> optional, <code>A | B</code> alternatives.</p>
 
+  <div class="panel" id="acquire">
+    <div class="ptitle">01 / /proofpunk:acquire</div>
+    <p><strong>Acquire and digest authoritative platform docs before scouting, one digest per host</strong></p>
+    <div class="cmdline" style="margin:12px 0">
+      <div><span class="p">~$</span> <span class="c">/proofpunk:acquire [host ...]</span></div>
+    </div>
+    <div class="doc"><p>Activate the <code>implement</code> skill and run its Stage 1.5 ACQUIRE step — the docs-first stage that runs <em>before</em> any codebase scouting — for:</p>
+<p>$ARGUMENTS</p>
+<p>With no argument, detect every host the target repo actually touches (Claude Code, oh-my-pi, OpenCode) and acquire all of them. A repo touching no recognizable platform surface produces no digest; say so and stop.</p>
+<p>Fetch the <strong>authoritative</strong> documentation for each host this session — vendor doc URLs for Claude Code and OpenCode, <code>omp://</code> internal docs for oh-my-pi — and write one digest per host to <code>.planning/docs-&lt;host&gt;.md</code>, conforming to <code>../../references/docs-acquisition.md</code>. The contract's six items are mandatory: host, numbered sections per real platform surface, a source on every load-bearing claim, a retrieval date fetched <strong>this session</strong>, an explicit method line, and a <code>## Gaps</code> section (an empty one must say so explicitly).</p>
+<p>A digest whose claims carry no source is not a digest — it is memory, and memory is exactly what this stage exists to replace. Never date-stamp an inherited digest to make it look current: if an existing <code>.planning/docs-&lt;host&gt;.md</code> was retrieved in an earlier session, re-acquire it rather than reusing it.</p>
+<p>Digests are handed to Stage 2 scouts as spawn context and named by <code>--parallel</code> lane contracts — they are consumed, never re-derived per scout or per lane.</p>
+<h2 id="examples">Examples</h2>
+<p><strong>1. Minimal — acquire every host the repo touches</strong></p>
+<pre><code>/proofpunk:acquire</code></pre>
+<p>Detects the hosts, fetches each one's authoritative docs live, writes <code>.planning/docs-&lt;host&gt;.md</code> per host, and reports the six-item conformance per file.</p>
+<p><strong>2. Scoped — one host</strong></p>
+<pre><code>/proofpunk:acquire omp</code></pre>
+<p>Acquires only oh-my-pi, reading <code>omp://</code> internal docs rather than the web, and writes <code>.planning/docs-omp.md</code>.</p>
+<p><strong>3. Composed — acquire, then build on the digests</strong></p>
+<pre><code>/proofpunk:acquire claude opencode
+/proofpunk:implement &quot;ship the plugin&#39;s new command surface&quot;</code></pre>
+<p>ACQUIRE first so Stage 2 scouts inherit grounded platform facts instead of training-data recall; <code>implement</code> then consumes the digests it finds.</p>
+<p><strong>4. Scoped — everything you can select</strong></p>
+<pre><code>/proofpunk:acquire claude omp opencode</code></pre>
+<p><code>acquire</code> takes host tokens as positional arguments — <code>claude</code>, <code>omp</code>, <code>opencode</code>, or any host token a future digest adopts by the same pattern. There are no flags. Everything else is the digest contract: this-session retrieval, sourced claims, explicit method, mandatory <code>## Gaps</code>.</p>
+</div>
+  </div>
+
   <div class="panel" id="forge-prompt">
-    <div class="ptitle">01 / /proofpunk:forge-prompt</div>
+    <div class="ptitle">02 / /proofpunk:forge-prompt</div>
     <p><strong>Author a new high-quality prompt on the canonical XML skeleton</strong></p>
     <div class="cmdline" style="margin:12px 0">
       <div><span class="p">~$</span> <span class="c">/proofpunk:forge-prompt &lt;goal&gt; [--out PATH] [--depth core|advanced]</span></div>
@@ -59,7 +88,7 @@
   </div>
 
   <div class="panel" id="implement">
-    <div class="ptitle">02 / /proofpunk:implement</div>
+    <div class="ptitle">03 / /proofpunk:implement</div>
     <p><strong>Implement a goal end to end with the Proofpunk orchestrator</strong></p>
     <div class="cmdline" style="margin:12px 0">
       <div><span class="p">~$</span> <span class="c">/proofpunk:implement &lt;goal&gt; [--parallel] [--auto] [--mine] [--fast]</span></div>
@@ -85,7 +114,7 @@
   </div>
 
   <div class="panel" id="install">
-    <div class="ptitle">03 / /proofpunk:install</div>
+    <div class="ptitle">04 / /proofpunk:install</div>
     <p><strong>Install proofpunk project memory — CLAUDE.md or AGENTS.md (platform-correct, ≤200 lines, merged never clobbered) plus scoped rules</strong></p>
     <div class="cmdline" style="margin:12px 0">
       <div><span class="p">~$</span> <span class="c">/proofpunk:install [--platform claude-code|opencode|agents|omp] [--clobber] [--no-rules]</span></div>
@@ -168,7 +197,7 @@
   </div>
 
   <div class="panel" id="rate-prompt">
-    <div class="ptitle">04 / /proofpunk:rate-prompt</div>
+    <div class="ptitle">05 / /proofpunk:rate-prompt</div>
     <p><strong>Rate a prompt file against the 100-point rubric and apply remediations to file</strong></p>
     <div class="cmdline" style="margin:12px 0">
       <div><span class="p">~$</span> <span class="c">/proofpunk:rate-prompt &lt;prompt-file.md&gt; [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]</span></div>
@@ -194,7 +223,7 @@
   </div>
 
   <div class="panel" id="truth-audit">
-    <div class="ptitle">05 / /proofpunk:truth-audit</div>
+    <div class="ptitle">06 / /proofpunk:truth-audit</div>
     <p><strong>Run a repo-wide intent-vs-code truth audit with evidence-backed findings</strong></p>
     <div class="cmdline" style="margin:12px 0">
       <div><span class="p">~$</span> <span class="c">/proofpunk:truth-audit &lt;repo-path&gt; [--start DATE] [--end DATE] [--label NAME]</span></div>
@@ -220,7 +249,7 @@
   </div>
 
   <div class="panel" id="verify">
-    <div class="ptitle">06 / /proofpunk:verify</div>
+    <div class="ptitle">07 / /proofpunk:verify</div>
     <p><strong>End-user test the current work as the end user, producing executed proof</strong></p>
     <div class="cmdline" style="margin:12px 0">
       <div><span class="p">~$</span> <span class="c">/proofpunk:verify [scope-or-entry-point]</span></div>
@@ -248,27 +277,28 @@
 </section>
 <section>
   <div class="marker">02 / OPENCODE VARIANTS</div>
-  <h2>The same 6, prefixed for OpenCode</h2>
+  <h2>The same 7, prefixed for OpenCode</h2>
   <p>OpenCode commands live in <code>plugins/proofpunk/opencode/commands/</code> and invoke the
   same skills under the <code>proofpunk-</code> prefix.</p>
   <div class="board">
-    <div class="brow"><span class="idx">OC1</span><span><span class="name">/proofpunk-forge-prompt</span><span class="gate">Author a new high-quality prompt on the canonical XML skeleton — <code>&lt;goal&gt; [--out PATH] [--depth core|advanced]</code></span></span><span class="badge pass">SHIPS</span></div>
-    <div class="brow"><span class="idx">OC2</span><span><span class="name">/proofpunk-implement</span><span class="gate">Implement a goal end to end with the Proofpunk orchestrator — <code>&lt;goal&gt; [--parallel] [--auto] [--mine] [--fast]</code></span></span><span class="badge pass">SHIPS</span></div>
-    <div class="brow"><span class="idx">OC3</span><span><span class="name">/proofpunk-install</span><span class="gate">Install proofpunk project memory — CLAUDE.md or AGENTS.md (platform-correct, ≤200 lines, merged never clobbered) plus scoped rules — <code>[--platform claude-code|opencode|agents|omp] [--clobber] [--no-rules]</code></span></span><span class="badge pass">SHIPS</span></div>
-    <div class="brow"><span class="idx">OC4</span><span><span class="name">/proofpunk-rate-prompt</span><span class="gate">Rate a prompt file against the 100-point rubric and apply remediations to file — <code>&lt;prompt-file.md&gt; [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]</code></span></span><span class="badge pass">SHIPS</span></div>
-    <div class="brow"><span class="idx">OC5</span><span><span class="name">/proofpunk-truth-audit</span><span class="gate">Run a repo-wide intent-vs-code truth audit with evidence-backed findings — <code>&lt;repo-path&gt; [--start DATE] [--end DATE] [--label NAME]</code></span></span><span class="badge pass">SHIPS</span></div>
-    <div class="brow"><span class="idx">OC6</span><span><span class="name">/proofpunk-verify</span><span class="gate">End-user test the current work as the end user, producing executed proof — <code>[scope-or-entry-point]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC1</span><span><span class="name">/proofpunk-acquire</span><span class="gate">Acquire and digest authoritative platform docs before scouting, one digest per host — <code>[host ...]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC2</span><span><span class="name">/proofpunk-forge-prompt</span><span class="gate">Author a new high-quality prompt on the canonical XML skeleton — <code>&lt;goal&gt; [--out PATH] [--depth core|advanced]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC3</span><span><span class="name">/proofpunk-implement</span><span class="gate">Implement a goal end to end with the Proofpunk orchestrator — <code>&lt;goal&gt; [--parallel] [--auto] [--mine] [--fast]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC4</span><span><span class="name">/proofpunk-install</span><span class="gate">Install proofpunk project memory — CLAUDE.md or AGENTS.md (platform-correct, ≤200 lines, merged never clobbered) plus scoped rules — <code>[--platform claude-code|opencode|agents|omp] [--clobber] [--no-rules]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC5</span><span><span class="name">/proofpunk-rate-prompt</span><span class="gate">Rate a prompt file against the 100-point rubric and apply remediations to file — <code>&lt;prompt-file.md&gt; [--in-place] [--report-only] [--ship-below-threshold] [--out PATH]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC6</span><span><span class="name">/proofpunk-truth-audit</span><span class="gate">Run a repo-wide intent-vs-code truth audit with evidence-backed findings — <code>&lt;repo-path&gt; [--start DATE] [--end DATE] [--label NAME]</code></span></span><span class="badge pass">SHIPS</span></div>
+    <div class="brow"><span class="idx">OC7</span><span><span class="name">/proofpunk-verify</span><span class="gate">End-user test the current work as the end user, producing executed proof — <code>[scope-or-entry-point]</code></span></span><span class="badge pass">SHIPS</span></div>
   </div>
 </section>
 
 </main>
-  <div class="statusline"><span><b>COMMANDS</b></span><span>v3.0.0 · ⑂ main · 18 skills · 6+6 commands · 15 refs · generated 2026-09-11</span></div>
+  <div class="statusline"><span><b>COMMANDS</b></span><span>v4.0.0 · ⑂ main · 18 skills · 7+7 commands · 15 refs · generated 2026-09-12</span></div>
 </div>
 <footer>
   <div class="wrap" style="padding:0">
     <span>PROOFPUNK — done means proven by end-user testing. No mocks, no stubs, UNVERIFIED never PASS.</span>
     &nbsp;<a href="https://github.com/krzemienski/proofpunk">github.com/krzemienski/proofpunk</a>
-    &nbsp;· plugin v3.0.0 · MIT license
+    &nbsp;· plugin v4.0.0 · MIT license
   </div>
 </footer>
 </div>

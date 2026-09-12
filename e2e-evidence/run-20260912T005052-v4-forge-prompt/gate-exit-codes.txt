@@ -1,0 +1,7 @@
+0 test-hooks.sh
+0 dry-run-install.sh
+0 verify-orchestration.py
+0 verify-counts.py
+0 render-counts.py
+0 verify-citations.py
+0 test-installer.sh

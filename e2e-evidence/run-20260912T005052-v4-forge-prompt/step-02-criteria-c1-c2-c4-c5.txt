@@ -1,0 +1,36 @@
+# C1/C2/C4/C5 verification
+
+## C1 — canonical skeleton tags
+  OK   <task> open=1 close=1
+  OK   <context> open=1 close=1
+  OK   <skills_to_activate> open=1 close=1
+  OK   <mcp_tools> open=1 close=1
+  OK   <sequential_thinking> open=1 close=1
+  OK   <todos> open=1 close=1
+  OK   <authorization> open=1 close=1
+  OK   <constraints> open=1 close=1
+  OK   <output_contract> open=1 close=1
+  OK   <validation> open=1 close=1
+  OK   <example> open=1 close=1
+  => C1 PASS (11/11 balanced)
+
+## C2 — placeholders
+  found=0 => C2 PASS
+  ('<ISO8601>' x3 = evidence-contract format spec, not a placeholder)
+
+## C4 — remaining-work enumeration + owned/blocked classification
+  work items present: 11/11  missing=(none)
+  OK   classification phrase: 'A blocker you own is not a blocker'
+  OK   classification phrase: 'owned work'
+  OK   classification phrase: 'externally blocked'
+  OK   classification phrase: 'mis-specified target'
+  => C4 PASS
+
+## C5 — authorization boundaries
+  OK   forbids/requires: 'git push --force'
+  OK   forbids/requires: 'git reset --hard'
+  OK   forbids/requires: 'git add -A'
+  OK   forbids/requires: 'explicit human sign-off'
+  OK   forbids/requires: 'Never do, under any circumstances'
+  OK   forbids/requires: 'Failed receipts ship'
+  => C5 PASS

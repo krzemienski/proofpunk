@@ -1,0 +1,5 @@
+AMBIENT NO-TOUCH BOUNDARY
+
+The six modified and ten untracked paths reported by git status at discovery are pre-existing session work and are excluded from v4 analysis and release staging. In particular, evidence/v3-release/** and gauge-report.* remain untouched historical/secondary-rail artifacts.
+
+V4 delta basis: committed HEAD and origin/HEAD...HEAD only, plus explicitly authored v4 paths. No broad git add, restore, reset, or cleanup is authorized.

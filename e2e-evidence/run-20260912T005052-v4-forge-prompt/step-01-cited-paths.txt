@@ -1,0 +1,36 @@
+# C3 — cited-path resolution (re-run after palettes.json fix)
+
+existing-and-resolved : 20
+declared-future-output: 4  (output_contract deliverables, correctly not yet on disk)
+UNRESOLVED-DEFECTS    : 0
+
+## Resolved
+  OK   ../../references/docs-acquisition.md
+  OK   .claude-plugin/marketplace.json
+  OK   .omp-plugin/marketplace.json
+  OK   README.md
+  OK   evidence/v3-release/l16-commands/command-surface-proof.json
+  OK   evidence/v4-release/run-20260911T234909Z/reconciliation.md
+  OK   plugins/proofpunk/.claude-plugin/plugin.json
+  OK   plugins/proofpunk/.omp-plugin/plugin.json
+  OK   plugins/proofpunk/docs/architecture.md
+  OK   plugins/proofpunk/package.json
+  OK   plugins/proofpunk/references/docs-acquisition.md
+  OK   plugins/proofpunk/skills/implement/SKILL.md
+  OK   plugins/proofpunk/themes/palettes.json
+  OK   proofpunk-v2-release-report.md
+  OK   tools/INSTALL.md
+  OK   tools/build-site.py
+  OK   tools/generate-themes.py
+  OK   tools/proofpunk-install.sh
+  OK   tools/render-counts.py
+  OK   tools/verify-counts.py
+
+## Future outputs (expected absent)
+  FUT  .planning/docs-claude-code.md
+  FUT  .planning/docs-omp.md
+  FUT  .planning/docs-opencode.md
+  FUT  proofpunk-v4-release-report.md
+
+## Unresolved defects
+  (none)

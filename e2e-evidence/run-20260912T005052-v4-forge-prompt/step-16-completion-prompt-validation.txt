@@ -1,0 +1,26 @@
+# .planning/v4-completion.prompt.md — final validation
+bytes=12820
+sha256=07a9fc5309bff9d92942011a4241b9c9ed332c33920ef0e780a250d21464261d
+C1=PASS C2=PASS C3=PASS
+resolve=16 future=1 defects=0
+
+## resolved citations
+  OK   README.md
+  OK   evidence/v3-release/l16-commands/run-20260911T001450Z-budget-exhausted-FAILED/command-surface-proof.json
+  OK   plugins/proofpunk/commands/acquire.md
+  OK   plugins/proofpunk/opencode/commands/proofpunk-acquire.md
+  OK   plugins/proofpunk/skills/implement/SKILL.md
+  OK   plugins/proofpunk/skills/implement/references/execution-loop.md
+  OK   plugins/proofpunk/themes/palettes.json
+  OK   proofpunk-v2-release-report.md
+  OK   tools/INSTALL.md
+  OK   tools/build-site.py
+  OK   tools/gauge-report.py
+  OK   tools/generate-themes.py
+  OK   tools/render-counts.py
+  OK   tools/sdk_probe.py
+  OK   tools/verify-command-surface.py
+  OK   tools/verify-orchestration.py
+
+## declared future output
+  FUT  proofpunk-v4-release-report.md

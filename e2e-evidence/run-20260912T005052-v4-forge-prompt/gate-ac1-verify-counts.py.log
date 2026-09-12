@@ -1,0 +1,6 @@
+canon: skills=18 refs=15 cmds=7+7 hooks.sh=10 events=7 regs=12 agents=3/4/3 edges=48 (router=17)
+scanned 56 live .md files
+VERDICT: FAIL — 3 mismatch(es)
+  plugins/proofpunk/AGENTS.md:8: 6 commands (live accepts [7, 14])
+  plugins/proofpunk/docs/architecture.md:524: 6+6 commands (live 7+7)
+  plugins/proofpunk/docs/architecture.md:524: 6 commands (live accepts [7, 14])

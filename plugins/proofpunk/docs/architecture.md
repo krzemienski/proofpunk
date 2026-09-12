@@ -10,7 +10,7 @@ This document does not restate `hooks-and-init-design.md` — that file is
 the *design rationale* for the hook set as it existed at v1.10.0 (research
 citations, the case for command hooks over prompt hooks, the original
 4-event/5-script layout). This document describes the **current** system
-(v3.0.0 shipping from this tree) as it actually ships, and calls out where
+(v4.0.0 shipping from this tree) as it actually ships, and calls out where
 the two have diverged. Hook event/script/registration counts are derived
 in `docs/hook-enforcement-map.md` — this file cites that map rather than
 duplicating its per-script table.
@@ -521,8 +521,8 @@ live tree while writing it — re-run any of them to re-verify:
 
 - 18 skills: `glob plugins/proofpunk/skills/*/SKILL.md` → 18 directories,
   matching `ALL_SKILLS` in `tools/proofpunk-install.sh` verbatim.
-- 6+6 commands: `glob plugins/proofpunk/commands/*.md` → 6;
-  `glob plugins/proofpunk/opencode/commands/*.md` → 6.
+- 7+7 commands: `glob plugins/proofpunk/commands/*.md` → 7;
+  `glob plugins/proofpunk/opencode/commands/*.md` → 7.
 - 3+3+4 agents: `glob plugins/proofpunk/agents/*.md` → 3;
   `glob plugins/proofpunk/omp/agents/*.md` → 3;
   `glob plugins/proofpunk/opencode/agents/*.md` → 4 (the extra file is

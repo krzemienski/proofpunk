@@ -1,0 +1,1 @@
+AC1/AC2/AC6 blocked receipts preserved; live SDK probes produced no PASS evidence.

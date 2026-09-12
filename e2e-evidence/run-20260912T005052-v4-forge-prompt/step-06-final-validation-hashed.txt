@@ -1,0 +1,44 @@
+# FINAL validation — amended artifact
+
+file   : .planning/v4-release.prompt.md
+bytes  : 19752
+sha256 : 265c4b2083df2063f5dd8c43dcf442765712e01b755ec30163b00bbc547e8129
+
+C1 skeleton   : PASS (11/11 balanced)
+C2 placeholders: PASS (0)
+C3 paths      : PASS (22 existing resolve, 4 declared-future, 0 defects)
+
+W-D4 integrity (post fuzzy-match edit): `W-D4` x1 (expect 1), report filename x3 (expect >=2: todo + output_contract) => OK
+
+## Existing paths resolved
+  OK   ../../references/docs-acquisition.md
+  OK   .claude-plugin/marketplace.json
+  OK   .omp-plugin/marketplace.json
+  OK   README.md
+  OK   evidence/v3-release/l16-commands/command-surface-proof.json
+  OK   evidence/v4-release/run-20260911T234909Z/reconciliation.md
+  OK   plugins/proofpunk/.claude-plugin/plugin.json
+  OK   plugins/proofpunk/.omp-plugin/plugin.json
+  OK   plugins/proofpunk/docs/architecture.md
+  OK   plugins/proofpunk/package.json
+  OK   plugins/proofpunk/references/docs-acquisition.md
+  OK   plugins/proofpunk/skills/implement/SKILL.md
+  OK   plugins/proofpunk/themes/palettes.json
+  OK   proofpunk-v2-release-report.md
+  OK   tools/INSTALL.md
+  OK   tools/build-site.py
+  OK   tools/generate-themes.py
+  OK   tools/proofpunk-install.sh
+  OK   tools/render-counts.py
+  OK   tools/test-hooks.sh
+  OK   tools/verify-counts.py
+  OK   tools/verify-orchestration.py
+
+## Declared future outputs
+  FUT  .planning/docs-claude-code.md
+  FUT  .planning/docs-omp.md
+  FUT  .planning/docs-opencode.md
+  FUT  proofpunk-v4-release-report.md
+
+## Defects
+  (none)

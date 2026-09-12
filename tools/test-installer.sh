@@ -255,6 +255,8 @@ print("regs", want_regs == got_regs, want_regs, got_regs)
 PYP
 if [ "$irc" = "0" ] && ! grep -q "False" "$PH/parity.txt"; then
   ok "installed tree matches canonical hooks.json (scripts, events, registrations)"
+elif [ "$irc" != "0" ]; then
+  bad "full install failed before parity could be evaluated (exit $irc): $(cat "$PH/parity.txt" | tr '\n' ' ')"
 else
   bad "canonical hooks.json parity: $(cat "$PH/parity.txt" | tr '\n' ' ')"
 fi
