@@ -18,16 +18,37 @@ that document's line 41.
 | P5 | Router head links all 17 other skills | PASS | inherited from `run-20260912T172034-v4-criteria-final`; unchanged this session |
 | P6 | Router routes correctly when invoked | UNVERIFIED | `tools/verify-command-surface.py` has still never run to completion |
 | P7 | ≥10 improvements ranked, then implemented | UNVERIFIED | prior ledger scoped to the wrong commit range — see "Corrections" |
-| P8 | Each implemented improvement individually proven | PARTIAL | 4 of this session's 5 proven by driving; see per-item list below |
+| P8 | Each implemented improvement individually proven | UNVERIFIED | 4 of this session's 5 are proven by driving (table below), but P7's population is itself unsettled, so "each improvement" has no fixed denominator to grade against |
 | P9 | Hooks fire correctly, 14 block+allow cases | **FAIL** | not satisfiable as written — see "Corrections" |
 | P10 | Doctrine rules have hook enforcement or a stated gap | UNVERIFIED | no interaction/precedence map produced |
-| P11 | Documentation explains architecture | PARTIAL | 22/22 script citations resolve and execute (`.../step-02-w4-skill-script-citations.md`); prose correctness review NOT done |
+| P11 | Documentation explains architecture | UNVERIFIED | 22/22 script citations resolve and execute (`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-02-w4-skill-script-citations.md`); the prose correctness review that would settle this was not done |
 | P12 | Counts/version strings accurate everywhere | PASS | `tools/verify-counts.py` rc=0 |
 | P13 | Existing harnesses still pass | PASS | 6 gates macOS + Linux root/non-root: `.../step-11-...md`, `.../step-14-linux-installer-parity-full.md` |
-| P14 | Evidence run sealed via the real `fresh_evidence.py` | PARTIAL | only `run-20260912T175349-w3-lane-contracts` is both valid and unmutated |
+| P14 | Evidence run sealed via the real `fresh_evidence.py` | PASS | `e2e-evidence/run-20260912T175349-w3-lane-contracts` — init-run → seal → validate, rc=0, unmutated. Cited alone; the two earlier runs are disclosed as unusable below |
 | P15 | Success is measured, not asserted | **FAIL** | I mutated a sealed run — see "Run-integrity violation" |
 
-PASS=7 PARTIAL=3 FAIL=2 UNVERIFIED=3
+PASS=8 FAIL=2 UNVERIFIED=5
+
+Verdicts use only the four values `.planning/plugin-improvement-criteria.md:41`
+permits. An earlier draft of this report used "PARTIAL" three times; that is
+not a permitted verdict, and half-credit is exactly what the criteria forbid.
+Those rows are now UNVERIFIED (P8, P11) or PASS on a single clean run (P14),
+with the partial detail kept as a note rather than as a grade.
+
+## The two Linux images answer different questions
+
+The task specifies re-running the matrix under `debian:stable-slim`. That
+image ships **no python3** — measured — and five of the six gates are python3
+programs, so the full gate matrix cannot run there at all. Reporting "Linux
+parity" from one image alone would be wrong in either direction:
+
+| Image | Question it answers | Result |
+|---|---|---|
+| `debian:stable-slim` | how the product behaves with **no python3** | 10/10 hooks exit 0; the 3 fixed guards announce enforcement loss; skills install 18/18; `--hooks` fails closed with a clear error. `.../step-01-debian-image-and-window-reconcile.md` |
+| `python:3.12-slim` | whether the **gates** pass on Linux | 6/6 gates rc=0, root and non-root; installer harness 28 PASS / 0 FAIL in both arms. `.../step-14-linux-installer-parity-full.md` |
+
+P13 rests on both. Neither is "the Linux matrix" by itself, and the task's
+requested image is the one that structurally cannot run the gates.
 
 ## Run-integrity violation (why P15 is FAIL)
 
