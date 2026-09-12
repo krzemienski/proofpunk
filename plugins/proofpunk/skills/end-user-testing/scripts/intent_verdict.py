@@ -147,8 +147,18 @@ def cmd_record(args) -> int:
 
     # The attempt counter lives in the verdict file so it survives a restart --
     # the one thing a loop bound must survive to mean anything.
+    #
+    # Only UNMET burns an attempt. UNVERIFIABLE must not: Stage 0 opens a run by
+    # recording UNVERIFIABLE (nothing has been attempted yet, so intent is
+    # genuinely unjudged), and counting that would spend one of the three
+    # attempts before any work happened -- capping the run after two real
+    # failures. Measured before this fix: a Stage 0 record left attempt=1, and
+    # the third UNMET was already past the cap.
+    #
+    # UNVERIFIABLE still BLOCKS in may-stop below. It does not authorize a stop;
+    # it just does not consume a retry, because there is nothing to retry yet.
     attempt = int(prior.get("attempt", 0))
-    if args.verdict != "MET":
+    if args.verdict == "UNMET":
         attempt += 1
 
     intent = args.intent or prior.get("original_intent", "")
@@ -165,6 +175,20 @@ def cmd_record(args) -> int:
         "next_prompt": args.next_prompt or "",
         "recorded": iso_now(),
     }
+    # A restart re-runs Stage 0, which records UNVERIFIABLE again. Without this,
+    # that wipes the unmet list and the fix-prompt pointer written by the
+    # PREVIOUS attempt -- so the restarted run is told to fix something and no
+    # longer knows what. Measured: after UNMET(unmet=['clause Y missing'],
+    # next='.prompts/fix.md'), a Stage 0 re-record left unmet=[] next=''.
+    #
+    # Carry both forward unless this record supplies its own. Only a new UNMET
+    # (or an explicit --unmet/--next-prompt) may change them; MET clears them,
+    # because nothing is outstanding once intent is met.
+    if args.verdict != "MET":
+        if not args.unmet and prior.get("unmet"):
+            data["unmet"] = list(prior["unmet"])
+        if not args.next_prompt and prior.get("next_prompt"):
+            data["next_prompt"] = prior["next_prompt"]
     # Once the cap is spent it stays spent. Dropping this on a later record
     # would let a fresh UNMET re-enter the restart branch, so the cap would
     # bound one streak instead of the run.
@@ -177,6 +201,75 @@ def cmd_record(args) -> int:
 
 def cmd_status(args) -> int:
     print(json.dumps(load(args.session_id, args.cwd), indent=2))
+    return 0
+
+
+def cmd_capture(args) -> int:
+    """Record the original request WITHOUT touching any review state.
+
+    Stage 0 runs at the start of every attempt, including restarts. Using
+    `record` there is unsafe no matter how careful the merge rules are: it
+    takes a --verdict, so it can always overwrite the previous attempt's
+    judgment. Measured before this existed -- an UNMET carrying
+    unmet=['clause Y missing'] and next='.prompts/fix.md' was reduced to
+    verdict=UNVERIFIABLE, unmet=[], next='' by the next Stage 0.
+
+    capture is initialize-if-absent by construction. It cannot express a
+    verdict, so it cannot destroy one:
+      - no prior state -> create it, verdict UNVERIFIABLE, attempt 0
+      - prior state    -> leave verdict/attempt/unmet/next_prompt/escalated
+                          exactly as they are; only fill original_intent if
+                          it is missing
+    The original intent is written once and never rewritten, so the goal
+    cannot drift toward a later paraphrase of itself.
+    """
+    prior = load(args.session_id, args.cwd)
+    intent = args.intent or ""
+    if args.transcript and not intent:
+        intent = recover_intent(args.transcript)
+
+    if not args.session_id:
+        raise SystemExit(
+            "capture needs --session-id (or $PROOFPUNK_SESSION_ID): without it "
+            "every session in a directory shares one verdict key"
+        )
+
+    # load() flattens a corrupt file to {}, which would make capture treat it as
+    # absent and overwrite it -- destroying an unreadable-but-real verdict,
+    # possibly one carrying a spent cap. Distinguish "no file" from "file I
+    # cannot parse" by looking at the path directly, and refuse the latter.
+    f = path_for(args.session_id, args.cwd)
+    if not prior and f.exists():
+        raise SystemExit(
+            f"refusing to capture over unreadable state at {f}. It may hold a "
+            "verdict or a spent attempt cap. Inspect it, then move it aside "
+            "deliberately -- capture will not overwrite what it cannot read."
+        )
+
+    if prior:
+        if not prior.get("original_intent") and intent:
+            prior["original_intent"] = intent
+            save(args.session_id, args.cwd, prior)
+            print(f"original_intent backfilled for {args.session_id}")
+        else:
+            print(f"intent already captured for {args.session_id}; unchanged")
+        return 0
+
+    if not intent:
+        raise SystemExit(
+            "capture needs the original request: pass --intent or --transcript"
+        )
+    save(args.session_id, args.cwd, {
+        "session_id": args.session_id,
+        "cwd": args.cwd,
+        "original_intent": intent,
+        "verdict": "UNVERIFIABLE",
+        "unmet": [],
+        "attempt": 0,
+        "next_prompt": "",
+        "recorded": iso_now(),
+    })
+    print(f"captured original intent for {args.session_id}")
     return 0
 
 
@@ -270,6 +363,13 @@ def main(argv: list[str]) -> int:
     p.add_argument("--transcript")
     p.add_argument("--next-prompt")
     p.set_defaults(fn=cmd_record)
+
+    # Stage 0 uses capture, never record: it cannot express a verdict, so it
+    # cannot overwrite a previous attempt's judgment on a restart.
+    p = sub.add_parser("capture")
+    p.add_argument("--intent")
+    p.add_argument("--transcript")
+    p.set_defaults(fn=cmd_capture)
 
     p = sub.add_parser("status")
     p.set_defaults(fn=cmd_status)

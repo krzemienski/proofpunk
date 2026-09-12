@@ -77,6 +77,35 @@ escalate for approval before any code. Record the approved criteria
 verbatim in the execution ledger; the final report grades against exactly
 these.
 
+**Record the original request verbatim, first.** Before distilling
+anything, capture the ask exactly as it arrived:
+
+```
+intent_verdict.py --session-id "$SESSION_ID" capture --transcript <transcript>
+```
+
+`capture`, never `record`. Stage 0 runs at the start of every attempt,
+including restarts, and `record` takes a verdict — so it can always overwrite
+the previous attempt's judgment. Measured: an UNMET carrying
+`unmet=['clause Y missing']` and `next='.prompts/fix.md'` was reduced to
+`verdict=UNVERIFIABLE, unmet=[], next=''` by the next Stage 0. The restarted
+run was told to fix something and no longer knew what.
+
+`capture` is initialize-if-absent by construction: it cannot express a
+verdict, so it cannot destroy one. On a restart it leaves verdict, attempt,
+unmet, next_prompt and the spent-cap latch untouched. It also writes
+`original_intent` exactly once — a later paraphrase never replaces the first
+request, so the goal cannot drift toward a restatement of itself.
+
+`--transcript` makes the helper recover the request itself, so the recorded
+text is the user's words rather than the model's summary of them.
+
+Criteria are a *reading* of the request. A run that grades itself against
+its own reading can satisfy every criterion while missing what was asked —
+the distillation drops a clause, and nothing downstream ever sees the
+original again. Stage 7 compares the outcome to this recorded text, not to
+the criteria derived from it.
+
 ## Stage 1 — MINE (session-intent)
 
 With `--mine`, or when the goal smells like past work, mine previous
@@ -190,6 +219,31 @@ stop the run; authorization boundaries always route to rung 4.
 The criteria-proof table, task ledger, and todo ledger, all read from
 `.planning/execution-ledger.json` — the run's live source of truth, which an
 interrupted run resumes from. Full semantics: `references/execution-loop.md`.
+
+## Stage 8 — VERIFY THE ORIGINAL INTENT (before the run may stop)
+
+Every criterion can pass while the thing actually asked for never happened.
+Criteria are a reading of the request; a reading can drop a clause, and the
+report then grades the reading. So the last act compares the outcome to the
+**verbatim request recorded at Stage 0**, not to the criteria.
+
+1. **Re-read the original request** — the text from Stage 0, never a
+   restatement. Across restarts this is always the FIRST request, or the goal
+   degrades toward whatever the last attempt found convenient.
+2. **Read the whole session.** Not a window. The gap is usually visible only
+   at the start, where a four-clause request met a one-clause response.
+3. **Use sequential thinking.** Required. Reviewing a long session for intent
+   satisfaction is exactly where skipping ahead yields a summary, not a review.
+4. **Judge each clause separately.** "Do X and also Y" is two obligations.
+   X done well and Y untouched is UNMET, not partially met.
+5. **Record the verdict**: `intent_verdict.py record --verdict MET|UNMET|UNVERIFIABLE`.
+6. **If UNMET** — write the next-session fix prompt naming exactly what is
+   missing, then restart. Bounded: attempts 1-2 restart, the 3rd escalates with
+   a blocker report. The counter persists in the verdict file, so it survives
+   the restart it bounds.
+
+Full contract, including how each stop surface enforces this:
+`../../references/intent-verification.md`.
 
 ## Anti-Patterns
 

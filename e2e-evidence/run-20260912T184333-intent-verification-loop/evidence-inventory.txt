@@ -7,4 +7,8 @@ step-05-runtime-contracts-from-digests.md 3374 5934334359d31521bae829fea04dcdfcb
 step-06-hook-adapter-reverted.md 2801 cf47cde3983ec6d67ce93f11d47e7cc2ccc2965e80bb78b8617c973bbd86f0ed
 step-07-intent-gate-changes-the-contract.md 2828 a51f863158a7733e907af6187ae897493df20ab5157af6065f3a307dcf61c9a1
 step-08-claude-adapter-wired-and-proven.md 2961 a692ebd159b5248ef1e305dd8fb5da5d1f5f6c1c01d03e478c67218623f1164e
-sealed=2026-09-12T19:16:28Z count=8 total_bytes=23413
+step-09-failure-policy-correction.md 1869 02977724ad2775fe8eb6d5ae6d288bd50ba76c0c53d3b31cce16936ae101e9b9
+step-10-omp-guard-enforces-nothing.md 2913 21dd11ad11ee9d21e4da51700f92e1af7fee270ec7c7450521553e0ffb7859b4
+step-11-omp-claim-downgraded.md 2323 cf4ad1a5979cc9c105bd86c91f88db91d5334d9982b86d826d0951c3ce2305cc
+step-12-capture-command-driven.md 2510 73fc400a1299012b99f8123b6c452c3c7bdfb10ebfdeee9a9c0740540cd2f6eb
+sealed=2026-09-12T19:43:22Z count=12 total_bytes=33028
