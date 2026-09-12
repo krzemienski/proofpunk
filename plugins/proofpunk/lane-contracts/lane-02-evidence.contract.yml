@@ -34,7 +34,7 @@ interface:
     - plugins/proofpunk/hooks/
     - e2e-evidence/run-*/          # captures are immutable once written
 
-acquire_digest: .planning/v4-architecture/docs-claude.md
+acquire_digest: plugins/proofpunk/lane-contracts/digests/docs-claude.md
 acquire_digest_rationale: >
   The evidence layer's only platform dependency is where a skill's scripts/
   directory lives in an installed layout, which this digest's Skills section

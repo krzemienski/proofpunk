@@ -51,7 +51,7 @@ interface:
     - tools/verify-*.py
 
 # --- Field 2: the ACQUIRE digest this lane consumes (resolvable path) ---
-acquire_digest: .planning/v4-architecture/docs-claude.md
+acquire_digest: plugins/proofpunk/lane-contracts/digests/docs-claude.md
 acquire_digest_rationale: >
   The hook event names, matcher semantics, and settings.json registration
   shape are Claude Code platform facts. This digest's "Hooks" section is the
