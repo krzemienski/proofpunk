@@ -110,27 +110,34 @@ elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-gu
 elif printf '%s' "$out" | grep -q 'enforcement OFF (python3-not-found)'; then case_ok "stop-guard announces fail-open on missing python3"
 else case_fail "stop-guard python3-absent was silent (must be observable) — got: $out"; fi
 
-# Case 4c: unreadable existing transcript (chmod 000). Pre-fix: `[ -f ]`
-# succeeded and python opened with errors=ignore / OSError → empty lines →
-# silent exit 0. Now must emit transcript-missing-or-unreadable (or the
-# python-side transcript-unreadable notice).
+# Case 4c: non-regular transcript path. Pre-fix: `[ -f ]` succeeded and
+# python opened with errors=ignore / OSError → empty lines → silent
+# exit 0. Now must emit transcript-missing-or-unreadable.
 #
 # chmod 000 alone is not portable proof: root ignores mode bits, so in a
 # root container (CI images, Docker default) the file stays readable and
 # the case silently tests nothing. Recording that as OK would be a
 # PASS-by-skip — the exact false green this plugin exists to prevent.
 #
-# Use a directory instead. `[ -f ]` is false and any open() raises
-# IsADirectoryError for every user, root included, so the assertion is
-# real on all platforms and always executes.
+# Use a directory instead: `[ -f ]` is false for every user, root
+# included, so the assertion is real on all platforms and always
+# executes.
+#
+# COVERAGE NOTE — this exercises the shell-side guard at stop-guard.sh:56
+# (non-regular path), NOT the python-side open() failure. `[ -f ]`
+# short-circuits before python runs, so IsADirectoryError is never
+# raised. A regular-but-unreadable file is the only way to reach the
+# python branch, and that cannot be modelled portably as root. Both
+# reach the same emit_off notice; the python path remains covered only
+# when this suite runs unprivileged.
 mkdir -p "$TMP/t4c.jsonl"
 out=$(printf '{"session_id":"s4c","transcript_path":"%s","cwd":"/tmp","hook_event_name":"Stop"}' "$TMP/t4c.jsonl" | sh "$HOOKS/stop-guard.sh")
 rc=$?
 rmdir "$TMP/t4c.jsonl" 2>/dev/null || true
 if [ "$rc" -ne 0 ]; then case_fail "stop-guard unreadable transcript must exit 0 — rc=$rc out=$out"
 elif printf '%s' "$out" | grep -q '"decision": "block"'; then case_fail "stop-guard unreadable transcript must never block — got: $out"
-elif printf '%s' "$out" | grep -q 'enforcement OFF'; then case_ok "stop-guard announces fail-open on unreadable transcript"
-else case_fail "stop-guard unreadable transcript was silent — got: $out"; fi
+elif printf '%s' "$out" | grep -q 'enforcement OFF'; then case_ok "stop-guard announces fail-open on non-regular transcript path"
+else case_fail "stop-guard non-regular transcript path was silent — got: $out"; fi
 
 # Case 4d: malformed stdin JSON. Pre-fix: python3 -c except printed '' then
 # `[ -n "$transcript" ] || exit 0` — silent. Now stdin-json-unreadable.
