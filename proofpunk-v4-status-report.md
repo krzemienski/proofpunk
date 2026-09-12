@@ -151,15 +151,25 @@ have had no equivalent scrutiny, and two of them — `prompt-forge` (17,307 B)
 and `codebase-truth-audit` (15,330 B) — are larger than anything in the task's
 disclosure-debt table and were therefore absent from its plan entirely.
 
-Also open: P6, P7, P10.
+Also open: P5, P6, P7, P8, P10, P14.
 
 ## Evidence runs
 
-| Run | validate | Note |
+| Run | `validate --run` | History |
 |---|---|---|
-| `e2e-evidence/run-20260912T172922-w2-installer-p1p2p4` | rc=2 | INVALID under the current rule; superseded |
-| `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled` | rc=0 | valid but MUTATED (step-13 deleted) |
-| `e2e-evidence/run-20260912T175349-w3-lane-contracts` | rc=0 | clean |
+| `e2e-evidence/run-20260912T172922-w2-installer-p1p2p4` | rc=2 | INVALID under the min-size rule; superseded |
+| `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled` | rc=0 | MUTATED — `step-13` deleted post-seal |
+| `e2e-evidence/run-20260912T175349-w3-lane-contracts` | rc=0 | MUTATED — `step-17` edited post-seal, then re-sealed |
+| `e2e-evidence/run-20260912T181712-w5-integrity-disclosure` | rc=0 | Clean: 1/1 sealed, size and sha256 verified against disk independently of the tool, 0 post-seal edits. Contains only the mutation disclosure — it proves nothing about the product |
 
-Nothing has been pushed and no tag has been created; both are authorization
-boundaries under `.planning/plugin-improvement-criteria.md` D3.
+Two of these validate `rc=0` despite a post-seal edit, which is why P14 is
+UNVERIFIED rather than resting on a green `validate`.
+
+## Repository state
+
+- **13 commits**, all from this session, measured by `git rev-list --count a2fdeb9..HEAD` where `a2fdeb9` was the session-start HEAD.
+- **13 unpushed** (`git rev-list --count origin/main..HEAD`) — the two figures match because `origin/main` is that same session-start commit.
+- **No tag was created this session.** Two tags exist locally, `v2.1.0` and `v2.2.0`, both dated 2026-08-27 and predating this work. There is no `v3` or `v4` tag in the repository.
+
+Pushing and tagging are authorization boundaries under
+`.planning/plugin-improvement-criteria.md` D3 and were not crossed.
