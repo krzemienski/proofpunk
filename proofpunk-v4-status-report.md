@@ -135,17 +135,27 @@ it is weaker.
 
 | Commit | Defect | Proof |
 |---|---|---|
-| `adcee4b` | `no-test-files`, `evidence-guard`, `capture-guard` all deny (`exit 2`) yet exited 0 with **zero bytes** when python3 was absent — an unenforced machine was byte-identical to an approved write | hermetic PATH: 0 → 121/139/145 bytes; deny rc=2 preserved; `debian:stable-slim` root+non-root |
-| `c169831` | `fresh_evidence validate` enforced only `size==0` while `evidence-contract.md` rule 3 requires `> 1024` — the enforcement tool under-enforcing its own contract | boundary drive: 1023 ✗, 1024 ✗, 1025 ✓ |
-| `e180035` | harness fixture built its "clean" artifact with `echo PASSED` (7 bytes), stale under the new rule | 6 branches driven; same-size tamper preserved (1108→1108) |
+| `adcee4b` | `no-test-files`, `evidence-guard`, `capture-guard` all deny (`exit 2`) yet exited 0 with **zero bytes** when python3 was absent — an unenforced machine was byte-identical to an approved write | hermetic PATH: 0 → 121/139/145 bytes; deny rc=2 preserved; real `debian:stable-slim` root+non-root: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-01-debian-image-and-window-reconcile.md` |
+| `c169831` | `fresh_evidence validate` enforced only `size==0` while `evidence-contract.md` rule 3 requires `> 1024` — the enforcement tool under-enforcing its own contract | boundary drive: 1023 ✗, 1024 ✗, 1025 ✓ — `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-03-minsize-boundary-proof.md` |
+| `e180035` | harness fixture built its "clean" artifact with `echo PASSED` (7 bytes), stale under the new rule | Discriminating arms, validator held constant so only the fixture differs: BEFORE rc=1 naming `sealed_clean_rc=2`, AFTER rc=0 — `e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-07-e180035-arms-corrected-probe.md` |
 | `6cc01f9` | lane contracts specified since v4, never emitted by any run | 6 mutations each fail correctly, pre- and post-relocation; fallback parser parity proven with PyYAML genuinely absent. Note: contracts are orchestrator inputs consumed from a repo checkout, **not** installed runtime files — a real install places 0 of them, verified in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-07-lane-contracts-post-relocation.md` |
 | `ba16393` | `fresh_evidence` resolved its target as the most recently modified run — a tie under equal mtimes. My own verification loop hit it and reported rc=0 for a run that fails rc=2 | `--run` drives two runs at identical `st_mtime_ns` to different verdicts (rc=0 / rc=2); 9 malformed invocations each refuse rc=2: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-13-post-commit-verification-at-head.md` |
-| `c2e4734` | lane contracts shipped while the digest they cite did not — `acquire_digest` pointed into gitignored `.planning/` | invisible from any working tree; found and fixed by running the matrix from `git archive HEAD`: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
+| `c2e4734` | lane contracts shipped while the digest they cite did not — `acquire_digest` pointed into gitignored `.planning/` | Two real clones via `git archive`: BEFORE rc=1 with "acquire_digest does not resolve", AFTER rc=0 — `e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-05-c2e4734-discriminating-arms.md` |
 
 All three hook guards carried a copy-pasted comment claiming they were
 "documented as never denies" — false for exactly the hooks it was attached to.
 `stop-guard.sh` had the correct pattern 30 lines away. Seven gates were green
 throughout.
+
+A note on what changed here. Both rows above first cited only a green
+post-fix gate run. A green with no failing arm cannot distinguish "the fix
+worked" from "nothing was ever wrong" — it lets a citation stand in for the
+proof obligation. Each now carries a BEFORE arm that reproduces the defect and
+an AFTER arm that does not, differing only by the commit under test. The
+first attempt at the `e180035` arms also shipped a wrong probe line (it
+reported `echo PASSED` for both arms, having grepped the whole file instead of
+group 9); that artifact is superseded by `step-07` rather than edited, since
+`step-06` was already sealed.
 
 ### Textually verified, NOT driven
 
