@@ -18,7 +18,7 @@ that document's line 41.
 | P5 | Router head links all 17 other skills | UNVERIFIED | The PASS was inherited from `e2e-evidence/run-20260912T172034-v4-criteria-final`, a prior session's run, and was not re-driven here. Inheritance is not proof, so it is downgraded rather than carried forward |
 | P6 | Router routes correctly when invoked | UNVERIFIED | `tools/verify-command-surface.py` has still never run to completion |
 | P7 | ≥10 improvements ranked, then implemented | UNVERIFIED | Recomputed against the task's own window `d5a50b1..f6141f9` (11 commits): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-08-p7-recomputed-prompt-window.md`. Counting generously gives 11; counting only substantive changes gives 8 (two are gauge-snapshot refreshes, one a figure-caption fix). The threshold sits inside that spread, so the grading choice decides the outcome — an operator judgement, not mine |
-| P8 | Each implemented improvement individually proven | UNVERIFIED | This session's 4 commits are each proven by driving (table below). The 11 in P7's window are not: they predate this session and were not re-driven. Gate rc=0 is not P8 evidence — the central finding here is that seven green gates coexisted with a plugin broken on every python3-less machine |
+| P8 | Each implemented improvement individually proven | UNVERIFIED | Of this session's fixes, 6 are proven by driving and 2 are only textually verified (both tables below) — so even within this session the standard is not uniform. The 11 in P7's window are neither: they predate this session and were not re-driven. Gate rc=0 is not P8 evidence — the central finding here is that seven green gates coexisted with a plugin broken on every python3-less machine |
 | P9 | Hooks fire correctly, 14 block+allow cases | **FAIL** | not satisfiable as written — see "Corrections" |
 | P10 | Doctrine rules have hook enforcement or a stated gap | UNVERIFIED | no interaction/precedence map produced |
 | P11 | Documentation explains architecture | UNVERIFIED | 22/22 script citations resolve and execute (`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-02-w4-skill-script-citations.md`); the prose correctness review that would settle this was not done |
@@ -123,7 +123,15 @@ failure mode. Disclosed in full, with the deleted content reproduced, at
    `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-12-p9-restatement.md` is a recommendation for the operator, not a
    verdict.
 
-## Defects found and fixed, each proven by driving
+## Defects found and fixed, separated by proof standard
+
+The two columns are not interchangeable, and collapsing them would be the
+overclaim this plugin exists to prevent. The first group was driven against a
+real runtime. The second group edits prose that a model reads — there is no
+runtime to drive, so the honest standard is verification against the tree, and
+it is weaker.
+
+### Proven by driving the real system
 
 | Commit | Defect | Proof |
 |---|---|---|
@@ -131,11 +139,24 @@ failure mode. Disclosed in full, with the deleted content reproduced, at
 | `c169831` | `fresh_evidence validate` enforced only `size==0` while `evidence-contract.md` rule 3 requires `> 1024` — the enforcement tool under-enforcing its own contract | boundary drive: 1023 ✗, 1024 ✗, 1025 ✓ |
 | `e180035` | harness fixture built its "clean" artifact with `echo PASSED` (7 bytes), stale under the new rule | 6 branches driven; same-size tamper preserved (1108→1108) |
 | `6cc01f9` | lane contracts specified since v4, never emitted by any run | 6 mutations each fail correctly, pre- and post-relocation; fallback parser parity proven with PyYAML genuinely absent. Note: contracts are orchestrator inputs consumed from a repo checkout, **not** installed runtime files — a real install places 0 of them, verified in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-07-lane-contracts-post-relocation.md` |
+| `ba16393` | `fresh_evidence` resolved its target as the most recently modified run — a tie under equal mtimes. My own verification loop hit it and reported rc=0 for a run that fails rc=2 | `--run` drives two runs at identical `st_mtime_ns` to different verdicts (rc=0 / rc=2); 9 malformed invocations each refuse rc=2: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-13-post-commit-verification-at-head.md` |
+| `c2e4734` | lane contracts shipped while the digest they cite did not — `acquire_digest` pointed into gitignored `.planning/` | invisible from any working tree; found and fixed by running the matrix from `git archive HEAD`: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
 
 All three hook guards carried a copy-pasted comment claiming they were
 "documented as never denies" — false for exactly the hooks it was attached to.
 `stop-guard.sh` had the correct pattern 30 lines away. Seven gates were green
 throughout.
+
+### Textually verified, NOT driven
+
+Both edit prose a model reads. There is no runtime to drive and this session
+had no way to instrument a model's reading, so each is verified against the
+tree instead. Listed separately rather than folded into the table above.
+
+| Commit | Defect | Verification |
+|---|---|---|
+| `d0690a2` | `ci-gates.md:7-14` opened "no executing skill loads this file mid-workflow" and asked a follow-up lane to add a load instruction to `production-readiness` — which had been at `skills/production-readiness/SKILL.md:41-43` all along. Both files internally consistent; every gate green; only reading them together surfaces it | the previous text quoted from `git show HEAD~1`, the cited lines read and confirmed to contain the instruction: `e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-04-w4-fixes-proof-standard.md` |
+| `64d2438` | router wording said "17 delivery skills" beside a repo whose every other count is 18 | **not a count defect** — `architecture.md` already documents "18 (17 delivery skills + 1 router)" and `verify-counts.py` accepts both. Measured: 17 delivery skills, 17 named by the router, 0 unrouted. Wording clarified only |
 
 ## Why this is not a release
 
