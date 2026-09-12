@@ -32,6 +32,19 @@ ROOT = Path("./e2e-evidence")
 SLUG_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 HEX64_RE = re.compile(r"[0-9a-f]{64}")
 
+# references/evidence-contract.md rule 3: "every artifact > min_size_bytes
+# (default 1024). Zero-byte or tiny files are INVALID; discard and re-capture."
+# validate only ever rejected zero bytes, so a 40-byte artifact proving
+# nothing sailed through as `validate OK` -- the enforcement tool
+# under-enforcing the doctrine it exists to enforce.
+#
+# This is a REFUSAL, not a warning. The contract says INVALID; downgrading
+# that to a passing notice would be weakening doctrine from inside the tool
+# that enforces it, which is the same class of defect as a silent fail-open.
+# A capture too small to carry its claim is re-captured with its context
+# (the command, the rc, the surrounding state), not blessed.
+MIN_SIZE_BYTES = 1024
+
 
 def sha256_of(path: Path) -> str:
     h = hashlib.sha256()
@@ -143,8 +156,21 @@ def cmd_validate() -> str:
         if mtime < started_epoch:
             print(f"STALE: {f} (mtime {int(mtime)} < run-start {int(started_epoch)})", file=sys.stderr)
             bad += 1
-        if f.stat().st_size == 0:
+        size = f.stat().st_size
+        if size == 0:
             print(f"EMPTY: {f} (zero bytes)", file=sys.stderr)
+            bad += 1
+        # The contract says "> min_size_bytes", so exactly MIN_SIZE_BYTES is
+        # NOT sufficient -- `< MIN_SIZE_BYTES` would pass a 1024-byte file the
+        # rule excludes. Measured at the boundary: 1023 refused, 1024 refused,
+        # 1025 accepted.
+        elif size <= MIN_SIZE_BYTES:
+            print(
+                f"THIN: {f} ({size} bytes, needs > {MIN_SIZE_BYTES}) — too small to "
+                "carry a claim; re-capture with its command, rc, and "
+                "surrounding state (evidence-contract.md rule 3)",
+                file=sys.stderr,
+            )
             bad += 1
 
     # seal must have run, and the sealed inventory must still describe what is
