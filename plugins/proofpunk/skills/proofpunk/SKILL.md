@@ -25,9 +25,10 @@ description: >
 
 ## Why a router
 
-17 narrow skills, each cross-referencing neighbors in its own "Not for..."
-clause — enough once inside one skill's context, not enough cold. This is
-the one lookup before the 17 file reads.
+17 narrow delivery skills — 18 counting this router — each cross-referencing
+neighbors in its own "Not for..." clause. That is enough once you are inside
+one skill's context, and not enough cold. This is the one lookup before the
+17 file reads.
 
 ## How to route
 
