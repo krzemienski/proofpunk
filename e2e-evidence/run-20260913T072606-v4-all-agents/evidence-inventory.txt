@@ -30,4 +30,5 @@ step-28-install-fail-disposition.md 3061 5af98472a3dbe4cb22783e6031b1f8dfa5e9639
 step-29-write-assertion-fixed.md 3425 d5d42d328d1b886e8c5066eadfb43420d29cb6aa79dd035ae9e4e2ab52d5cf39
 step-30-write-boundary-hardened.md 3091 d50618eb3a93042d71b27b88b7b67b4188d4218bd0c06023a24ac5a4429261c8
 step-31-revert-provenance.md 2829 829a774a7c2d03fed6722458de43660571a0f8255e61dd05ac5a0ef13e9f5cbd
-sealed=2026-09-13T15:09:25Z count=31 total_bytes=87008
+step-32-write-edit-and-fourth-criterion.md 3226 0f9aaa48098673aea531a54f6cf9bf8391b34a01743aa5d9da9dac37c2c977bf
+sealed=2026-09-13T15:14:17Z count=32 total_bytes=90234
