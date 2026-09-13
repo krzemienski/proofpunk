@@ -18,4 +18,5 @@ step-16-installer-skill-drift.md 2533 073dd37e93cbab2f751335826e67712ad35a41e3d6
 step-17-harness-scope-audit.md 2202 ad8201e028d9e0d1e8079643ff607b17870752eadd637bf6bad44e07c2c2b1f1
 step-18-p8-per-improvement.md 2640 f72e7533be26647e047b7d5d6dde408f521f30ad21373dbafe03d7e7f2908c04
 step-19-count-guard-hardening.md 2846 55cc2a9f5f0decf938023f05c7af46c0788d394384fe31bb1287430f1e577915
-sealed=2026-09-13T09:01:26Z count=19 total_bytes=56320
+step-20-i8-claim-retracted.md 2253 7b671f5d3e20e56e44e2533122dc720ed44ecf6c048f5ea4a4d544a04b8a1650
+sealed=2026-09-13T09:03:28Z count=20 total_bytes=58573
