@@ -16,6 +16,7 @@ import argparse
 import asyncio
 import json
 import os
+import re
 import secrets
 import sys
 import time
@@ -718,8 +719,55 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                         content = fh.read()
                 except OSError:
                     content = ""
-            write_calls = [c for c in tool_calls if c["name"] in ("Write", "Edit")]
+            # A first-party write is the CONTRACT; the Write tool is only one
+            # mechanism for it. Measured 2026-09-13: a real run installed a
+            # correct CLAUDE.md (markers, 18 lines, substituted, clean
+            # counterfactual) using `cat > CLAUDE.md <<'EOF'` under Bash, and
+            # the old check — `c["name"] in ("Write","Edit")` — reported
+            # write_attempted False. That failed a genuine on-disk effect for
+            # using a different first-party tool, contradicting this probe's
+            # own stated intent ("a real first-party Write/Edit call, not an
+            # ambient MCP tool and not just narration"). Bash is first-party
+            # and its effect is on disk, not narration.
+            #
+            # SAFETY BOUNDARY: a Bash call counts ONLY if its command text
+            # actually redirects into the artifact this check verifies. A
+            # bare shell call, an `ls`, or a write to some other path is not
+            # a write of CLAUDE.md and must never be credited as one.
+            _artifact = os.path.basename(claude_md)
+            _redirect = re.compile(
+                r"(?:>>?|\btee\b(?:\s+-\w+)*)\s*(?:\"|')?[^\s\"'|;&]*"
+                + re.escape(_artifact))
+
+            def _is_first_party_write(call):
+                if call["name"] in ("Write", "Edit"):
+                    return True
+                if call["name"] != "Bash":
+                    return False
+                raw = call.get("input")
+                cmd = ""
+                if isinstance(raw, dict):
+                    cmd = raw.get("command", "")
+                elif isinstance(raw, str):
+                    # Recorded inputs may be TRUNCATED json (measured: the
+                    # v3 evidence clips tool input mid-string, so json.loads
+                    # raises). Parse when we can; otherwise scan the raw text
+                    # rather than silently returning False — a clipped record
+                    # must not be read as "no write happened".
+                    try:
+                        cmd = (json.loads(raw) or {}).get("command", "")
+                    except (ValueError, TypeError):
+                        cmd = raw
+                return bool(_redirect.search(cmd))
+
+            write_calls = [c for c in tool_calls if _is_first_party_write(c)]
             checks["write_attempted"] = bool(write_calls)
+            # Recorded separately so the MECHANISM stays visible instead of
+            # being conflated with the contract. Neither gates the verdict on
+            # its own; write_attempted is the contract-aligned check.
+            out["write_tool_used"] = any(
+                c["name"] in ("Write", "Edit") for c in tool_calls)
+            out["write_mechanism"] = sorted({c["name"] for c in write_calls})
             # A call with no result yet (is_error is None, result is None)
             # is an in-flight attempt, not a success — require a REAL
             # non-error result to have actually come back.
