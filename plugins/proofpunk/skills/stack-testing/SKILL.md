@@ -52,7 +52,7 @@ evidence for every green claim.
    final run to a file and seal it with the `end-user-testing` skill's
    `fresh_evidence.py` — labeled REGRESSION ("the suite is green"). The
    feature-level verdict comes only from driving the live system as the end
-   user (the shared runbooks (`references/*-validation.md`): `curl` for JSON backends, browser for UI
+   user (the shared runbooks (`../../references/*-validation.md`): `curl` for JSON backends, browser for UI
    simulator for mobile). A green suite cited as proof a feature works is a
    doctrine violation — see `../../references/end-user-actor.md`.
 

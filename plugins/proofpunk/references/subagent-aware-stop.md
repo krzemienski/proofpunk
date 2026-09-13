@@ -198,3 +198,55 @@ have ended. Its exit code is the gate.
 **Honest limit.** The skill confirms *recorded* completion. It cannot prove a
 process exited — that is the same snapshot-not-liveness limit as §8, and the
 summary must not imply otherwise.
+
+## 10. Cross-runtime reality — this model is Claude Code only
+
+Everything above describes **Claude Code**, the one runtime where a hook can
+read the tracker and block a stop. The other two runtimes cannot reach the
+same guarantee, and the gap is architectural rather than unfinished work.
+Measured 2026-09-13 against the shipped type contracts:
+
+| Runtime | Can block a stop? | Can it populate the tracker? |
+|---|---|---|
+| Claude Code | yes — `stop-guard.sh` emits `decision:block` | yes, via `agent_state.py` |
+| OMP | one continuation via `session_stop` | **no** |
+| OpenCode | **no** | **no** |
+
+**OMP.** `@oh-my-pi/pi-coding-agent@18.1.19` (the version this machine runs)
+publishes its types at `dist/types/`. `ExtensionAPI.on` accepts 44 event
+literals, and the two that sound like child lifecycle are not:
+
+```ts
+export interface AgentStartEvent { type: "agent_start"; }          // one field
+export interface AgentEndEvent   { type: "agent_end";
+                                   messages: AgentMessage[];
+                                   willContinue?: boolean; }
+```
+
+`AgentStartEvent` carries exactly its own type tag — no agent id, no session
+id, no child identity — and its doc comment says "fired when an agent loop
+starts (once per user prompt)", i.e. the *main* loop. A tracker entry requires
+a stable `agent_id` (§2), so no OMP event can produce one. The only two
+child-adjacent strings in the whole extension typings are prose in
+`addAutocompleteProvider`'s doc comment and a `parentSession` option on
+`newSession()` — a method for creating a session, not a notification that one
+ran.
+
+**OpenCode.** `@opencode-ai/plugin` (1.18.30) declares this hook set:
+`chat.message`, `chat.params`, `chat.headers`, `permission.ask`,
+`command.execute.before`, `tool.execute.before`, `tool.execute.after`,
+`shell.env`, `tool.definition`, and five `experimental.*`. The strings
+`subagent` and `task` appear **zero** times in 26,962 bytes of type
+definitions.
+
+OpenCode additionally cannot block *at stop at all*: `session.idle` is
+delivered to the generic `event` handler, which returns `void`. There is no
+value it could return to request a continuation. The plugin's only blocking
+seam is a `throw` from `tool.execute.before` — which fires on the session's
+*next action*, not when it goes quiet. So an unmet intent surfaces one tool
+call later, or never if the session simply stops.
+
+**What this means for the doctrine.** "Subagent-aware stop" is a Claude Code
+guarantee. Any release note, summary, or skill that implies all three runtimes
+share it is wrong. The completion skill states which runtime it ran under, and
+says plainly when no tracker exists rather than reporting a clean run.

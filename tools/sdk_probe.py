@@ -306,6 +306,31 @@ _EFFECT_TOOLS_VERIFY = dict(
     max_turns=10,
 )
 PROBES["cmd_slash_install_effect"] = dict(
+    # Measured 2026-09-13: the model improvised `timeout 180 claude -p ...`
+    # to "drive the real end user" of the file it had just written. GNU
+    # `timeout` does not exist on this host (absent from zsh -lc, zsh -c, and
+    # as gtimeout), so that step died `exit=127 command not found: timeout`,
+    # burned the remaining turns, and tripped no_harness_error=False even
+    # though the install itself HAD landed (claude_md_exists, markers_present,
+    # within_200_lines, template_substituted all true).
+    #
+    # A first attempt appended a broad portability preamble ("do not use
+    # timeout/realpath/sed -i, do not spawn a nested claude"). It made things
+    # WORSE, measurably: write_attempted flipped to false and plugin_pass fell
+    # 6/6 -> 4/6. Prefixing prohibitions onto a slash command changed what the
+    # model did with the command itself, so the arm stopped testing the
+    # command doc. Reverted.
+    #
+    # The bare slash command is what this arm must send — anything else tests
+    # the preamble, not the command doc.
+    #
+    # NOT fixed here, deliberately: the improvised nested-session step is the
+    # model's own invention (install.md's Step 4 prescribes only wc/grep/head/
+    # tail), so it varies run to run. Raising max_turns would only buy the
+    # improvisation more room, and constraining the prompt measurably broke
+    # the arm. This is recorded as a live flake in the P6 row rather than
+    # papered over by weakening the verifier's harness-error gate, which is
+    # doing exactly its job by refusing to score a 127 as a pass.
     prompt=("/proofpunk:install --platform claude-code --no-rules"),
     expect_text="",
     require_slash_name="proofpunk:install",

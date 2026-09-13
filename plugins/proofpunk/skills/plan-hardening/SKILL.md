@@ -118,8 +118,10 @@ Re-read the hardened plan end to end:
 - [ ] No new hedging language introduced
 - [ ] Gap register included as an appendix with disposition per finding
 
-Output the hardened plan plus the gap register. Do NOT finalize while
-critical findings remain open.
+Output the hardened plan plus the gap register. A CRITICAL finding is
+**dispositioned** when it is either resolved or explicitly accepted by the
+user with a recorded reason — an accepted finding is closed for this gate,
+not open. Do NOT finalize while any CRITICAL remains *undispositioned*.
 
 ## Prompt Transformation Mode
 
@@ -150,7 +152,7 @@ prove it with fresh evidence".
 | Calls | When | What it hands over |
 |-------|------|--------------------|
 | `red-team-eval` | Stage 4 red-team dispatch | the four adversarial lenses |
-| `validation-plan` | Stage 6 proof-obligation injection | the PO format being injected |
+| `validation-plan` | Stage 6 proof-obligation injection | the cumulative-proof RULE the injected obligations must satisfy — not the format. `validation-plan` owns a YAML `evidence:` block for phase plans; the `<proof_obligation>` XML above is this skill's own prompt-injection shape, for artifacts that are prompts rather than phase plans. |
 | `end-user-testing` | injected proofs | the proof standard obligations must satisfy |
 
 Called by: `proofpunk`.

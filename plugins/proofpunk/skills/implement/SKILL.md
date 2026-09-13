@@ -230,10 +230,14 @@ python3 plugins/proofpunk/skills/end-user-testing/scripts/completion_gate.py \
     --session "$SESSION_ID" --cwd "$PWD" --out .planning/run-completion-summary.md
 ```
 
-`rc=0` — every child reached a terminal status; the summary artifact is written
-and the report may proceed. `rc=2` — a child is still live; **no summary is
-written** and the report must not be produced. Wait for the named agents, or
-state explicitly why their output is not needed.
+`rc=0` — no child is RECORDED live; the summary artifact is written and the
+report may proceed. rc=0 does not prove every child terminated: it also covers
+a missing tracker (the OMP/OpenCode case, where the gate observes nothing) and
+a degraded one. The summary names which state it saw — read it, and carry any
+degraded/no-tracker qualification into the report rather than reading rc=0 as
+"all agents finished". `rc=2` — a child is recorded live, or the summary could
+not be written; **no summary is produced** and the report must not proceed.
+Wait for the named agents, or state explicitly why their output is not needed.
 
 A report written over running agents grades an unfinished run.
 
@@ -290,7 +294,8 @@ Full contract, including how each stop surface enforces this:
 | `tui-testing` | Stage 5 when the target is a TUI | PTY driving discipline |
 | `root-cause-debugging` | Stage 6 stuck protocol rung 2 | root cause of any unproven task |
 
-The platform runbooks (`api/web/cli/ios-validation.md`) are shared doctrine
+The platform runbooks (`api-validation.md`, `web-validation.md`,
+`cli-validation.md`, `ios-validation.md`) are shared doctrine
 in `references/`, not a skill — Stage 5 loads them directly. Stage 1.5
 ACQUIRE works the same way: `../../references/docs-acquisition.md` is a
 shared reference, not a skill call.

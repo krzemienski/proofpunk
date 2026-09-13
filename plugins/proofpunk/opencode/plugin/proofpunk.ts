@@ -224,7 +224,15 @@ export const Proofpunk: Plugin = async ({ client, directory }) => {
 
       // The write path never creates test artifacts (hard guarantee).
       if (input.tool === "write" || input.tool === "edit") {
-        const wpath = String(output.args?.path ?? output.args?.file_path ?? "");
+        // `filePath` FIRST: that is the key OpenCode actually sends, as the
+        // read guard above already assumes (line 216). Omitting it here meant
+        // TEST_PATH was tested against "" on every real write, so the
+        // "write path never creates test files" guarantee — the hardest
+        // promise in the doctrine — silently never fired on OpenCode. The
+        // other spellings stay as a tolerant fallback.
+        const wpath = String(
+          output.args?.filePath ?? output.args?.path ?? output.args?.file_path ?? "",
+        );
         const TEST_PATH =
           /(_?tests?_|__tests__|\.spec\.|\.test\.|\/tests?\/|\/test_|_test\.|\/fixtures?\/.*test|\/testing\/)/i;
         if (wpath && TEST_PATH.test(wpath)) {

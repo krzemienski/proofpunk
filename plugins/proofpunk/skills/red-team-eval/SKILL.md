@@ -45,7 +45,7 @@ scores instead of impressions. Findings carry severities per
 
 1. **Choose the target and the attack.** Plans and prompts get the 4-lens
    red team; implementations get QA cycling; quality regressions get evals.
-2. **Red team**: each lens (security, scope-creep, evidence-rigor
+2. **Red team**: each lens (security, scope-creep, evidence-rigor,
    failure-modes) reviews independently — findings are merged and
    severity-tagged, and every HIGH/CRITICAL is dispositioned (fixed or
    explicitly accepted with rationale) before the artifact proceeds.

@@ -217,7 +217,7 @@ def expected_for(noun: str, counts: dict) -> set[int]:
     """
     n = noun.lower().rstrip("s")
     if n == "skill":
-        return {counts["skills"], counts["skills"] - 1}  # 18, or 17 delivery
+        return {counts["skills"], counts["skills"] - 1}  # 19, or 18 delivery
     if n == "reference":
         return {counts["references"]}
     if n == "command":

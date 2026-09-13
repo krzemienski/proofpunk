@@ -32,7 +32,7 @@ Every screenshot MUST pass this protocol before being marked PASS.
 Handles: visual defect detection, layout verification, accessibility
 compliance, platform guideline conformance.
 Does NOT handle: functional validation (does the feature work? — use
-the shared runbooks (`references/*-validation.md`)), backend testing, performance profiling.
+the shared runbooks (`../../references/*-validation.md`)), backend testing, performance profiling.
 
 ## Platform Detection
 
@@ -99,7 +99,7 @@ per `../../references/end-user-actor.md`:
   MCP/automation tools to the state being captured), not from stale or
   third-party captures.
 - When a visual finding raises "is this element actually wired up?", that is
-  OUT of this skill's scope — escalate to the shared runbooks (`references/*-validation.md`) to DRIVE
+  OUT of this skill's scope — escalate to the shared runbooks (`../../references/*-validation.md`) to DRIVE
   the element as an end user rather than guessing from pixels.
 
 ```
@@ -113,7 +113,7 @@ per `../../references/end-user-actor.md`:
 ```
 
 A PASS from this skill certifies VISUAL QUALITY ONLY. It never certifies
-that anything works — behavioral claims require the shared runbooks (`references/*-validation.md`)
+that anything works — behavioral claims require the shared runbooks (`../../references/*-validation.md`)
 driving the system as the end user, per
 `../../references/end-user-actor.md`.
 
@@ -142,7 +142,7 @@ root causes and fix patterns across iOS, web, and cross-platform projects.
 | Faking or skipping validation | Unexecuted validation is not validation | Owned by `end-user-testing` — apply its Actor Mandate verbatim |
 ## When NOT to Use
 
-- Functional validation — use the shared runbooks (`references/*-validation.md`)
+- Functional validation — use the shared runbooks (`../../references/*-validation.md`)
 - Deeper per-screen audit (interaction + content + UX heuristics) — use `ui-experience-audit`
 - Backend API testing or performance profiling
 

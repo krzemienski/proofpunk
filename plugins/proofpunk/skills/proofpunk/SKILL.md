@@ -1,7 +1,7 @@
 ---
 name: proofpunk
 description: >
-  Router and entry point for the proofpunk plugin's 17 delivery skills —
+  Router and entry point for the proofpunk plugin's 18 delivery skills —
   reads a request, names the single best-fit skill (or short ordered chain
   for compound asks), and hands off without repeating that skill's own
   doctrine. Covers the full arc: brainstorm a design, plan or harden a
@@ -25,10 +25,10 @@ description: >
 
 ## Why a router
 
-17 narrow delivery skills — 18 counting this router — each cross-referencing
+18 narrow delivery skills — 19 counting this router — each cross-referencing
 neighbors in its own "Not for..." clause. That is enough once you are inside
 one skill's context, and not enough cold. This is the one lookup before
-reading any of the 17 other skill files.
+reading any of the 18 other skill files.
 
 ## How to route
 
@@ -71,7 +71,7 @@ reading any of the 17 other skill files.
 
 ## Routes to nothing
 
-None of these 17 skills cover every ask — say so instead of forcing a match:
+None of these 18 skills cover every ask — say so instead of forcing a match:
 
 - "Explain what this function does" — plain Q&A, no build/audit/proof
 - "Write our README" — doc authoring, not delivery or verification
@@ -99,5 +99,9 @@ resolve both in this repo and in an installed tree.
 | `../../references/web-wcag-checklist.md` | accessibility criteria |
 | `../../references/ios-hig-checklist.md` | iOS interface criteria |
 | `../../references/run-trace-schema.md` | machine-facing run-trace record shape (`tools/trace.py`) |
+| `../../references/enforcement-map.md` | which doctrine is mechanically enforced, by what, and in what precedence |
+| `../../references/intent-verification.md` | was the ORIGINAL request met — the verdict the stop gate reads |
+| `../../references/subagent-aware-stop.md` | the stop state model, and which runtimes can honour it |
+| `../../references/docs-acquisition.md` | pulling authoritative upstream docs before building on them |
 
 Called by: nothing — the entry point for the whole plugin.

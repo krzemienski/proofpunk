@@ -543,7 +543,7 @@ live tree while writing it — re-run any of them to re-verify:
   the Bash write bypass (§4), then to 10/7/12 when `platform-steer.sh`
   (PreToolUse:Bash) was added as a non-blocking platform-mismatch
   steering guard (v4 W5).
-- 17 references: `glob plugins/proofpunk/references/*.md` → 17
+- 18 references: `glob plugins/proofpunk/references/*.md` → 18
   (the 15th is `docs-acquisition.md`, added for `implement`'s Stage 1.5
   ACQUIRE; the previous "14" count predated it).
 - 5 assets: `read plugins/proofpunk/assets/` → 2 top-level template files

@@ -46,7 +46,7 @@ exception, a widened timeout — is a mock of a fix and is forbidden here.
 5. **Verify the fix against the original reproduction**, then re-run the
    surrounding suite — a fix that breaks neighbors is a new bug, and its
    blast radius must be re-validated (see the shared runbooks at
-   `references/*-validation.md`).
+   `../../references/*-validation.md`).
 
 ## Measured additions (2026-08-12, aperant-tui gate runs)
 

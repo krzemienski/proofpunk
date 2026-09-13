@@ -180,7 +180,7 @@ The report header records the tools and actions actually performed. An audit
 that executed nothing says so — skipping or faking verification steps is a
 process violation, not a shortcut.
 
-Hand-offs: wiring doubts -> the shared runbooks (`references/*-validation.md`); app-wide scope ->
+Hand-offs: wiring doubts -> the shared runbooks (`../../references/*-validation.md`); app-wide scope ->
 `full-functional-audit`; pure pixel QA -> `visual-inspection`.
 
 ## Anti-Patterns

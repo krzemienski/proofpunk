@@ -258,8 +258,11 @@ gauge(
     lane="L12",
     name="Skills passing spec basics (name/desc/fields)",
     unit="skills",
-    baseline="18/18",
-    target="18/18",
+    # 19 since completion-summary landed. Measured 19/19; the old 18/18 target
+    # still reported PASS only because the comparison is lenient, which hid the
+    # drift rather than catching it.
+    baseline="19/19",
+    target="19/19",
     measured_fn=g_spec_basics,
 )
 
@@ -323,8 +326,8 @@ gauge(
     lane="L10",
     name="Skills with description+when_to_use under Claude Code's 1,536-char per-skill listing cap",
     unit="skills",
-    baseline="18/18 (max 978/1536, implement)",
-    target="18/18",
+    baseline="19/19 (max 978/1536, implement)",
+    target="19/19",
     measured_fn=g_description_budget,
 )
 
@@ -655,7 +658,7 @@ gauge(
 
 
 # ---------------------------------------------------------------------------
-# Gauge #6 (L14) — 18/18 skills present, ground-truth counts.
+# Gauge #6 (L14) — every skill directory present, ground-truth counts.
 # ---------------------------------------------------------------------------
 
 
@@ -666,7 +669,11 @@ def g_skill_count():
         return (None, "UNVERIFIED", [citation], False, "sealed baseline artifact missing")
     skills = load_skills()
     n = len(skills)
-    status = "PASS" if n == 18 else "UNMET"
+    # 19 since completion-summary landed. The constant lives HERE, not only in
+    # the gauge's `target=` string: editing the target alone left this at 18
+    # and the gauge reported "measured=19 target=19 ... UNMET", which reads as
+    # a comparison bug rather than the stale constant it actually was.
+    status = "PASS" if n == 19 else "UNMET"
     return (f"{n}", status, [citation], True, f"{n} skill directories with SKILL.md found under plugins/proofpunk/skills/")
 
 
@@ -675,8 +682,11 @@ gauge(
     lane="L14",
     name="Skill count (ground truth, derived not restated)",
     unit="skills",
-    baseline="18",
-    target="18",
+    # 19 since completion-summary landed (the skill the subagent-aware stop
+    # redesign added). The target tracks the measured tree, never the reverse:
+    # a stale constant here would be "fixed" by deleting a real skill.
+    baseline="19",
+    target="19",
     measured_fn=g_skill_count,
 )
 
