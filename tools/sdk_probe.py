@@ -441,7 +441,7 @@ def _local_plugin_loaded(plugins):
     return False
 
 
-async def run(name: str, cwd: str, use_plugin: bool) -> dict:
+async def run(name: str, cwd: str, use_plugin: bool, model: str = None) -> dict:
     spec = PROBES[name]
 
     # Clean the artifact before the arm so a stale file from a prior run can
@@ -495,6 +495,8 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
     hook_runs = []           # identity + outcome of each hook script that ran
     transcript = []          # compact session trace for the command-surface artifact
     init_slash, init_plugins = [], []
+    init_model = None
+    init_keys = []
 
     # Snapshot the loads tap by LINE COUNT so only lines this run appended are
     # parsed. Byte growth alone proves nothing — other hooks write here too.
@@ -511,6 +513,10 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
 
     try:
         try:
+            # Pinning is OPT-IN: unpinned runs still record the resolved
+            # model, so attribution never depends on remembering the flag.
+            if model:
+                opts["model"] = model
             stream = query(prompt=spec["prompt"], options=ClaudeAgentOptions(**opts))
             async for msg in stream:
                 if isinstance(msg, AssistantMessage):
@@ -559,11 +565,31 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                     if msg.subtype == "init" or data.get("subtype") == "init":
                         init_slash = list(data.get("slash_commands") or [])
                         init_plugins = data.get("plugins") or []
+                        # MODEL PROVENANCE. ClaudeAgentOptions.model is not
+                        # set by this probe, so the CLI chooses; without
+                        # recording that choice, no artifact can say what a
+                        # result was produced BY. Measured 2026-09-13: a
+                        # 77KB live artifact contained zero model strings,
+                        # because this block kept three hand-picked fields
+                        # and dropped the rest of the init payload.
+                        #
+                        # Record whatever the payload exposes, and record
+                        # the full key list so a future absence is provably
+                        # absent rather than an artifact of this filter.
+                        _mi = data.get("modelInfo")
+                        out_model = (
+                            data.get("model")
+                            or data.get("model_id")
+                            or (_mi.get("model") if isinstance(_mi, dict) else None))
+                        init_model = out_model
+                        init_keys = sorted(data.keys())
                         transcript.append({
                             "kind": "init",
                             "slash_proofpunk": [c for c in init_slash
                                                 if str(c).startswith("proofpunk:")],
                             "local_plugin": _local_plugin_loaded(init_plugins),
+                            "model": out_model,
+                            "init_keys": sorted(data.keys()),
                         })
                     if "refusing to create a test artifact" in json.dumps(data):
                         denials.append("no-test-files")
@@ -629,6 +655,22 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         "transcript": transcript,
         "init_slash_proofpunk": [c for c in init_slash
                                  if str(c).startswith("proofpunk:")],
+        # Model provenance, top level so it is readable without walking the
+        # transcript. `null` here is a PROVEN absence, not an unrecorded one:
+        # init_keys lists every field the payload actually carried, so a
+        # reader can tell "the CLI did not expose a model" apart from "this
+        # probe did not look".
+        "model": init_model,
+        "model_recorded": init_model is not None,
+        # What we ASKED for vs what the session actually resolved. Equal on
+        # a pinned run that was honoured; requested=None means the CLI chose.
+        # Recording both means a silently-ignored pin is visible instead of
+        # looking like a successful one.
+        "model_requested": model,
+        "model_pinned": model is not None,
+        "model_pin_honoured": (None if model is None
+                               else init_model == model),
+        "init_keys": init_keys,
         "local_plugin_loaded": _local_plugin_loaded(init_plugins),
         "prompt": spec["prompt"],
     }
@@ -1001,9 +1043,16 @@ def main():
     ap.add_argument("--no-plugin", action="store_true",
                     help="control arm: run WITHOUT the plugin to prove the "
                          "probe can fail (guards against a vacuous pass)")
+    ap.add_argument("--model", default=None,
+                    help="pin the model instead of letting the CLI choose. "
+                         "ClaudeAgentOptions.model defaults to 'determined "
+                         "by the CLI', which makes a flaky probe vary on two "
+                         "axes at once. The resolved model is recorded in "
+                         "the artifact's `model` field either way, so a run "
+                         "without this flag is still attributable.")
     a = ap.parse_args()
     try:
-        out = asyncio.run(run(a.probe, a.cwd, not a.no_plugin))
+        out = asyncio.run(run(a.probe, a.cwd, not a.no_plugin, model=a.model))
     except Exception as e:
         print(json.dumps({"probe": a.probe, "harness_error": f"{type(e).__name__}: {e}"}))
         sys.exit(2)
