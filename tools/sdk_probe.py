@@ -14,6 +14,7 @@ Emits one JSON object on stdout. Exit 0 if the probe's expectation held,
 """
 import argparse
 import asyncio
+import hashlib
 import json
 import os
 import re
@@ -609,7 +610,20 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
         "reply": joined.strip()[:400],
         "hook_events": sorted(set(hooks)), "tools_used": sorted(set(tools)),
         "hook_runs": hook_runs,
-        "tool_calls": [{"name": c["name"], "input": json.dumps(c["input"])[:200]}
+        # `input` stays capped for readability, but a cap DESTROYS evidence:
+        # measured 2026-09-13, the install verification block's `grep -c
+        # proofpunk:begin` falls past 200 chars, so replaying the artifact
+        # cannot confirm a check that the live run would pass. Record the
+        # full length and a digest so truncation is visible rather than
+        # silent, and keep derived check results (computed from the LIVE
+        # dict, above) as the authority for anything gating.
+        "tool_calls": [{"name": c["name"],
+                        "input": json.dumps(c["input"])[:200],
+                        "input_len": len(json.dumps(c["input"])),
+                        "input_truncated": len(json.dumps(c["input"])) > 200,
+                        "input_sha256": hashlib.sha256(
+                            json.dumps(c["input"], sort_keys=True).encode()
+                        ).hexdigest()[:16]}
                        for c in tool_calls],
         "result": result,
         "transcript": transcript,
@@ -764,15 +778,16 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                 return False
 
             def _is_first_party_write(call):
-                if call["name"] in ("Write", "Edit"):
-                    return True
-                if call["name"] != "Bash":
-                    return False
+                """A write of THIS artifact, by any first-party mechanism.
+
+                Both branches apply the SAME target rule. An earlier version
+                returned True for every Write/Edit before checking its path,
+                so an SDK write to ANY file would have counted as installing
+                the memory file. No Write/Edit call appears anywhere in the
+                recorded evidence, so real data could never have exposed it.
+                """
                 raw = call.get("input")
-                cmd = ""
-                if isinstance(raw, dict):
-                    cmd = raw.get("command", "")
-                elif isinstance(raw, str):
+                if isinstance(raw, str):
                     # A truncated record is UNKNOWN provenance, never
                     # affirmative. At runtime `input` is the live dict
                     # (see the tool_calls append above), so the real verdict
@@ -780,10 +795,25 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                     # strings can be clipped, and those must not be able to
                     # claim a write happened.
                     try:
-                        cmd = (json.loads(raw) or {}).get("command", "")
+                        raw = json.loads(raw)
                     except (ValueError, TypeError):
                         return False
-                return _targets_artifact(cmd)
+                if not isinstance(raw, dict):
+                    return False
+                if call["name"] in ("Write", "Edit"):
+                    # Write/Edit name their target directly; resolve it the
+                    # same way, against the same sandbox.
+                    path = (raw.get("file_path") or raw.get("path")
+                            or raw.get("filePath") or "")
+                    if not path:
+                        return False
+                    p = os.path.expanduser(path)
+                    if not os.path.isabs(p):
+                        p = os.path.join(cwd, p)
+                    return os.path.realpath(p) == os.path.realpath(claude_md)
+                if call["name"] != "Bash":
+                    return False
+                return _targets_artifact(raw.get("command", ""))
 
             write_calls = [c for c in tool_calls if _is_first_party_write(c)]
             checks["write_attempted"] = bool(write_calls)
@@ -811,6 +841,69 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
             out["install_artifact"] = claude_md
             out["install_artifact_exists"] = exists
             out["install_artifact_lines"] = len(content.splitlines()) if content else 0
+            # commands/install.md's FOURTH acceptance criterion: "The
+            # verification block at the end was actually run, output in the
+            # report." The artifact checks above prove the file; they say
+            # nothing about whether the command verified its own work.
+            #
+            # Observable: the command documents an explicit block, and the
+            # recorded run executes it (`wc -l CLAUDE.md AGENTS.md ...;
+            # grep -c "proofpunk:begin" ...`). Require a Bash call that runs
+            # the block's own probes AGAINST THIS ARTIFACT — same target
+            # discipline as the write check, so verifying some other file
+            # cannot satisfy it. A completed non-error result is required:
+            # an unmatched call is in-flight, not proof it ran.
+            # Every CLAUDE.md reference in the command, resolved the same way
+            # the write check resolves redirect targets. A basename test was
+            # TRIED and found leaky: `cd /tmp/other && wc -l CLAUDE.md;
+            # grep -c ...` verified a DIFFERENT file and still qualified.
+            _ref = re.compile(
+                r"(?:\"([^\"]*CLAUDE\.md)\"|'([^']*CLAUDE\.md)'"
+                r"|([^\s\"'|;&<>]*CLAUDE\.md))")
+
+            def _references_artifact(cmd):
+                want = os.path.realpath(claude_md)
+                base = cwd
+                for m in re.finditer(r"\bcd\s+(?:\"([^\"]+)\"|'([^']+)'"
+                                     r"|([^\s\"'|;&]+))", cmd):
+                    d = next(g for g in m.groups() if g is not None)
+                    base = d if os.path.isabs(d) else os.path.join(base, d)
+                for m in _ref.finditer(cmd):
+                    raw = next(g for g in m.groups() if g is not None)
+                    p = os.path.expanduser(raw)
+                    if not os.path.isabs(p):
+                        p = os.path.join(base, p)
+                    if os.path.realpath(p) == want:
+                        return True
+                return False
+
+            def _runs_verification_block(call):
+                if call["name"] != "Bash":
+                    return False
+                raw = call.get("input")
+                if isinstance(raw, str):
+                    try:
+                        raw = json.loads(raw)
+                    except (ValueError, TypeError):
+                        return False
+                if not isinstance(raw, dict):
+                    return False
+                cmd = raw.get("command", "")
+                if not _references_artifact(cmd):
+                    return False
+                # The block's distinguishing probes: a line count and a
+                # marker count. Requiring BOTH avoids crediting an incidental
+                # `wc -l` (e.g. during drafting) as the verification step.
+                return ("wc -l" in cmd
+                        and re.search(r"grep\s+-c\b[^\n]*proofpunk:begin", cmd)
+                        is not None)
+
+            verify_calls = [c for c in tool_calls if _runs_verification_block(c)]
+            checks["verification_block_run"] = any(
+                c["result"] is not None and c["is_error"] is not True
+                and str(c["result"] or "").strip()
+                for c in verify_calls)
+            out["verification_block_calls"] = len(verify_calls)
 
         if spec.get("effect_kind") == "verify":
             # Verdict rests on an observed real Bash command execution

@@ -62,21 +62,28 @@ def targets_artifact(cmd, sandbox=SANDBOX, target=CLAUDE_MD):
 
 
 def is_first_party_write(call):
-    if call["name"] in ("Write", "Edit"):
-        return True
-    if call["name"] != "Bash":
-        return False
+    """Mirrors sdk_probe. BOTH branches apply the same target rule."""
     raw = call.get("input")
-    cmd = ""
-    if isinstance(raw, dict):
-        cmd = raw.get("command", "")
-    elif isinstance(raw, str):
+    if isinstance(raw, str):
         # Truncated persisted record = UNKNOWN provenance, never affirmative.
         try:
-            cmd = (json.loads(raw) or {}).get("command", "")
+            raw = json.loads(raw)
         except (ValueError, TypeError):
             return False
-    return targets_artifact(cmd)
+    if not isinstance(raw, dict):
+        return False
+    if call["name"] in ("Write", "Edit"):
+        path = (raw.get("file_path") or raw.get("path")
+                or raw.get("filePath") or "")
+        if not path:
+            return False
+        p = os.path.expanduser(path)
+        if not os.path.isabs(p):
+            p = os.path.join(SANDBOX, p)
+        return os.path.realpath(p) == os.path.realpath(CLAUDE_MD)
+    if call["name"] != "Bash":
+        return False
+    return targets_artifact(raw.get("command", ""))
 
 
 # The exact command observed in
@@ -158,10 +165,26 @@ def main():
                 failures.append(
                     f"FALSE credit: {label} [{shape_name}] must NOT count")
 
-    # Write/Edit remain first-party regardless of input shape.
+    # Write/Edit are first-party but NOT unconditional: they must name THIS
+    # artifact. An earlier version returned True before checking the path, so
+    # an SDK write to any file counted as installing the memory file. No
+    # Write/Edit call appears anywhere in the recorded evidence, so only a
+    # synthetic test can hold this branch honest.
     for tool in ("Write", "Edit"):
-        if not is_first_party_write({"name": tool, "input": {}}):
-            failures.append(f"{tool} must always count as a first-party write")
+        for key in ("file_path", "path", "filePath"):
+            if not is_first_party_write({"name": tool, "input": {key: CLAUDE_MD}}):
+                failures.append(f"{tool} via {key} to the artifact must count")
+        if not is_first_party_write({"name": tool, "input": {"file_path": "CLAUDE.md"}}):
+            failures.append(f"{tool} with a relative artifact path must count")
+        for bad in ("/etc/CLAUDE.md", "other/CLAUDE.md", "../CLAUDE.md",
+                    "~/CLAUDE.md", os.path.join(SANDBOX, "NOTES.md")):
+            if is_first_party_write({"name": tool, "input": {"file_path": bad}}):
+                failures.append(f"FALSE credit: {tool} to {bad} must NOT count")
+        if is_first_party_write({"name": tool, "input": {}}):
+            failures.append(f"{tool} with no target must NOT count")
+        # Malformed persisted strings are never affirmative.
+        if is_first_party_write({"name": tool, "input": '{"file_path": "/x'}):
+            failures.append(f"{tool} with a truncated record must NOT count")
 
     # A non-write tool never counts, even naming the artifact.
     if is_first_party_write({"name": "Read", "input": {"file_path": CLAUDE_MD}}):
@@ -183,7 +206,7 @@ def main():
             "mutation guard broken: the basename-only pattern should still "
             "credit ../CLAUDE.md, proving the wrong-path tests bite")
 
-    total = (len(MUST_CREDIT) + len(MUST_REJECT)) * 2 + 5
+    total = (len(MUST_CREDIT) + len(MUST_REJECT)) * 2 + 2 * 11 + 3
     if failures:
         print(f"FAIL  {len(failures)} of {total} assertions failed")
         for f in failures:

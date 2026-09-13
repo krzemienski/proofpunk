@@ -384,6 +384,37 @@ INSTALL_EFFECT_CHECKS = (
     "write_attempted", "write_succeeded", "claude_md_exists",
     "markers_present", "within_200_lines", "template_substituted",
 )
+# SEMANTICS (revised 2026-09-13, name deliberately unchanged):
+# `write_attempted` means "a first-party write TARGETING THIS ARTIFACT was
+# attempted" — not "the SDK Write tool was used". It is satisfied by Write,
+# Edit, or a Bash redirect, and in every case only when the resolved target
+# equals this arm's CLAUDE.md. commands/install.md says "Write or merge the
+# memory file" and its acceptance criteria constrain the RESULT (exists,
+# <=200 lines, correct platform name, marker-delimited, nothing outside the
+# markers edited) without mandating a tool, so mechanism is not the contract.
+#
+# The name is kept because this tuple is the promotion gate: renaming a check
+# here fails LOUD, which is the point. Mechanism is still visible in the
+# probe's `write_tool_used` and `write_mechanism` fields, which are RECORDED
+# and never gate.
+#
+# FOURTH CRITERION — commands/install.md requires "the verification block at
+# the end was actually run, output in the report". sdk_probe now emits
+# `verification_block_run`: a Bash call that references THIS arm's artifact
+# (resolved against the effective cwd, not by basename) AND runs both of the
+# block's distinguishing probes (`wc -l` plus `grep -c proofpunk:begin`),
+# with a completed non-error result.
+#
+# It is deliberately NOT in the tuple above yet. Adding a check here changes
+# the promotion verdict, and this one has not been observed passing on a live
+# run: the only recorded evidence truncates tool input at 200 chars
+# (sdk_probe ~612), which severs the command BEFORE its grep, so replay
+# cannot confirm it. At runtime the predicate reads the live dict and would
+# match, but "would" is not evidence.
+#
+# Promote it into INSTALL_EFFECT_CHECKS once a live install arm reports
+# verification_block_run=True. Until then it is RECORDED, not gating, and the
+# fourth criterion stays UNVERIFIED — a known gap, not a silent pass.
 VERIFY_EFFECT_CHECKS = (
     "bash_attempted", "bash_executed", "sentinel_seeded", "sentinel_surfaced",
 )
