@@ -1,0 +1,6 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-failure-point-measured.md 1974 36ca6a10f6253f32b32f9f329cd1ca51be63080d7d5779ce96a0412227a8137d
+step-02-observability-resolved.md 2399 7903e8bd52ec4a58f0c073dc06aea584d26b28b950656d542d405d689583b23f
+step-03-tracker-found-and-staleness-hazard.md 2242 c8cb9b72380f9e7534d59c166c5dfe1d5d11e11c2a3138ce5867423c3a139123
+step-04-state-matrix-16-arms.md 2526 a5bdfc13973117be35dda969b613794b57c99916bcf7436a397d3a4312e1edcf
+sealed=2026-09-13T02:16:42Z count=4 total_bytes=9141
