@@ -304,15 +304,35 @@ def run_arm_with_retry(label, probe, no_plugin, log_path, rc_path,
                                          attempt_rc, model,
                                          plugin_dir=plugin_dir)
             # A pin the SDK silently ignored is worse than no pin: the run
-            # would LOOK controlled. sdk_probe reports what actually
-            # resolved, so check it here, on the arm, not in a summary.
+            # would LOOK controlled. Printing a warning is not enough — a
+            # warning does not change rc, the parsed verdict, or any count,
+            # so an uncontrolled arm would still flow into promotion and
+            # into the full-chain total.
+            #
+            # So INVALIDATE the arm. Both failure shapes count:
+            #   False -> the SDK resolved a different model than requested
+            #   None  -> the arm never reported, so control is UNPROVEN
+            # Neither may be treated as controlled.
             if parsed is not None and model:
                 honoured = parsed.get("model_pin_honoured")
-                if honoured is False:
-                    print(f"   !! {label}: model pin NOT honoured "
-                          f"(requested={model!r} resolved="
-                          f"{parsed.get('model')!r}) — arm is NOT controlled",
+                if honoured is not True:
+                    reason = ("resolved a different model"
+                              if honoured is False
+                              else "did not report model_pin_honoured")
+                    detail = (f"model pin NOT honoured: {reason} "
+                              f"(requested={model!r} "
+                              f"resolved={parsed.get('model')!r})")
+                    print(f"   !! {label}: {detail} — arm INVALIDATED",
                           flush=True)
+                    # Persist the reason next to the arm's own log so the
+                    # artifact carries it, not just this stdout.
+                    with open(attempt_log, "a", encoding="utf-8") as fh:
+                        fh.write(f"\nARM INVALIDATED: {detail}\n")
+                    # Drop the parse: downstream treats a None json as an
+                    # unusable arm (harness error), which already blocks
+                    # promotion and excludes the row from full-chain counts.
+                    parsed = None
+                    rc = 2
         finally:
             shutil.rmtree(sandbox, ignore_errors=True)
         # Mirror the CURRENT attempt to the canonical (unsuffixed) path so
