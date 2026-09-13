@@ -24,17 +24,24 @@ absence as an unproven claim.
 Symmetrically, the main `Stop` event knows nothing about children: no matcher
 in `hooks.json` matches the spawn tool, so a spawn is never observed.
 
-## 2. The four states
+## 2. The five states
 
 ```
 MAIN_ACTIVE          main thread still working              -> stop not yet asked
 MAIN_IDLE_NO_CHILDREN  main idle, zero live children        -> STOP ALLOWED
 MAIN_IDLE_CHILDREN_LIVE main idle, >=1 live child           -> STOP BLOCKED
 ALL_COMPLETE         main idle, every child terminal        -> STOP ALLOWED
+ALL_COMPLETE_DEGRADED main idle, nothing live, but >=1 entry
+                     not PROVEN terminal                    -> STOP ALLOWED
 ```
 
 `MAIN_IDLE_CHILDREN_LIVE` is the state the shipped guard cannot represent, and
 the only one that must block.
+
+`ALL_COMPLETE_DEGRADED` exists because four states could not tell the truth. An
+entry with a missing or unparsable `started_at`, or an unreadable record, is
+not *proven* finished — reporting it as `ALL_COMPLETE` would assert something
+unmeasured. The stop is still allowed (§3), but the state name says so.
 
 ## 3. What "live" means — and why age is part of the definition
 

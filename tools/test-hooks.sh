@@ -855,6 +855,93 @@ else
   case_fail "platform-steer malformed stdin — rc=$rc out=$out"
 fi
 
+# ---------------------------------------------------------------------------
+# Subagent liveness (agent_state.py) — the state model behind subagent-aware
+# stop. Exit codes are the interface: rc 0 = a live child holds the session,
+# rc 2 = nothing live, the stop may proceed.
+#
+# The wedge these cases exist to prevent: three "running" entries measured on
+# disk in this repo were 257-266h old. Blocking on status alone hangs every
+# session forever, so every degenerate input below MUST allow.
+# ---------------------------------------------------------------------------
+# $HOOKS is <plugin>/hooks; the scripts live beside it under skills/.
+AGENT_STATE="$(cd "$HOOKS/.." && pwd)/skills/end-user-testing/scripts/agent_state.py"
+
+pp_tracker() { # $1=dir $2=session $3=json
+  mkdir -p "$1/.omc/state/sessions/$2"
+  printf '%s' "$3" > "$1/.omc/state/sessions/$2/subagent-tracking-state.json"
+}
+
+if [ ! -f "$AGENT_STATE" ]; then
+  case_fail "agent_state.py missing at $AGENT_STATE"
+elif ! command -v python3 >/dev/null 2>&1; then
+  case_ok "agent_state cases skipped (no python3; guards fail open by design)"
+else
+  # Case A1: a live child (fresh started_at) must BLOCK the stop.
+  _d=$(mktemp -d)
+  _now=$(python3 -c 'import datetime as d;print(d.datetime.now(d.timezone.utc).isoformat())')
+  pp_tracker "$_d" sA1 "{\"agents\":[{\"status\":\"running\",\"agent_type\":\"scout\",\"started_at\":\"$_now\",\"agent_id\":\"a1\"}]}"
+  out=$(python3 "$AGENT_STATE" live --session sA1 --cwd "$_d" 2>&1); rc=$?
+  if [ "$rc" -eq 0 ]; then case_ok "agent_state blocks while a live child runs"
+  else case_fail "agent_state must block on a live child — rc=$rc out=$out"; fi
+
+  # Case A2: a leaked 'running' entry (257h) must NOT wedge the session.
+  _old=$(python3 -c 'import datetime as d;print((d.datetime.now(d.timezone.utc)-d.timedelta(hours=257)).isoformat())')
+  pp_tracker "$_d" sA2 "{\"agents\":[{\"status\":\"running\",\"agent_type\":\"worker\",\"started_at\":\"$_old\",\"agent_id\":\"a2\"}]}"
+  out=$(python3 "$AGENT_STATE" live --session sA2 --cwd "$_d" 2>&1); rc=$?
+  if [ "$rc" -eq 2 ]; then case_ok "agent_state ages out a leaked 257h child (no wedge)"
+  else case_fail "agent_state must not block on a stale child — rc=$rc out=$out"; fi
+
+  # Case A3: a failed child is terminal, not live.
+  pp_tracker "$_d" sA3 '{"agents":[{"status":"failed","agent_type":"scout","agent_id":"a3"}]}'
+  out=$(python3 "$AGENT_STATE" live --session sA3 --cwd "$_d" 2>&1); rc=$?
+  if [ "$rc" -eq 2 ]; then case_ok "agent_state treats a failed child as terminal"
+  else case_fail "agent_state must not block on a failed child — rc=$rc out=$out"; fi
+
+  # Case A4: malformed tracker allows the stop, and says DEGRADED rather than
+  # claiming "no children recorded" — corruption is not proof of completion.
+  pp_tracker "$_d" sA4 '{not json'
+  out=$(python3 "$AGENT_STATE" live --session sA4 --cwd "$_d" 2>&1); rc=$?
+  st=$(python3 "$AGENT_STATE" state --session sA4 --cwd "$_d" 2>&1)
+  if [ "$rc" -ne 2 ]; then case_fail "malformed tracker must allow the stop — rc=$rc out=$out"
+  elif [ "$st" != "ALL_COMPLETE_DEGRADED" ]; then case_fail "malformed tracker must report DEGRADED — got $st"
+  else case_ok "agent_state reports DEGRADED on a malformed tracker"; fi
+
+  # Case A5: empty tracker file — same contract as malformed.
+  pp_tracker "$_d" sA5 ''
+  out=$(python3 "$AGENT_STATE" live --session sA5 --cwd "$_d" 2>&1); rc=$?
+  st=$(python3 "$AGENT_STATE" state --session sA5 --cwd "$_d" 2>&1)
+  if [ "$rc" -eq 2 ] && [ "$st" = "ALL_COMPLETE_DEGRADED" ]; then
+    case_ok "agent_state reports DEGRADED on an empty tracker"
+  else case_fail "empty tracker — rc=$rc state=$st out=$out"; fi
+
+  # Case A6: unreadable tracker (permission denied) must allow, not wedge.
+  pp_tracker "$_d" sA6 '{"agents":[]}'
+  chmod 000 "$_d/.omc/state/sessions/sA6/subagent-tracking-state.json" 2>/dev/null || true
+  out=$(python3 "$AGENT_STATE" live --session sA6 --cwd "$_d" 2>&1); rc=$?
+  chmod 644 "$_d/.omc/state/sessions/sA6/subagent-tracking-state.json" 2>/dev/null || true
+  if [ "$rc" -eq 2 ]; then case_ok "agent_state fails open on an unreadable tracker"
+  else case_fail "unreadable tracker must allow the stop — rc=$rc out=$out"; fi
+
+  # Case A7: unknown age is NOT reported as "treated finished".
+  pp_tracker "$_d" sA7 '{"agents":[{"status":"running","agent_type":"noTs","agent_id":"a7"}]}'
+  out=$(python3 "$AGENT_STATE" live --session sA7 --cwd "$_d" 2>&1); rc=$?
+  if [ "$rc" -ne 2 ]; then case_fail "unknown-age child must not wedge — rc=$rc out=$out"
+  elif printf '%s' "$out" | grep -q 'treated finished'; then
+    case_fail "unknown age must not claim 'treated finished' — got: $out"
+  elif printf '%s' "$out" | grep -q 'NOT proven finished'; then
+    case_ok "agent_state surfaces unknown age as NOT proven finished"
+  else case_fail "unknown age must be surfaced explicitly — got: $out"; fi
+
+  # Case A8: no tracker at all is a legitimate "no children", not DEGRADED.
+  _e=$(mktemp -d)
+  st=$(python3 "$AGENT_STATE" state --session ghost --cwd "$_e" 2>&1)
+  if [ "$st" = "MAIN_IDLE_NO_CHILDREN" ]; then
+    case_ok "agent_state reports NO_CHILDREN when no tracker exists"
+  else case_fail "absent tracker must be NO_CHILDREN — got $st"; fi
+  rm -rf "$_d" "$_e" 2>/dev/null || true
+fi
+
 echo "HOOK TEST FAILS: $FAILS"
 rm -rf "$TMP"
 exit "$FAILS"

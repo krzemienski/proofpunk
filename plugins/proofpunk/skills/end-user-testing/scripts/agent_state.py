@@ -148,7 +148,9 @@ def read_state(session_id: str, cwd: str, cutoff: int = STALE_CUTOFF_SECONDS) ->
         raw = json.loads(path.read_text())
     except (OSError, ValueError) as err:
         return {
-            "state": STATE_NO_CHILDREN,
+            # Not NO_CHILDREN: that would claim "no children recorded" when the
+            # truth is "we cannot tell". Allowed (never wedge), but degraded.
+            "state": STATE_DEGRADED,
             "live": [],
             "reason": f"tracker unreadable ({type(err).__name__}); failing open",
             "tracker": str(path),
@@ -158,7 +160,7 @@ def read_state(session_id: str, cwd: str, cutoff: int = STALE_CUTOFF_SECONDS) ->
     agents = raw.get("agents")
     if not isinstance(agents, list):
         return {
-            "state": STATE_NO_CHILDREN,
+            "state": STATE_DEGRADED,
             "live": [],
             "reason": "tracker has no agents list; failing open",
             "tracker": str(path),
