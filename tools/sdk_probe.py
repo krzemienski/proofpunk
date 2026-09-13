@@ -734,10 +734,34 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
             # actually redirects into the artifact this check verifies. A
             # bare shell call, an `ls`, or a write to some other path is not
             # a write of CLAUDE.md and must never be credited as one.
-            _artifact = os.path.basename(claude_md)
+            # Capture the redirect TARGET, then resolve it against the
+            # sandbox. Matching a bare basename is not enough: measured
+            # 2026-09-13, a basename-only pattern credited writes to
+            # other/CLAUDE.md, ../CLAUDE.md, /etc/CLAUDE.md, ~/CLAUDE.md and
+            # backup/CLAUDE.md — five paths that are NOT this artifact.
             _redirect = re.compile(
-                r"(?:>>?|\btee\b(?:\s+-\w+)*)\s*(?:\"|')?[^\s\"'|;&]*"
-                + re.escape(_artifact))
+                r"(?:>>?|\btee\b(?:\s+-[\w-]+)*)\s+(?:\"([^\"]+)\"|'([^']+)'"
+                r"|([^\s\"'|;&<>]+))")
+
+            def _targets_artifact(cmd, sandbox=cwd, target=claude_md):
+                """True only if a redirect resolves to THIS artifact."""
+                want = os.path.realpath(target)
+                # `cd <dir> && ...` moves the base the redirect resolves
+                # against; honour the last cd so a heredoc after a cd into
+                # the sandbox is judged from the right directory.
+                base = sandbox
+                for m in re.finditer(r"\bcd\s+(?:\"([^\"]+)\"|'([^']+)'"
+                                     r"|([^\s\"'|;&]+))", cmd):
+                    d = next(g for g in m.groups() if g is not None)
+                    base = d if os.path.isabs(d) else os.path.join(base, d)
+                for m in _redirect.finditer(cmd):
+                    raw = next(g for g in m.groups() if g is not None)
+                    p = os.path.expanduser(raw)
+                    if not os.path.isabs(p):
+                        p = os.path.join(base, p)
+                    if os.path.realpath(p) == want:
+                        return True
+                return False
 
             def _is_first_party_write(call):
                 if call["name"] in ("Write", "Edit"):
@@ -749,16 +773,17 @@ async def run(name: str, cwd: str, use_plugin: bool) -> dict:
                 if isinstance(raw, dict):
                     cmd = raw.get("command", "")
                 elif isinstance(raw, str):
-                    # Recorded inputs may be TRUNCATED json (measured: the
-                    # v3 evidence clips tool input mid-string, so json.loads
-                    # raises). Parse when we can; otherwise scan the raw text
-                    # rather than silently returning False — a clipped record
-                    # must not be read as "no write happened".
+                    # A truncated record is UNKNOWN provenance, never
+                    # affirmative. At runtime `input` is the live dict
+                    # (see the tool_calls append above), so the real verdict
+                    # always takes the dict path; only replayed/persisted
+                    # strings can be clipped, and those must not be able to
+                    # claim a write happened.
                     try:
                         cmd = (json.loads(raw) or {}).get("command", "")
                     except (ValueError, TypeError):
-                        cmd = raw
-                return bool(_redirect.search(cmd))
+                        return False
+                return _targets_artifact(cmd)
 
             write_calls = [c for c in tool_calls if _is_first_party_write(c)]
             checks["write_attempted"] = bool(write_calls)

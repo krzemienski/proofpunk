@@ -33,10 +33,32 @@ import sys
 
 # Mirrors sdk_probe.py's install effect block. Kept in sync deliberately:
 # this test fails loudly if the predicate there stops matching this one.
-CLAUDE_MD = "/tmp/pp-sandbox/CLAUDE.md"
-_ARTIFACT = os.path.basename(CLAUDE_MD)
+SANDBOX = "/tmp/pp-sandbox"
+CLAUDE_MD = os.path.join(SANDBOX, "CLAUDE.md")
+
+# Capture the redirect TARGET, then resolve it. A basename-only pattern was
+# TRIED and found unsafe (measured 2026-09-13): it credited writes to
+# other/CLAUDE.md, ../CLAUDE.md, /etc/CLAUDE.md, ~/CLAUDE.md and
+# backup/CLAUDE.md — five paths that are not this artifact.
 _REDIRECT = re.compile(
-    r"(?:>>?|\btee\b(?:\s+-\w+)*)\s*(?:\"|')?[^\s\"'|;&]*" + re.escape(_ARTIFACT))
+    r"(?:>>?|\btee\b(?:\s+-[\w-]+)*)\s+(?:\"([^\"]+)\"|'([^']+)'"
+    r"|([^\s\"'|;&<>]+))")
+
+
+def targets_artifact(cmd, sandbox=SANDBOX, target=CLAUDE_MD):
+    want = os.path.realpath(target)
+    base = sandbox
+    for m in re.finditer(r"\bcd\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'|;&]+))", cmd):
+        d = next(g for g in m.groups() if g is not None)
+        base = d if os.path.isabs(d) else os.path.join(base, d)
+    for m in _REDIRECT.finditer(cmd):
+        raw = next(g for g in m.groups() if g is not None)
+        p = os.path.expanduser(raw)
+        if not os.path.isabs(p):
+            p = os.path.join(base, p)
+        if os.path.realpath(p) == want:
+            return True
+    return False
 
 
 def is_first_party_write(call):
@@ -49,27 +71,35 @@ def is_first_party_write(call):
     if isinstance(raw, dict):
         cmd = raw.get("command", "")
     elif isinstance(raw, str):
+        # Truncated persisted record = UNKNOWN provenance, never affirmative.
         try:
             cmd = (json.loads(raw) or {}).get("command", "")
         except (ValueError, TypeError):
-            cmd = raw
-    return bool(_REDIRECT.search(cmd))
+            return False
+    return targets_artifact(cmd)
 
 
 # The exact command observed in
-# evidence/v3-release/l16-commands/cmd_slash_install_effect.plugin.log
+# evidence/v3-release/l16-commands/cmd_slash_install_effect.plugin.log,
+# with its real sandbox path. Each arm gets a FRESH sandbox, so the recorded
+# path differs from this test's SANDBOX — the checker is therefore exercised
+# with that run's own sandbox as the base, exactly as sdk_probe does (it
+# passes its per-arm cwd). Hardcoding the observed path against a different
+# sandbox would assert a cross-sandbox write, which MUST fail.
+REAL_SANDBOX = ("/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/"
+                "pp-cmdsurface-install-effect-mnf6dyte")
 REAL_WRITE = (
-    "cd /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/"
-    "pp-cmdsurface-install-effect-mnf6dyte && cat > CLAUDE.md <<'EOF'\n"
+    f"cd {REAL_SANDBOX} && cat > CLAUDE.md <<'EOF'\n"
     "<!-- proofpunk:begin -->\n## Proof contract (proofpunk)\n")
 
 MUST_CREDIT = [
-    ("real observed run", REAL_WRITE),
-    ("heredoc", "cd /x && cat > CLAUDE.md <<'EOF'"),
+    ("heredoc in sandbox", f"cd {SANDBOX} && cat > CLAUDE.md <<'EOF'"),
+    ("bare heredoc", "cat > CLAUDE.md <<'EOF'"),
+    ("dot-slash", "cat > ./CLAUDE.md <<'EOF'"),
     ("append", "echo hi >> CLAUDE.md"),
     ("tee", "echo hi | tee CLAUDE.md"),
     ("tee -a", "echo hi | tee -a CLAUDE.md"),
-    ("absolute path", "cat > /tmp/pp-sandbox/CLAUDE.md <<'EOF'"),
+    ("absolute sandbox path", f"cat > {CLAUDE_MD} <<'EOF'"),
 ]
 
 MUST_REJECT = [
@@ -80,6 +110,15 @@ MUST_REJECT = [
     ("tees elsewhere", "echo hi | tee OTHER.md"),
     ("counts lines", "wc -l CLAUDE.md"),
     ("mentions in a message", "echo 'I will write CLAUDE.md'"),
+    # WRONG-PATH cases. Every one of these was CREDITED by the basename-only
+    # pattern — the reason this whole block exists.
+    ("subdirectory", "cat > other/CLAUDE.md <<'EOF'"),
+    ("parent directory", "cat > ../CLAUDE.md <<'EOF'"),
+    ("absolute elsewhere", "cat > /etc/CLAUDE.md <<'EOF'"),
+    ("home expansion", "cat > ~/CLAUDE.md <<'EOF'"),
+    ("backup dir", "echo hi > backup/CLAUDE.md"),
+    ("another tmp dir", "cat > /tmp/elsewhere/CLAUDE.md <<'EOF'"),
+    ("cd elsewhere first", "cd /tmp/other && cat > CLAUDE.md <<'EOF'"),
 ]
 
 
@@ -94,6 +133,18 @@ def shapes(command):
 
 def main():
     failures = []
+
+    # The real observed run, judged against ITS OWN sandbox — the base
+    # sdk_probe would pass as cwd for that arm.
+    real_target = os.path.join(REAL_SANDBOX, "CLAUDE.md")
+    if not targets_artifact(REAL_WRITE, sandbox=REAL_SANDBOX, target=real_target):
+        failures.append(
+            "MISSED write: the real observed install command must be credited "
+            "when judged against its own per-arm sandbox")
+    # And the same command must NOT be credited for a DIFFERENT sandbox.
+    if targets_artifact(REAL_WRITE, sandbox=SANDBOX, target=CLAUDE_MD):
+        failures.append(
+            "FALSE credit: a write into another arm's sandbox must not count")
 
     for label, cmd in MUST_CREDIT:
         for shape_name, payload in shapes(cmd):
@@ -123,8 +174,16 @@ def main():
 
     if old_predicate({"name": "Bash", "input": {"command": REAL_WRITE}}):
         failures.append("mutation guard broken: old check credited Bash")
+    # The basename-only pattern this replaced must FAIL the wrong-path cases.
+    _basename_only = re.compile(
+        r"(?:>>?|\btee\b(?:\s+-\w+)*)\s*(?:\"|')?[^\s\"'|;&]*"
+        + re.escape("CLAUDE.md"))
+    if not _basename_only.search("cat > ../CLAUDE.md <<'EOF'"):
+        failures.append(
+            "mutation guard broken: the basename-only pattern should still "
+            "credit ../CLAUDE.md, proving the wrong-path tests bite")
 
-    total = (len(MUST_CREDIT) + len(MUST_REJECT)) * 2 + 3
+    total = (len(MUST_CREDIT) + len(MUST_REJECT)) * 2 + 5
     if failures:
         print(f"FAIL  {len(failures)} of {total} assertions failed")
         for f in failures:
