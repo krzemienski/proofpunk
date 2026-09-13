@@ -384,6 +384,25 @@ INSTALL_EFFECT_CHECKS = (
     "write_attempted", "write_succeeded", "claude_md_exists",
     "markers_present", "within_200_lines", "template_substituted",
 )
+# NOT PROMOTED — `verification_block_run` was observed True on a live arm
+# (2 matching calls, 2026-09-13), which is the first direct evidence the
+# check can pass at all. It is still NOT gated, because that same arm ended
+# `result.is_error=True` — "Reached maximum number of turns (12)". An
+# errored session cannot certify a gate: every other check in it is a
+# reading taken from a run that did not complete, and promoting on it would
+# be exactly the "green from an incomplete run" failure this module exists
+# to prevent.
+#
+# What the live arm DID establish, and what still stands on its own:
+#   - write_attempted True  -> the contract-aligned write check works; the
+#     old "Write in tools" predicate reported False for this same behaviour
+#   - every tool input exceeded the 200-char cap (206..686), confirming the
+#     truncation that made replay report 0/6
+#   - no model id anywhere in the artifact, so provenance is still absent
+# Evidence: e2e-evidence/run-20260913T072606-v4-all-agents/
+#   live-install-arm/cmd_slash_install_effect.live.json
+#
+# Promote only after an arm that completes WITHOUT is_error reports it True.
 # SEMANTICS (revised 2026-09-13, name deliberately unchanged):
 # `write_attempted` means "a first-party write TARGETING THIS ARTIFACT was
 # attempted" — not "the SDK Write tool was used". It is satisfied by Write,
