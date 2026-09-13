@@ -50,6 +50,11 @@ HISTORICAL_BASENAMES = {
     "proofpunk-hooks-release-report.md",
     "proofpunk-skills-improvement-report-round2.md",
     "proofpunk-v2-release-report.md",
+    # A dated status report, same class as its v2 sibling: it QUOTES the
+    # counts a past run measured ("17 delivery skills") as the record of what
+    # was wrong at the time. Rewriting those to today's numbers would destroy
+    # the finding it exists to preserve.
+    "proofpunk-v4-status-report.md",
     "consolidation-decisions.md",
     "validation-results.md",
     "improvements.md",
@@ -92,13 +97,24 @@ HISTORICAL_LINE = re.compile(
     re.I,
 )
 
-# Number immediately before a count noun, with optional short qualifier.
-# Captures: (number, noun). Allows "18 skills", "13 shared doctrine files"
-# via noun=references when the word "references"/"reference" is nearby, but
-# the primary match is the noun itself.
+# Number before a count noun, with an optional short qualifier between them.
+# Captures: (number, noun).
+#
+# The qualifier slot is load-bearing, not cosmetic. Measured 2026-09-13: the
+# pattern previously required the number ADJACENT to the noun, so the router's
+# own headline claims — "18 delivery skills", "18 other skill files" — were
+# structurally invisible. Mutating them to 17 or 11 produced rc=0: four stale
+# counts in the plugin's entry point, entirely unguarded.
+#
+# Exactly ONE qualifier word is allowed between the number and the noun, and
+# only from a closed set. A general `\w+` gap was tried first and produced four
+# false positives immediately: "3 unknown skill in --only" (an error-code
+# sentence), "6 slash commands" (a real, different count), "4 skills" mid-
+# sentence, and a quoted historical string. A count checker that cries wolf
+# gets muted, so the qualifier set is explicit and additive.
 CLAIM_RE = re.compile(
     r"(?<![A-Za-z0-9./-])(\d+)\s+"
-    r"(?:shared\s+(?:doctrine\s+)?)?"
+    r"(?:(?:shared\s+(?:doctrine\s+)?|delivery\s+|other\s+|narrow\s+delivery\s+))?"
     r"(skills?|references?|commands?|registrations?|hooks?|agents?)"
     r"\b",
     re.I,

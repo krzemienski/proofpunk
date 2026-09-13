@@ -24,7 +24,7 @@ through a subset of these layers depending on what kind of request it is.
 
 | Layer | Location | Count | Purpose |
 |---|---|---|---|
-| Skills | `skills/*/SKILL.md` | 18 (17 delivery skills + 1 router) | `skills/proofpunk/SKILL.md` is the single entry point: it classifies a request's *shape* and hands off to exactly one (or a short ordered chain of) delivery skills, never re-executing their logic itself (§2). The other 17 are the actual methods — brainstorming, planning, implementing, auditing, debugging, red-teaming, proving — organized as a DAG so each method is owned by exactly one skill (§3). |
+| Skills | `skills/*/SKILL.md` | 19 (18 delivery skills + 1 router) | `skills/proofpunk/SKILL.md` is the single entry point: it classifies a request's *shape* and hands off to exactly one (or a short ordered chain of) delivery skills, never re-executing their logic itself (§2). The other 17 are the actual methods — brainstorming, planning, implementing, auditing, debugging, red-teaming, proving — organized as a DAG so each method is owned by exactly one skill (§3). |
 | Commands | `commands/*.md` | 6 (+6 OpenCode) | Slash-command surfaces (`/proofpunk:implement`, `:verify`, `:truth-audit`, `:rate-prompt`, `:forge-prompt`, `:install`) that activate a skill with the user's arguments. One-to-one with the OpenCode variants in `opencode/commands/proofpunk-*.md`, which carry the `proofpunk-` prefix OpenCode's flat command namespace requires. |
 | Agents | `agents/*.md` | 3 Claude Code, 3 OMP (`omp/agents/`), 4 OpenCode (`opencode/agents/`) | Pre-configured subagent personas (`implement`, `scout`, `end-user-validate`) that bundle a skill's doctrine into a spawnable role, so a session can delegate a whole implement-and-prove loop to a dedicated agent instead of running it inline. OpenCode carries one extra agent, `proofpunk.md` — the router itself, spawnable as a persona there (Claude Code and OMP route through the skill directly). |
 | Hooks | `hooks/*.sh` + `hooks.json` | 10 scripts, 7 event keys, 12 registrations | Deterministic, non-LLM enforcement of the doctrine that skills alone cannot guarantee: blocking test-file writes, blocking secrets in evidence, blocking modification of sealed captures, blocking an unproven completion claim, and steering a mismatched validation runbook back onto the right platform. Full per-registration map: `docs/hook-enforcement-map.md` (cited, not restated, in §4). |
@@ -138,11 +138,11 @@ to confirm this property still holds (parses the same tables, asserts
 closure, acyclicity, and that "Called by" claims match real edges) — see
 §1 for why this is a manual, not automatic, gate in this repo.
 
-### Call table (18 skills, 48 edges total: 17 from the router to every delivery skill, plus 31 among the 17 delivery skills — derived from `verify-orchestration.py`'s `CALLS` parse of every `## Skill calls` table, not restated)
+### Call table (19 skills, 51 edges total: 18 from the router to every delivery skill, plus 33 among the 18 delivery skills — derived from `verify-orchestration.py`'s `CALLS` parse of every `## Skill calls` table, not restated)
 
 | Skill | Calls | Called by |
 |---|---|---|
-| `proofpunk` | all 17 other skills | — (entry point) |
+| `proofpunk` | all 18 other skills | — (entry point) |
 | `implement` | `session-intent`, `brainstorm`, `prompt-forge`, `validation-plan`, `end-user-testing`, `tui-testing`, `root-cause-debugging` | `proofpunk` |
 | `production-readiness` | `codebase-truth-audit`, `full-functional-audit`, `stack-testing`, `end-user-testing` | `proofpunk` |
 | `full-functional-audit` | `end-user-testing`, `ui-experience-audit`, `root-cause-debugging`, `tui-testing` | `production-readiness`, `proofpunk` |
@@ -550,7 +550,7 @@ live tree while writing it — re-run any of them to re-verify:
   + `rules/` containing 3 files.
 - 48 DAG edges: the same `## Skill calls` parse `verify-orchestration.py`
   uses (`CALLS[s] = rows` of `` `| \`name\` |` ``). Router contributes 17;
-  the 17 delivery skills contribute 31. The previous "47 edges / 30 among
+  the 18 delivery skills contribute 33. The previous "47 edges / 30 among
   delivery" figure omitted `tui-testing → end-user-testing`.
 - The call graph in §3: that parse across all 18 `SKILL.md` files —
   not copied from any prior document.
