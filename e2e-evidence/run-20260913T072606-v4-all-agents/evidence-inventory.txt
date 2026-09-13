@@ -7,4 +7,5 @@ step-05-p10-enforcement-map.md 2661 b8955021b8f2ffea9bdf576cd7f85cc666b303c12a24
 step-06-p11-prose-review.md 4090 d0a88941540e6eb2150736afa13bb5a2535447d9c5a2b9f074ca7ea2200adf23
 step-07-p11-round2.md 3362 5f9b508839e2e3b369eeb0c282cb7b7cd0853ef0534542fe1ddc6158833efc88
 step-08-p11-round3.md 2824 52d5c79a3af639e85b38fa0e2bf77acab77851fb16eb90b79762faeffddc4755
-sealed=2026-09-13T08:33:43Z count=8 total_bytes=25067
+step-09-platform-steer-mutation.md 2322 6edbdf30ca9fc763ca7d495cb9a8ff2d2f3521313d5779b0bc90826066d3c625
+sealed=2026-09-13T08:36:32Z count=9 total_bytes=27389
