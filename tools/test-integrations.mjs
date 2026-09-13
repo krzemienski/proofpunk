@@ -242,12 +242,135 @@ check("session.created is observe-only (never throws)", createdThrew, false);
 check("session.created announced via client.app.log", logged.length > 0, true);
 
 // -------------------------------------------------------------------- OMP --
-// Load-only, for the reason stated in the header comment.
+// The extension registers handlers against an ExtensionAPI, so a recorder that
+// implements that surface captures the REAL handler functions. Invoking one
+// runs production code — this is not a stub standing in for the extension, it
+// is the extension, called the way the runtime calls it.
+//
+// What a recorder cannot do is invent events the runtime never emits. The
+// subagent-lifecycle gap (references/subagent-aware-stop.md §10) stays
+// UNCOVERED here because no such event exists to fire.
 console.log("\nOMP extension (extensions/proofpunk.ts)");
 const ompMod = await import(OMP);
 check("module loads under bun", typeof ompMod, "object");
 check("default export is the extension factory", typeof ompMod.default, "function");
-console.log("  UNCOVERED  event behavior — needs a live ExtensionAPI; a stub would test the stub");
+
+const handlers = new Map();
+const notices = [];
+const commands = new Map();
+let ompLabel = null;
+ompMod.default({
+	setLabel: (l) => void (ompLabel = l),
+	on: (event, fn) => void handlers.set(event, fn),
+	registerCommand: (name, spec) => void commands.set(name, spec),
+});
+
+check("sets a label at load", typeof ompLabel, "string");
+check("subscribes to session_start", handlers.has("session_start"), true);
+check("subscribes to tool_call", handlers.has("tool_call"), true);
+check("subscribes to session_stop", handlers.has("session_stop"), true);
+check("registers the proofpunk command", commands.has("proofpunk"), true);
+
+const ompCtx = {
+	ui: { notify: (m, level) => void notices.push({ m, level }) },
+	cwd: freshCwd(),
+};
+const toolCall = handlers.get("tool_call");
+
+async function ompDenies(name, event) {
+	const r = await toolCall(event, ompCtx);
+	check(name, r?.block === true, true);
+}
+
+async function ompAllows(name, event) {
+	const r = await toolCall(event, ompCtx);
+	check(name, r === undefined, true);
+}
+
+await ompDenies("tool_call denies rm -rf against home", {
+	type: "tool_call",
+	toolCallId: "tc-1",
+	toolName: "bash",
+	input: { command: "rm -rf ~/important" },
+});
+await ompDenies("tool_call denies a force-push to main", {
+	type: "tool_call",
+	toolCallId: "tc-2",
+	toolName: "bash",
+	input: { command: "git push --force origin main" },
+});
+await ompDenies("tool_call denies reading a .env secret", {
+	type: "tool_call",
+	toolCallId: "tc-3",
+	toolName: "read",
+	input: { path: "/tmp/project/.env" },
+});
+await ompDenies("tool_call denies writing a test file", {
+	type: "tool_call",
+	toolCallId: "tc-4",
+	toolName: "write",
+	input: { path: "/tmp/project/src/thing.test.ts" },
+});
+await ompAllows("tool_call allows an ordinary bash command", {
+	type: "tool_call",
+	toolCallId: "tc-5",
+	toolName: "bash",
+	input: { command: "ls -la" },
+});
+await ompAllows("tool_call allows an ordinary source write", {
+	type: "tool_call",
+	toolCallId: "tc-6",
+	toolName: "write",
+	input: { path: "/tmp/project/src/thing.ts" },
+});
+await ompAllows("tool_call allows reading an ordinary file", {
+	type: "tool_call",
+	toolCallId: "tc-7",
+	toolName: "read",
+	input: { path: "/tmp/project/src/thing.ts" },
+});
+
+// session_start is notify-only: it must never return a decision.
+const startResult = await handlers.get("session_start")({ type: "session_start" }, ompCtx);
+check("session_start returns no decision", startResult, undefined);
+check("session_start notifies the operator", notices.length > 0, true);
+
+// session_stop returns { continue, reason } to hold the session open.
+const stop = handlers.get("session_stop");
+const claimNoProof = {
+	type: "session_stop",
+	turn_id: 1,
+	session_id: "omp-claim-no-proof",
+	messages: [{ role: "assistant", content: "All done — the feature is complete and working." }],
+	stop_hook_active: false,
+};
+const r1 = await stop(claimNoProof, ompCtx);
+check("session_stop holds a completion claim carrying no evidence", r1?.continue === true, true);
+
+// The evidence guard must NOT re-fire on a continuation pass: its question is
+// answered by the same transcript, so re-asking would loop to the runtime cap.
+const r2 = await stop({ ...claimNoProof, stop_hook_active: true }, ompCtx);
+check(
+	"evidence guard does not re-fire on a continuation pass",
+	(r2?.reason ?? "").includes("cited end-user evidence artifact"),
+	false,
+);
+
+// A turn that claimed nothing has nothing to verify.
+const r3 = await stop(
+	{
+		type: "session_stop",
+		turn_id: 2,
+		session_id: "omp-no-claim",
+		messages: [{ role: "assistant", content: "Here is the file listing." }],
+		stop_hook_active: false,
+	},
+	ompCtx,
+);
+check("session_stop ignores a turn that claimed nothing", r3, undefined);
+
+console.log("  UNCOVERED  subagent lifecycle — pi-coding-agent 18.1.19 emits no");
+console.log("             child-identity event, so there is nothing to fire");
 
 console.log(`\nINTEGRATION TEST PASSES: ${pass}`);
 console.log(`INTEGRATION TEST FAILS: ${fail}`);
