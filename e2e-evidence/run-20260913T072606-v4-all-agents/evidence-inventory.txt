@@ -32,4 +32,5 @@ step-30-write-boundary-hardened.md 3091 d50618eb3a93042d71b27b88b7b67b4188d4218b
 step-31-revert-provenance.md 2829 829a774a7c2d03fed6722458de43660571a0f8255e61dd05ac5a0ef13e9f5cbd
 step-32-write-edit-and-fourth-criterion.md 3226 0f9aaa48098673aea531a54f6cf9bf8391b34a01743aa5d9da9dac37c2c977bf
 step-33-partial-promotion.md 2473 d19446fe8b4ce87f3c947a2612ac797ce094500d8a508f09d4399906a4e47157
-sealed=2026-09-13T15:17:16Z count=33 total_bytes=92707
+step-34-live-install-arm.md 2990 31805144f1d7674ebb503d70a488a7304f187cc8e8a9efa77abc3d630f080821
+sealed=2026-09-13T15:21:37Z count=34 total_bytes=95697
