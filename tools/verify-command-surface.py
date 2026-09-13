@@ -483,6 +483,25 @@ def promote_to_effect_proven(base_verdict, effect_json, effect_kind,
             f"observed={ {n: e_checks.get(n) for n in required} }")
         return out
 
+    # SCOPE OF THIS PROMOTION (install): the gate above proves the ARTIFACT
+    # and its content. commands/install.md also requires that the command ran
+    # its own verification block. That criterion is measured by
+    # `verification_block_run`, which is NOT in the gate (see the note above
+    # INSTALL_EFFECT_CHECKS: it has never been observed passing live, because
+    # persisted tool input truncates before the block's grep).
+    #
+    # Promotion therefore must NOT claim the command doc is fully satisfied.
+    # Record the criterion's observed state on the row so a reader sees the
+    # gap instead of inferring completeness from level 'd'. A comment alone
+    # would not do this — the row is what downstream reporting reads.
+    if effect_kind == "install":
+        vbr = e_checks.get("verification_block_run")
+        if vbr is not True:
+            unproven = ("verification_block_run" if vbr is False
+                        else "verification_block_run (not reported)")
+        else:
+            unproven = None
+
     if require_counterfactual:
         # counterfactual_json arriving as None (harness error on the
         # counterfactual arm itself — build failure, retry exhaustion)
@@ -553,15 +572,36 @@ def promote_to_effect_proven(base_verdict, effect_json, effect_kind,
                 f"slash_registered={cf_checks.get('slash_registered')!r} (want True)")
             return out
 
+    # `d` means the gated checks held — NOT that every acceptance criterion
+    # in the command doc is satisfied. When a criterion is measured but not
+    # gated, say so ON THE ROW: downstream reporting reads the row, not the
+    # source comments, and a bare "effect-proven" would overclaim.
+    partial_of = unproven if effect_kind == "install" else None
     return dict(
-        level="d",
+        # A PARTIAL promotion gets its own level string. Labelling a row
+        # while leaving level="d" is not enough: gauge-report.py counts
+        # `reached_level in ("c","d")` and this module's own full-chain
+        # counter tests `level in ("c","d")` — both read the LEVEL, never a
+        # sibling flag, so a partial would have counted as fully proven.
+        # "d-partial" is deliberately NOT in those tuples, so it fails closed
+        # everywhere until the missing criterion is actually gated.
+        level=("d-partial" if partial_of else "d"),
         plugin_pass=True,
         control_failed=True,
-        effect_proven=True,
+        # effect_proven stays FALSE while any measured acceptance criterion
+        # is unproven: the name means "the command's effect is proven", and
+        # that is not true when install.md's fourth criterion is unverified.
+        effect_proven=not partial_of,
+        effect_partial=bool(partial_of),
+        effect_unproven_criteria=([partial_of] if partial_of else []),
         effect_reason=(
             "playbook-recognition base verdict + effect probe checks all "
             "held" + (" + counterfactual isolated the command doc as cause"
-                      if require_counterfactual else "")),
+                      if require_counterfactual else "")
+            + (f" — PARTIAL vs commands/install.md: {partial_of} is measured "
+               "but not gated, so this level does NOT claim the command's "
+               "fourth acceptance criterion (verification block actually "
+               "run) was satisfied" if partial_of else "")),
         reason=("slash typed+expanded, local plugin, playbook-recognition "
                 "PLUS observed real effect on disk/execution (never "
                 "narration)" + (" — counterfactual confirms the neutered "
