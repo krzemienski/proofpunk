@@ -28,4 +28,5 @@ step-26-prompt-audit.md 2668 508b4f00781a3f23e87d999dfaeebf54144b5c12f9574bf39f3
 step-27-prompt-audit-2.md 2986 8ba148b14cbe4deb383fd364592f91f13c723737f3ba5a1c90553984ffa55814
 step-28-install-fail-disposition.md 3061 5af98472a3dbe4cb22783e6031b1f8dfa5e9639349f2528f27b7eb593e6f1427
 step-29-write-assertion-fixed.md 3425 d5d42d328d1b886e8c5066eadfb43420d29cb6aa79dd035ae9e4e2ab52d5cf39
-sealed=2026-09-13T15:05:20Z count=29 total_bytes=81088
+step-30-write-boundary-hardened.md 3091 d50618eb3a93042d71b27b88b7b67b4188d4218bd0c06023a24ac5a4429261c8
+sealed=2026-09-13T15:08:14Z count=30 total_bytes=84179
