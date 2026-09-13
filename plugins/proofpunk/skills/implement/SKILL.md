@@ -220,6 +220,23 @@ The criteria-proof table, task ledger, and todo ledger, all read from
 `.planning/execution-ledger.json` — the run's live source of truth, which an
 interrupted run resumes from. Full semantics: `references/execution-loop.md`.
 
+**Before the report, confirm the run is actually over.** A multi-agent run can
+reach this stage with children still working: a subagent is not required to
+report back, so the main thread can look finished while lanes run. Call
+`completion-summary`:
+
+```
+python3 plugins/proofpunk/skills/end-user-testing/scripts/completion_gate.py \
+    --session "$SESSION_ID" --cwd "$PWD" --out .planning/run-completion-summary.md
+```
+
+`rc=0` — every child reached a terminal status; the summary artifact is written
+and the report may proceed. `rc=2` — a child is still live; **no summary is
+written** and the report must not be produced. Wait for the named agents, or
+state explicitly why their output is not needed.
+
+A report written over running agents grades an unfinished run.
+
 ## Stage 8 — VERIFY THE ORIGINAL INTENT (before the run may stop)
 
 Every criterion can pass while the thing actually asked for never happened.
@@ -269,6 +286,7 @@ Full contract, including how each stop surface enforces this:
 | `prompt-forge` | Stage 3 FORGE | the build prompt on the canonical XML skeleton |
 | `validation-plan` | Stage 4 DECOMPOSE | task-graph + proof-obligation XML format |
 | `end-user-testing` | Stage 5 proof of every task | the proof standard, Six Steps, fresh-evidence sealing |
+| `completion-summary` | Stage 7, before the report | the session id and cwd; confirms every child finished |
 | `tui-testing` | Stage 5 when the target is a TUI | PTY driving discipline |
 | `root-cause-debugging` | Stage 6 stuck protocol rung 2 | root cause of any unproven task |
 

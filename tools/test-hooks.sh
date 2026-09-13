@@ -998,6 +998,47 @@ else
   rm -rf "$_g" 2>/dev/null || true
 fi
 
+# ---------------------------------------------------------------------------
+# Cases C1-C3: completion_gate.py — the end-of-process gate. Its contract is an
+# exit code AND an artifact, so both are asserted: while a child is live it must
+# write NOTHING (a summary naming a running agent as finished would be false).
+# ---------------------------------------------------------------------------
+COMPLETION_GATE="$(cd "$HOOKS/.." && pwd)/skills/end-user-testing/scripts/completion_gate.py"
+
+if [ ! -f "$COMPLETION_GATE" ]; then
+  case_fail "completion_gate.py missing at $COMPLETION_GATE"
+elif ! command -v python3 >/dev/null 2>&1; then
+  case_ok "completion_gate cases skipped (no python3)"
+else
+  _c=$(mktemp -d)
+  _cnow=$(python3 -c 'import datetime as d;print(d.datetime.now(d.timezone.utc).isoformat())')
+
+  # Case C1: a live child -> exit 2 and NO artifact on disk.
+  pp_tracker "$_c" sC1 "{\"agents\":[{\"status\":\"running\",\"agent_type\":\"scout\",\"started_at\":\"$_cnow\",\"agent_id\":\"c1\"}]}"
+  out=$(python3 "$COMPLETION_GATE" --session sC1 --cwd "$_c" --out "$_c/c1.md" 2>&1); rc=$?
+  if [ "$rc" -ne 2 ]; then case_fail "completion gate must exit 2 on a live child — rc=$rc out=$out"
+  elif [ -f "$_c/c1.md" ]; then case_fail "completion gate must not write a summary while a child is live"
+  else case_ok "completion gate withholds the summary while a child is live"; fi
+
+  # Case C2: all terminal -> exit 0 and an artifact that names the agents.
+  pp_tracker "$_c" sC2 '{"agents":[{"status":"completed","agent_type":"scout","agent_id":"c2"}],"total_spawned":4,"total_completed":19}'
+  out=$(python3 "$COMPLETION_GATE" --session sC2 --cwd "$_c" --out "$_c/c2.md" 2>&1); rc=$?
+  if [ "$rc" -ne 0 ]; then case_fail "completion gate must exit 0 when all children are terminal — rc=$rc"
+  elif [ ! -f "$_c/c2.md" ]; then case_fail "completion gate must write the summary when nothing is live"
+  elif ! grep -q 'scout' "$_c/c2.md"; then case_fail "summary must name each agent"
+  elif grep -q 'successfully' "$_c/c2.md"; then case_fail "summary must not claim success — the tracker has no such field"
+  else case_ok "completion gate writes a summary naming every agent"; fi
+
+  # Case C3: no tracker (OMP / OpenCode) -> must say it proves nothing.
+  _c2=$(mktemp -d)
+  out=$(python3 "$COMPLETION_GATE" --session ghost --cwd "$_c2" --out "$_c2/c3.md" 2>&1); rc=$?
+  if [ "$rc" -ne 0 ]; then case_fail "completion gate must not wedge without a tracker — rc=$rc"
+  elif ! grep -q 'confirms NOTHING' "$_c2/c3.md"; then
+    case_fail "on a runtime with no tracker the summary must state it confirms nothing"
+  else case_ok "completion gate reports honestly on a runtime with no tracker"; fi
+  rm -rf "$_c" "$_c2" 2>/dev/null || true
+fi
+
 echo "HOOK TEST FAILS: $FAILS"
 rm -rf "$TMP"
 exit "$FAILS"

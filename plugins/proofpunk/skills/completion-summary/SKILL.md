@@ -133,9 +133,4 @@ aged out, and which could not be read.
 |-------|------|--------------------|
 | `end-user-testing` | after the gate passes | the proof standard for the run's own claims |
 
-Called by: `proofpunk`.
-
-Not yet called by `implement`. Wiring it into that skill's Stage 7 requires an
-edge in its own calls table; claiming the caller here before that edge exists
-would be an unbacked claim, and `verify-orchestration.py` checks exactly that
-in both directions.
+Called by: `implement` (Stage 7, before the report), `proofpunk`.

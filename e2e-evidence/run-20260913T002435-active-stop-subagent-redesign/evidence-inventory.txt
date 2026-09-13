@@ -5,4 +5,5 @@ step-03-tracker-found-and-staleness-hazard.md 2242 c8cb9b72380f9e7534d59c166c5df
 step-04-state-matrix-16-arms.md 2526 a5bdfc13973117be35dda969b613794b57c99916bcf7436a397d3a4312e1edcf
 step-05-guard-wired-and-driven.md 2172 fdd7cd6385d4f0602981fb743812dbbcd9923a3ccb3790265ffd8aa54c873405
 step-06-completion-gate-and-zero-defects.md 2769 46e4c6da96694f3f82101288b7b272dc1a3322d6cb487f1f05aade70e9896770
-sealed=2026-09-13T02:34:39Z count=6 total_bytes=14082
+step-07-stage7-driven-real-session.md 1833 988139a9630d29b7cd382397c5c6ca7113d954f275de39251c232a7b7a8c3b0b
+sealed=2026-09-13T02:37:01Z count=7 total_bytes=15915
