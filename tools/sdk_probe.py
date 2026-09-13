@@ -207,10 +207,16 @@ _SLASH_SKILL_TOOLS = dict(
     # off" to "Skill never called". Removing the ambient tools appears to
     # change what the model does first, not merely how many turns it has.
     #
-    # Two plausible fixes, two measured regressions. The probe's flake is not
-    # a budget problem and not an MCP problem; it is not yet understood, and
-    # P6 stays UNVERIFIED rather than accepting a change that degrades the
-    # signal it is supposed to improve.
+    # Two plausible fixes, two measured regressions. Stated precisely: the
+    # 8-turn ceiling IS a real contributing cause — every shipped-budget
+    # failure ends on "Reached maximum number of turns (8)" — and ambient MCP
+    # calls DO consume 3 of 7 turns. What is falsified is that either can be
+    # FIXED by the obvious knob: raising the budget and excluding MCP each
+    # made the signal worse, not better.
+    #
+    # So the flake is not SOLVED by a budget or MCP change. It is not yet
+    # understood, and P6 stays UNVERIFIED rather than accepting a change that
+    # degrades the signal it is supposed to improve.
     max_turns=8,
     require_slash=True,
     require_local_plugin=True,
