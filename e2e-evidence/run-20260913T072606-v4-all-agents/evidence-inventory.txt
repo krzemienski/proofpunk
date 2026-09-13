@@ -24,4 +24,5 @@ step-22-provenance-distinctions.md 2072 c8efa84f94224759977654a46da8554b2f05c2fe
 step-23-p6-root-cause.md 2099 09f94e320f07813e778ebb21bb578a39b002f138d8c1ac0500dbde31a0e71d49
 step-24-p6-second-attempt.md 2345 ecfc4ce2db8cb6e31a4f5a54008e44c60de708d4a7a7356aae43e5c6290321e5
 step-25-p6-full-surface.md 1779 7994d33d711a40b6fb912fb7c2305ab446a34c7f667105532097329c469bcefe
-sealed=2026-09-13T09:54:19Z count=25 total_bytes=68948
+step-26-prompt-audit.md 2668 508b4f00781a3f23e87d999dfaeebf54144b5c12f9574bf39f3a020b734cafa4
+sealed=2026-09-13T14:58:26Z count=26 total_bytes=71616
