@@ -37,4 +37,5 @@ step-35-single-arm-scope.md 2455 91129e19e663fb37ca03382c939ef0ce4ade9f660dd17f2
 step-36-model-provenance.md 2995 e74ac1228c9012f5eab6fa7dfa54d848f16fa0276ca5a27d8394a64df38dda86
 step-37-model-pin-enforcement.md 2644 81e1882a1f863b30bbdfa4a5a17ab2c8aeadc486788e540296eb5b174311cccd
 step-38-pinned-surface-result.md 3096 6ae5201db0c4ab5496e8f4922b16dffed3e204f8b5c66a62e398f13673422540
-sealed=2026-09-13T15:45:51Z count=38 total_bytes=106887
+step-39-install-crash-unverified.md 2516 638c8bf8ac9b0d51ac4359007c48136e2d5b82c6db718bfc28ec312aaec92f82
+sealed=2026-09-13T15:47:37Z count=39 total_bytes=109403
