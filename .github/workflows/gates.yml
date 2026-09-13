@@ -87,6 +87,9 @@ jobs:
       - name: "Gate: verify-mutation-artifact.py (Class 1 mutation-test link)"
         run: python3 tools/verify-mutation-artifact.py
 
+      - name: "Gate: verify-lane-contracts.py (lane contracts are executable)"
+        run: python3 tools/verify-lane-contracts.py
+
       - name: "Gate: verify-shipped-vs-active.py (Class 3 shipped vs wired)"
         run: python3 tools/verify-shipped-vs-active.py
 

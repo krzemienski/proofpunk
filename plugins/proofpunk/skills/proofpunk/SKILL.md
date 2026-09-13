@@ -58,6 +58,7 @@ reading any of the 17 other skill files.
 | `tui-testing` | a terminal app needs PTY-driven proof | the TUI binary and target behavior |
 | `session-intent` | reconstructing why a past change happened | the commit or session in question |
 | `prompt-forge` | authoring, rating, or optimizing a prompt itself | the prompt draft or goal |
+| `completion-summary` | a multi-agent run must confirm every child finished before stopping | the session id and cwd |
 
 ## Compound-ask chains
 

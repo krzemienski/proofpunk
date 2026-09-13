@@ -13,7 +13,7 @@ Three independent confirmations, all measured:
 | Fact | Citation |
 |---|---|
 | One script is wired to **both** `Stop` and `SubagentStop` | `plugins/proofpunk/hooks/hooks.json:16-37` |
-| That script extracts `hook_event_name` once and branches on it **never** | `plugins/proofpunk/hooks/stop-guard.sh:71` (1 reference, 0 conditionals) |
+| That script reads `hook_event_name` but branches on it **never** | `plugins/proofpunk/hooks/stop-guard.sh:71` — extracted at that line, used in zero conditionals |
 | The identical treatment is **documented as intended** | `plugins/proofpunk/docs/hooks-and-init-design.md:33` — "same check, subagent transcript" |
 
 Consequence: a finishing subagent is graded by main-thread completion rules.

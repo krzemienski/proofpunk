@@ -48,7 +48,7 @@ single source of truth for both which scripts get copied and which events get
 registered. Re-running with `--hooks` is idempotent — the second run leaves
 `settings.json` byte-identical.
 
-This installer ships 18 skills backed by 16 shared doctrine references in
+This installer ships 19 skills backed by 17 shared doctrine references in
 `plugins/proofpunk/references/`; `--themes` copies 20 flat-black cyberpunk
 variations. The OpenCode/OMP `--plugins` glue adds 7 commands and 4
 agents to `~/.config/opencode/` (the plugin bundles 3 agents for Claude Code and

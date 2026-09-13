@@ -33,6 +33,10 @@ exit code directly.
 
 Usage: python3 tools/verify-lane-contracts.py [--dir .planning/lane-contracts]
 """
+# PP-HARNESS-SUBJECT: kind=python_file_level subjects=lane-contracts keywords=yaml,glob
+# The subject is the lane-contracts DIRECTORY, not a fixed filename: this
+# harness globs whatever contracts exist there (--dir default at the bottom of
+# this file), so no individual *.contract.yml basename appears in its source.
 
 from __future__ import annotations
 

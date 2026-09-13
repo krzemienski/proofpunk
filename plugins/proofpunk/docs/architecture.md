@@ -488,7 +488,9 @@ Two concrete, evidenced instances:
    records it directly: "Count drift has shipped four times (17→19→18;
    commits `2953547`, `c39a0f0`, `f95ba9d`, and this session)." The
    before-arm cited there is exact: `verify-orchestration.py:144` printed
-   "the 17 skills" in prose while the script was actually validating 18 —
+   "the 17 skills" in prose while the script was actually validating 18 — HISTORICAL PROVENANCE
+   (that quoted string is the past defect itself, not a live count; updating
+   it would erase the evidence of the drift bug) —
    a literal string that fell out of sync with a `glob()` result three
    lines away in the same file.
 2. **`evidence-guard.sh` shipped registered-but-dead.** It was written at
@@ -541,7 +543,7 @@ live tree while writing it — re-run any of them to re-verify:
   the Bash write bypass (§4), then to 10/7/12 when `platform-steer.sh`
   (PreToolUse:Bash) was added as a non-blocking platform-mismatch
   steering guard (v4 W5).
-- 16 references: `glob plugins/proofpunk/references/*.md` → 16
+- 17 references: `glob plugins/proofpunk/references/*.md` → 17
   (the 15th is `docs-acquisition.md`, added for `implement`'s Stage 1.5
   ACQUIRE; the previous "14" count predated it).
 - 5 assets: `read plugins/proofpunk/assets/` → 2 top-level template files

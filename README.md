@@ -2,11 +2,11 @@
 
 <!-- proofpunk:counts:begin -->
 An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCode**:
-18 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
+19 skills that make "done" mean *proven by end-user testing*. The AI drives the real system as an end user — clicking,
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
 
-The `proofpunk` entry router hands off to 17 of them; `references/` holds 15 shared
+The `proofpunk` entry router hands off to 17 of them; `references/` holds 17 shared
 doctrine files cited across the set; `--themes` ships 20 flat-black cyberpunk
 variations. Every skill has a Claude Code command (7 command files) mirrored by an
 OpenCode command (7 files); 10 hook scripts register 12 hooks across
