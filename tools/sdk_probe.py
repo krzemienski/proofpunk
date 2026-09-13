@@ -189,6 +189,28 @@ _SLASH_SKILL_TOOLS = dict(
     allowed_tools=["Skill"],
     disallowed_tools=["Bash", "Agent", "Task", "Write", "Edit", "NotebookEdit",
                       "Workflow", "ListAgents"],
+    # NOT strict_mcp_config=True. That was TRIED and REVERTED, 2026-09-13.
+    #
+    # The diagnosis was sound: `allowed_tools` governs first-party tools only,
+    # MCP tools are auto-approved regardless, and a failing truth-audit
+    # transcript shows 3 of its 7 tool calls were mcp__filesystem__* probing
+    # an empty sandbox — turns spent without advancing the assertion.
+    #
+    # The fix still made it worse, measured:
+    #
+    #     run 1  pass=False  failed=[tool_invoked, tool_arg_matches, tool_succeeded]
+    #     run 2  wall-clock timeout
+    #     run 3  wall-clock timeout
+    #
+    # Same shape as the max_turns=14 attempt: one completed trial, two
+    # timeouts, and the completed one regressed from "Skill called, text cut
+    # off" to "Skill never called". Removing the ambient tools appears to
+    # change what the model does first, not merely how many turns it has.
+    #
+    # Two plausible fixes, two measured regressions. The probe's flake is not
+    # a budget problem and not an MCP problem; it is not yet understood, and
+    # P6 stays UNVERIFIED rather than accepting a change that degrades the
+    # signal it is supposed to improve.
     max_turns=8,
     require_slash=True,
     require_local_plugin=True,
