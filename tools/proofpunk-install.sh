@@ -43,7 +43,16 @@ OPENCODE_SUBPATH="plugins/proofpunk/opencode"
 EXTENSIONS_SUBPATH="plugins/proofpunk/extensions"
 DOCTRINE_DIRNAME="proofpunk-doctrine"
 
-ALL_SKILLS="brainstorm codebase-truth-audit end-user-testing full-functional-audit implement mobile-validation-runner plan-hardening production-readiness prompt-forge proofpunk red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
+# DERIVED from the tree, never hardcoded. A literal list silently omits any
+# skill added after it was written: `completion-summary` shipped in v4 and was
+# absent from every install — the installer reported "18 installed" while the
+# source had 19, and no check failed because the count was computed from the
+# same stale list. Both installed Claude Code caches (2.2.0 and 3.0.0) are
+# missing it for exactly this reason.
+#
+# Resolved after SRC_ROOT is known (below); a skill is any directory holding a
+# SKILL.md, which is the same definition every verifier uses.
+ALL_SKILLS=""
 
 # ------------------------------------------------------------------- utils --
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }
@@ -212,6 +221,19 @@ else
 fi
 
 SKILLS_SRC="$SRC_ROOT/$SKILLS_SUBPATH"
+
+# Resolve ALL_SKILLS from the tree now that SKILLS_SRC is known. Sorted so the
+# install order is deterministic across machines (shell glob order is locale-
+# dependent), and filtered to directories that actually hold a SKILL.md — the
+# same definition verify-counts.py and verify-router-links.py use.
+if [ -d "$SKILLS_SRC" ]; then
+  ALL_SKILLS="$(
+    for d in "$SKILLS_SRC"/*/; do
+      [ -f "$d/SKILL.md" ] && basename "$d"
+    done | sort | tr '\n' ' '
+  )"
+  ALL_SKILLS="${ALL_SKILLS% }"
+fi
 REFS_SRC="$SRC_ROOT/$REFS_SUBPATH"
 if [ "$DRY_RUN" -eq 0 ]; then
   [ -d "$SKILLS_SRC" ] || die "skills not found at $SKILLS_SRC"

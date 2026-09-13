@@ -29,8 +29,16 @@ mkdir -p "$HOME"
 # proofpunk-install.sh would make the harness track the installer's own
 # (possibly buggy) declaration and silently absorb exactly the ghost- or
 # missing-skill-entry bug class tools/AGENTS.md warns about. This is the
-# independently known-correct 18-skill set.
-EXPECTED_SKILLS="brainstorm codebase-truth-audit end-user-testing full-functional-audit implement mobile-validation-runner plan-hardening production-readiness prompt-forge proofpunk red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
+# independently known-correct skill set.
+#
+# This independence earned its keep on 2026-09-13. The installer's own
+# ALL_SKILLS was a hardcoded 18-name list that never learned about
+# `completion-summary` (shipped in v4), so every install silently omitted it
+# while reporting "18 installed" — the count came from the same stale list, so
+# nothing disagreed. Deriving ALL_SKILLS from the tree fixed the installer, and
+# THIS list is what failed and exposed the change. Keep it hand-maintained:
+# add a skill here deliberately, after confirming it should ship.
+EXPECTED_SKILLS="brainstorm codebase-truth-audit completion-summary end-user-testing full-functional-audit implement mobile-validation-runner plan-hardening production-readiness prompt-forge proofpunk red-team-eval root-cause-debugging session-intent stack-testing tui-testing ui-experience-audit validation-plan visual-inspection"
 SKILL_COUNT="$(printf '%s' "$EXPECTED_SKILLS" | wc -w | tr -d ' ')"
 FIRST_SKILL="$(printf '%s' "$EXPECTED_SKILLS" | awk '{print $1}')"
 
