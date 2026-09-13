@@ -76,6 +76,15 @@ from datetime import datetime, timezone
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, ".."))
 PROBE = os.path.join(HERE, "sdk_probe.py")
+
+# Every arm of the surface runs on THIS model unless PROOFPUNK_SURFACE_MODEL
+# overrides it. Named explicitly rather than left to the CLI: unpinned,
+# ClaudeAgentOptions.model is "determined by the CLI" per arm, so a 15-arm
+# comparison could span several models without any artifact saying so —
+# P6's uncontrolled variable, measured in step-26. sdk_probe records the
+# resolved model and whether the pin was honoured on every arm, so a run
+# that overrides this stays fully attributable.
+DEFAULT_SURFACE_MODEL = "cc/claude-opus-5"
 # PP_CMDSURFACE_OUT_DIR scopes every output (logs, rc files, the artifact)
 # to a fresh run directory. Without it, the canonical l16-commands path is
 # used — but a partial/failed run against the canonical path overwrites
@@ -212,7 +221,8 @@ def _parse_probe_json(body):
     return None
 
 
-def run_probe(probe, cwd, no_plugin, log_path, rc_path, plugin_dir=None):
+def run_probe(probe, cwd, no_plugin, log_path, rc_path, model,
+              plugin_dir=None):
     """Run one sdk_probe arm. Capture stdout+stderr to log_path, rc to rc_path.
 
     Never pipes: Popen with files, wait, write rc from the process itself.
@@ -225,6 +235,11 @@ def run_probe(probe, cwd, no_plugin, log_path, rc_path, plugin_dir=None):
     cmd = [sys.executable, PROBE, probe, "--cwd", cwd]
     if no_plugin:
         cmd.append("--no-plugin")
+    # One model across every arm, or the surface compares arms that ran on
+    # different models. Unpinned still records what resolved (sdk_probe's
+    # `model` field), so an unpinned surface stays attributable per arm.
+    if model:
+        cmd += ["--model", model]
     with open(log_path, "w", encoding="utf-8") as out:
         env = os.environ.copy()
         # Do not wait 600s for background workflows the probe already forbade.
@@ -252,7 +267,7 @@ def run_probe(probe, cwd, no_plugin, log_path, rc_path, plugin_dir=None):
 
 
 def run_arm_with_retry(label, probe, no_plugin, log_path, rc_path,
-                        sandbox_prefix, plugin_dir=None):
+                        sandbox_prefix, model, plugin_dir=None):
     """Run one arm in its OWN fresh per-arm sandbox, retrying up to
     RETRY_MAX times on a transient host-auth/rate-limit shape with
     RETRY_BACKOFF_S seconds between attempts. Tears the sandbox down
@@ -286,7 +301,18 @@ def run_arm_with_retry(label, probe, no_plugin, log_path, rc_path,
             print(f"== {label} (attempt {attempts}/{RETRY_MAX}, sandbox={sandbox})",
                   flush=True)
             rc, parsed, body = run_probe(probe, sandbox, no_plugin, attempt_log,
-                                         attempt_rc, plugin_dir=plugin_dir)
+                                         attempt_rc, model,
+                                         plugin_dir=plugin_dir)
+            # A pin the SDK silently ignored is worse than no pin: the run
+            # would LOOK controlled. sdk_probe reports what actually
+            # resolved, so check it here, on the arm, not in a summary.
+            if parsed is not None and model:
+                honoured = parsed.get("model_pin_honoured")
+                if honoured is False:
+                    print(f"   !! {label}: model pin NOT honoured "
+                          f"(requested={model!r} resolved="
+                          f"{parsed.get('model')!r}) — arm is NOT controlled",
+                          flush=True)
         finally:
             shutil.rmtree(sandbox, ignore_errors=True)
         # Mirror the CURRENT attempt to the canonical (unsuffixed) path so
@@ -683,6 +709,13 @@ def build_neutered_install_plugin(dest_dir):
 
 
 def main():
+    # ONE model for every arm in the surface. Unpinned, ClaudeAgentOptions
+    # lets the CLI choose per arm, so a 15-arm comparison can silently span
+    # several models — measured as P6's uncontrolled variable (step-26).
+    # Override with PROOFPUNK_SURFACE_MODEL; the resolved model is recorded
+    # per arm by sdk_probe either way, so an override stays attributable.
+    model = os.environ.get("PROOFPUNK_SURFACE_MODEL") or DEFAULT_SURFACE_MODEL
+    print(f"== surface model (all arms): {model}", flush=True)
     os.makedirs(OUT_DIR, exist_ok=True)
     rows = []
     n_plugin_pass = 0
@@ -700,10 +733,12 @@ def main():
 
             p_rc, p_json, _, p_attempts, p_trans = run_arm_with_retry(
                 f"{cmd['slash']} plugin arm", cmd["probe"], False,
-                plug_log, plug_rc_p, f"pp-cmdsurface-{cmd['name']}-plugin-")
+                plug_log, plug_rc_p, f"pp-cmdsurface-{cmd['name']}-plugin-",
+                model)
             c_rc, c_json, _, c_attempts, c_trans = run_arm_with_retry(
                 f"{cmd['slash']} --no-plugin control", cmd["probe"], True,
-                ctrl_log, ctrl_rc_p, f"pp-cmdsurface-{cmd['name']}-control-")
+                ctrl_log, ctrl_rc_p, f"pp-cmdsurface-{cmd['name']}-control-",
+                model)
 
             verdict = classify(cmd, p_json, c_json)
 
@@ -753,7 +788,8 @@ def main():
                 eff_rc_p = os.path.join(OUT_DIR, f"{effects_probe}.plugin.rc")
                 e_rc, e_json, _, e_attempts, e_trans = run_arm_with_retry(
                     f"{cmd['slash']} EFFECT arm", effects_probe, False,
-                    eff_log, eff_rc_p, f"pp-cmdsurface-{cmd['name']}-effect-")
+                    eff_log, eff_rc_p, f"pp-cmdsurface-{cmd['name']}-effect-",
+                    model)
                 row["effect"] = {
                     "rc": e_rc,
                     "pass": bool(e_json and e_json.get("pass")),
@@ -789,7 +825,7 @@ def main():
                             f"{cmd['slash']} COUNTERFACTUAL arm", effects_probe,
                             False, cf_log, cf_rc_p,
                             f"pp-cmdsurface-{cmd['name']}-counterfactual-",
-                            plugin_dir=scratch_plugin_dir)
+                            model, plugin_dir=scratch_plugin_dir)
                     except Exception as e:
                         cf_rc = 2
                         cf_json = None
