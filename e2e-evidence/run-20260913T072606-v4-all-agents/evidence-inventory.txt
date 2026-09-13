@@ -27,4 +27,5 @@ step-25-p6-full-surface.md 1779 7994d33d711a40b6fb912fb7c2305ab446a34c7f66710553
 step-26-prompt-audit.md 2668 508b4f00781a3f23e87d999dfaeebf54144b5c12f9574bf39f3a020b734cafa4
 step-27-prompt-audit-2.md 2986 8ba148b14cbe4deb383fd364592f91f13c723737f3ba5a1c90553984ffa55814
 step-28-install-fail-disposition.md 3061 5af98472a3dbe4cb22783e6031b1f8dfa5e9639349f2528f27b7eb593e6f1427
-sealed=2026-09-13T15:01:41Z count=28 total_bytes=77663
+step-29-write-assertion-fixed.md 3425 d5d42d328d1b886e8c5066eadfb43420d29cb6aa79dd035ae9e4e2ab52d5cf39
+sealed=2026-09-13T15:05:20Z count=29 total_bytes=81088
