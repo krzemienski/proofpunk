@@ -940,6 +940,62 @@ else
     case_ok "agent_state reports NO_CHILDREN when no tracker exists"
   else case_fail "absent tracker must be NO_CHILDREN — got $st"; fi
   rm -rf "$_d" "$_e" 2>/dev/null || true
+
+  # -------------------------------------------------------------------------
+  # Cases B1-B4 drive the WIRED HOOK, not the helper: stdin JSON in, decision
+  # JSON out, exactly as Claude Code invokes it. A1-A8 above prove the state
+  # model; these prove stop-guard.sh actually consults it, and consults it in
+  # the right ORDER.
+  # -------------------------------------------------------------------------
+  pp_stop_payload() { # $1=session $2=transcript $3=cwd $4=event
+    printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s","hook_event_name":"%s"}' "$1" "$2" "$3" "$4"
+  }
+
+  _g=$(mktemp -d)
+  _fresh=$(python3 -c 'import datetime as d;print(d.datetime.now(d.timezone.utc).isoformat())')
+  pp_tracker "$_g" sB1 "{\"agents\":[{\"status\":\"running\",\"agent_type\":\"scout\",\"started_at\":\"$_fresh\",\"agent_id\":\"b1\"}]}"
+
+  # A transcript that CLAIMS completion. Before the ordering fix this blocked
+  # on "claimed without evidence" and never mentioned the running child.
+  printf '{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"The work is complete and done."}]}}\n' > "$_g/claim.jsonl"
+  # A transcript with no claim at all.
+  printf '{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Still investigating the parser."}]}}\n' > "$_g/noclaim.jsonl"
+
+  # Case B1: live child + completion claim -> must block ON THE CHILD.
+  out=$(pp_stop_payload sB1 "$_g/claim.jsonl" "$_g" Stop | sh "$HOOKS/stop-guard.sh" 2>&1)
+  if printf '%s' "$out" | grep -q 'background subagents are still running'; then
+    case_ok "stop-guard blocks on a live child even when completion is claimed"
+  else
+    case_fail "live child + claim must name the child — got: $out"
+  fi
+
+  # Case B2: live child, no claim -> must still block on the child.
+  out=$(pp_stop_payload sB1 "$_g/noclaim.jsonl" "$_g" Stop | sh "$HOOKS/stop-guard.sh" 2>&1)
+  if printf '%s' "$out" | grep -q 'background subagents are still running'; then
+    case_ok "stop-guard blocks on a live child with no completion claim"
+  else
+    case_fail "live child without claim must block — got: $out"
+  fi
+
+  # Case B3: SubagentStop must NOT be held because a sibling is live, or the
+  # session deadlocks waiting on the very child it is refusing to release.
+  out=$(pp_stop_payload sB1 "$_g/claim.jsonl" "$_g" SubagentStop | sh "$HOOKS/stop-guard.sh" 2>&1)
+  if printf '%s' "$out" | grep -q 'background subagents are still running'; then
+    case_fail "SubagentStop must not be held for a live sibling — got: $out"
+  else
+    case_ok "stop-guard exempts SubagentStop from the sibling-liveness hold"
+  fi
+
+  # Case B4: a leaked 257h child must never hold the session.
+  _old2=$(python3 -c 'import datetime as d;print((d.datetime.now(d.timezone.utc)-d.timedelta(hours=257)).isoformat())')
+  pp_tracker "$_g" sB4 "{\"agents\":[{\"status\":\"running\",\"agent_type\":\"worker\",\"started_at\":\"$_old2\",\"agent_id\":\"b4\"}]}"
+  out=$(pp_stop_payload sB4 "$_g/claim.jsonl" "$_g" Stop | sh "$HOOKS/stop-guard.sh" 2>&1)
+  if printf '%s' "$out" | grep -q 'background subagents are still running'; then
+    case_fail "a leaked 257h child must not wedge the session — got: $out"
+  else
+    case_ok "stop-guard ages out a leaked child rather than wedging"
+  fi
+  rm -rf "$_g" 2>/dev/null || true
 fi
 
 echo "HOOK TEST FAILS: $FAILS"
