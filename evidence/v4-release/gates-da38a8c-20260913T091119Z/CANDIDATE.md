@@ -20,3 +20,22 @@ e2e-evidence/run-20260913T072606-v4-all-agents/step-13-release-blocked.md.
 
 Prior-run material in evidence/v4-release/ (run-20260911T234909Z, the
 allowlist and boundary notes) predates this capture and is untouched.
+
+## HEAD moved after capture — re-verified
+
+The five outputs above were produced at da38a8c. Committing them advanced
+HEAD to 67d5f26, so the capture no longer describes the tip. Re-ran the
+full suite from a clean `git archive` of 67d5f26:
+
+    verifiers                 9/9
+    HOOK TEST FAILS           0
+    INSTALLER TEST FAILS      0
+    INSTALL DRY-RUN FAILS     0
+    INTEGRATION TEST PASSES   36
+
+    re-verified (UTC): 20260913T091214Z
+    HEAD             : 67d5f26c6ffc88046c6ec93a343645c92a9770f5
+
+Recorded rather than silently assumed: an evidence commit changes the SHA
+its own evidence was gathered under, and a capture that claims the tip
+without re-running is asserting something it did not measure.
