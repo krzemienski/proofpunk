@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-11T18:25:47Z",
-  "head": "639168a25a92400b2855bbc9da90c991874cc842",
+  "generated": "2026-09-13T15:09:01Z",
+  "head": "c5112ad1d7761bde5d20369a2e3a0157a505a996",
   "dirty": true,
   "gauges": [
     {
@@ -8,9 +8,9 @@
       "lane": "L12",
       "name": "Skills passing spec basics (name/desc/fields)",
       "unit": "skills",
-      "baseline": "18/18",
-      "target": "18/18",
-      "measured": "18/18",
+      "baseline": "19/19",
+      "target": "19/19",
+      "measured": "19/19",
       "status": "PASS",
       "evidence": [
         "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
@@ -22,14 +22,14 @@
       "lane": "L10",
       "name": "Skills with description+when_to_use under Claude Code's 1,536-char per-skill listing cap",
       "unit": "skills",
-      "baseline": "18/18 (max 978/1536, implement)",
-      "target": "18/18",
-      "measured": "18/18 (max 978/1536, implement)",
+      "baseline": "19/19 (max 978/1536, implement)",
+      "target": "19/19",
+      "measured": "19/19 (max 978/1536, implement)",
       "status": "PASS",
       "evidence": [
         "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
       ],
-      "detail": "all 18 skills' description+when_to_use combined length is under the 1536-char per-skill truncation cap (skillListingMaxDescChars); longest is 'implement' at 978 chars, 558 chars of headroom"
+      "detail": "all 19 skills' description+when_to_use combined length is under the 1536-char per-skill truncation cap (skillListingMaxDescChars); longest is 'implement' at 978 chars, 558 chars of headroom"
     },
     {
       "num": 9,
@@ -38,7 +38,7 @@
       "unit": "chars",
       "baseline": "13,949 (description-budget-baseline.md)",
       "target": "UNMEASURED \u2014 real budget is skillListingBudgetFraction (~1% of context window); no fixed target exists in any sealed source",
-      "measured": "13955 chars",
+      "measured": "14612 chars",
       "status": "UNMEASURED",
       "evidence": [
         "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
@@ -52,7 +52,7 @@
       "unit": "bytes",
       "baseline": "6,266",
       "target": "UNMEASURED (no target defined in sealed sources)",
-      "measured": "6186 bytes",
+      "measured": "6447 bytes",
       "status": "UNMEASURED",
       "evidence": [
         "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
@@ -129,14 +129,14 @@
       "lane": "L14",
       "name": "Skill count (ground truth, derived not restated)",
       "unit": "skills",
-      "baseline": "18",
-      "target": "18",
-      "measured": "18",
+      "baseline": "19",
+      "target": "19",
+      "measured": "19",
       "status": "PASS",
       "evidence": [
         "evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1"
       ],
-      "detail": "18 skill directories with SKILL.md found under plugins/proofpunk/skills/"
+      "detail": "19 skill directories with SKILL.md found under plugins/proofpunk/skills/"
     }
   ],
   "summary": {
