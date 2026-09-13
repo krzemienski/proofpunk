@@ -21,4 +21,5 @@ step-19-count-guard-hardening.md 2846 55cc2a9f5f0decf938023f05c7af46c0788d394384
 step-20-i8-claim-retracted.md 2253 7b671f5d3e20e56e44e2533122dc720ed44ecf6c048f5ea4a4d544a04b8a1650
 step-21-version-count-sweep.md 2080 c675016897a8c5ceff9d6da382359aeb41323d7c14e928bb36a784f3d1449560
 step-22-provenance-distinctions.md 2072 c8efa84f94224759977654a46da8554b2f05c2fe4923b4e389413ae206e0882b
-sealed=2026-09-13T09:15:06Z count=22 total_bytes=62725
+step-23-p6-root-cause.md 2099 09f94e320f07813e778ebb21bb578a39b002f138d8c1ac0500dbde31a0e71d49
+sealed=2026-09-13T09:37:53Z count=23 total_bytes=64824

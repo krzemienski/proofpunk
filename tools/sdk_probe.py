@@ -249,6 +249,28 @@ PROBES["cmd_slash_truth_audit"] = dict(
     why="slash /proofpunk:truth-audit must expand with --start/--end into codebase-truth-audit",
     **_SLASH_SKILL_TOOLS,
 )
+# Turn budget stays at the shared default of 8. A raise to 14 was TRIED and
+# REVERTED — measured 2026-09-13.
+#
+# The flake has a single repeated signature, not random behaviour:
+#
+#     ResultError: Reached maximum number of turns (8)
+#     failed checks: ['text_matches', 'no_harness_error']
+#
+# So a turn budget is genuinely one cause. But raising it to 14 did not fix
+# the probe, it moved the failure:
+#
+#     run 1  pass=False  failed=[tool_invoked, tool_arg_matches, tool_succeeded]
+#     run 2  exceeded the 900s wall clock
+#     run 3  exceeded the 900s wall clock
+#
+# More turns means longer runs, and the extra turns were spent NOT calling
+# the Skill tool — so the budget was never the only cause. Reverting is the
+# honest move: 8 fails fast with a legible signature, 14 fails slowly with a
+# worse one, and neither passes reliably.
+#
+# P6 stays UNVERIFIED with this measurement recorded. The next step is to
+# find why the model skips the Skill call, not to keep buying it turns.
 PROBES["cmd_slash_verify"] = dict(
     prompt=('/proofpunk:verify "STOP. Quote: Unexecuted checks are UNVERIFIED. '
             'There are no flags. Do not start a runtime. Do not call tools."'),
