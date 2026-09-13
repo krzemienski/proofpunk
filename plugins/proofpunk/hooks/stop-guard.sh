@@ -247,6 +247,45 @@ for line in lines:
     if SCOUT_KEYWORD.search(scout_text) and PATH_SHAPED.search(scout_text):
         scout = True
 
+# Liveness comes FIRST, before any claim/proof/scout reasoning.
+#
+# Those gates ask "was this work proven?". This asks a different question that
+# does not depend on the answer: are this session's background children still
+# working? A subagent is not required to report back to the main thread, so the
+# main transcript can look finished while children run.
+#
+# Ordering is load-bearing. Placed after the claim gates, an unproven claim
+# blocks on its own reason and the liveness check is never reached -- measured:
+# a live child with a completion claim reported "claimed without evidence" and
+# said nothing about the running child.
+#
+# It does NOT run for SubagentStop. That event fires when a CHILD stops; holding
+# a child open because its siblings are busy would deadlock the very work the
+# session is waiting for. Contract: references/subagent-aware-stop.md
+if event != "SubagentStop" and session_id:
+    state_helper = os.path.join(os.path.dirname(helper), "agent_state.py") if helper else ""
+    if state_helper and os.path.isfile(state_helper):
+        import subprocess
+        try:
+            r = subprocess.run(
+                [sys.executable, state_helper, "live",
+                 "--session", session_id, "--cwd", cwd],
+                capture_output=True, text=True, timeout=5)
+            # rc 0 == at least one live child. Anything else (including a crash)
+            # must not hold the session: the helper already fails open by
+            # construction, and a stop guard that traps a session on its own
+            # failure is worse than the bug it prevents.
+            if r.returncode == 0:
+                detail = (r.stdout or "").strip()
+                print(json.dumps({"decision": "block", "reason": (
+                    "Proofpunk: background subagents are still running, so this "
+                    "session is not finished. " + detail + ". Wait for them to "
+                    "complete and collect their results, or state explicitly why "
+                    "their output is not needed.")}))
+                sys.exit(0)
+        except (OSError, subprocess.SubprocessError):
+            pass  # fail open, exactly as the helper would
+
 if claim and not proof:
     reason = ("Proofpunk: a completion was claimed without a cited end-user evidence artifact. "
               "Drive the real system as the end user, capture run-scoped evidence, and cite it by full path — "
