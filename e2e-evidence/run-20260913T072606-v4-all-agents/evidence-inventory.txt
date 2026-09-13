@@ -35,4 +35,5 @@ step-33-partial-promotion.md 2473 d19446fe8b4ce87f3c947a2612ac797ce094500d8a508f
 step-34-live-install-arm.md 2990 31805144f1d7674ebb503d70a488a7304f187cc8e8a9efa77abc3d630f080821
 step-35-single-arm-scope.md 2455 91129e19e663fb37ca03382c939ef0ce4ade9f660dd17f2e1d238bbf703f12bc
 step-36-model-provenance.md 2995 e74ac1228c9012f5eab6fa7dfa54d848f16fa0276ca5a27d8394a64df38dda86
-sealed=2026-09-13T15:27:11Z count=36 total_bytes=101147
+step-37-model-pin-enforcement.md 2644 81e1882a1f863b30bbdfa4a5a17ab2c8aeadc486788e540296eb5b174311cccd
+sealed=2026-09-13T15:33:25Z count=37 total_bytes=103791

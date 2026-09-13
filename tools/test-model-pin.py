@@ -44,9 +44,19 @@ V = load("vcs", os.path.join(HERE, "verify-command-surface.py"))
 PIN = "cc/claude-opus-5"
 
 
-def stub_probe(honoured, resolved):
+def stub_probe(honoured, resolved, harness_error=None):
     """Stand in for a real session, returning one pin shape."""
     def f(probe, cwd, no_plugin, log_path, rc_path, model, plugin_dir=None):
+        if harness_error:
+            j = {"probe": probe, "harness_error": harness_error}
+            with open(log_path, "w", encoding="utf-8") as fh:
+                fh.write(json.dumps(j))
+            with open(rc_path, "w", encoding="utf-8") as fh:
+                fh.write("2")
+            # Matches the real probe: the pinned surface's crashed install
+            # arm wrote rc=2, not 0. A stub returning 0 would assert a
+            # softer contract than production actually meets.
+            return 2, j, json.dumps(j)
         j = {"pass": True, "checks": {}, "model": resolved}
         if honoured is not None:
             j["model_pin_honoured"] = honoured
@@ -58,9 +68,9 @@ def stub_probe(honoured, resolved):
     return f
 
 
-def run_arm(honoured, resolved, model=PIN):
+def run_arm(honoured, resolved, model=PIN, harness_error=None):
     real = V.run_probe
-    V.run_probe = stub_probe(honoured, resolved)
+    V.run_probe = stub_probe(honoured, resolved, harness_error)
     try:
         d = tempfile.mkdtemp(prefix="pp-pintest-")
         return V.run_arm_with_retry(
@@ -107,6 +117,27 @@ def main():
             "stay usable (it is still attributable via its `model` field)")
 
     # --- an invalidated arm must block promotion ------------------------
+    # --- pre-session crash: real cause preserved, not relabelled ---------
+    # A probe that dies before init has no model. It must NOT be called a
+    # pin failure (that would replace the real cause with a symptom), and it
+    # must NOT be treated as controlled either.
+    rc, parsed, _, _, _ = run_arm(None, None, harness_error="ProcessError: exit 1")
+    if rc == 0:
+        failures.append(
+            "a pre-session crash must not report rc 0 — the real arm exits "
+            "non-zero and the harness must carry that through")
+    if parsed is not None and "model pin" in json.dumps(parsed):
+        failures.append(
+            "a pre-session crash must not be relabelled as a pin failure")
+    # It fails through its OWN harness_error: classify must reject it.
+    cmd = [c for c in V.COMMANDS if c["name"] == "install"][0]
+    v = V.classify(cmd, {"probe": "x", "harness_error": "ProcessError: exit 1"},
+                   {"pass": False, "checks": {}})
+    if v.get("level") in ("c", "d"):
+        failures.append(
+            "a harness-errored arm must never reach a full-chain level")
+    if v.get("plugin_pass"):
+        failures.append("a harness-errored arm must not report plugin_pass")
     base = dict(level="playbook-recognition", plugin_pass=True,
                 control_failed=True)
     r = V.promote_to_effect_proven(
@@ -146,7 +177,11 @@ def main():
     if not V.DEFAULT_SURFACE_MODEL:
         failures.append("DEFAULT_SURFACE_MODEL must name an explicit model")
 
-    total = 4 + 1 + 1 + 2 + 1 + len(sites) + 1 + 1
+    # Counted explicitly so this number cannot drift below what is actually
+    # asserted: 2 (honoured) + 2 (wrong model) + 2 (missing) + 1 (no pin)
+    # + 4 (pre-session crash) + 1 (promotion blocked) + 2 (required params)
+    # + len(sites) + 1 (site count) + 1 (default model).
+    total = 2 + 2 + 2 + 1 + 4 + 1 + 2 + len(sites) + 1 + 1
     if failures:
         print(f"FAIL  {len(failures)} of {total} assertions failed")
         for f in failures:
@@ -157,6 +192,7 @@ def main():
     print("  wrong model-> arm INVALIDATED, rc 2, promotion blocked")
     print("  unreported -> arm INVALIDATED (absence is not a pass)")
     print("  no pin     -> enforcement does not fire")
+    print("  crash      -> rc non-zero, not relabelled, never full-chain")
     print(f"  4 call sites pass a required model; default = "
           f"{V.DEFAULT_SURFACE_MODEL}")
     return 0

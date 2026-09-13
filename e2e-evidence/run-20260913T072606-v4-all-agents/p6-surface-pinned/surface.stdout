@@ -1,0 +1,20 @@
+== surface model (all arms): cc/claude-opus-5
+== /proofpunk:implement plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-implement-plugin-m6yw6kfh)
+== /proofpunk:implement --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-implement-control-tzpp6li5)
+== /proofpunk:forge-prompt plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-forge-prompt-plugin-j0pa1_u7)
+== /proofpunk:forge-prompt --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-forge-prompt-control-w8dkwxzv)
+== /proofpunk:rate-prompt plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-rate-prompt-plugin-efamv122)
+== /proofpunk:rate-prompt --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-rate-prompt-control-grx6rzth)
+== /proofpunk:truth-audit plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-r5n8faw8)
+== /proofpunk:truth-audit --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-control-f1u7g0bc)
+== /proofpunk:verify plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-plugin-un29ui29)
+== /proofpunk:verify --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-control-4yusawow)
+== /proofpunk:verify EFFECT arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-effect-g1ez0ee5)
+== /proofpunk:install plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-6xnlv7wh)
+   !! /proofpunk:install plugin arm: model pin NOT honoured: did not report model_pin_honoured (requested='cc/claude-opus-5' resolved=None) — arm INVALIDATED
+== /proofpunk:install --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-control-t1cdcpga)
+== /proofpunk:install EFFECT arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-effect-c27aozbq)
+== /proofpunk:install COUNTERFACTUAL arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-counterfactual-5xibl2qr)
+ARTIFACT e2e-evidence/run-20260913T072606-v4-all-agents/p6-surface-pinned/command-surface-proof.json sha256:561eb3b76115a2a9a2ba35283667dd3ee5b078be360c624a88ebd9d2be40f338
+full_chain=4/6 plugin_pass=4/6 control_fail=6/6 honest_max=4/6
+HARNESS ERRORS (1): [('install', 'plugin')]

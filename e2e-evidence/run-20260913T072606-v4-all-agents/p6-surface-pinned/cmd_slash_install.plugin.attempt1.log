@@ -1,0 +1,6 @@
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+Fatal error in message reader: Command failed with exit code 1 (exit code: 1)
+Error output: Check stderr output for details
+{"probe": "cmd_slash_install", "harness_error": "ProcessError: Command failed with exit code 1 (exit code: 1)\nError output: Check stderr output for details"}
+
+ARM INVALIDATED: model pin NOT honoured: did not report model_pin_honoured (requested='cc/claude-opus-5' resolved=None)

@@ -315,7 +315,16 @@ def run_arm_with_retry(label, probe, no_plugin, log_path, rc_path,
             # Neither may be treated as controlled.
             if parsed is not None and model:
                 honoured = parsed.get("model_pin_honoured")
-                if honoured is not True:
+                # An arm that crashed BEFORE any session started reports a
+                # harness_error and no model. Blaming the pin there would
+                # replace the real cause with a symptom — measured: the
+                # install plugin arm died at "Fatal error in message reader"
+                # and my first version labelled it a pin failure. It is
+                # already unusable through its own harness_error, which retry
+                # and reporting both understand, so leave it untouched.
+                no_session = (parsed.get("harness_error")
+                              and parsed.get("model") is None)
+                if honoured is not True and not no_session:
                     reason = ("resolved a different model"
                               if honoured is False
                               else "did not report model_pin_honoured")
@@ -333,6 +342,9 @@ def run_arm_with_retry(label, probe, no_plugin, log_path, rc_path,
                     # promotion and excludes the row from full-chain counts.
                     parsed = None
                     rc = 2
+                elif no_session:
+                    print(f"   .. {label}: no session (harness error) — "
+                          f"pin not applicable", flush=True)
         finally:
             shutil.rmtree(sandbox, ignore_errors=True)
         # Mirror the CURRENT attempt to the canonical (unsuffixed) path so
