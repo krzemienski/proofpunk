@@ -99,6 +99,14 @@ jobs:
       - name: "Gate: verify-counts.py (Class 2 hardcoded counts vs live tree)"
         run: python3 tools/verify-counts.py
 
+      # Committed captures are read-only (evidence/AGENTS.md). Measured
+      # 2026-09-14: an unscoped verify-command-surface.py run rewrote 15
+      # committed captures in place — one green log truncated 13706B -> 477B —
+      # while thirteen gates stayed green, because no gate compared a capture
+      # against the blob that was committed. This one does.
+      - name: "Gate: verify-evidence-immutability.py (committed captures unmodified)"
+        run: python3 tools/verify-evidence-immutability.py
+
       # Gauge board. Exits non-zero while any gauge is unmet or its evidence
       # does not resolve, so an unmet gauge cannot be reported as a pass. This
       # gate is EXPECTED to fail until the v3 lanes land — continue-on-error

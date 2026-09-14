@@ -1,0 +1,12 @@
+hooks disk=10 json=10
+PASS hooks
+skills=19 router_calls=18 expected_calls=18
+PASS skill-router
+refs disk=18 cited=18
+PASS shared-references
+commands claude=7 opencode=7
+PASS commands
+ci harnesses=13 wired_tokens=15
+PASS ci-wiring
+PASS in_evidence-regex '(^|/)(e2e-evidence|evidence)(/|$)'
+VERDICT: PASS

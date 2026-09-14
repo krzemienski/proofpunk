@@ -1,0 +1,11 @@
+== committed-capture immutability at HEAD 63727e1
+   evidence: tracked=408 modified=1
+   e2e-evidence: tracked=1175 modified=0
+
+MODIFIED COMMITTED CAPTURES (1):
+   evidence/v3-release/l16-commands/cmd_slash_implement.plugin.log: TRUNCATED 13706B -> 30B
+
+evidence/AGENTS.md: a modified capture is a fabricated claim.
+Restore with `git checkout -- <path>` and write new artifacts to a
+fresh run-scoped directory instead of rewriting a sealed one.
+VERDICT: FAIL

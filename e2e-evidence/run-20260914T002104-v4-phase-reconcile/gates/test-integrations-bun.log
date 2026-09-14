@@ -1,0 +1,44 @@
+OpenCode plugin (opencode/plugin/proofpunk.ts)
+  PASS  exports a Proofpunk factory
+  PASS  registers tool.execute.before
+  PASS  registers an event handler
+  PASS  denies rm -rf against home
+  PASS  denies writing a test file
+  PASS  UNMET: denies an ordinary source write
+  PASS  UNMET: denies an ordinary bash command
+  PASS  UNMET: still allows a read-only tool (session can inspect)
+  PASS  UNMET: still allows the resolver command (session can unwedge)
+  PASS  UNMET: resolver exemption resists shell chaining
+  PASS  MET: allows an ordinary source write
+  PASS  MET: allows an ordinary bash command
+  PASS  MET: still denies a destructive command
+  PASS  MET: still denies writing a test file
+  PASS  session.idle is observe-only (never throws)
+  PASS  session.created is observe-only (never throws)
+  PASS  session.created announced via client.app.log
+
+OMP extension (extensions/proofpunk.ts)
+  PASS  module loads under bun
+  PASS  default export is the extension factory
+  PASS  sets a label at load
+  PASS  subscribes to session_start
+  PASS  subscribes to tool_call
+  PASS  subscribes to session_stop
+  PASS  registers the proofpunk command
+  PASS  tool_call denies rm -rf against home
+  PASS  tool_call denies a force-push to main
+  PASS  tool_call denies reading a .env secret
+  PASS  tool_call denies writing a test file
+  PASS  tool_call allows an ordinary bash command
+  PASS  tool_call allows an ordinary source write
+  PASS  tool_call allows reading an ordinary file
+  PASS  session_start returns no decision
+  PASS  session_start notifies the operator
+  PASS  session_stop holds a completion claim carrying no evidence
+  PASS  evidence guard does not re-fire on a continuation pass
+  PASS  session_stop ignores a turn that claimed nothing
+  UNCOVERED  subagent lifecycle — pi-coding-agent 18.1.19 emits no
+             child-identity event, so there is nothing to fire
+
+INTEGRATION TEST PASSES: 36
+INTEGRATION TEST FAILS: 0

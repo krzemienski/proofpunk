@@ -86,14 +86,33 @@ PROBE = os.path.join(HERE, "sdk_probe.py")
 # that overrides this stays fully attributable.
 DEFAULT_SURFACE_MODEL = "cc/claude-opus-5"
 # PP_CMDSURFACE_OUT_DIR scopes every output (logs, rc files, the artifact)
-# to a fresh run directory. Without it, the canonical l16-commands path is
-# used — but a partial/failed run against the canonical path overwrites
-# sealed logs from the last green run, so full verification runs use the
-# override and promote to canonical ONLY on a complete green run, as a
-# deliberate act. ARTIFACT and all per-arm log/rc paths derive from
-# OUT_DIR, so one override moves everything consistently.
+# to a fresh run directory. ARTIFACT and all per-arm log/rc paths derive
+# from OUT_DIR, so one override moves everything consistently.
+#
+# The default is NOT the canonical l16-commands path, and must never become
+# it again. Measured 2026-09-14: an unscoped run overwrote 15 committed
+# captures in evidence/v3-release/l16-commands — cmd_slash_implement.plugin.log
+# shrank 13706B -> 477B, replacing a green capture with a crash log, and
+# cmd_slash_implement.plugin.rc flipped 0 -> 2. evidence/AGENTS.md states a
+# modified capture is a fabricated claim, and no gate detected it. The old
+# comment described using an override "as a deliberate act" while the code
+# still defaulted to the sealed path, so the convention was documentation
+# only. It is now the behavior: unscoped runs get their own timestamped
+# directory, and promotion to canonical stays a separate, deliberate copy.
+_DEFAULT_OUT_ROOT = os.path.join(ROOT, "e2e-evidence")
 OUT_DIR = os.environ.get("PP_CMDSURFACE_OUT_DIR") or os.path.join(
-    ROOT, "evidence", "v3-release", "l16-commands")
+    _DEFAULT_OUT_ROOT,
+    "cmdsurface-" + time.strftime("%Y%m%dT%H%M%S", time.gmtime()),
+)
+_SEALED_CANONICAL = os.path.join(ROOT, "evidence", "v3-release", "l16-commands")
+if os.path.realpath(OUT_DIR) == os.path.realpath(_SEALED_CANONICAL):
+    sys.exit(
+        "refusing to write into sealed evidence: "
+        f"{os.path.relpath(_SEALED_CANONICAL, ROOT)}\n"
+        "Committed captures are read-only (evidence/AGENTS.md). Set "
+        "PP_CMDSURFACE_OUT_DIR to a fresh run directory, then promote "
+        "deliberately if the run is completely green."
+    )
 ARTIFACT = os.path.join(OUT_DIR, "command-surface-proof.json")
 REAL_PLUGIN = os.path.join(ROOT, "plugins", "proofpunk")
 

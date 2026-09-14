@@ -529,6 +529,12 @@ applies only to the `name` field).
    `platform-steer.sh` — the added script), registered across the file's 7
    top-level event keys (`SessionStart`, `PreToolUse`, `PostToolUse`,
    `PostToolUseFailure`, `Stop`, `SubagentStop`, `InstructionsLoaded`).
-   The current canonical totals for this repo are: **12 registrations, 10
-   distinct scripts, 10 hook files, 7 event keys, 15 shared references
-   under `plugins/proofpunk/references/`, and 18 skills.**
+   Canonical totals measured at HEAD `63727e1` (2026-09-14): **12
+   registrations, 10 distinct scripts, 11 hook files, 7 event keys, 18
+   shared references under `plugins/proofpunk/references/`, and 19
+   skills.** (HISTORICAL PROVENANCE: this document was authored at
+   `9963648` against 10 hook files, 15 shared references, and 18 skills;
+   `completion-summary` became the 19th skill afterwards. `verify-counts.py`
+   excludes `docs/` from its scan, so this line drifted unguarded — the
+   exclusion is deliberate for generated HTML and dated logs, and is
+   recorded here as a known blind spot rather than silently relied on.)

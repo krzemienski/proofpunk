@@ -1,0 +1,2 @@
+refusing to write into sealed evidence: evidence/v3-release/l16-commands
+Committed captures are read-only (evidence/AGENTS.md). Set PP_CMDSURFACE_OUT_DIR to a fresh run directory, then promote deliberately if the run is completely green.
