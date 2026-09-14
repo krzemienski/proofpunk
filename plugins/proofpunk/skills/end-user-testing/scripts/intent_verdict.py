@@ -282,12 +282,23 @@ def cmd_may_stop(args) -> int:
     data = load(args.session_id, args.cwd)
 
     if not data:
+        # Name the helper by its ABSOLUTE resolved path and give the exact
+        # runnable command. A blocked agent that cannot locate this file has
+        # no path to resolve and will guess — or, as observed in the field,
+        # conclude the tool is not installed and stay wedged. The recovery
+        # instruction must be copy-pasteable, not a filename to go find.
+        _self = os.path.abspath(__file__)
+        _sid = args.session_id or "$PROOFPUNK_SESSION_ID"
+        _cwd = args.cwd or os.getcwd()
         print(
             "Proofpunk: no intent verdict recorded for this session. Before "
             "stopping, read the session's ORIGINAL request (first user message, "
             "verbatim), judge whether it was actually accomplished, and record "
-            "the verdict with intent_verdict.py record. Evidence that a task ran "
-            "is not evidence the asked-for thing happened.",
+            "the verdict. Evidence that a task ran is not evidence the "
+            "asked-for thing happened.\n"
+            "Run exactly:\n"
+            f"  python3 {_self} --session-id {_sid} --cwd {_cwd} "
+            "record --verdict MET|UNMET|UNVERIFIABLE",
             file=sys.stderr,
         )
         return 2

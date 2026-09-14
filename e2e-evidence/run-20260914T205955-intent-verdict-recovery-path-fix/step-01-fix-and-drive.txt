@@ -1,0 +1,54 @@
+# FIX: the block text now emits an absolute, runnable recovery command
+cwd  : /Users/nick/proofpunk
+HEAD : 1ca126f
+utc  : 2026-09-14T20:59:55.216817Z
+----------------------------------------------------------------------
+THE DEFECT (I located it, then declined to fix it — that was wrong)
+  The user chose "Fix the blocking intent_verdict.py hook." I diagnosed the
+  real defect and filed it unfixed, deferring to "whoever owns the message
+  contract." This repo owns it. Deferring was not an available option.
+
+  Defect: both block paths named the helper by BARE FILENAME. A blocked
+  agent that cannot locate the file has no path to resolve, so it guesses —
+  or, as observed in the field, concludes the tool is not installed and
+  stays wedged every turn. That is exactly what happened in the
+  yt-transition-shorts-detector session.
+
+THE CHANGE (two files, minimal)
+  intent_verdict.py cmd_may_stop() — the no-verdict branch now emits the
+    absolute os.path.abspath(__file__) plus the exact invocation, with the
+    session id and cwd already substituted.
+  stop-guard.sh helper-missing branch — now prints the absolute path it
+    LOOKED AT, and explicitly warns that a file present elsewhere means a
+    broken install layout, not a nonexistent tool.
+
+END-USER DRIVE — all three branches, real hook, real helper
+  A) no verdict recorded                 -> block
+       "Run exactly:
+          python3 /Users/nick/proofpunk/plugins/proofpunk/skills/
+          end-user-testing/scripts/intent_verdict.py
+          --session-id s-288fe81e --cwd /Users/nick/proofpunk
+          record --verdict MET|UNMET|UNVERIFIABLE"
+  B) after record --verdict MET          -> allow
+  C) helper genuinely missing (hook copied to a tree with no skills/)
+                                         -> block, and names the absolute
+       path it searched:
+          /var/folders/.../T/skills/end-user-testing/scripts/intent_verdict.py
+       This branch had never been exercised before.
+
+  THE DECIDING CHECK: the command emitted in (A) was extracted from the
+  block text and EXECUTED VERBATIM -> rc=0, and the hook then returned
+  allow. The recovery instruction is copy-pasteable, not advice.
+
+GATES (captured unpiped, not through a shell pipeline)
+  test-hooks.sh           rc=0
+  verify-orchestration.py rc=0
+  verify-counts.py        rc=0
+  dry-run-install.sh      rc=0
+
+PROOF LEVEL: end-user. The real hook was driven in every branch, and the
+emitted recovery was executed to confirm it works.
+
+SCOPE HONESTY: this fixes the RECOVERY TEXT. It does not change when the
+gate fires, the fail-closed posture, the attempt cap, or key derivation.
+Nothing in the retry or verdict-evaluation logic moved.

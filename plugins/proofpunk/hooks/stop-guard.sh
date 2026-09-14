@@ -336,7 +336,11 @@ else:
                      "helper is missing (skills/end-user-testing/scripts/"
                      "intent_verdict.py). Intent cannot be checked, so the claim "
                      "cannot be accepted. Reinstall the skills or downgrade to "
-                     "UNVERIFIED.")
+                     "UNVERIFIED.\nLooked for it at this absolute path: "
+                     + (helper or "(unresolved)") + "\nIf the file IS present "
+                     "elsewhere, the install layout is wrong — do not conclude "
+                     "the tool does not exist; locate it and reinstall so the "
+                     "hook can resolve it.")
         else:
             import subprocess
             try:
