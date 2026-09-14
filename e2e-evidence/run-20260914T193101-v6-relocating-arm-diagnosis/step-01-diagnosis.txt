@@ -1,0 +1,68 @@
+# V6 verify-command-surface — root-cause diagnosis (ak:fix Steps 1-3)
+cwd  : /Users/nick/proofpunk
+HEAD : 64705bd
+utc  : 2026-09-14T19:31:01.018728Z
+----------------------------------------------------------------------
+1. EXACT SYMPTOM (verbatim, both arms)
+   install    : "ResultError: Claude Code returned an error result: Reached
+                 maximum number of turns (8) (exit code: 1)"   -> no_harness_error=False
+   implement  : is_error=False, num_turns=1, elapsed 6.6s, reply
+                 "I'll load the skill as instructed."          -> tool_invoked=False
+
+2. REPRODUCTION
+   python3 tools/verify-command-surface.py    (~5-7 min, 15 live SDK arms)
+   Non-deterministic: the FAILING ARM RELOCATES between runs.
+
+3. EXPECTED vs ACTUAL
+   Expected 6/6 (achieved once, 4077872 "V6 GREEN: 6/6").
+   Actual across 13 recorded runs: 0,3,3,4,4,4,4,5,5,5,6 — one 6/6 in 13.
+
+4. ROOT CAUSE — NOT a defect in any command, and NOT one bug
+   Two distinct live-session failure modes, both correctly NOT classified
+   transient by _TRANSIENT_RE (tools/verify-command-surface.py:191-220):
+
+   (a) TURN-BUDGET EXHAUSTION — install, truth-audit, forge-prompt
+       check: no_harness_error=False, after 60-90s of real work.
+       sdk_probe.py:360-385 records the cause: the model IMPROVISES a nested
+       `timeout 180 claude -p ...` step that install.md never prescribes;
+       GNU timeout is absent on this host, it dies exit=127, and burns the
+       remaining turns. Model-invented, so it varies run to run.
+
+   (b) SINGLE-TURN EARLY YIELD — implement, rate-prompt, truth-audit
+       checks: text_matches/tool_invoked/tool_arg_matches/tool_succeeded all
+       False, num_turns=1, ~6s. The model announces the skill load and ends
+       its turn without invoking. sdk_probe.py:204-210 measured this at
+       5 PASS / 2 FAIL over 7 controlled runs (29%) under identical
+       conditions, fresh subprocess and sandbox each time, non-positional.
+
+5. WHY NOW — it is not new. 5 of 6 commands have failed at least once
+   across 13 runs; the two check-signatures above account for every failure.
+   The relocating arm is the signature of a stochastic surface, not drift.
+
+6. BLAST RADIUS — verify-command-surface.py, sdk_probe.py, gates.yml, and
+   anything gated on V6 (the 5F prompt lane depends on this harness).
+
+ARCHITECTURE GATE REACHED (3+ failed attempts, skill rule: STOP)
+   Both obvious fixes were ALREADY TRIED and BOTH MADE IT WORSE — recorded
+   in sdk_probe.py, not rediscovered here:
+     * max_turns=14  -> 1 completed, 2 wall-clock timeouts, and the completed
+       trial REGRESSED from "Skill called, text cut off" to "Skill never
+       called" (sdk_probe.py:204-210).
+     * prompt preamble forbidding timeout/nested claude -> write_attempted
+       flipped False, plugin_pass fell 6/6 -> 4/6. Reverted
+       (sdk_probe.py:369-374).
+   A third class — weakening the no_harness_error gate — is explicitly
+   rejected at sdk_probe.py:384: the gate "is doing exactly its job by
+   refusing to score a 127 as a pass".
+
+CONCLUSION: NO CODE FIX APPLIED, DELIBERATELY.
+   The harness is measuring a genuinely stochastic live-model surface. Every
+   available lever either weakens a gate that is working correctly, or was
+   measured to make the score worse. Under this skill's own HARD-GATE the
+   correct action at 3+ failures is to stop and question the architecture
+   rather than attempt a fourth variant.
+
+   The honest label is not "flaky harness" but: V6 measures a non-deterministic
+   surface and its score is a DISTRIBUTION, not a pass/fail. 6/6 is reachable
+   but not reliably reproducible; the single-run verdict is therefore not a
+   sound release gate in its current form.

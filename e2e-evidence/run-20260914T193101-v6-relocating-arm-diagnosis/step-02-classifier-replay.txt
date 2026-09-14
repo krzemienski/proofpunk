@@ -1,0 +1,43 @@
+# Failure-kind classifier — replayed over every recorded FAIL arm
+command : offline replay of the classifier against 13 committed artifacts
+cwd     : /Users/nick/proofpunk
+HEAD    : 64705bd (+ uncommitted)
+utc     : 2026-09-14T19:34:04.067019Z
+----------------------------------------------------------------------
+WHAT CHANGED, AND WHAT DID NOT
+  ADDED (descriptive only): summary["failure_kinds"] names WHY each FAIL arm
+  failed, and summary["surface_is_stochastic"]=True. A reader comparing two
+  red artifacts could not previously tell whether the cause CHANGED or merely
+  RELOCATED — the artifact recorded only which checks were False.
+
+  UNCHANGED (verified byte-identical against HEAD):
+    ok = (n_plugin_pass == 6 and n_control_fail == 6 and n_honest_max == 6
+          and not harness_errors)
+  Softening this would convert an honestly-failing gate into one that passes
+  on a stochastic surface. It still demands 6/6/6 with zero harness errors.
+
+FIRST CLASSIFIER WAS WRONG — CAUGHT BY REPLAY, NOT BY REVIEW
+  v1 read arm["result"]["harness_error"] and arm["result"]["num_turns"].
+  Replayed over all 21 historical FAIL arms: 14 of 21 came back
+  "unclassified" — because the summary row carries NO `result` key at all.
+  That dict exists only in the per-arm log. Reading a field that does not
+  exist silently produced the least-informative answer for two thirds of the
+  data, and a green-looking implementation would have shipped it.
+
+  v2 reads the log the row already points at (arm["log"], repo-relative) and
+  falls back to the checks dict.
+
+RESULT AFTER FIX — 20 of 21 classified
+  harness_crash              7
+  turn_budget_exhausted      5
+  single_turn_early_yield    5
+  harness_error_unnamed      3
+  unclassified               1
+
+  The single remaining "unclassified" is honest, not a gap: truth-audit in
+  run-20260911T001450Z-budget-exhausted-FAILED failed ONLY text_matches (the
+  skill WAS invoked), and its log path points outside the repo to a deleted
+  /tmp directory. With the evidence gone, inventing a kind would be a
+  fabricated classification. It stays unclassified.
+
+VERDICT UNAFFECTED: 13/13 gates rc=0 after the change.

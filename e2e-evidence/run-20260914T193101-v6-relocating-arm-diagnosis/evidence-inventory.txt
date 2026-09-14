@@ -1,0 +1,4 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-diagnosis.txt 3730 9b245ea577b6dc1c8711dffcc06da8d1c3270473ace08f6f320d3e24ca447431
+step-02-classifier-replay.txt 2172 59c23fb3360e92778092a20b242dafd3214618b5705daacaf5032211e8a99fa4
+sealed=2026-09-14T19:34:04Z count=2 total_bytes=5902
