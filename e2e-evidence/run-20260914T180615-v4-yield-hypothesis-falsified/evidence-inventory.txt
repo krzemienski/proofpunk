@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-yield-hypothesis-falsified.md 4878 0d86dbb4077ff1d7b9eea960872a5ea47e4611489179d129abeb0c353621a790
+sealed=2026-09-14T18:06:15Z count=1 total_bytes=4878

@@ -356,7 +356,8 @@ def check_file(path: str, counts: dict) -> list[str]:
     except (OSError, UnicodeDecodeError):
         return fails
     rel = os.path.relpath(path, ROOT)
-    for i, line in enumerate(text.splitlines(), 1):
+    lines = text.splitlines()
+    for i, line in enumerate(lines, 1):
         if HISTORICAL_LINE.search(line):
             continue
         # 6+6 commands
@@ -408,7 +409,12 @@ def check_file(path: str, counts: dict) -> list[str]:
                 )
         for m in TABLE_ROWS_RE.finditer(line):
             n = int(m.group(1))
-            ctx = line + " " + (text.splitlines()[i - 2] if i >= 2 else "")
+            # The cue naming which table this is often sits on a preceding
+            # line, because prose wraps. Two lines back covers the measured
+            # cases (architecture.md:116-117 is one back; a wrapped sentence
+            # puts it two). Hoisted out of the per-line loop: re-splitting the
+            # whole file for every matching line is O(lines x filesize).
+            ctx = " ".join(lines[max(0, i - 3):i])
             if SKILL_TABLE_CUE.search(ctx) and n != counts["router_edges"]:
                 fails.append(
                     f"{rel}:{i}: '{m.group(0)}' for the Skill calls table "
