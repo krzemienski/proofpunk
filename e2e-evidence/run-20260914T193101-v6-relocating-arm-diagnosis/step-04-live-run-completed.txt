@@ -1,0 +1,48 @@
+# COMPLETED live run — failure_kinds proven end to end
+command  : python3 tools/verify-command-surface.py   (PP_CMDSURFACE_OUT_DIR=/tmp/pp-v6-final)
+runner   : supervised background process (hub), not a foreground shell
+cwd      : /Users/nick/proofpunk
+HEAD     : 6935fa1
+utc      : 2026-09-14T20:20:43.908972Z
+uptime   : 9m14s
+exit     : 1   (recorded separately; expected — the gate honestly fails 4/6)
+----------------------------------------------------------------------
+WHY THIS RUN EXISTS
+  The prior attempt was killed at a 1500s FOREGROUND ceiling while on the final
+  install arm — the artifact is written only at the very end, so it proved
+  nothing. Re-run under a supervised background process so no foreground wall
+  applies. It completed in 9m14s.
+
+THE QUESTION IT SETTLES
+  Extraction-based proof could not show that main() REACHES the failure_kinds
+  block with real rows. This artifact, written by main() itself, does:
+
+    "failure_kinds"        present    -> True
+    "surface_is_stochastic" present   -> True
+
+  failure_kinds emitted by main():
+    truth-audit   kind=turn_budget_exhausted
+                  failed=['no_harness_error']  elapsed=118.2s
+
+  full_chain=4/6  plugin_pass=5/6  control_fail=6/6  honest_max=4/6
+
+THE RESULT ALSO CORROBORATES THE DIAGNOSIS, INDEPENDENTLY
+  The failing arm RELOCATED AGAIN — to truth-audit, a command that passed in
+  BOTH prior runs (183037, 183800) on an unchanged tree. Three consecutive
+  runs, three different failing commands:
+    183037  install      turn_budget_exhausted
+    183800  implement    single_turn_early_yield
+    202014  truth-audit  turn_budget_exhausted
+  A deterministic defect cannot move between commands across runs. This is the
+  stochastic surface, measured a third time, and the classifier named the kind
+  correctly without being tuned for this command.
+
+  install this run reached playbook-recognition rather than FAIL — another
+  draw from the same distribution.
+
+PROOF LEVEL: END-USER for the classifier.
+  The gate was driven as its real user (a full 15-arm run), completed, and its
+  own artifact carries the keys. Previously this was script-level only.
+
+  The surface score itself remains a DISTRIBUTION, not a pass/fail — now four
+  recorded runs deep: 4/6 joins 0,3,3,4,4,4,4,5,5,5,6.
