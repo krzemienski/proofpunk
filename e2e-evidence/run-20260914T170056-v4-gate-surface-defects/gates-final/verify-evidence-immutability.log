@@ -1,0 +1,6 @@
+== committed-capture immutability at HEAD 3b6a7f9
+   evidence: tracked=408 modified=0
+   e2e-evidence: tracked=1786 modified=0 (+103 newly added, not in HEAD — out of scope)
+
+PASS evidence-immutability: 2194 committed captures byte-identical to HEAD
+VERDICT: PASS

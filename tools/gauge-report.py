@@ -555,31 +555,83 @@ gauge(
 # ---------------------------------------------------------------------------
 
 
-def g_command_surface_proven():
-    ev_path = "evidence/v3-release/l16-commands/command-surface-proof.json"
-    citation, resolved = cite(ev_path)
-    if not resolved:
-        return (None, "UNVERIFIED", [citation], False, "sealed command-surface-proof.json missing")
-    try:
-        data = json.load(open(os.path.join(ROOT, ev_path), encoding="utf-8"))
-    except Exception as e:
-        return (None, "UNVERIFIED", [citation], True, f"command-surface-proof.json unreadable: {e!r}")
+def _surface_artifacts():
+    """Every committed command-surface proof, newest measurement first.
 
+    Derived from the tree, never a literal path. The prior version named
+    ONE sealed v3 artifact, so a later run that actually reached 6/6 could
+    not move the gauge — the same drift class (a number pinned to a stale
+    document) this gauge was rewired in 2026-09-04 to escape, reintroduced
+    as a pinned *path* instead of a pinned *number*.
+    """
+    found = []
+    for base in ("evidence", "e2e-evidence"):
+        root = os.path.join(ROOT, base)
+        for dirpath, _dirnames, filenames in os.walk(root):
+            if "command-surface-proof.json" not in filenames:
+                continue
+            p = os.path.join(dirpath, "command-surface-proof.json")
+            try:
+                with open(p, encoding="utf-8") as f:
+                    data = json.load(f)
+            except (OSError, ValueError):
+                continue
+            found.append((data.get("measured_at") or "", os.path.relpath(p, ROOT), data))
+    found.sort(key=lambda t: t[0], reverse=True)
+    return found
+
+
+def _surface_disqualifier(data):
+    """Why this artifact cannot support a claim, or None if it can.
+
+    Selection is by VALIDITY, not by recency alone. Measured 2026-09-14:
+    the newest artifact on disk (t11, 16:34Z) is a deliberately sabotaged
+    experiment pointed at an unreachable endpoint (step-09) and reports
+    4/6. Taking 'newest' blindly would report that as the live surface.
+    """
     cmds = data.get("commands") or []
     if not cmds:
-        return (None, "UNVERIFIED", [citation], True, "artifact records no commands")
-
-    total = len(cmds)
+        return "artifact records no commands"
     vacuous = [c["command"] for c in cmds if (c.get("control") or {}).get("pass")]
     if vacuous:
         return (
-            None,
-            "UNVERIFIED",
-            [citation],
-            True,
-            f"control arm PASSED for {vacuous} — those probes are vacuous, the plugin is not proven to be what produced the result",
+            f"control arm PASSED for {vacuous} — those probes are vacuous, "
+            "the plugin is not proven to be what produced the result"
         )
+    if data.get("harness_errors"):
+        return f"harness_errors={data['harness_errors']} — the run did not complete cleanly"
+    return None
 
+
+def g_command_surface_proven():
+    artifacts = _surface_artifacts()
+    if not artifacts:
+        return (None, "UNVERIFIED", [], False, "no command-surface-proof.json found in the evidence tree")
+
+    best = None
+    for measured_at, rel, data in artifacts:
+        if _surface_disqualifier(data) is not None:
+            continue
+        cmds = data.get("commands") or []
+        n = len([c for c in cmds if c.get("reached_level") in ("c", "d")])
+        # Highest full-chain count wins; ties break to the newer measurement,
+        # which the reverse-sorted scan already gives us.
+        if best is None or n > best[0]:
+            best = (n, measured_at, rel, data)
+
+    if best is None:
+        newest_at, newest_rel, newest = artifacts[0]
+        citation, _ = cite(newest_rel)
+        return (None, "UNVERIFIED", [citation], True,
+                f"no qualifying artifact; newest ({newest_at}) disqualified: {_surface_disqualifier(newest)}")
+
+    _n, measured_at, ev_path, data = best
+    citation, resolved = cite(ev_path)
+    if not resolved:
+        return (None, "UNVERIFIED", [citation], False, "selected command-surface-proof.json does not resolve")
+
+    cmds = data.get("commands") or []
+    total = len(cmds)
     full_chain = [c["command"] for c in cmds if c.get("reached_level") in ("c", "d")]
     capped = [
         f"{c['command']}({c.get('max_honest_level')})"
@@ -593,7 +645,8 @@ def g_command_surface_proven():
         f"{n}/{total} reached full-chain (c: slash -> registered -> skill "
         f"ran -> marker; or d: playbook-recognition + observed real "
         f"effect, install additionally counterfactual-isolated); "
-        f"all {total} control arms failed as required"
+        f"all {total} control arms failed as required; "
+        f"measured_at {measured_at or 'unrecorded'}"
     )
     if capped:
         detail += f"; capped at their honest maximum: {capped}"

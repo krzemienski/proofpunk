@@ -1,0 +1,17 @@
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+Intent verdict recorded and the stop gate now clears.
+
+```
+record  → /Users/nick/.proofpunk/intent/350768fefb658c66d89f17826ebecfb6.json   rc=0
+status  → "verdict": "MET", "unmet": [], recorded 2026-09-14T17:09:55Z
+may-stop → rc=0 (stop allowed)
+```
+
+**Verdict: MET.** The original request — independently verify C1–C4 from the tree by running the commands myself, leave the working tree exactly as found, and report an adversarial table — was carried out in full: all four claims executed and PASS, the C1 mutation restored byte-identically (`48a7905f…`), the C2 output files restored from pre-run backups, and the table delivered with exact commands, decisive output lines, and six caveats.
+
+Two notes on the recording itself:
+
+- `--intent` was populated from `intent_verdict.py recover` against the session transcript, not retyped from memory — the stored `original_intent` is the verbatim first user message.
+- State landed in `~/.proofpunk/intent/`, outside the repo. `git status --porcelain` still reports 46 entries, matching the session-start count, so recording the verdict did not disturb the tree.
+
+`session_id` is empty (`$PROOFPUNK_SESSION_ID` unset), so the key hashed `":{cwd}"`. `may-stop` resolved against that same key and returned 0, so the hook and the record agree on identity.

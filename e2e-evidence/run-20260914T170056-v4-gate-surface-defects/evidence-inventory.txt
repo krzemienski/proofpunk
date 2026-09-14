@@ -1,0 +1,8 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-premise-correction.md 3213 73a93208c6e2743e19cb0a828fd97b8f865a93f257a7b25a59bd840a73e75011
+step-02-two-defects-found-and-fixed.md 6350 c2007ac8eb1f42c6f7682e6e26b8fb24c6a5f9d8afef36157c367bc78d3a8a0a
+step-03-gate-surface-and-install.md 4357 5dfed0d2be2d6ba2ad6562046b35a2adbb27210e2e9fdc705749fe41e33e4a9b
+step-04-my-own-measurement-errors.md 3105 f61e8a162d46a4937bc554f7e99ed91214f59951f81ab39f617a61f4e4d5243f
+step-05-independent-verification.md 4866 7174b8e7ffe9f13d85db7f1489c69c049cf95d432e3a883dc517a1181677ec0d
+step-06-third-defect-immutability-scope.md 4208 1b8cb27900bae8ba985f2758b055c992f9ef9ea70622d263d06234aa5b823f31
+sealed=2026-09-14T17:34:26Z count=6 total_bytes=26099

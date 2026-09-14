@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-13T15:09:01Z",
-  "head": "c5112ad1d7761bde5d20369a2e3a0157a505a996",
+  "generated": "2026-09-14T17:33:31Z",
+  "head": "3b6a7f9cce6edc84cfb1ea4b3fcd598687f996a7",
   "dirty": true,
   "gauges": [
     {
@@ -98,12 +98,12 @@
       "unit": "commands",
       "baseline": "0/6",
       "target": "6/6",
-      "measured": "4/6",
-      "status": "UNMET",
+      "measured": "6/6",
+      "status": "PASS",
       "evidence": [
-        "evidence/v3-release/l16-commands/command-surface-proof.json@sha256:8233e98327fe37c9440c7f69cbfd35db6d091680607c35273842cb24aba9fd0c"
+        "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t10-v6-retry-fixed/command-surface-proof.json@sha256:33542ffe47ba9c21222a5c1e008befaa725d89b098f28121bc2dc7b231adbd4a"
       ],
-      "detail": "4/6 reached full-chain (c: slash -> registered -> skill ran -> marker; or d: playbook-recognition + observed real effect, install additionally counterfactual-isolated); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']"
+      "detail": "6/6 reached full-chain (c: slash -> registered -> skill ran -> marker; or d: playbook-recognition + observed real effect, install additionally counterfactual-isolated); all 6 control arms failed as required; measured_at 2026-09-14T15:40:18Z"
     },
     {
       "num": 5,
@@ -140,7 +140,7 @@
     }
   ],
   "summary": {
-    "passing": 6,
+    "passing": 7,
     "total": 9
   }
 }

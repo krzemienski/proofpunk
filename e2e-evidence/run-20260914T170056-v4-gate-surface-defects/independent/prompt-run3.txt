@@ -1,0 +1,25 @@
+Independently verify 5 claims in /Users/nick/proofpunk by RUNNING commands.
+Do not read any step-*.md or report. Keep tool output small: never cat a whole
+large file; use head/tail/grep with small limits. Work quickly.
+
+C1 MUTATION: run `python3 tools/verify-counts.py; echo rc=$?` (expect rc=0).
+   Then `sed -i.bak 's/18 delivery skills/11 delivery skills/' plugins/proofpunk/skills/proofpunk/SKILL.md && rm -f plugins/proofpunk/skills/proofpunk/SKILL.md.bak`
+   Re-run the gate (expect rc=1 naming SKILL.md:4).
+   Then `git checkout -- plugins/proofpunk/skills/proofpunk/SKILL.md` and
+   `sha256sum plugins/proofpunk/skills/proofpunk/SKILL.md` (expect 48a7905fb9272fa605fba9ceab158e5c4b67194cc8d9d4e3d243ae5c8c215825).
+C2: `python3 tools/gauge-report.py 2>&1 | grep -E '#4|VERDICT'; ` and separately capture rc unpiped.
+C3: `grep -n 'v3-release/l16-commands' tools/gauge-report.py` (expect no hardcoded ev_path assignment).
+C4: run each of these unpiped capturing rc: verify-orchestration.py verify-citations.py
+    verify-harness-integrity.py verify-router-links.py verify-mutation-artifact.py
+    verify-lane-contracts.py verify-shipped-vs-active.py verify-proof-vocab.py
+    verify-counts.py verify-evidence-immutability.py
+C5 ADVERSARIAL: create e2e-evidence/_probe/command-surface-proof.json by copying
+   e2e-evidence/run-20260914T002104-v4-phase-reconcile/t10-v6-retry-fixed/command-surface-proof.json
+   with jq setting .measured_at="2099-01-01T00:00:00Z" and .commands[0].control.pass=true.
+   Re-run gauge-report and confirm gauge #4 is NOT sourced from that forged file
+   (it must stay 6/6 from a valid artifact, not be poisoned). Then `rm -rf e2e-evidence/_probe`.
+
+Write ONLY a markdown table to
+e2e-evidence/run-20260914T170056-v4-gate-surface-defects/independent/verdict-run3.md
+columns: Claim | PASS/FAIL | command | decisive output. Then stop.
+Leave the tree as found.

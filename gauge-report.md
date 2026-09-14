@@ -1,6 +1,6 @@
 # gauge-report — recomputed from sealed artifacts
 
-Generated: 2026-09-13T15:09:01Z | Repo HEAD: `c5112ad1d7761bde5d20369a2e3a0157a505a996` (working tree dirty)
+Generated: 2026-09-14T17:33:31Z | Repo HEAD: `3b6a7f9cce6edc84cfb1ea4b3fcd598687f996a7` (working tree dirty)
 
 Every row is computed fresh by this script from files under
 `evidence/v3-release/**` and the live skill tree. No number is copied
@@ -15,7 +15,7 @@ is reported UNVERIFIED, never PASS.
 | 8 | L10 | Median skill body size (context-economy proxy) (bytes) | 6,266 | UNMEASURED (no target defined in sealed sources) | 6447 bytes | **UNMEASURED** | `evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1` |
 | 2 | L4 | stop-guard scout-substring false-PASS closed, mutation-proven (cases) | 47 -> 48 cases | mutation-proven (baseline=mutated+1, restored byte-identical to baseline) | baseline=48 mutated=47 restored=48 byte_identical=True | **PASS** | `evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/VERDICT.md@sha256:43646ce82d6a4d2da30824812ac88cbf465833114b95167e2f70a6ccbb787aeb`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-00-root-cause.md@sha256:6aab30d9ceee57b61cd8ee4fa6b60ab3c5a61c67653fd2ce94273b65b53ed791`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-01-baseline-fix-present.log@sha256:e12a0e2d4cd0f0a4b1aa60289f9abae03c4306ad38da0ef77761d3b885907dff`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-02-mutated-fix-reverted.log@sha256:47ae31b428db297c08369770ce251a19b1c4d34ed0dd5f2d592134c55dd212a9`<br>`evidence/v3-release/l4-enforcement/run-20260904T043559-scout-substring/step-03-restored.log@sha256:e12a0e2d4cd0f0a4b1aa60289f9abae03c4306ad38da0ef77761d3b885907dff` |
 | 3 | L1 | Unresolved repo-tree citations (name/desc/fields resolve relative to citing file) (citations) | 30 -> 29 (top-level: 1 -> 0) | 0 | 0 unresolved (top-level: 0) | **PASS** | `evidence/v3-release/00-baseline/citation-integrity-finding.md@sha256:90969b64df5cc23d260e99b276822a09ff4e0123866730802d0004fa2ac04ec3` |
-| 4 | L16 | Commands proven end-to-end at the real slash-command surface (commands) | 0/6 | 6/6 | 4/6 | **UNMET** | `evidence/v3-release/l16-commands/command-surface-proof.json@sha256:8233e98327fe37c9440c7f69cbfd35db6d091680607c35273842cb24aba9fd0c` |
+| 4 | L16 | Commands proven end-to-end at the real slash-command surface (commands) | 0/6 | 6/6 | 6/6 | **PASS** | `e2e-evidence/run-20260914T002104-v4-phase-reconcile/t10-v6-retry-fixed/command-surface-proof.json@sha256:33542ffe47ba9c21222a5c1e008befaa725d89b098f28121bc2dc7b231adbd4a` |
 | 5 | L2/L3 | Release gates: all exit 0, exit codes captured separately from stdout (gates) | 4/4 rc=0 | 4/4 rc=0 (this is a sealed snapshot — re-run tools/*.sh/py to confirm current tree) | test-hooks.sh=0, test-installer.sh=0, dry-run-install.sh=0, verify-orchestration.py=0 | **PASS** | `evidence/v3-release/00-baseline/gates-20260904T051258/exit-codes.txt@sha256:c6db6b3274cf4ee0b9a51a2b043d8234fb53e8f4a5d837f005a9aa19abc4a947`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/README.md@sha256:e09021a705dccd4e4e03a73d8a054d72cdaa92c132bab404c0bfdf19c64a1c68`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/test-hooks.sh.log@sha256:563d8e2216ca7699b7021916e6ad8ddd98a050c96eb979e7f9dd8f462da4f8e6`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/test-installer.sh.log@sha256:fac80dddb4814f0852bacac17baa97af6f776b7e78b73e6fab02102a19b981f7`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/dry-run-install.sh.log@sha256:78770467d5cdbf18b7eebdf18803af3006ef12e16084beb65002c948470b6d68`<br>`evidence/v3-release/00-baseline/gates-20260904T051258/verify-orchestration.py.log@sha256:16188c448147dbfe97be37d50c88f76ccceeb5e7b1b8d01e7b5e32c205e3cbf3` |
 | 6 | L14 | Skill count (ground truth, derived not restated) (skills) | 19 | 19 | 19 | **PASS** | `evidence/v3-release/00-baseline/description-budget-baseline.md@sha256:c6f61b7382ca8f1976782be7019ee536814f82e8bb091441984b72fa621bc8a1` |
 
@@ -52,9 +52,9 @@ is reported UNVERIFIED, never PASS.
 - Detail: all citations resolve
 
 ### Gauge #4 (L16) — Commands proven end-to-end at the real slash-command surface
-- Status: **UNMET**
-- Measured: 4/6
-- Detail: 4/6 reached full-chain (c: slash -> registered -> skill ran -> marker; or d: playbook-recognition + observed real effect, install additionally counterfactual-isolated); all 6 control arms failed as required; capped at their honest maximum: ['verify(playbook-recognition)', 'install(playbook-recognition)']
+- Status: **PASS**
+- Measured: 6/6
+- Detail: 6/6 reached full-chain (c: slash -> registered -> skill ran -> marker; or d: playbook-recognition + observed real effect, install additionally counterfactual-isolated); all 6 control arms failed as required; measured_at 2026-09-14T15:40:18Z
 
 ### Gauge #5 (L2/L3) — Release gates: all exit 0, exit codes captured separately from stdout
 - Status: **PASS**
@@ -66,8 +66,7 @@ is reported UNVERIFIED, never PASS.
 - Measured: 19
 - Detail: 19 skill directories with SKILL.md found under plugins/proofpunk/skills/
 
-## Summary: 6/9 gauges PASS
+## Summary: 7/9 gauges PASS
 
 - Gauge #9 (L10): **UNMEASURED** — Aggregate description+when_to_use chars (listing-pressure trend, not a fixed budget)
 - Gauge #8 (L10): **UNMEASURED** — Median skill body size (context-economy proxy)
-- Gauge #4 (L16): **UNMET** — Commands proven end-to-end at the real slash-command surface

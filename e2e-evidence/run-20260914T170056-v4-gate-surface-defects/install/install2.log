@@ -1,0 +1,63 @@
+== Proofpunk installer ==
+target dir : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ilrrG923k4/.claude/skills  (claude-code)
+source     : local checkout /Users/nick/proofpunk
+version    : installed=pre-versioned → source=4.0.0 (source is always the newest main)
+installing : 19 skill(s)
+  SKIP    brainstorm (already exists; use --override to replace)
+  SKIP    codebase-truth-audit (already exists; use --override to replace)
+  SKIP    completion-summary (already exists; use --override to replace)
+  SKIP    end-user-testing (already exists; use --override to replace)
+  SKIP    full-functional-audit (already exists; use --override to replace)
+  SKIP    implement (already exists; use --override to replace)
+  SKIP    mobile-validation-runner (already exists; use --override to replace)
+  SKIP    plan-hardening (already exists; use --override to replace)
+  SKIP    production-readiness (already exists; use --override to replace)
+  SKIP    prompt-forge (already exists; use --override to replace)
+  SKIP    proofpunk (already exists; use --override to replace)
+  SKIP    red-team-eval (already exists; use --override to replace)
+  SKIP    root-cause-debugging (already exists; use --override to replace)
+  SKIP    session-intent (already exists; use --override to replace)
+  SKIP    stack-testing (already exists; use --override to replace)
+  SKIP    tui-testing (already exists; use --override to replace)
+  SKIP    ui-experience-audit (already exists; use --override to replace)
+  SKIP    validation-plan (already exists; use --override to replace)
+  SKIP    visual-inspection (already exists; use --override to replace)
+hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)
+  copied: 10 hook scripts (bash-write-notice.sh, bash-write-snapshot.sh, capture-guard.sh, evidence-guard.sh, instructions-loaded.sh, no-test-files.sh, platform-steer.sh, post-write-walkthrough.sh, session-start.sh, stop-guard.sh)
+  SessionStart: already present
+  Stop: already present
+  SubagentStop: already present
+  PreToolUse:no-test-files: already present
+  PreToolUse:evidence-guard: already present
+  PreToolUse:capture-guard: already present
+  PreToolUse:bash-write-snapshot: already present
+  PreToolUse:platform-steer: already present
+  InstructionsLoaded: already present
+  PostToolUse:post-write-walkthrough: already present
+  PostToolUse:bash-write-notice: already present
+  PostToolUseFailure: already present
+  settings: /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ilrrG923k4/.claude/settings.json
+doctrine   : /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/tmp.ilrrG923k4/.claude/skills/proofpunk-doctrine (the ruling rules every skill defers to)
+verify     : per-skill frontmatter + reference checks (auto-fix on broken refs)
+  ✓ brainstorm
+  ✓ codebase-truth-audit
+  ✓ completion-summary
+  ✓ end-user-testing
+  ✓ full-functional-audit
+  ✓ implement
+  ✓ mobile-validation-runner
+  ✓ plan-hardening
+  ✓ production-readiness
+  ✓ prompt-forge
+  ✓ proofpunk
+  ✓ red-team-eval
+  ✓ root-cause-debugging
+  ✓ session-intent
+  ✓ stack-testing
+  ✓ tui-testing
+  ✓ ui-experience-audit
+  ✓ validation-plan
+  ✓ visual-inspection
+verify     : all skills pass (see ✓ lines above)
+== summary: 0 installed, 0 replaced, 19 skipped (collision), 0 missing ==
+   re-run with --override to replace skipped skills

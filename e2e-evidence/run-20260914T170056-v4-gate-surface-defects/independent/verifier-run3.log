@@ -1,0 +1,12 @@
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+All five claims verified by execution. Table written to `e2e-evidence/run-20260914T170056-v4-gate-surface-defects/independent/verdict-run3.md`.
+
+| Claim | Verdict |
+|---|---|
+| C1 mutation | PASS — gate flipped rc=0→rc=1 naming `SKILL.md:4`, restored hash matches `48a7905f…` |
+| C2 gauge #4 | PASS — 6/6, `VERDICT: PASS`, rc=0 |
+| C3 no hardcoded path | PASS — grep found nothing (rc=1) |
+| C4 ten gates | PASS — all rc=0 |
+| C5 adversarial | PASS — forged artifact ignored; #4 still sourced from the pinned `t10-v6-retry-fixed` path with its sha256, `_probe` referenced nowhere |
+
+Tree left as found: `gauge-report.json`, `gauge-report.md`, `tools/gauge-report.py`, `tools/verify-counts.py` modified (pre-existing); `SKILL.md` restored; `e2e-evidence/_probe` removed.

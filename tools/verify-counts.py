@@ -74,8 +74,22 @@ HISTORICAL_PREFIXES = (
     os.path.join(ROOT, "docs") + os.sep,  # generated HTML + dated v3 logs
     os.path.join(ROOT, ".planning") + os.sep,  # dated work-orders, not live doctrine
     os.path.join(ROOT, "examples") + os.sep,
-    os.path.join(PP, "skills") + os.sep,  # per-skill nested refs; not plugin inventory
 )
+
+# Per-skill NESTED references (skills/<name>/<other>.md) are working notes, not
+# plugin inventory, and are excluded. The top-level skills/<name>/SKILL.md files
+# are NOT: they are the plugin's live entry points.
+#
+# Measured 2026-09-14 by mutation: the whole `skills/` subtree was excluded, so
+# rewriting the router's own headline "18 delivery skills" -> "11 delivery
+# skills" in skills/proofpunk/SKILL.md left this gate at rc=0. Four live count
+# claims in the plugin's entry point were entirely unguarded — the exact gap
+# step-20 retracted improvement I8 over.
+def is_nested_skill_ref(path: str) -> bool:
+    skills_root = os.path.join(PP, "skills") + os.sep
+    if not path.startswith(skills_root):
+        return False
+    return os.path.basename(path) != "SKILL.md"
 
 # A line matching any of these is provenance of a past count, not a live claim.
 HISTORICAL_LINE = re.compile(
@@ -213,6 +227,8 @@ def canon() -> dict:
 
 def is_historical_path(path: str) -> bool:
     if os.path.basename(path) in HISTORICAL_BASENAMES:
+        return True
+    if is_nested_skill_ref(path):
         return True
     for prefix in HISTORICAL_PREFIXES:
         if path.startswith(prefix):

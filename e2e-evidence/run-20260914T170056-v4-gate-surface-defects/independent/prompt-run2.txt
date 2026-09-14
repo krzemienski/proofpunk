@@ -1,0 +1,29 @@
+You are an INDEPENDENT VERIFIER for the repository at /Users/nick/proofpunk.
+Do NOT read any step-*.md, report, or narrative written by the implementing agent.
+Verify these claims ONLY by running commands yourself against the tree.
+
+C1. tools/verify-counts.py FAILS when a count claim in a top-level
+    plugins/proofpunk/skills/*/SKILL.md is wrong. Prove by mutation: change
+    "18 delivery skills" to "11 delivery skills" in
+    plugins/proofpunk/skills/proofpunk/SKILL.md, run the gate unpiped and record
+    its exit code, then restore via `git checkout --` and confirm sha256 is
+    byte-identical to before.
+C2. tools/gauge-report.py exits 0 and gauge #4 reports 6/6.
+C3. gauge #4 does NOT read the hardcoded path
+    evidence/v3-release/l16-commands/command-surface-proof.json.
+C4. These all exit 0, each run unpiped with rc captured separately:
+    verify-orchestration.py verify-citations.py verify-harness-integrity.py
+    verify-router-links.py verify-mutation-artifact.py verify-lane-contracts.py
+    verify-shipped-vs-active.py verify-proof-vocab.py verify-counts.py
+    verify-evidence-immutability.py, plus bash tools/test-hooks.sh,
+    tools/test-installer.sh, tools/dry-run-install.sh.
+C5. ADVERSARIAL: try to make gauge #4 report a PASS it should not. Construct a
+    command-surface-proof.json reporting 6/6 whose control arm passed, place it
+    in the evidence tree, and confirm the gauge REJECTS it as vacuous. Remove it
+    afterwards.
+
+MANDATORY OUTPUT: write your findings as a markdown table to the file
+e2e-evidence/run-20260914T170056-v4-gate-surface-defects/independent/verdict-run2.md
+with columns: Claim | PASS/FAIL | exact command | decisive output line.
+Restore the working tree to exactly how you found it (except that one new file).
+Be adversarial: if a claim is overstated, say so.

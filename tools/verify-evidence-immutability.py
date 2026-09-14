@@ -23,6 +23,14 @@ WHAT THIS GATE CAN OBSERVE
 WHAT THIS GATE CANNOT OBSERVE
   - Anything about UNTRACKED files. A new capture is how evidence is
     supposed to arrive; this gate is silent on it by design.
+  - Anything about a NEWLY STAGED capture. `git diff HEAD` reports a staged
+    addition as a change, but a path absent from HEAD was never committed,
+    so it cannot have been mutated. Measured 2026-09-14: staging a fresh
+    103-file run directory turned this gate red with 103 "MODIFIED COMMITTED
+    CAPTURES", every one of which was absent from HEAD. That is the same
+    false-alarm shape the gate exists to prevent, pointed at itself — and a
+    gate that cries wolf on the normal path of adding evidence gets muted,
+    which would silence the real check.
   - A mutation that is committed. Once a bad edit is in a commit, HEAD and
     the worktree agree again and this gate goes quiet. It guards the window
     between mutation and commit, which is exactly where the measured
@@ -89,9 +97,21 @@ def main() -> int:
             print(f"ERROR: git diff failed for {root}")
             print(diff.stderr.strip())
             return 2
-        changed = [p for p in diff.stdout.splitlines() if p.strip()]
+        candidates = [p for p in diff.stdout.splitlines() if p.strip()]
 
-        print(f"   {root}: tracked={len(tracked)} modified={len(changed)}")
+        # A path `git diff HEAD` reports but which does not exist in HEAD is
+        # a newly added (staged) capture, not a mutated one. Only a file that
+        # HAS a committed blob can have drifted from it.
+        changed = []
+        for p in candidates:
+            if git("cat-file", "-e", f"HEAD:{p}").returncode == 0:
+                changed.append(p)
+        added = len(candidates) - len(changed)
+
+        print(
+            f"   {root}: tracked={len(tracked)} modified={len(changed)}"
+            + (f" (+{added} newly added, not in HEAD — out of scope)" if added else "")
+        )
         for path in changed:
             # Report the size delta, since truncation is the shape that
             # destroys a green capture most quietly.

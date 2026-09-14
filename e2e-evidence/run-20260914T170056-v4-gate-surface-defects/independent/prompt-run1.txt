@@ -1,0 +1,19 @@
+You are an INDEPENDENT VERIFIER for the repository at /Users/nick/proofpunk.
+Do NOT read any narrative, summary, step-*.md, or report written by the implementing agent.
+Verify these four claims ONLY from the tree and by running commands yourself:
+
+C1. tools/verify-counts.py now FAILS when a count claim in a top-level
+    plugins/proofpunk/skills/*/SKILL.md is wrong. Prove by mutation:
+    change "18 delivery skills" to "11 delivery skills" in
+    plugins/proofpunk/skills/proofpunk/SKILL.md, run the gate, then restore with
+    `git checkout --` and confirm the file's sha256 is byte-identical to before.
+C2. tools/gauge-report.py exits 0 and gauge #4 reports 6/6.
+C3. gauge #4 does NOT read the hardcoded path evidence/v3-release/l16-commands/.
+C4. All of these exit 0: verify-orchestration.py verify-citations.py
+    verify-harness-integrity.py verify-router-links.py verify-mutation-artifact.py
+    verify-lane-contracts.py verify-shipped-vs-active.py verify-proof-vocab.py
+    verify-counts.py verify-evidence-immutability.py, and bash tools/test-hooks.sh,
+    tools/test-installer.sh, tools/dry-run-install.sh.
+
+Leave the working tree exactly as you found it. Report a table: claim, PASS/FAIL,
+the exact command you ran, and the decisive output line. Be adversarial.
