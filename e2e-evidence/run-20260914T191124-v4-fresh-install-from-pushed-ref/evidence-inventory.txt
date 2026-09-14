@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-fresh-install-from-pushed-ref.txt 2894 9401b9d7586cd16948cfb92cec9389d9f02fd32fe936729ed294b18341953665
+sealed=2026-09-14T19:11:24Z count=1 total_bytes=2894

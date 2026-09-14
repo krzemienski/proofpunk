@@ -1,0 +1,54 @@
+# Fresh install from the PUSHED ref into a clean HOME
+cwd      : /Users/nick/proofpunk
+utc      : 2026-09-14T19:11:24.825761Z
+----------------------------------------------------------------------
+WHY THIS RUN EXISTS
+  Asked directly whether I had confirmed the install works. I had not. I had
+  run test-installer.sh and dry-run-install.sh (both rc=0), but every group in
+  test-installer.sh invokes the installer with --source-dir "$REPO_ROOT" — the
+  LOCAL tree. Nothing had driven the PUSHED artifact. That is install-level
+  proof of the repo, not of what a user actually clones.
+
+METHOD — clone the published ref from the real remote, install into mktemp HOME
+  git clone --depth 1 https://github.com/krzemienski/proofpunk.git
+    cloned HEAD = eaa8e1982055c203122024b8441dbdcf91c7bfcf  (== origin/main)
+  HOME=<mktemp -d> bash <clone>/tools/proofpunk-install.sh \
+       --source-dir <clone> --target claude-code --hooks
+    exit = 0
+    summary: 19 installed, 0 replaced, 0 skipped (collision), 0 missing
+
+VERIFIED ON THE PRODUCED TREE (not on the installer's own summary)
+  skills with SKILL.md .................. 19  (repo has 19)
+  unresolved reference citations ........ 0
+  settings.json event keys .............. 7
+  settings.json registrations ........... 12
+  distinct registered scripts ........... 10
+  registered paths that EXIST on disk ... 10/10
+  on disk but UNREGISTERED (dead guard) . 0
+
+TWO FALSE FINDINGS I RAISED, AND THE INSTRUMENTS THAT CAUSED THEM
+
+  1. "hook scripts: want 10 -> on disk 0" — FALSE, a probe artifact.
+     glob('/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-fresh-home-atio0w3_/**/*.sh', recursive=True) returns 0 because Python's ** does
+     NOT traverse hidden directories, and the hooks install to
+     $HOME/.proofpunk/hooks/. Correct instruments agree:
+       glob('.proofpunk/hooks/*.sh')     -> 10
+       os.walk (traverses hidden)        -> 20 .sh total
+       os.path.exists(session-start.sh)  -> True
+     All 10 registered paths stat OK. This is the inverse of the dead-guard
+     class and it is NOT present.
+
+  2. "20 skills installed, repo has 19" — FALSE, a miscount.
+     The 20th directory is proofpunk-doctrine/, the shared references bundle
+     (19 .md files, no SKILL.md). Counting only dirs carrying SKILL.md gives
+     exactly 19, matching the repo.
+
+  An advisory escalated finding 1 to "every registered hook fails at runtime,
+  a shipping installer bug". Stat-ing the exact registered paths refuted it.
+  The lesson is the session's own: a probe that cannot see its subject reports
+  absence as defect.
+
+VERDICT: the published ref installs correctly. PROOF LEVEL: INSTALL.
+  Not end-user — this verifies the produced tree and registration, not a live
+  session actually firing the hooks. sdk_probe.py / verify-command-surface own
+  that surface, and the latter is separately FAILING pre-existing at 5/6.
