@@ -191,7 +191,31 @@ RETRY_BACKOFF_S = 90
 _TRANSIENT_RE = re.compile(
     r"(rate_limit_error|429|OAuth session expired|"
     r"OAuth access token|authentication_error|Re-authenticate|"
-    r"could not be refreshed)",
+    r"could not be refreshed|"
+    # Measured 2026-09-14, and only after the correlation that suggested it
+    # was falsified once (step-39) and re-tested under controlled repeats.
+    # `cmd_slash_implement` plugin arm, identical conditions each time
+    # (ANTHROPIC_API_KEY unset, omniroute provider, model pin
+    # cc/claude-opus-5), fresh subprocess and fresh sandbox per run:
+    #   5 PASS / 2 FAIL across 7 runs — 29%, stochastic.
+    #   Back-to-back with no pause: rc=2, rc=0, rc=2.
+    # Not positional (it passes as the 15th arm's probe standalone, and
+    # fails as the 1st of three back-to-back), not load-accumulated, and
+    # every failure is byte-identical at 477B. That is host/provider
+    # contention in the SDK's message reader, not a probe result, so it
+    # belongs here rather than being reported as a command defect.
+    #
+    # Two shapes are needed because the failure is reported in two places:
+    # the raw stderr line ("Fatal error in message reader"), and the
+    # structured harness_error field, which carries only the SDK's
+    # ProcessError wrapper. Matching the raw body alone was verified
+    # insufficient — is_transient_harness_error() takes the `parsed`
+    # branch whenever probe JSON decodes, and that branch deliberately
+    # searches only harness-level fields. Widening it to the raw body
+    # would defeat that scoping guard, so the field shape is matched
+    # directly instead.
+    r"Fatal error in message reader|"
+    r"ProcessError: Command failed with exit code 1)",
     re.IGNORECASE,
 )
 

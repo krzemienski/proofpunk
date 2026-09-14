@@ -1,0 +1,18 @@
+== surface model (all arms): cc/claude-opus-5
+== /proofpunk:implement plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-implement-plugin-t63sh0x5)
+== /proofpunk:implement --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-implement-control-jp8idddc)
+== /proofpunk:forge-prompt plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-forge-prompt-plugin-nq8crz8b)
+== /proofpunk:forge-prompt --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-forge-prompt-control-o0osfrcy)
+== /proofpunk:rate-prompt plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-rate-prompt-plugin-vvrqtmbe)
+== /proofpunk:rate-prompt --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-rate-prompt-control-lb1wx1yf)
+== /proofpunk:truth-audit plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-evely11w)
+== /proofpunk:truth-audit --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-control-dt0jke_p)
+== /proofpunk:verify plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-plugin-w3af7xrx)
+== /proofpunk:verify --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-control-ppk0s82w)
+== /proofpunk:verify EFFECT arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-effect-3gyphvwb)
+== /proofpunk:install plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-wcqik6wk)
+== /proofpunk:install --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-control-55fa38hm)
+== /proofpunk:install EFFECT arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-effect-nr7m1vdz)
+== /proofpunk:install COUNTERFACTUAL arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-counterfactual-6w50flcy)
+ARTIFACT e2e-evidence/run-20260914T002104-v4-phase-reconcile/t10-v6-retry-fixed/command-surface-proof.json sha256:33542ffe47ba9c21222a5c1e008befaa725d89b098f28121bc2dc7b231adbd4a
+full_chain=6/6 plugin_pass=6/6 control_fail=6/6 honest_max=6/6
