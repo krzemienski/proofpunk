@@ -1,0 +1,37 @@
+# C7 description-length drift — closed, and gated
+command : python3 tools/verify-counts.py
+cwd     : /Users/nick/proofpunk
+HEAD    : 050dcb3 (+ uncommitted follow-up)
+utc     : 2026-09-14T18:56:53.616880Z
+exit    : 0   (recorded separately from stdout)
+--------------------------------------------------------------------
+canon: skills=19 refs=18 cmds=7+7 hooks.sh=10 events=7 regs=12 agents=3/4/3 edges=51 (router=18)
+scanned 82 live .md files
+VERDICT: PASS — live .md counts match the tree
+
+--------------------------------------------------------------------
+DEFECT SHIPPED IN 050dcb3
+  That commit corrected the C7 prose to RAW folded-scalar lengths (min 649, max
+  979, end-user-testing 839) while all 18 pre-existing rows use CLIP-CHOMPED
+  lengths. The document contradicted itself within four lines: row 17 said 648
+  while the prose two lines below said min 649. My new row 19 said 658 (raw)
+  where the table convention gives 657 — internally inconsistent as well.
+
+RESOLUTION
+  The table convention is correct: section 4's method paragraph documents clip-
+  chomping and states no description ends with a newline. yaml.safe_load returns
+  the raw folded scalar WITH that newline, which is what I measured. Prose
+  reverted to 648/978/838, mean corrected 770 -> 769 (measured 769.05), and
+  row 19 corrected 658 -> 657.
+
+FOUND BY SWEEPING, NOT BY THE REPORT
+  Checking all 19 rows rather than the three named surfaced a fourth defect
+  nobody flagged: the `tui-testing` row says 746, measures 752. Traced through
+  git: 746 was true through b4bd03a, became 752 at 73e928e, row never updated.
+  Two commits of silent drift in the same section being repaired.
+
+CLASS CLOSED, NOT INSTANCE
+  check_canon_desc_lengths() derives every expected length from the actual
+  SKILL.md frontmatter and fails on: a wrong stated length, a row naming a skill
+  not on disk, and a skill on disk with no row. That last case is exactly what
+  let completion-summary sit unaudited in the first place.

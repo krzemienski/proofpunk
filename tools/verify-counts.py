@@ -517,6 +517,61 @@ def check_file(path: str, counts: dict) -> list[str]:
     return fails
 
 
+# skill-canon.md's C7 table states a measured `description` length per skill.
+# Nothing derived those numbers, so they drifted silently: `tui-testing` was
+# 746 through b4bd03a, became 752 at 73e928e, and the row still said 746 two
+# commits later. Measured 2026-09-14 while repairing a different drift in the
+# same section — found by sweeping ALL 19 rows, not by the report that named
+# only three of them.
+#
+# Convention: the table records the CLIP-CHOMPED length (trailing newline
+# stripped), which is what §4's method paragraph documents. yaml.safe_load
+# returns the raw folded scalar WITH that newline, so every value here is
+# rstripped before comparison — mixing the two conventions is what put the
+# table and its own prose one apart.
+CANON_ROW_RE = re.compile(r"^\| *\d+ \| \`([a-z0-9-]+)\`.*?Yes \| (\d+) \|", re.M)
+
+
+def check_canon_desc_lengths() -> list[str]:
+    canon_md = os.path.join(ROOT, "docs", "skill-canon.md")
+    skills_dir = os.path.join(PP, "skills")
+    if not (os.path.isfile(canon_md) and os.path.isdir(skills_dir)):
+        return []
+    try:
+        import yaml  # noqa: PLC0415 — optional dep; absence must not fail the gate
+    except ImportError:
+        return []
+
+    measured = {}
+    for name in sorted(os.listdir(skills_dir)):
+        sk = os.path.join(skills_dir, name, "SKILL.md")
+        if not os.path.isfile(sk):
+            continue
+        try:
+            fm = open(sk, encoding="utf-8").read().split("---")[1]
+            desc = (yaml.safe_load(fm) or {}).get("description", "")
+        except (OSError, UnicodeDecodeError, IndexError, yaml.YAMLError):
+            continue
+        measured[name] = len(desc.rstrip())
+
+    text = open(canon_md, encoding="utf-8").read()
+    rows = {m.group(1): int(m.group(2)) for m in CANON_ROW_RE.finditer(text)}
+    rel = os.path.relpath(canon_md, ROOT)
+
+    fails = []
+    for skill, stated in sorted(rows.items()):
+        live = measured.get(skill)
+        if live is None:
+            fails.append(f"{rel}: C7 row '{skill}' names a skill not on disk")
+        elif stated != live:
+            fails.append(
+                f"{rel}: C7 row '{skill}' says description={stated} (live {live})"
+            )
+    for skill in sorted(set(measured) - set(rows)):
+        fails.append(f"{rel}: C7 table has no row for '{skill}' (skill exists on disk)")
+    return fails
+
+
 def main() -> int:
     counts = canon()
     print(
@@ -533,6 +588,7 @@ def main() -> int:
         n_files += 1
         fails.extend(check_file(path, counts))
     print(f"scanned {n_files} live .md files")
+    fails.extend(check_canon_desc_lengths())
     if fails:
         print(f"VERDICT: FAIL — {len(fails)} mismatch(es)")
         for f in fails:

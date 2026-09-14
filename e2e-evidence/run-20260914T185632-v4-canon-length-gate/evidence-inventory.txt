@@ -1,0 +1,4 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-canon-length-gate.txt 1996 c684bbcf24e2de878325528b9c217e0b8230be8b160f24ccdaa443d33f79cd5b
+step-02-mutation-proof.txt 1933 a527a3c2f6fafccb4965f1bada8f778f7fcec0e841d096f3f30b0ae37bdafd24
+sealed=2026-09-14T18:57:14Z count=2 total_bytes=3929

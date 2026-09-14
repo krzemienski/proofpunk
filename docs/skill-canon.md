@@ -394,22 +394,22 @@ All 19 skills use `>` folded-scalar description blocks except none deviate
 | 12 | `root-cause-debugging` | `root-cause-debugging` | Yes | 731 | PASS | PASS | PASS | PASS | None | None | none |
 | 13 | `session-intent` | `session-intent` | Yes | 805 | PASS | PASS | PASS | PASS | None | None | none |
 | 14 | `stack-testing` | `stack-testing` | Yes | 746 | PASS | PASS | PASS | PASS | None | None | none |
-| 15 | `tui-testing` | `tui-testing` | Yes | 746 | PASS | PASS | PASS | PASS | None | None | none |
+| 15 | `tui-testing` | `tui-testing` | Yes | 752 | PASS | PASS | PASS | PASS | None | None | none |
 | 16 | `ui-experience-audit` | `ui-experience-audit` | Yes | 807 | PASS | PASS | PASS | PASS | None | None | none |
 | 17 | `validation-plan` | `validation-plan` | Yes | 648 | PASS | PASS | PASS | PASS | None | None | none |
 | 18 | `visual-inspection` | `visual-inspection` | Yes | 672 | PASS | PASS | PASS | PASS | None | None | none |
-| 19 | `completion-summary` | `completion-summary` | Yes | 658 | PASS | PASS | PASS | PASS | None | None | none |
+| 19 | `completion-summary` | `completion-summary` | Yes | 657 | PASS | PASS | PASS | PASS | None | None | none |
 
 Name length: every `name` value is well under the 64-char ceiling (longest
 is `mobile-validation-runner` at 24 chars, `full-functional-audit` at 21).
 Not tabulated as a separate column since all 19 pass trivially — the
 longest is 24/64.
 
-Description-length distribution: min 649 (`validation-plan`), max 979
-(`implement`), mean ≈ 770. **Every one of the 19 is comfortably under the
+Description-length distribution: min 648 (`validation-plan`), max 978
+(`implement`), mean ≈ 769. **Every one of the 19 is comfortably under the
 1024-char open-spec/OpenCode/Claude-Skills-API ceiling** — the closest is
-`implement` at 979/1024 (95.6% of budget, 45 chars of headroom) and
-`end-user-testing` at 839/1024. None exceed, none are within a rounding
+`implement` at 978/1024 (95.5% of budget, 46 chars of headroom) and
+`end-user-testing` at 838/1024. None exceed, none are within a rounding
 error of overflowing.
 
 Frontmatter-field-outside-recognized-set: **zero** findings. All 19 files

@@ -1,0 +1,38 @@
+# Mutation proof — check_canon_desc_lengths() in tools/verify-counts.py
+command : python3 tools/verify-counts.py  (once per arm, unpiped)
+cwd     : /Users/nick/proofpunk
+HEAD    : 050dcb3 (+ uncommitted follow-up)
+utc     : 2026-09-14T18:57:13.971690Z
+----------------------------------------------------------------------
+METHOD
+  Each arm mutates ONE row of docs/skill-canon.md's C7 table, runs the gate
+  unpiped, records the exit code separately from stdout, then restores the
+  file and asserts byte-identity. A gate that cannot fail proves nothing, so
+  each arm must (a) exit 1 and (b) NAME the specific row at fault.
+----------------------------------------------------------------------
+baseline exit=0 (want 0)
+
+ARM: reintroduce the exact drift this change closed
+  why   : tui-testing row 746 -> the value it held through b4bd03a
+  exit  : 1  (want 1)  OK
+  named : docs/skill-canon.md: C7 row 'tui-testing' says description=746 (live 752)
+
+ARM: stale row 19 — the raw-vs-clip-chomped confusion
+  why   : completion-summary 657 -> 658, the raw folded-scalar length
+  exit  : 1  (want 1)  OK
+  named : docs/skill-canon.md: C7 row 'completion-summary' says description=658 (live 657)
+
+ARM: row missing entirely — the original completion-summary defect
+  why   : delete row 19; the skill still exists on disk
+  exit  : 1  (want 1)  OK
+  named : docs/skill-canon.md: C7 table has no row for 'completion-summary' (skill exists on disk)
+
+----------------------------------------------------------------------
+restored exit=0 (want 0); docs/skill-canon.md byte-identical: True
+VERDICT: ALL 3 ARMS PROVEN
+
+WHY ARM 3 MATTERS MOST
+  Arms 1 and 2 catch a wrong number in an existing row. Arm 3 catches a row
+  that is absent — which is how completion-summary went unaudited: the C7
+  section claimed to cover 'the current 18 skills' against a tree of 19, and
+  no check compared the table's membership to the skills on disk.
