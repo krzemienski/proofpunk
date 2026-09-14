@@ -1,0 +1,71 @@
+# Phase 5 (5A-5F) — explicit scope reconciliation
+cwd  : /Users/nick/proofpunk
+HEAD : 59afb80
+utc  : 2026-09-14T18:59:34.656993Z
+----------------------------------------------------------------------
+CHALLENGE
+  "Already shipped 128 commits ago covers Phases 0-4, not 5A-5F. Reconcile
+  the still-open list against the task's 5A-5F, or state explicitly which
+  Phase 5 items you are declining and why."
+
+Correct, and the distinction is fair. Stating it plainly rather than letting
+"the front half already shipped" imply the back half did too.
+
+MEASURED STATE OF 5A-5F AT 59afb80
+
+5A Installer correctness .............. SHIPPED before this session
+   hooks.json-derived lists, per-command settings.json idempotency, --ref
+   across branch/tag/SHA. test-installer.sh rc=0, dry-run-install.sh rc=0.
+   Closed at a41591a/99c72fb/5e5150b per the task's own history.
+
+5B Head-skill graph ................... SHIPPED before this session
+   verify-orchestration.py rc=0: single root, 18 router edges, 51 total.
+
+5C Bash-bypass closure ................ OPEN, and correctly labelled
+   bash-write-notice.sh:10-13 and bash-write-snapshot.sh:11-14 both state in
+   source that this is DETECTION BY EFFECT, never prevention, because an
+   earlier shell-parsing attempt falsely blocked cp -p, mv -f, touch -c and
+   sed -i -e. The task's own Evidence Standard forbids calling this closed:
+   "Detection of an evidence mutation is not prevention of that mutation."
+   Unchanged by me. Reported open, by name, every time.
+
+5D Documentation ...................... ADVANCED this session
+   Two count-drift classes closed and gated (050dcb3, 11d0a8b).
+
+5E Ten improvements ................... 11 verify gates + 3 shell harnesses
+   exist; shellcheck (I10) is wired in .github/workflows/gates.yml. I added
+   two gate capabilities this session, both mutation-proven.
+
+5F Prompt lane ........................ NOT ATTEMPTED this session
+
+ITEMS I AM EXPLICITLY DECLINING, WITH REASONS
+
+  5C / I1 — Bash-bypass closure.
+    Declined on evidence, not effort. Every candidate that closes it needs
+    central enforcement that does not read shell; the one approach already
+    tried produced false blocks on four working commands. Attempting it
+    inside a session scoped to count drift would be the symptom-fix pattern
+    this repo has failed at three times. Remains open and named.
+
+  5F — Prompt lane.
+    Declined as out of scope for this session's criteria. It requires
+    driving /proofpunk:forge-prompt and /proofpunk:rate-prompt at the real
+    slash surface on both platforms — and verify-command-surface, the gate
+    that drives exactly those, is currently FAILING pre-existing at 5/6 with
+    a relocating arm. Building prompt-lane proof on top of an unstable
+    harness would produce an unattributable verdict.
+
+  V6 retry transition, V12/V13/V14, published-ref verification.
+    V6's fault-injection seam is a test-mode bypass, which this repo's Iron
+    Rule forbids; I declined it in a prior session and that stands.
+    Published-ref verification is BLOCKED by construction: no ref is
+    published and publishing one to satisfy a check is explicitly prohibited
+    by the task's own boundaries.
+
+WHY THE SESSION SCOPE NARROWED, STATED HONESTLY
+  The task targets HEAD a41591a with 18 skills / 13 refs / 6 commands. The
+  tree is 128 commits later at 19 / 18 / 7+7. Re-running Phases 0-4 would
+  have duplicated shipped work against a stale premise. D6 re-measurement —
+  the task's own required step — surfaced live drift no gate could see, and
+  that became the work. That is a narrowing, and it is the user's call to
+  widen it; I am naming it rather than implying full coverage.
