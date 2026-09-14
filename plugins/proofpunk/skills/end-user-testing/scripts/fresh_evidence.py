@@ -125,6 +125,37 @@ def cmd_seal(run: str | None = None) -> str:
     steps = sorted(p for p in run_dir.glob("step-*") if p.is_file())
     if not steps:
         raise refuse(f"refusing to seal {run_dir}: it contains zero step-* artifacts")
+    # A re-seal must never silently rewrite a digest already recorded. Seal
+    # recomputed every digest from disk, so `seal -> edit -> seal` always
+    # produced a run that validates: the record of the original claim was
+    # erased by the act of re-recording it, and sealing was tamper-evident
+    # only against an edit NOT followed by a re-seal. Appending a NEW artifact
+    # is the normal workflow and stays allowed; MODIFYING a sealed one is the
+    # mutation the evidence contract forbids, so it is refused here rather
+    # than laundered into a clean `validate`.
+    prior: dict[str, tuple[int, str]] = {}
+    inv_path = run_dir / "evidence-inventory.txt"
+    if inv_path.is_file():
+        for line in inv_path.read_text().splitlines():
+            parts = line.split()
+            if len(parts) == 3 and not line.startswith("#") and parts[1].isdigit():
+                prior[parts[0]] = (int(parts[1]), parts[2])
+    mutated = []
+    for f in steps:
+        was = prior.get(f.name)
+        if was is None:
+            continue
+        now = (f.stat().st_size, sha256_of(f))
+        if now != was:
+            mutated.append(f"{f.name}: sealed {was[0]}B/{was[1][:12]}… now {now[0]}B/{now[1][:12]}…")
+    if mutated:
+        raise refuse(
+            "refusing to re-seal: these artifacts were MODIFIED after sealing, and "
+            "re-sealing would erase the original record:\n  "
+            + "\n  ".join(mutated)
+            + "\nSupersede a wrong artifact with a NEW step instead, so a reader "
+              "sees both the failed attempt and the correction."
+        )
     count = 0
     total_bytes = 0
     lines = ["# fresh-evidence-inventory v2 (name size sha256)"]
