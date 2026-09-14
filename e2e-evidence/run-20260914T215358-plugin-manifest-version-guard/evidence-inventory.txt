@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-plugin-json.md 2258 9362fc0cb5480351fec118b0dd1350d43120b7929d3a899ec9000ee8083f3e3d
+sealed=2026-09-14T21:53:58Z count=1 total_bytes=2258

@@ -12,7 +12,7 @@ Execution-first delivery plugin for Claude Code, oh-my-pi (OMP), and OpenCode: 1
 |------|-------------|
 | `CLAUDE.md` | Process-memory rules for agents working on this repo (generated artifacts, deliberate `../../references/X` layout, verification commands) |
 | `README.md` | Full project documentation: install paths per platform, skill table, command reference — the authoritative overview |
-| `plugins/proofpunk/package.json` | Plugin manifest; version string must match `.claude-plugin/plugin.json` and marketplace metadata on every release |
+|`plugins/proofpunk/package.json`|Plugin manifest; version string must match `plugins/proofpunk/.claude-plugin/plugin.json`, `plugins/proofpunk/.omp-plugin/plugin.json`, and both root marketplace catalogs on every release — enforced by `tools/verify-counts.py`|
 | `.claude-plugin/marketplace.json` | Claude Code marketplace catalog |
 | `.omp-plugin/marketplace.json` | OMP marketplace catalog |
 | `proofpunk-v2-release-report.md` | v2 release evidence summary |

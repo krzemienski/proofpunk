@@ -623,6 +623,22 @@ def check_marketplace_counts(counts: dict) -> list[str]:
                     fails.append(
                         f"{rel}: declares version {found} but package.json is {pkg_version}"
                     )
+        # The per-plugin manifests live UNDER plugins/proofpunk/, not at repo
+        # root. A probe that looked for root-level .claude-plugin/plugin.json
+        # reported them absent and nearly produced a doc "fix" deleting a
+        # correct AGENTS.md instruction. They exist, they ship, and they were
+        # unguarded.
+        for rel in ("plugins/proofpunk/.claude-plugin/plugin.json",
+                    "plugins/proofpunk/.omp-plugin/plugin.json"):
+            path = os.path.join(ROOT, rel)
+            if not os.path.isfile(path):
+                fails.append(f"{rel}: missing, but AGENTS.md requires it to carry the version")
+                continue
+            for found in versions(json.load(open(path, encoding="utf-8")), []):
+                if found != pkg_version:
+                    fails.append(
+                        f"{rel}: declares version {found} but package.json is {pkg_version}"
+                    )
     return fails
 
 
