@@ -592,6 +592,37 @@ def check_marketplace_counts(counts: dict) -> list[str]:
             stated = int(m.group(1))
             if stated != live:
                 fails.append(f"{rel}: says '{m.group(0)}' but the tree has {live}")
+    # Version parity, the sibling defect. Each marketplace declares a version
+    # twice (metadata.version and plugins[0].version), and AGENTS.md names
+    # version-string drift across package.json/README/INSTALL.md as a
+    # RECURRING release defect. These were aligned when this check was added;
+    # they were also unguarded, which is exactly how the skill count drifted
+    # while every prose source stayed right.
+    pkg_path = os.path.join(ROOT, "plugins", "proofpunk", "package.json")
+    if os.path.isfile(pkg_path):
+        pkg_version = json.load(open(pkg_path, encoding="utf-8")).get("version")
+
+        def versions(node, acc):
+            if isinstance(node, dict):
+                for k, v in node.items():
+                    if k == "version" and isinstance(v, str):
+                        acc.append(v)
+                    else:
+                        versions(v, acc)
+            elif isinstance(node, list):
+                for v in node:
+                    versions(v, acc)
+            return acc
+
+        for rel in (".claude-plugin/marketplace.json", ".omp-plugin/marketplace.json"):
+            path = os.path.join(ROOT, rel)
+            if not os.path.isfile(path):
+                continue
+            for found in versions(json.load(open(path, encoding="utf-8")), []):
+                if found != pkg_version:
+                    fails.append(
+                        f"{rel}: declares version {found} but package.json is {pkg_version}"
+                    )
     return fails
 
 
