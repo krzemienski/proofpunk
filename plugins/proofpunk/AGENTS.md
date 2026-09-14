@@ -24,11 +24,11 @@ The shippable plugin unit: 19 skills, 7 commands, 10 enforcement hook scripts (1
 
 | Directory | Purpose |
 |-----------|---------|
-| `skills/` | 19 skill dirs, each with `SKILL.md`; `../../references/X` citations are deliberate — the installer rewrites them to self-contained copies. `proofpunk/` is the router head — it calls all 17 others and is called by none |
-| `commands/` | 6 slash commands: verify, forge-prompt, implement, install, truth-audit, rate-prompt |
+| `skills/` | 19 skill dirs, each with `SKILL.md`; `../../references/X` citations are deliberate — the installer rewrites them to self-contained copies. `proofpunk/` is the router head — it calls all 18 others and is called by none |
+| `commands/` | 7 slash commands: verify, forge-prompt, implement, install, truth-audit, rate-prompt, acquire |
 | `hooks/` | 10 hook scripts (stop-guard, evidence-guard, capture-guard, no-test-files, post-write-walkthrough, session-start, instructions-loaded, bash-write-notice, bash-write-snapshot, platform-steer) + `hooks.json`, which wires them into 7 event keys (SessionStart, Stop, SubagentStop, PreToolUse, InstructionsLoaded, PostToolUse, PostToolUseFailure) via 12 registrations |
 | `agents/` | 3 Claude Code subagents: end-user-validate, implement, scout. OpenCode adds a 4th (`opencode/agents/proofpunk.md`, the router). OMP mirrors the Claude Code 3 (`omp/agents/`). |
-| `references/` | 15 shared doctrine files covering validation (api/cli/ios/web), CI gates, evidence contract, end-user actor rules, iOS HIG and WCAG checklists, platform routing, preflight checks, severity model, defect patterns, the run-trace schema, and the docs-acquisition workflow (host-doc discovery before scouting); cited as `../../references/X` and rewritten to self-contained copies at install time (scoped rule files live in `assets/rules/`) |
+| `references/` | 18 shared doctrine files covering validation (api/cli/ios/web), CI gates, evidence contract, end-user actor rules, iOS HIG and WCAG checklists, platform routing, preflight checks, severity model, defect patterns, the run-trace schema, the enforcement map, subagent-aware stop, and the docs-acquisition workflow (host-doc discovery before scouting); cited as `../../references/X` and rewritten to self-contained copies at install time (scoped rule files live in `assets/rules/`) |
 | `assets/` | `claude-md-template.md` + `agents-md-template.md` (used by `/proofpunk:install`) and `rules/` scoped rule files |
 | `themes/` | `palettes.json` canonical source + rendered `omp/`, `opencode/`, `hyper/` formats (generated — never hand-edit) |
 | `opencode/` | OpenCode commands, plugin glue, agents |

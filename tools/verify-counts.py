@@ -166,6 +166,44 @@ TABLE_NOUN = {
 # First integer in a cell, ignoring one inside a path/version like `2.2.0`.
 CELL_INT_RE = re.compile(r"(?<![A-Za-z0-9./-])(\d+)(?![.\d])")
 
+# Prose-form drift: a count and its noun separated by up to three words, on one
+# line. Measured 2026-09-14: this shape carried FOUR live drifts that neither
+# CLAIM_RE (needs adjacency) nor the table-row rule (needs the noun in cell 1)
+# could see -- "calls all 17 others", "6 slash commands", "17 rows", "15 rows".
+#
+# A general version of this rule was measured first and REJECTED: it produced
+# three false positives out of four hits -- "3 unknown skill" (an error-code
+# sentence), "4 are all skills" (unrelated prose), and a dated CHANGELOG line.
+# So the gap is closed with two NARROW rules instead, each requiring a word that
+# only appears when a real inventory is being described.
+#
+# Rule 1: "<n> <noun>" where the noun is immediately preceded by a qualifier
+# from a closed set that means "of the plugin's own inventory".
+PROSE_INVENTORY_RE = re.compile(
+    r"(?<![A-Za-z0-9./-])(\d+)\s+"
+    r"(?:slash\s+|shared\s+doctrine\s+|shared\s+|other\s+|delivery\s+)"
+    r"(skills?|references?|commands?|registrations?|hooks?|agents?|files?)\b",
+    re.I,
+)
+# `files?` is in the noun group ONLY because a qualifier is mandatory: the rule
+# can reach it solely as "<n> shared [doctrine] files", which in this repo means
+# the reference set. A bare "<n> files" never matches. Measured before adding:
+# 0 hits across the whole live tree, and it catches the real stale shape
+# `15 shared doctrine files` that AGENTS.md:31 carried.
+#
+# Rule 2: "calls all <n> others" / "hands off to <n>" -- the router's own edge
+# count, which has no noun beside the number at all.
+ROUTER_EDGE_RE = re.compile(
+    r"(?:calls\s+all\s+|hands\s+off\s+to\s+)(\d+)\s+(?:others?|of\s+them)\b",
+    re.I,
+)
+# Rule 3: "<n> rows" describing one of the router's two tables. Requires the
+# table to be named on the same line or the line before, so an unrelated "8
+# rows" elsewhere cannot trigger it.
+TABLE_ROWS_RE = re.compile(r"(?<![A-Za-z0-9./-])(\d+)\s+rows\b", re.I)
+SKILL_TABLE_CUE = re.compile(r"skill\s+calls|one per delivery skill", re.I)
+REF_TABLE_CUE = re.compile(r"shared doctrine|one per file in `?references", re.I)
+
 
 def canon() -> dict:
     """Derive every count from the live tree. Never a literal."""
@@ -274,6 +312,10 @@ def expected_for(noun: str, counts: dict) -> set[int]:
         return {counts["skills"], counts["skills"] - 1}  # 19, or 18 delivery
     if n == "reference":
         return {counts["references"]}
+    if n == "file":
+        # Only reachable through PROSE_INVENTORY_RE's mandatory "shared
+        # [doctrine]" qualifier, so this is the reference set by construction.
+        return {counts["references"]}
     if n == "command":
         return {counts["commands"], counts["opencode_commands"],
                 counts["commands"] + counts["opencode_commands"]}
@@ -347,6 +389,35 @@ def check_file(path: str, counts: dict) -> list[str]:
                 fails.append(
                     f"{rel}:{i}: {n} {noun} "
                     f"(live accepts {sorted(ok)})"
+                )
+        # Prose forms: number and noun separated, or no noun at all.
+        for m in PROSE_INVENTORY_RE.finditer(line):
+            n, noun = int(m.group(1)), m.group(2)
+            ok = expected_for(noun, counts)
+            if ok and n not in ok:
+                fails.append(
+                    f"{rel}:{i}: prose '{m.group(0).strip()}' "
+                    f"(live accepts {sorted(ok)})"
+                )
+        for m in ROUTER_EDGE_RE.finditer(line):
+            n = int(m.group(1))
+            if n != counts["router_edges"]:
+                fails.append(
+                    f"{rel}:{i}: router edge claim '{m.group(0).strip()}' "
+                    f"(live router routes to {counts['router_edges']})"
+                )
+        for m in TABLE_ROWS_RE.finditer(line):
+            n = int(m.group(1))
+            ctx = line + " " + (text.splitlines()[i - 2] if i >= 2 else "")
+            if SKILL_TABLE_CUE.search(ctx) and n != counts["router_edges"]:
+                fails.append(
+                    f"{rel}:{i}: '{m.group(0)}' for the Skill calls table "
+                    f"(live {counts['router_edges']})"
+                )
+            elif REF_TABLE_CUE.search(ctx) and n != counts["references"]:
+                fails.append(
+                    f"{rel}:{i}: '{m.group(0)}' for the Shared doctrine table "
+                    f"(live {counts['references']})"
                 )
         # Table row whose first cell IS a count noun: check the first integer
         # found in the remaining cells against that noun's live values.

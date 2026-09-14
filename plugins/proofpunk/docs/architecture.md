@@ -106,7 +106,7 @@ file:
   ask chains skills left to right, and each named skill still runs its own
   full workflow — the router never shortcuts a downstream skill's process.
 
-Its `## Skill calls` table has 17 rows — one per delivery skill, each with
+Its `## Skill calls` table has 18 rows — one per delivery skill, each with
 an explicit **When** (the request shape that routes there) and **What it
 hands over** (exactly what context crosses the handoff, e.g. `brainstorm`
 gets "the raw ask, unfiltered"; `red-team-eval` gets "the artifact to
@@ -114,7 +114,7 @@ attack"). This is the "explicit handoff column" a contributor should read
 before anything else in this plugin.
 
 Below the routing table sits a second table, **Shared doctrine — what
-every skill defers to**: 15 rows, one per file in `references/`, each with
+every skill defers to**: 18 rows, one per file in `references/`, each with
 one line naming what it owns (`evidence-contract.md` → "run-scoped,
 sealed, non-empty evidence"; `end-user-actor.md` → "the Actor Mandate —
 who drives the system"). This is the doctrine layer from §1 made concrete:
