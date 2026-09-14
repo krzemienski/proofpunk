@@ -110,6 +110,16 @@ jobs:
       - name: "Gate: verify-router-links.py (head routes every non-head skill)"
         run: python3 tools/verify-router-links.py
 
+      # Repo layout != installed layout. The hooks resolved their helper via
+      # hooks/../skills, which exists only in the source tree: the installer
+      # puts hooks in ~/.proofpunk/hooks and skills in the platform dir. The
+      # intent branch is fail-closed, so every --hooks install wedged while the
+      # helper sat one directory away. No static check can see this — the path
+      # is assembled at runtime — so this gate installs into a throwaway HOME
+      # and drives a real Stop event.
+      - name: "Gate: verify-hook-helper-resolution.py (installed hooks resolve helpers)"
+        run: python3 tools/verify-hook-helper-resolution.py
+
       - name: "Gate: verify-mutation-artifact.py (Class 1 mutation-test link)"
         run: python3 tools/verify-mutation-artifact.py
 

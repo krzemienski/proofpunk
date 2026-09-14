@@ -31,6 +31,7 @@ import argparse
 import hashlib
 import json
 import os
+import shlex
 import sys
 import tempfile
 from datetime import datetime, timezone
@@ -288,8 +289,14 @@ def cmd_may_stop(args) -> int:
         # conclude the tool is not installed and stay wedged. The recovery
         # instruction must be copy-pasteable, not a filename to go find.
         _self = os.path.abspath(__file__)
-        _sid = args.session_id or "$PROOFPUNK_SESSION_ID"
-        _cwd = args.cwd or os.getcwd()
+        # Quote the interpolated fields: a macOS cwd like
+        # "~/Library/Mobile Documents" or "My Project" would otherwise emit a
+        # command that silently parses as the wrong arguments. The env-var
+        # fallback is left unquoted on purpose so the shell still expands it.
+        _self = shlex.quote(_self)
+        _sid = (shlex.quote(args.session_id) if args.session_id
+                else "\"$PROOFPUNK_SESSION_ID\"")
+        _cwd = shlex.quote(args.cwd or os.getcwd())
         print(
             "Proofpunk: no intent verdict recorded for this session. Before "
             "stopping, read the session's ORIGINAL request (first user message, "

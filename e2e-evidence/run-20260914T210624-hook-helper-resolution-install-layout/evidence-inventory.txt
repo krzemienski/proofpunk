@@ -1,0 +1,4 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-mutation.md 1589 467dcc6537bfd49069c689f52c98dac1f84a0f0c593524570a281b8e2a768639
+step-02-install-layout-proof.txt 1899 1b7d50b6e3eaa2bb2996a35de85369cecb5998c61e390fa49593a83395bfdae3
+sealed=2026-09-14T21:07:01Z count=2 total_bytes=3488

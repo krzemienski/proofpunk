@@ -100,7 +100,29 @@ set +e
 # intent_verdict.py. `CDPATH= cd -- sub` resolves correctly. Removing the
 # prefix introduces a bug; see step-10 for the driven before/after.
 _hookdir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-helper="$_hookdir/../skills/end-user-testing/scripts/intent_verdict.py"
+# The repo layout (plugins/proofpunk/hooks/../skills) is NOT the installed
+# layout: proofpunk-install.sh copies hooks to ~/.proofpunk/hooks but skills
+# to the platform skills dir (~/.claude/skills, ~/.omp/agent/skills, ...), so
+# "$_hookdir/../skills" exists only when running from the source tree. Relying
+# on it alone wedged every --hooks install: the helper-missing branch is
+# fail-closed, so the guard blocked forever while the helper sat one directory
+# away. Verified by reproduction 2026-09-14 against a real install into a
+# throwaway HOME. Probe the real candidates, first hit wins.
+_rel="end-user-testing/scripts/intent_verdict.py"
+helper=""
+for _c in \
+  "$_hookdir/../skills/$_rel" \
+  "${CLAUDE_PLUGIN_ROOT:-/nonexistent}/skills/$_rel" \
+  "$HOME/.claude/skills/$_rel" \
+  "${PROOFPUNK_OMP_DIR:-$HOME/.omp/agent/skills}/$_rel" \
+  "$HOME/.agents/skills/$_rel" \
+  "$HOME/.config/opencode/skills/$_rel"
+do
+  if [ -f "$_c" ]; then helper="$_c"; break; fi
+done
+# No hit: hand the canonical repo-relative guess to the python block so its
+# block text still names a concrete absolute path rather than nothing.
+[ -n "$helper" ] || helper="$_hookdir/../skills/$_rel"
 python3 - "$transcript" "$cwd" "$event" "$session_id" "$helper" <<'PYEOF' 2>/dev/null
 import json, os, re, sys
 

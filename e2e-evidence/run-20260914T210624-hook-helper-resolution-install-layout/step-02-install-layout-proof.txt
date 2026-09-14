@@ -1,0 +1,44 @@
+# THE DEFECT: repo layout != installed layout
+utc : 2026-09-14T21:06:24.283760Z
+----------------------------------------------------------------------
+proofpunk-install.sh:447  hooks  -> $HOME/.proofpunk/hooks
+proofpunk-install.sh:185  skills -> $HOME/.claude/skills   (platform dir)
+
+stop-guard.sh resolved its helper as "$_hookdir/../skills/..." which is
+~/.proofpunk/skills/... — a directory the installer NEVER creates.
+
+REPRODUCED against a real install into a throwaway HOME:
+  hook installed      : True
+  helper via ../skills: False      <- what the hook looked at
+  helper ACTUALLY at  : True       <- ~/.claude/skills/...
+
+  decision: block
+  "the intent-verification helper is missing ... Reinstall the skills or
+   downgrade to UNVERIFIED."
+
+The intent branch is FAIL-CLOSED, so this is not a warning: every --hooks
+user was permanently wedged, with no escape, while the helper sat one
+directory away. The field report that opened this investigation was a real
+user hitting exactly this.
+
+A TRAP THAT NEARLY HID IT: the installer defaults to a GitHub TARBALL, not
+the working tree. My first install test shipped the OLD hook and I briefly
+read the failure as "my fix does not work". --source-dir forces the local
+checkout; only then is the edit under test.
+
+AFTER THE FIX (same real-install procedure):
+  decision: block
+  "no intent verdict recorded for this session ...
+   Run exactly:
+     python3 <HOME>/.claude/skills/end-user-testing/scripts/intent_verdict.py
+       --session-id a-ae3c2605 --cwd /Users/nick/proofpunk
+       record --verdict MET|UNMET|UNVERIFIABLE"
+
+  Emitted command executed VERBATIM -> rc=0
+  Hook re-driven                    -> (allow)
+
+The gate now blocks for the right reason and releases to a command that
+actually runs.
+
+SCOPE: resolution + recovery text. When the gate fires, its fail-closed
+posture, the attempt cap and key derivation are untouched.
