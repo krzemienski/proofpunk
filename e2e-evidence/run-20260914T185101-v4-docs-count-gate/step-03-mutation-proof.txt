@@ -1,0 +1,39 @@
+# Mutation proof — every arm must turn the gate RED and name the case
+cwd  : /Users/nick/proofpunk
+HEAD : c7608ec
+utc  : 2026-09-14T18:51:51.682837Z
+--------------------------------------------------------------------
+baseline: exit=0  (expect 0)
+
+ARM: LIVE docs/ claim (the closed blind spot)
+  file   : docs/skill-canon.md
+  mutate : 'All 19 skills use `>` folded-scalar' -> 'All 11 skills use `>` folded-scalar'
+  exit   : 1  (want 1)  OK
+  named  : docs/skill-canon.md:377: 11 skills (live accepts [18, 19])
+
+ARM: C7 heading
+  file   : docs/skill-canon.md
+  mutate : 'conformance read of the current 19 skills' -> 'conformance read of the current 14 skills'
+  exit   : 1  (want 1)  OK
+  named  : docs/skill-canon.md:362: 14 skills (live accepts [18, 19])
+
+ARM: router frontmatter (no regression)
+  file   : plugins/proofpunk/skills/proofpunk/SKILL.md
+  mutate : "plugin's 18 delivery skills" -> "plugin's 11 delivery skills"
+  exit   : 1  (want 1)  OK
+  named  : plugins/proofpunk/skills/proofpunk/SKILL.md:4: 11 skills (live accepts [18, 19])
+
+ARM: router body (no regression)
+  file   : plugins/proofpunk/skills/proofpunk/SKILL.md
+  mutate : '18 narrow delivery skills' -> '11 narrow delivery skills'
+  exit   : 1  (want 1)  OK
+  named  : plugins/proofpunk/skills/proofpunk/SKILL.md:28: 11 skills (live accepts [18, 19])
+
+ARM: router cross-ref (no regression)
+  file   : plugins/proofpunk/skills/proofpunk/SKILL.md
+  mutate : 'reading any of the 18 other skill files' -> 'reading any of the 11 other skill files'
+  exit   : 1  (want 1)  OK
+  named  : plugins/proofpunk/skills/proofpunk/SKILL.md:31: 11 skill (live accepts [18, 19])
+
+restored: exit=0 (want 0); all files byte-identical
+VERDICT: ALL 5 ARMS PROVEN

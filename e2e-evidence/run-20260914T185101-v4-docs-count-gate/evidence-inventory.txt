@@ -1,0 +1,6 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-gate-after.txt 1932 8cf7448986a1ceed1295ed451910ed5d132de98c1612af5486603eba37d448ab
+step-02-coverage-delta.txt 1718 603459837b43e5b4eb913b5f8cd705ea41bbb82f54e380217090dc568de591de
+step-03-mutation-proof.txt 1720 7bd8c6e1edc95e24e4591f47e5e2fc20acd4d0f2eb42e6dbad44ec0c852ac874
+step-04-attribution.txt 1586 094d6ac30e5886291698f1b7b9c9f2f7ad581b9b76182a876f150aee70f187ae
+sealed=2026-09-14T18:52:48Z count=4 total_bytes=6956

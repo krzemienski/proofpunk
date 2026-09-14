@@ -1,0 +1,43 @@
+# verify-counts.py — AFTER the docs/ blind-spot closure
+command : python3 tools/verify-counts.py
+cwd     : /Users/nick/proofpunk
+HEAD    : c7608ec
+utc     : 2026-09-14T18:52:31.398898Z
+exit    : 0   (recorded separately from stdout)
+--------------------------------------------------------------------
+canon: skills=19 refs=18 cmds=7+7 hooks.sh=10 events=7 regs=12 agents=3/4/3 edges=51 (router=18)
+scanned 82 live .md files
+VERDICT: PASS — live .md counts match the tree
+
+--------------------------------------------------------------------
+WHAT CHANGED
+  tools/verify-counts.py previously listed `docs/` in HISTORICAL_PREFIXES, so every
+  file under docs/ was skipped wholesale. docs/skill-canon.md:536 had recorded this
+  as a "known blind spot rather than silently relied on" — it is now closed.
+
+  The exclusion is now scoped by is_historical_doc(): generated assets (.html/.css/
+  .js/.svg/.png), the v3-research/ subtree, and six dated basenames. Live doctrine
+  under docs/ is gated like any other file.
+
+DOCS/ CLASSIFICATION AT THIS COMMIT
+IN SCOPE:
+    docs/proposals.md
+    docs/skill-canon.md
+EXCLUDED (dated/generated):
+    docs/commit-archaeology.md
+    docs/discovery-register.md
+    docs/hook-enforcement-map.md
+    docs/improvement-ledger.md
+    docs/session-intent-ledger.md
+    docs/v3-gauge-deferrals.md
+    docs/v3-gauges.md
+    docs/v3-phase4-dispositions.md
+    docs/v3-reasoning-gate.md
+
+WHY THE EXCLUSIONS ARE CORRECT
+  commit-archaeology.md, discovery-register.md and session-intent-ledger.md were
+  ALREADY in HISTORICAL_BASENAMES before this change and remain excluded. Each is a
+  dated ledger whose value IS the historical record: discovery-register.md's D6 row
+  states the counts measured on 2026-09-02, and D7 describes the THEN-installed
+  v2.2.0. Rewriting those to today's numbers would destroy the finding they exist
+  to preserve — the same rule that protects the root release reports.

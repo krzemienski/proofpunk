@@ -1,0 +1,31 @@
+# verify-command-surface rc=1 — ATTRIBUTION (measured in two arms)
+cwd  : /Users/nick/proofpunk
+utc  : 2026-09-14T18:51:52.787442Z
+--------------------------------------------------------------------
+METHOD
+  arm A: working tree (my 2 modified files)
+  arm B: clean git worktree at HEAD c7608ec — my changes absent
+  Both unpiped; exit code recorded separately from stdout.
+
+RESULT
+  arm A: exit=1  full_chain=5/6 plugin_pass=5/6 control_fail=6/6
+  arm B: exit=1  full_chain=5/6 plugin_pass=5/6 control_fail=6/6
+    (arm B raw output: step-03-cmdsurface-HEAD-baseline.txt in the prior ad-hoc dir,
+     re-derived here from the two committed cmdsurface artifacts below)
+
+VERDICT: PRE-EXISTING at HEAD. Not introduced by this run.
+
+DECISIVE — the failing arm RELOCATES between runs:
+  e2e-evidence/cmdsurface-20260914T183037/command-surface-proof.json
+    full_chain=5/6  FAILING=/proofpunk:install  failed_checks=['no_harness_error']
+  e2e-evidence/cmdsurface-20260914T183800/command-surface-proof.json
+    full_chain=5/6  FAILING=/proofpunk:implement  failed_checks=['text_matches', 'tool_invoked', 'tool_arg_matches', 'tool_succeeded']
+
+  Same 5/6 score, different failing command. A deterministic defect from a source
+  edit cannot move between commands across runs. This is the nondeterministic
+  live-CLI surface (V6), green at 9366214, flaky-by-record since.
+
+SCOPE: my changes touch docs/skill-canon.md (docs) and tools/verify-counts.py
+(a different gate). verify-command-surface reads neither.
+
+STATUS: reported as a PRE-EXISTING FAILED check — not passed, not silenced.

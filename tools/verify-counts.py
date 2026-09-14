@@ -71,10 +71,38 @@ HISTORICAL_PREFIXES = (
     os.path.join(ROOT, "e2e-evidence") + os.sep,
     os.path.join(ROOT, ".debug") + os.sep,
     os.path.join(ROOT, "banks") + os.sep,
-    os.path.join(ROOT, "docs") + os.sep,  # generated HTML + dated v3 logs
     os.path.join(ROOT, ".planning") + os.sep,  # dated work-orders, not live doctrine
     os.path.join(ROOT, "examples") + os.sep,
 )
+
+# `docs/` is NOT excluded wholesale. Measured 2026-09-14 by mutation: a blanket
+# `docs/` prefix left every Phase 0-4 artifact unguarded, and skill-canon.md's
+# C7 section drifted to a stale "18 skills" audit that omitted the 19th skill
+# entirely (`completion-summary`) — skill-canon.md:536 had recorded the gap as a
+# "known blind spot" rather than closing it. Only the genuinely generated or
+# dated members are skipped; live doctrine under docs/ is now in scope.
+DOCS_SKIP_EXT = (".html", ".css", ".js", ".svg", ".png")
+DOCS_HISTORICAL_BASENAMES = {
+    "v3-gauges.md",              # dated gauge board, records prior targets
+    "v3-gauge-deferrals.md",
+    "v3-reasoning-gate.md",      # dated Phase-4 rationale
+    "v3-phase4-dispositions.md",
+    "improvement-ledger.md",     # dated before/after rows
+    "hook-enforcement-map.md",   # dated lane run ("at the time of this run")
+}
+
+
+def is_historical_doc(path: str) -> bool:
+    """Generated or dated members of docs/ — never live count guidance."""
+    docs_root = os.path.join(ROOT, "docs") + os.sep
+    if not path.startswith(docs_root):
+        return False
+    if path.endswith(DOCS_SKIP_EXT):
+        return True
+    rel = os.path.relpath(path, docs_root)
+    if rel.startswith("v3-research" + os.sep):
+        return True
+    return os.path.basename(path) in DOCS_HISTORICAL_BASENAMES
 
 # Per-skill NESTED references (skills/<name>/<other>.md) are working notes, not
 # plugin inventory, and are excluded. The top-level skills/<name>/SKILL.md files
@@ -107,6 +135,9 @@ HISTORICAL_LINE = re.compile(
     r"|at v1\."
     r"|Round[- ]\d"
     r"|original \d+ skills"              # dated walkthrough ("the original 10")
+    r"|work order'?s? (?:own )?stated"   # quoting the work order's figure
+    r"|stated \"\d+ registrations"       # ditto, quoted form
+    r"|now stale relative"               # self-labelled stale, corrected below
     r")",
     re.I,
 )
@@ -290,6 +321,8 @@ def is_historical_path(path: str) -> bool:
         return True
     if is_nested_skill_ref(path):
         return True
+    if is_historical_doc(path):
+        return True
     for prefix in HISTORICAL_PREFIXES:
         if path.startswith(prefix):
             return True
@@ -322,8 +355,16 @@ def expected_for(noun: str, counts: dict) -> set[int]:
     if n == "registration":
         return {counts["registrations"]}
     if n == "hook":
-        # 9 scripts, 7 event keys, 11 registrations — all live hook counts
-        return {counts["hooks"], counts["event_keys"], counts["registrations"]}
+        # Every legitimate live reading of "N hooks":
+        #   scripts (.sh)      — executable hook scripts
+        #   event keys         — top-level keys in hooks.json
+        #   registrations      — handler objects across all events
+        #   files              — scripts + hooks.json itself
+        # Measured 2026-09-14: "11 hook files" in skill-canon.md:534 is TRUE
+        # (10 .sh + hooks.json) but was flagged, because the file reading was
+        # missing from this set.
+        return {counts["hooks"], counts["event_keys"], counts["registrations"],
+                counts["hooks"] + 1}
     if n == "agent":
         return {counts["agents_cc"], counts["agents_oc"], counts["agents_omp"],
                 counts["agents_cc"] + counts["agents_oc"] + counts["agents_omp"]}
@@ -357,8 +398,30 @@ def check_file(path: str, counts: dict) -> list[str]:
         return fails
     rel = os.path.relpath(path, ROOT)
     lines = text.splitlines()
+    # A provenance marker scopes a whole parenthetical, not one line.
+    # Measured 2026-09-14: `HISTORICAL PROVENANCE` opened on one line while the
+    # dated figures it governs ("15 shared references, 18 skills") sat two lines
+    # below, so per-line matching flagged correct history as drift. The same
+    # block-vs-line blindness the table-form fix closed earlier.
+    #
+    # Depth is tracked across lines and the block ends when the parenthesis it
+    # opened closes — so a later, unrelated live claim in the same file is still
+    # gated normally.
+    in_provenance = [False] * (len(lines) + 1)
+    depth = 0
     for i, line in enumerate(lines, 1):
-        if HISTORICAL_LINE.search(line):
+        if depth == 0 and HISTORICAL_LINE.search(line):
+            opened = line.count("(") - line.count(")")
+            if opened > 0:
+                depth = opened
+                continue  # marker line itself already skipped below
+        elif depth > 0:
+            in_provenance[i] = True
+            depth += line.count("(") - line.count(")")
+            if depth <= 0:
+                depth = 0
+    for i, line in enumerate(lines, 1):
+        if HISTORICAL_LINE.search(line) or in_provenance[i]:
             continue
         # 6+6 commands
         for m in PLUS_RE.finditer(line):

@@ -1,0 +1,34 @@
+# Coverage delta — BEFORE/AFTER, both measured in place
+cwd  : /Users/nick/proofpunk
+HEAD : c7608ec
+utc  : 2026-09-14T18:52:31.706596Z
+--------------------------------------------------------------------
+BEFORE   git show HEAD:tools/verify-counts.py > tools/verify-counts.py && python3 tools/verify-counts.py
+         exit=0
+         scanned 80 live .md files
+
+AFTER    python3 tools/verify-counts.py          (working tree)
+         exit=0
+         scanned 82 live .md files
+
+gate file restored byte-identical: True
+--------------------------------------------------------------------
+METHOD NOTE — a first attempt ran the HEAD gate from a /tmp copy. That produced
+FileNotFoundError: the script derives ROOT from its own __file__, so a copy outside
+the repo resolves plugins/proofpunk/hooks/hooks.json under /tmp and cannot run. The
+before-arm here writes HEAD's gate to its real path, runs it, then restores mine —
+the arm measures the committed code, not a reconstruction.
+
+DELTA: 80 -> 82 live .md files. docs/ newly in scope (2):
+  docs/proposals.md
+  docs/skill-canon.md
+
+CORRECTION, recorded not silently fixed: an earlier draft of this note claimed
+"7 newly covered incl. all 5 Phase 0-4 artifacts". Measured truth is 2 — three of
+those five were already excluded by HISTORICAL_BASENAMES and remain so. The claim
+was asserted before it was measured; measuring it changed the number.
+
+DEFECT THIS CLOSES: docs/skill-canon.md's C7 section presented a present-tense
+conformance audit of "the current 18 skills" while the tree holds 19. The 19th
+(completion-summary) was absent from the C7 row table entirely — unaudited, not
+merely miscounted. Re-measured: 19/19 conformant, and its row is now present.

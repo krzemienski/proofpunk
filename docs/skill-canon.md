@@ -359,7 +359,7 @@ from that local document, cited as [11] throughout.
 
 ---
 
-## 4. C7 — conformance read of the current 18 skills (FINDINGS ONLY, no fixes applied)
+## 4. C7 — conformance read of the current 19 skills (FINDINGS ONLY, no fixes applied)
 
 Method: parsed the YAML frontmatter block (`---` … `---`) of every
 `plugins/proofpunk/skills/*/SKILL.md` with Python's `yaml.safe_load` (via
@@ -374,7 +374,7 @@ newlines the fold would otherwise collapse differently — folded scalars
 replace line breaks with spaces and strip the trailing newline by default
 `clip` chomping, confirmed no skill's description ends with `\n`).
 
-All 18 skills use `>` folded-scalar description blocks except none deviate
+All 19 skills use `>` folded-scalar description blocks except none deviate
 — every file in this repo follows the identical `name: <slug>` +
 `description: >` two-field pattern.
 
@@ -398,20 +398,21 @@ All 18 skills use `>` folded-scalar description blocks except none deviate
 | 16 | `ui-experience-audit` | `ui-experience-audit` | Yes | 807 | PASS | PASS | PASS | PASS | None | None | none |
 | 17 | `validation-plan` | `validation-plan` | Yes | 648 | PASS | PASS | PASS | PASS | None | None | none |
 | 18 | `visual-inspection` | `visual-inspection` | Yes | 672 | PASS | PASS | PASS | PASS | None | None | none |
+| 19 | `completion-summary` | `completion-summary` | Yes | 658 | PASS | PASS | PASS | PASS | None | None | none |
 
 Name length: every `name` value is well under the 64-char ceiling (longest
 is `mobile-validation-runner` at 24 chars, `full-functional-audit` at 21).
-Not tabulated as a separate column since all 18 pass trivially — the
+Not tabulated as a separate column since all 19 pass trivially — the
 longest is 24/64.
 
-Description-length distribution: min 648 (`validation-plan`), max 978
-(`implement`), mean ≈ 774. **Every one of the 18 is comfortably under the
+Description-length distribution: min 649 (`validation-plan`), max 979
+(`implement`), mean ≈ 770. **Every one of the 19 is comfortably under the
 1024-char open-spec/OpenCode/Claude-Skills-API ceiling** — the closest is
-`implement` at 978/1024 (95.5% of budget, 46 chars of headroom) and
-`end-user-testing` at 838/1024. None exceed, none are within a rounding
+`implement` at 979/1024 (95.6% of budget, 45 chars of headroom) and
+`end-user-testing` at 839/1024. None exceed, none are within a rounding
 error of overflowing.
 
-Frontmatter-field-outside-recognized-set: **zero** findings. All 18 files
+Frontmatter-field-outside-recognized-set: **zero** findings. All 19 files
 carry exactly `name` + `description` and nothing else — no `license`, no
 `compatibility`, no `metadata`, no `allowed-tools`, no Claude-Code-only
 extensions (`disable-model-invocation`, `context`, `hooks`, etc.), no OMP
@@ -420,7 +421,7 @@ extensions (`hide`, `globs`, `alwaysApply`). This means:
 - **Zero risk** of the Claude Code upload/Skills-API hard-fail path (§1.1
   row "Any other unrecognized key"), since the only two fields present are
   exactly the two fields every single host in this canon recognizes.
-  These 18 skills would package cleanly for claude.ai upload / Skills API
+  These 19 skills would package cleanly for claude.ai upload / Skills API
   as-is, with no field stripping needed.
 - **Zero risk** of OpenCode's "unknown fields ignored" silent-drop behavior,
   since there are no unknown fields to drop.
@@ -534,7 +535,8 @@ applies only to the `name` field).
    shared references under `plugins/proofpunk/references/`, and 19
    skills.** (HISTORICAL PROVENANCE: this document was authored at
    `9963648` against 10 hook files, 15 shared references, and 18 skills;
-   `completion-summary` became the 19th skill afterwards. `verify-counts.py`
-   excludes `docs/` from its scan, so this line drifted unguarded — the
-   exclusion is deliberate for generated HTML and dated logs, and is
-   recorded here as a known blind spot rather than silently relied on.)
+   `completion-summary` became the 19th skill afterwards.
+   That drift went unguarded because `verify-counts.py`
+   excluded `docs/` wholesale. **Closed 2026-09-14:** the exclusion is now
+   scoped to generated assets and dated logs only, so this file's live
+   count claims are gated like any other doctrine.)
