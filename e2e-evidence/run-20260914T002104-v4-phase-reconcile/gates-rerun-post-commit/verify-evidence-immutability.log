@@ -1,0 +1,6 @@
+== committed-capture immutability at HEAD f546cfd
+   evidence: tracked=408 modified=0
+   e2e-evidence: tracked=1262 modified=0
+
+PASS evidence-immutability: 1670 committed captures byte-identical to HEAD
+VERDICT: PASS

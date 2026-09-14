@@ -1,0 +1,28 @@
+subjects=25 evidence_files=1795
+PASS tools/dry-run-install.sh -> e2e-evidence/run-20260909T173900-v3a-mcp-write-guard/VERDICT.md
+UNPROVEN-LIVE tools/sdk_probe.py (live-session harness; hermetic gate cannot re-drive)
+PASS tools/test-hooks.sh -> e2e-evidence/FIXES.md
+PASS tools/test-installer.sh -> e2e-evidence/run-20260909T173900-v3a-mcp-write-guard/VERDICT.md
+PASS tools/verify-citations.py -> e2e-evidence/run-20260907T232239-phase4-reviewer-verdicts/step-04-phase4-reviewer-verdicts-ReviewSequencing.md
+PASS tools/verify-command-surface.py -> e2e-evidence/run-20260907T232239-phase4-reviewer-verdicts/step-03-phase4-reviewer-verdicts-HardenProposalPlan.md
+UNPROVEN-SIBLING tools/verify-counts.py (owned by another live lane; no mutation artifact yet)
+PASS tools/verify-evidence-immutability.py -> e2e-evidence/run-20260914T002104-v4-phase-reconcile/step-03-evidence-immutability-gate.md
+PASS tools/verify-harness-integrity.py -> e2e-evidence/run-20260907T232239-phase4-reviewer-verdicts/step-04-phase4-reviewer-verdicts-ReviewSequencing.md
+PASS tools/verify-lane-contracts.py -> e2e-evidence/run-20260913T002435-active-stop-subagent-redesign/step-06-completion-gate-and-zero-defects.md
+PASS tools/verify-mutation-artifact.py -> e2e-evidence/run-20260913T072606-v4-all-agents/step-09-platform-steer-mutation.md
+PASS tools/verify-orchestration.py -> e2e-evidence/run-20260909T173900-v3a-mcp-write-guard/VERDICT.md
+PASS tools/verify-proof-vocab.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-docs/VERDICT.md
+PASS tools/verify-router-links.py -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-head/VERDICT.md
+PASS tools/verify-shipped-vs-active.py -> e2e-evidence/run-20260907T232239-phase4-reviewer-verdicts/step-03-phase4-reviewer-verdicts-HardenProposalPlan.md
+PASS plugins/proofpunk/hooks/bash-write-notice.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/VERDICT.md
+PASS plugins/proofpunk/hooks/bash-write-snapshot.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/capture-guard.sh -> e2e-evidence/run-20260827T210954-capture-guard-after/verdict.json
+PASS plugins/proofpunk/hooks/evidence-guard.sh -> e2e-evidence/run-20260827T213000-installer-hook-registration/verdict.json
+PASS plugins/proofpunk/hooks/instructions-loaded.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/no-test-files.sh -> e2e-evidence/run-sdk-probes/VERDICT.md
+PASS plugins/proofpunk/hooks/platform-steer.sh -> e2e-evidence/run-20260913T072606-v4-all-agents/step-09-platform-steer-mutation.md
+PASS plugins/proofpunk/hooks/post-write-walkthrough.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/session-start.sh -> e2e-evidence/run-20260904T142528-v3-orchestrated/lane-hooks/evidence-inventory.txt
+PASS plugins/proofpunk/hooks/stop-guard.sh -> e2e-evidence/run-sdk-probes/VERDICT.md
+linked=23 unproven=2 fail=0
+VERDICT: PASS

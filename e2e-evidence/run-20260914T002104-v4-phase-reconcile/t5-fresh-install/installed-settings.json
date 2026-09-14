@@ -1,0 +1,135 @@
+{
+ "hooks": {
+  "SessionStart": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/session-start.sh",
+      "timeout": 5
+     }
+    ],
+    "matcher": "startup|resume|clear"
+   }
+  ],
+  "Stop": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/stop-guard.sh",
+      "timeout": 10
+     }
+    ]
+   }
+  ],
+  "SubagentStop": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/stop-guard.sh",
+      "timeout": 10
+     }
+    ]
+   }
+  ],
+  "PreToolUse": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/no-test-files.sh",
+      "timeout": 5
+     }
+    ],
+    "matcher": "^(Write|Edit|mcp__[A-Za-z0-9_]+__(write|edit|move|create|rename|delete|remove)[A-Za-z0-9_]*)$"
+   },
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/evidence-guard.sh",
+      "timeout": 5
+     }
+    ],
+    "matcher": "^(Write|Edit|mcp__[A-Za-z0-9_]+__(write|edit|move|create|rename|delete|remove)[A-Za-z0-9_]*)$"
+   },
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/capture-guard.sh",
+      "timeout": 5
+     }
+    ],
+    "matcher": "^(Write|Edit|mcp__[A-Za-z0-9_]+__(write|edit|move|create|rename|delete|remove)[A-Za-z0-9_]*)$"
+   },
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/bash-write-snapshot.sh",
+      "timeout": 10
+     }
+    ],
+    "matcher": "Bash"
+   },
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/platform-steer.sh",
+      "timeout": 5
+     }
+    ],
+    "matcher": "Bash"
+   }
+  ],
+  "InstructionsLoaded": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/instructions-loaded.sh",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "PostToolUse": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/post-write-walkthrough.sh",
+      "timeout": 5
+     }
+    ],
+    "matcher": "^(Write|Edit|mcp__[A-Za-z0-9_]+__(write|edit|move|create|rename|delete|remove)[A-Za-z0-9_]*)$"
+   },
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/bash-write-notice.sh",
+      "timeout": 10
+     }
+    ],
+    "matcher": "Bash"
+   }
+  ],
+  "PostToolUseFailure": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "sh /var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-hooks-8zu9ojge/.proofpunk/hooks/bash-write-notice.sh",
+      "timeout": 10
+     }
+    ],
+    "matcher": "Bash"
+   }
+  ]
+ }
+}
