@@ -57,6 +57,46 @@ ROOT = os.path.dirname(HERE)
 # rewrite in place.
 CAPTURE_ROOTS = ("evidence", "e2e-evidence")
 
+# Authored documentation that LIVES inside a capture root but is not a capture.
+# `evidence/AGENTS.md` is this repository's evidence doctrine: the very file the
+# deny message below cites. Treating it as a sealed capture made the doctrine
+# permanently uneditable, and the gate's own remedy ("write new artifacts to a
+# fresh run-scoped directory") is incoherent for a directory-level AGENTS.md.
+#
+# Measured 2026-09-14: adding a rule to evidence/AGENTS.md — to stop the very
+# workflow mistake that had tripped this gate three times — was itself refused
+# with `REWRITTEN 1551B -> 2487B`.
+#
+# `capture-guard.sh` already draws this line at runtime and has since it was
+# written: `.md` and `.json` are authored sidecars, always allowed; only raw
+# capture extensions (.txt .log .out .err .jsonl .png .har .csv) are protected.
+# This gate disagreed with that hook about the same rule. It now agrees.
+#
+# Scoped by PATH, not by extension, and not by basename alone.
+#
+# NOT by extension: capture-guard.sh exempts all `.md`/`.json` because it guards
+# a different thing (a live tool call writing a raw capture). Copying that rule
+# here would gut this gate — every step-NN.md and every evidence-inventory.txt
+# this session protected is `.md`. They must stay protected.
+#
+# NOT by basename alone: a README.md written INSIDE a run directory is part of
+# that run's record and is a capture. One exists today:
+# e2e-evidence/run-20260827T162405-ref-differential-pristine/README.md.
+#
+# So: exempt only an authored doc sitting at the TOP LEVEL of a capture root,
+# outside any run-* or <release>-release subdirectory.
+AUTHORED_BASENAMES = {"AGENTS.md", "README.md", "CLAUDE.md"}
+
+
+def is_authored_doc(path: str) -> bool:
+    """True for top-level authored docs like evidence/AGENTS.md.
+
+    `evidence/AGENTS.md` -> parts ('evidence', 'AGENTS.md') -> depth 2 -> exempt.
+    `evidence/v3-release/.../README.md` -> deeper -> a capture, still protected.
+    """
+    parts = path.split("/")
+    return len(parts) == 2 and parts[1] in AUTHORED_BASENAMES
+
 
 def git(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
@@ -103,14 +143,19 @@ def main() -> int:
         # a newly added (staged) capture, not a mutated one. Only a file that
         # HAS a committed blob can have drifted from it.
         changed = []
+        authored = 0
         for p in candidates:
+            if is_authored_doc(p):
+                authored += 1
+                continue
             if git("cat-file", "-e", f"HEAD:{p}").returncode == 0:
                 changed.append(p)
-        added = len(candidates) - len(changed)
+        added = len(candidates) - len(changed) - authored
 
         print(
             f"   {root}: tracked={len(tracked)} modified={len(changed)}"
             + (f" (+{added} newly added, not in HEAD — out of scope)" if added else "")
+            + (f" (+{authored} authored doc(s) — not captures)" if authored else "")
         )
         for path in changed:
             # Report the size delta, since truncation is the shape that

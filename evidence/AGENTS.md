@@ -20,6 +20,8 @@ Per-release verification captures: the actual stdout of the three release-verifi
 ### Working In This Directory
 
 - Read-only evidence: never edit, backfill, or "clean up" captures — a modified capture is a fabricated claim.
+- **Never `git add` a run directory until that run is finished and sealed.** Committing a run's steps or its `evidence-inventory.txt` mid-run makes every later addition to that run a rewrite of a committed capture, which `tools/verify-evidence-immutability.py` correctly refuses. Measured 2026-09-14: this single workflow mistake produced three separate immutability failures in one session (`REWRITTEN 744B -> 864B`, `222B -> 332B`, `9046B -> 9407B`). Restoring the inventory alone does not fix it — a manifest that omits files the run now contains is a *false* manifest.
+- Corollary: if a finding must be recorded after a run is committed, open a **new** run directory (`fresh_evidence.py init-run <slug>`) and carry the correction there with an explicit supersession header naming the superseded step. A committed capture is never edited to agree with a later finding; the record shows both what was believed and what replaced it.
 - New release → new `<release>-release/` directory; copy the four-file naming pattern from `v2.0.1-release/`.
 - Secrets must never appear in evidence (enforced by `evidence-guard.sh`); if one leaks, rotate the secret, do not just delete the file.
 
