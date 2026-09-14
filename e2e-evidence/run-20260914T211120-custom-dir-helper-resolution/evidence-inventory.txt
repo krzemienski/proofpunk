@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-custom-dir.md 1670 11e7669aa028b9d8370f6eedd27b7efab157399423d91d5f2f494e58957e2d9c
+sealed=2026-09-14T21:11:20Z count=1 total_bytes=1670

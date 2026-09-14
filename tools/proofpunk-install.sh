@@ -446,6 +446,17 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
   HOOKS_SRC="$SRC_ROOT/plugins/proofpunk/hooks"
   HOOK_HOME="$HOME/.proofpunk/hooks"
   say "hooks      : enforcement hooks (Stop/SubagentStop + PreToolUse)"
+  # Record where skills ACTUALLY landed. Hooks install to ~/.proofpunk/hooks
+  # but skills go to $DIR, which --dir can point anywhere; a hook probing a
+  # fixed candidate list cannot guess a custom path, and the intent guard is
+  # fail-closed, so a wrong guess wedges the session permanently. Writing the
+  # resolved dir here is the only source of truth that survives the install.
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "  [dry-run] would record skills dir -> $HOME/.proofpunk/skills-dir"
+  else
+    mkdir -p "$HOME/.proofpunk"
+    printf '%s\n' "$DIR" > "$HOME/.proofpunk/skills-dir"
+  fi
   if [ "$TARGET" = "claude-code" ] || [ "$TARGET" = "omp" ] || [ "$TARGET" = "agents" ]; then
     # python3 performs the settings.json merge that actually REGISTERS these
     # hooks. Without it the scripts would land executable but unwired, so the

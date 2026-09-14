@@ -93,49 +93,66 @@ def main() -> int:
         print("SKIP: no evidence artifact to cite; cannot reach the intent branch")
         return 0
 
-    home = tempfile.mkdtemp(prefix="pp-helper-gate-")
-    try:
-        inst = subprocess.run(
-            ["bash", INSTALLER, "--source-dir", ROOT, "--target", "claude-code",
-             "--dir", os.path.join(home, ".claude", "skills"), "--hooks"],
-            cwd=ROOT, capture_output=True, text=True,
-            env=dict(os.environ, HOME=home),
-        )
-        if inst.returncode != 0:
-            print("FAIL: install into throwaway HOME failed")
-            print((inst.stderr or inst.stdout)[-600:])
-            return 1
+    # Two layouts, because they fail for different reasons: the default one
+    # (skills in the platform dir) and a custom --dir, which no fixed candidate
+    # list can guess and which only the installer-recorded path can resolve.
+    failures = 0
+    for label, skills_dir in (
+        ("default --dir (platform skills dir)", None),
+        ("custom --dir (unguessable path)", "somewhere/else/skills"),
+    ):
+        home = tempfile.mkdtemp(prefix="pp-helper-gate-")
+        try:
+            target_dir = (os.path.join(home, skills_dir) if skills_dir
+                          else os.path.join(home, ".claude", "skills"))
+            if run_case(home, target_dir, evidence, label) != 0:
+                failures += 1
+        finally:
+            shutil.rmtree(home, ignore_errors=True)
+    return 1 if failures else 0
 
-        hook = os.path.join(home, ".proofpunk", "hooks", "stop-guard.sh")
-        if not os.path.isfile(hook):
-            print("FAIL: stop-guard.sh not installed to ~/.proofpunk/hooks")
-            return 1
 
-        decision, reason = drive_stop_hook(home, hook, evidence)
+def run_case(home: str, target_dir: str, evidence: str, label: str) -> int:
+    print("-- %s" % label)
+    inst = subprocess.run(
+        ["bash", INSTALLER, "--source-dir", ROOT, "--target", "claude-code",
+         "--dir", target_dir, "--hooks"],
+        cwd=ROOT, capture_output=True, text=True,
+        env=dict(os.environ, HOME=home),
+    )
+    if inst.returncode != 0:
+        print("FAIL: install into throwaway HOME failed")
+        print((inst.stderr or inst.stdout)[-600:])
+        return 1
 
-        if MISSING_MARKER in reason:
-            print("FAIL: the installed hook cannot resolve its helper.")
-            print("      Every --hooks user would be wedged by a fail-closed")
-            print("      guard. Reason emitted:")
-            for line in reason.splitlines():
-                print("        " + line)
-            return 1
+    hook = os.path.join(home, ".proofpunk", "hooks", "stop-guard.sh")
+    if not os.path.isfile(hook):
+        print("FAIL: stop-guard.sh not installed to ~/.proofpunk/hooks")
+        return 1
 
-        # Vacuity check: if we did not actually reach the intent branch, this
-        # gate proved nothing and must not report success.
-        if "intent verdict" not in reason:
-            print("FAIL: the intent branch was never reached, so this gate is")
-            print("      vacuous. An earlier branch short-circuited:")
-            print("        decision=" + decision)
-            for line in reason.splitlines()[:3]:
-                print("        " + line)
-            return 1
+    decision, reason = drive_stop_hook(home, hook, evidence)
 
-        print("OK: installed hook resolved its helper and reached the intent")
-        print("    branch (decision=%s)." % decision)
-        return 0
-    finally:
-        shutil.rmtree(home, ignore_errors=True)
+    if MISSING_MARKER in reason:
+        print("FAIL: the installed hook cannot resolve its helper.")
+        print("      Every --hooks user would be wedged by a fail-closed")
+        print("      guard. Reason emitted:")
+        for line in reason.splitlines():
+            print("        " + line)
+        return 1
+
+    # Vacuity check: if we did not actually reach the intent branch, this
+    # gate proved nothing and must not report success.
+    if "intent verdict" not in reason:
+        print("FAIL: the intent branch was never reached, so this gate is")
+        print("      vacuous. An earlier branch short-circuited:")
+        print("        decision=" + decision)
+        for line in reason.splitlines()[:3]:
+            print("        " + line)
+        return 1
+
+    print("OK: installed hook resolved its helper and reached the intent")
+    print("    branch (decision=%s)." % decision)
+    return 0
 
 
 if __name__ == "__main__":

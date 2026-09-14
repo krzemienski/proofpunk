@@ -110,7 +110,16 @@ _hookdir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # throwaway HOME. Probe the real candidates, first hit wins.
 _rel="end-user-testing/scripts/intent_verdict.py"
 helper=""
+# Highest precedence, in order: an explicit operator override, then the dir the
+# installer actually wrote (the only source that survives `--dir <custom>`,
+# which no fixed candidate list can guess). Everything after is a fallback.
+_recorded=""
+if [ -f "$HOME/.proofpunk/skills-dir" ]; then
+  _recorded=$(head -n 1 "$HOME/.proofpunk/skills-dir" 2>/dev/null || true)
+fi
 for _c in \
+  "${PROOFPUNK_SKILLS_DIR:-/nonexistent}/$_rel" \
+  "${_recorded:-/nonexistent}/$_rel" \
   "$_hookdir/../skills/$_rel" \
   "${CLAUDE_PLUGIN_ROOT:-/nonexistent}/skills/$_rel" \
   "$HOME/.claude/skills/$_rel" \
