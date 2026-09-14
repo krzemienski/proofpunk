@@ -455,7 +455,16 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
     say "  [dry-run] would record skills dir -> $HOME/.proofpunk/skills-dir"
   else
     mkdir -p "$HOME/.proofpunk"
-    printf '%s\n' "$DIR" > "$HOME/.proofpunk/skills-dir"
+    # MUST be absolute. The hook reads this file from a different process with
+    # a different cwd, so a relative --dir (e.g. `--dir relskills`) recorded
+    # verbatim resolves against the wrong base and never matches -- the helper
+    # sits on disk while the fail-closed guard wedges the session, which is the
+    # exact defect this file exists to prevent. Verified by reproduction.
+    case "$DIR" in
+      /*) _abs_dir="$DIR" ;;
+      *)  _abs_dir="$(CDPATH= cd -- "$DIR" 2>/dev/null && pwd)" || _abs_dir="$DIR" ;;
+    esac
+    printf '%s\n' "$_abs_dir" > "$HOME/.proofpunk/skills-dir"
   fi
   if [ "$TARGET" = "claude-code" ] || [ "$TARGET" = "omp" ] || [ "$TARGET" = "agents" ]; then
     # python3 performs the settings.json merge that actually REGISTERS these

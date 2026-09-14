@@ -109,15 +109,31 @@ def main() -> int:
                 failures += 1
         finally:
             shutil.rmtree(home, ignore_errors=True)
+
+    # A RELATIVE --dir is recorded by the installer and later read by the hook
+    # from a different process with a different cwd. Recorded verbatim it
+    # resolves against the wrong base and never matches, so the helper sits on
+    # disk while the fail-closed guard wedges the session.
+    home = tempfile.mkdtemp(prefix="pp-helper-gate-rel-")
+    workdir = tempfile.mkdtemp(prefix="pp-helper-gate-cwd-")
+    try:
+        if run_case(home, "relskills", evidence,
+                    "relative --dir (recorded path must be absolute)",
+                    cwd=workdir) != 0:
+            failures += 1
+    finally:
+        shutil.rmtree(home, ignore_errors=True)
+        shutil.rmtree(workdir, ignore_errors=True)
     return 1 if failures else 0
 
 
-def run_case(home: str, target_dir: str, evidence: str, label: str) -> int:
+def run_case(home: str, target_dir: str, evidence: str, label: str,
+             cwd: str | None = None) -> int:
     print("-- %s" % label)
     inst = subprocess.run(
         ["bash", INSTALLER, "--source-dir", ROOT, "--target", "claude-code",
          "--dir", target_dir, "--hooks"],
-        cwd=ROOT, capture_output=True, text=True,
+        cwd=(cwd or ROOT), capture_output=True, text=True,
         env=dict(os.environ, HOME=home),
     )
     if inst.returncode != 0:
