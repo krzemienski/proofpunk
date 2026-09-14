@@ -372,7 +372,12 @@ naive raw-line-join and YAML-fold-resolved character counts were identical
 for the plain-prose bodies in this repo, since none contain embedded
 newlines the fold would otherwise collapse differently — folded scalars
 replace line breaks with spaces and strip the trailing newline by default
-`clip` chomping, confirmed no skill's description ends with `\n`).
+`clip` chomping). **Correction, measured 2026-09-14:** the original text here
+claimed "confirmed no skill's description ends with `\n`". That is false —
+`clip` chomping *retains* a single trailing newline, and `yaml.safe_load`
+returns it for all 19 skills. Every length in the table below is therefore the
+**rstripped** value, which is what this section has always tabulated; the raw
+scalar is one character longer in every case.
 
 All 19 skills use `>` folded-scalar description blocks except none deviate
 — every file in this repo follows the identical `name: <slug>` +

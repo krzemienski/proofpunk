@@ -1,0 +1,51 @@
+# A false claim inside the method paragraph, and D7 host attribution
+command : python3 tools/verify-counts.py
+cwd     : /Users/nick/proofpunk
+HEAD    : 3d6c4a4 (+ uncommitted)
+utc     : 2026-09-14T19:00:51.212240Z
+exit    : 0   (recorded separately from stdout)
+----------------------------------------------------------------------
+canon: skills=19 refs=18 cmds=7+7 hooks.sh=10 events=7 regs=12 agents=3/4/3 edges=51 (router=18)
+scanned 82 live .md files
+VERDICT: PASS — live .md counts match the tree
+
+----------------------------------------------------------------------
+FINDING 1 — the method paragraph asserted something measurably false
+  skill-canon.md section 4 read: "confirmed no skill's description ends with
+  \n". Measured: yaml.safe_load returns endswith_nl=True for ALL 19 skills.
+  YAML `clip` chomping RETAINS a single trailing newline; it does not strip
+  it. The sentence had the semantics backwards.
+
+  This is not cosmetic. That false premise is what made the raw-vs-rstripped
+  confusion look resolved, and it is why 050dcb3 shifted the prose to raw
+  lengths while leaving 18 rows rstripped. Corrected in place with the
+  measurement, preserving the original claim as the thing being corrected.
+
+FINDING 2 — D7 attribution, both hosts, measured not inferred
+
+  CLAUDE CODE
+    enabledPlugins["proofpunk@proofpunk-marketplace"] = True
+    marketplace source = {"source": "directory", "path": "/Users/nick/proofpunk"}
+    -> loads the LIVE REPO. Its view is 18. The 2.2.0 and 3.0.0 caches under
+       ~/.claude/plugins/cache are stale on disk but are NOT the source.
+
+  OH-MY-PI
+    ~/.omp/agent/config.yml declares `skills:` and enableSkillCommands: true
+    ~/.omp/agent/skills/proofpunk/SKILL.md exists, counts=[17], mtime Sep 3
+    -> THIS is the path that served this session's skill://proofpunk read.
+       It is a separate, genuinely stale install.
+
+  So the advisory's premise is refuted for Claude Code and confirmed for OMP.
+  No conformance read in this session is affected: every one measured
+  plugins/proofpunk/skills/ in the repo directly, never through skill://.
+
+NOT MODIFIED — all 5 stale copies verified present and untouched
+  ~/.claude/plugins/cache/.../2.2.0/skills/proofpunk/SKILL.md   Sep  2 03:02:06
+  ~/.claude/plugins/cache/.../3.0.0/skills/proofpunk/SKILL.md   Sep  9 19:50:15
+  ~/.omp/agent/skills/proofpunk/SKILL.md                        Sep  3 04:25:20
+  ~/.omp/plugins/cache/plugins/...2.2.0/...                     Sep  2 15:09:43
+  ~/.omp/plugins/node_modules/proofpunk/...                     Sep  2 15:09:43
+
+  mtimes re-read after all work: unchanged. Refreshing another host's install
+  is a destructive system-state change on the user's machine, outside this
+  task's scope, and is left to the operator.
