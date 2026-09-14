@@ -58,7 +58,26 @@ ALL_SKILLS=""
 say()  { [ "$QUIET" -eq 0 ] && printf '%s\n' "$*" || true; }
 warn() { printf 'WARN: %s\n' "$*" >&2; }
 die()  { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-run()  { if [ "$DRY_RUN" -eq 1 ]; then say "  [dry-run] $*"; else eval "$@"; fi; }
+# Execute argv directly. NEVER eval.
+#
+# Measured 2026-09-14 (shellcheck SC2294, then reproduced): every call site
+# wrote `run "mkdir -p '$DIR'"`, so a single quote inside a user-supplied
+# path closed the quoting and the rest was evaluated as shell. Driven, not
+# theorised:
+#   --dir "/tmp/pptest/a'\$(touch /tmp/PWNED_PROOFPUNK)'b"
+# created /tmp/PWNED_PROOFPUNK. That is arbitrary command execution from an
+# installer flag (CWE-78).
+#
+# Callers now pass real argv — `run mkdir -p "$DIR"` — so the shell never
+# re-parses a path. Word-splitting and metacharacters in any argument are
+# inert by construction rather than by careful quoting at 12 call sites.
+run()  {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "  [dry-run] $*"
+  else
+    "$@"
+  fi
+}
 
 usage() { sed -n '2,12p' "$0"; cat <<'EOF'
 
@@ -270,8 +289,7 @@ fi
 INSTALLED=0; SKIPPED=0; REPLACED=0; MISSING=0
 if [ -n "$SELECTED" ]; then
 say "installing : $(printf '%s' "$SELECTED" | wc -w | tr -d ' ') skill(s)"
-run "mkdir -p '$DIR'"
-
+run mkdir -p "$DIR"
 for skill in $SELECTED; do
   src="$SKILLS_SRC/$skill"
   dst="$DIR/$skill"
@@ -286,17 +304,17 @@ for skill in $SELECTED; do
     fi
     if [ "$BACKUP" -eq 1 ]; then
       bak="$DIR/.${skill}.bak-$(date +%Y%m%d-%H%M%S)"
-      run "mv '$dst' '$bak'"
+      run mv "$dst" "$bak"
       say "  REPLACE $skill (old copy -> $bak)"
     else
-      run "rm -rf '$dst'"
+      run rm -rf "$dst"
       say "  REPLACE $skill (no backup)"
     fi
     REPLACED=$((REPLACED+1))
   else
     say "  INSTALL $skill"
   fi
-  run "mkdir -p '$dst'"
+  run mkdir -p "$dst"
   if [ "$DRY_RUN" -eq 0 ]; then
     # --exclude keeps build-host bytecode out of user installs: compiling a
     # skill script locally leaves __pycache__/*.pyc beside it, and a wholesale
@@ -381,18 +399,18 @@ if [ "$WITH_THEMES" -eq 1 ]; then
   say "themes     : 20 flat-black cyberpunk themes"
   # oh-my-pi: detected by ~/.omp or an omp binary on PATH
   if [ -d "$HOME/.omp" ] || command -v omp >/dev/null 2>&1 || [ "$TARGET" = "omp" ]; then
-    run "mkdir -p '$HOME/.omp/agent/themes'"
+    run mkdir -p "$HOME/.omp/agent/themes"
     if [ "$DRY_RUN" -eq 0 ]; then warn_modified_themes "$THEMES_SRC/omp" "$HOME/.omp/agent/themes"; cp "$THEMES_SRC/omp/"*.json "$HOME/.omp/agent/themes/"; fi
     say "  OMP      -> ~/.omp/agent/themes (20) — select via /theme or theme.dark in config.yml"
   fi
   # OpenCode: detected by ~/.config/opencode or an opencode binary on PATH
   if [ -d "$HOME/.config/opencode" ] || command -v opencode >/dev/null 2>&1 || [ "$TARGET" = "opencode" ]; then
-    run "mkdir -p '$HOME/.config/opencode/themes'"
+    run mkdir -p "$HOME/.config/opencode/themes"
     if [ "$DRY_RUN" -eq 0 ]; then warn_modified_themes "$THEMES_SRC/opencode" "$HOME/.config/opencode/themes"; cp "$THEMES_SRC/opencode/"*.json "$HOME/.config/opencode/themes/"; fi
     say "  OpenCode -> ~/.config/opencode/themes (20) — select via /themes or tui.json"
   fi
   # Hyper terminal modules: copy + show how to activate (Hyper has no theme dir)
-  run "mkdir -p '$HOME/.config/proofpunk/hyper-themes'"
+  run mkdir -p "$HOME/.config/proofpunk/hyper-themes"
   if [ "$DRY_RUN" -eq 0 ]; then warn_modified_themes "$THEMES_SRC/hyper" "$HOME/.config/proofpunk/hyper-themes"; cp "$THEMES_SRC/hyper/"*.js "$HOME/.config/proofpunk/hyper-themes/"; fi
   say "  Hyper    -> ~/.config/proofpunk/hyper-themes (20 .js modules)"
   say "           activate: require one from a local plugin, or merge its COLORS into ~/.hyper.js"
@@ -403,14 +421,14 @@ if [ "$WITH_PLUGINS" -eq 1 ]; then
   say "plugins    : platform glue"
   # OMP doctrine-guard extension (native auto-discovery at ~/.omp/agent/extensions)
   if [ -d "$HOME/.omp" ] || command -v omp >/dev/null 2>&1 || [ "$TARGET" = "omp" ]; then
-    run "mkdir -p '$HOME/.omp/agent/extensions'"
+    run mkdir -p "$HOME/.omp/agent/extensions"
     if [ "$DRY_RUN" -eq 0 ]; then cp "$SRC_ROOT/$EXTENSIONS_SUBPATH/proofpunk.ts" "$HOME/.omp/agent/extensions/"; fi
     say "  OMP extension      -> ~/.omp/agent/extensions/proofpunk.ts"
     say "  OMP full plugin    : omp plugin marketplace add krzemienski/proofpunk && omp plugin install proofpunk@proofpunk"
   fi
   # OpenCode plugin + commands + agents
   if [ -d "$HOME/.config/opencode" ] || command -v opencode >/dev/null 2>&1 || [ "$TARGET" = "opencode" ]; then
-    run "mkdir -p '$HOME/.config/opencode/plugin' '$HOME/.config/opencode/commands' '$HOME/.config/opencode/agents'"
+    run mkdir -p "$HOME/.config/opencode/plugin" "$HOME/.config/opencode/commands" "$HOME/.config/opencode/agents"
     if [ "$DRY_RUN" -eq 0 ]; then
       cp "$SRC_ROOT/$OPENCODE_SUBPATH/plugin/proofpunk.ts" "$HOME/.config/opencode/plugin/"
       cp "$SRC_ROOT/$OPENCODE_SUBPATH/commands/"*.md "$HOME/.config/opencode/commands/"
@@ -433,7 +451,7 @@ if [ "$WITH_HOOKS" -eq 1 ]; then
     # hooks. Without it the scripts would land executable but unwired, so the
     # guard fires before anything is written -- including the hook directory.
     command -v python3 >/dev/null 2>&1 || die "--hooks requires python3 to merge hook entries into settings.json"
-    run "mkdir -p '$HOOK_HOME'"
+    run mkdir -p "$HOOK_HOME"
     if [ "$DRY_RUN" -eq 0 ]; then
       # hooks.json is the single source of truth for BOTH which scripts get
       # copied and which events get registered. Hardcoding either list here is
@@ -529,7 +547,7 @@ fi
 if [ "$WITH_DOCTRINE" -eq 1 ] && [ "$SKIP_SKILLS" -eq 0 ]; then
   DD="$DIR/$DOCTRINE_DIRNAME"
   say "doctrine   : $DD (the ruling rules every skill defers to)"
-  run "mkdir -p '$DD'"
+  run mkdir -p "$DD"
   if [ "$DRY_RUN" -eq 0 ]; then
     [ -d "$REFS_SRC" ] || die "doctrine references not found at $REFS_SRC"
     (cd "$REFS_SRC" && tar cf - .) | (cd "$DD" && tar xf -)
