@@ -1,0 +1,54 @@
+# failure_kinds exercised through the REAL main() code path
+cwd  : /Users/nick/proofpunk
+HEAD : c5c1730
+utc  : 2026-09-14T20:10:11.732630Z
+----------------------------------------------------------------------
+THE GAP THAT WAS RAISED, AND IT WAS REAL
+  "You shipped a classifier that has never run inside the gate — every
+  validation was an offline replay. The replay exercised your logic, not the
+  code path in main()."
+
+  Correct, and it is the same false-green shape this whole session has been
+  closing: a reimplementation agreeing with itself proves nothing about the
+  shipped path.
+
+ATTEMPT 1 — full live run, INCOMPLETE
+  PP_CMDSURFACE_OUT_DIR=/tmp/pp-v6-live-check python3 tools/verify-command-surface.py
+  Ran 881s, killed at the 1500s ceiling mid-`install` plugin arm (after a 90s
+  transient backoff + retry). No artifact written, so this proved nothing.
+  Recorded rather than hidden: the run happened and did not finish.
+
+ATTEMPT 2 — extract and execute the SHIPPED SOURCE, not a copy
+  The untested unit is main()'s summary construction, not the 15 SDK arms.
+  So both blocks were extracted VERBATIM from tools/verify-command-surface.py
+  by string index — the failure_kinds loop and the summary dict including its
+  json.dump — compiled, and executed against real recorded rows.
+
+  RESULT (43 lines of real main() code):
+    install    -> turn_budget_exhausted    failed=['no_harness_error'] 63.1s
+    implement  -> single_turn_early_yield  failed=[text_matches, tool_invoked,
+                                                  tool_arg_matches, tool_succeeded] 6.6s
+
+  RESULT (real serialization path, artifact on disk):
+    'failure_kinds' present         True
+    'surface_is_stochastic' present True
+    both keys serialize correctly, content matches the classification above
+
+WHAT REMAINS UNPROVEN, STATED PLAINLY
+  The 15 live SDK arms have not produced an artifact carrying these keys. The
+  classifier logic and the serialization are proven against the shipped source;
+  an end-to-end live artifact is not. That is a known gap, not a silent pass —
+  and it is bounded by the same stochastic surface this commit documents: a
+  full run takes 7-15min and its completion is itself probabilistic.
+
+  PROOF LEVEL: script (shipped code path, real recorded inputs).
+  NOT end-user. A live 6/6 run carrying failure_kinds=[] would be the
+  end-user proof, and the surface does not reliably produce one.
+
+ALSO CONFIRMED THIS PASS — retry path untouched, as required
+  An advisory warned against extending retry to cover the implement shape
+  (tool_invoked=false), which is one of the four false-pass traps recorded at
+  79d9dc3. Verified by diff against HEAD~1:
+    _TRANSIENT_RE   IDENTICAL
+    RETRY_MAX / RETRY_BACKOFF_S / ARM_TIMEOUT_S   IDENTICAL
+  The commit is +86 lines, zero deletions. Nothing in the retry path moved.
