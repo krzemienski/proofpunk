@@ -1,0 +1,61 @@
+# D7 re-measured — installed-vs-repo state
+command : glob ~/.claude ~/.omp ~/.config/opencode for skills/proofpunk/SKILL.md
+cwd     : /Users/nick/proofpunk
+HEAD    : 11d0a8b
+utc     : 2026-09-14T18:58:46.459258Z
+----------------------------------------------------------------------
+TRIGGER
+  An advisory reported that read(skill://proofpunk) returned "17 delivery
+  skills" while the repo says 18, concluding the host loads a stale copy and
+  that conformance reads via skill:// are untrustworthy. I had independently
+  hit the same signal: a mutation arm anchored on "plugin's 17 delivery
+  skills" SKIPPED because the repo says 18. I noted it and moved on — that
+  was the miss; it warranted this measurement at the time.
+
+REPO (source of truth)
+  plugins/proofpunk/skills/proofpunk/SKILL.md -> [18]
+
+COPIES ON DISK (7)
+  ~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/2.2.0/skills/proofpunk/SKILL.md
+      counts=[17]  mtime=Sep  2 03:02:06 2026   *** STALE ***
+  ~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/skills/proofpunk/SKILL.md
+      counts=[17]  mtime=Sep  9 19:50:15 2026   *** STALE ***
+  ~/.config/opencode/skills/proofpunk/SKILL.md
+      counts=[18]  mtime=Sep 14 14:51:52 2026
+  ~/.omp/agent/skills/proofpunk/SKILL.md
+      counts=[17]  mtime=Sep  3 04:25:20 2026   *** STALE ***
+  ~/.omp/plugins/cache/marketplaces/proofpunk/plugins/proofpunk/skills/proofpunk/SKILL.md
+      counts=[18]  mtime=Sep 14 12:47:38 2026
+  ~/.omp/plugins/cache/plugins/proofpunk___proofpunk___2.2.0/skills/proofpunk/SKILL.md
+      counts=[17]  mtime=Sep  2 15:09:43 2026   *** STALE ***
+  ~/.omp/plugins/node_modules/proofpunk/skills/proofpunk/SKILL.md
+      counts=[17]  mtime=Sep  2 15:09:43 2026   *** STALE ***
+
+WHICH COPY THE HOST ACTUALLY LOADS
+  ~/.claude/settings.json:
+    enabledPlugins["proofpunk@proofpunk-marketplace"] = true
+    extraKnownMarketplaces["proofpunk-marketplace"].source = {"source": "directory", "path": "/Users/nick/proofpunk"}
+
+  The registered source is a DIRECTORY pointing at the live repo, not a
+  versioned cache. The 2.2.0 and 3.0.0 trees under ~/.claude/plugins/cache
+  are stale on disk but are NOT the registered source for this host.
+
+VERDICT — the advisory's premise is REFUTED for Claude Code
+  Claude Code loads /Users/nick/proofpunk directly, so its view is the repo's
+  18, not 17. The stale 17s live in OMP's own skill directory and in
+  unregistered cache trees. My session-start read came from the OMP surface,
+  which is a genuinely separate install with a genuinely stale copy.
+
+WHAT IS ACTUALLY TRUE, AND STILL WORTH ACTING ON
+  ~/.omp/agent/skills/proofpunk/SKILL.md        counts=[17]  Sep 3
+  ~/.omp/plugins/cache/plugins/...2.2.0/...     counts=[17]  Sep 2
+  ~/.omp/plugins/node_modules/proofpunk/...     counts=[17]  Sep 2
+  ~/.claude/plugins/cache/.../2.2.0, /3.0.0     counts=[17]  Sep 2, Sep 9
+
+  Five stale copies. None is the Claude Code registered source; at least one
+  IS an active OMP surface. This does not affect any conformance read in this
+  session — every one measured plugins/proofpunk/skills/ in the repo directly,
+  never via skill://.
+
+SCOPE: reported as a finding, not fixed. Refreshing another host's install is
+a system-state change outside this task's scope and is left to the operator.

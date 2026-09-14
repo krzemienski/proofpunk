@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-d7-installed-vs-repo.txt 3295 be4007c40b8e1d89a019c47869ddd306a77182786bd0340d9fb169a7af5b27e7
+sealed=2026-09-14T18:58:46Z count=1 total_bytes=3295
