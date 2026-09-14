@@ -572,6 +572,29 @@ def check_canon_desc_lengths() -> list[str]:
     return fails
 
 
+def check_marketplace_counts(counts: dict) -> list[str]:
+    """Marketplace JSON is shipped metadata, and this gate only walked .md.
+
+    Both marketplace catalogs advertised "18 skills" while the tree held 19
+    and every .md source was correct — the drift was invisible because
+    iter_md_files() structurally cannot see a .json file. A user reads the
+    marketplace listing before anything else, so it is exactly the wrong
+    place to be wrong.
+    """
+    fails: list[str] = []
+    live = counts["skills"]
+    for rel in (".claude-plugin/marketplace.json", ".omp-plugin/marketplace.json"):
+        path = os.path.join(ROOT, rel)
+        if not os.path.isfile(path):
+            continue
+        text = open(path, encoding="utf-8").read()
+        for m in re.finditer(r"(\d+)\s+skills", text):
+            stated = int(m.group(1))
+            if stated != live:
+                fails.append(f"{rel}: says '{m.group(0)}' but the tree has {live}")
+    return fails
+
+
 def main() -> int:
     counts = canon()
     print(
@@ -589,6 +612,7 @@ def main() -> int:
         fails.extend(check_file(path, counts))
     print(f"scanned {n_files} live .md files")
     fails.extend(check_canon_desc_lengths())
+    fails.extend(check_marketplace_counts(counts))
     if fails:
         print(f"VERDICT: FAIL — {len(fails)} mismatch(es)")
         for f in fails:

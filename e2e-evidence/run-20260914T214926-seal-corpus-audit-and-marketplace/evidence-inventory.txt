@@ -1,0 +1,4 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-corpus-audit.md 1842 11c3dc740b9e6e545d5a0f72b5c6f0118750ac5c398376374f9b5c0106fb7c7e
+step-02-marketplace-counts.md 1027 09c6f9285e095395d99e023eb92b9d19903b41da75aca087331118945d9cd098
+sealed=2026-09-14T21:49:26Z count=2 total_bytes=2869
