@@ -1,0 +1,21 @@
+== surface model (all arms): cc/claude-opus-5
+== /proofpunk:implement plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-implement-plugin-omd2z03n)
+   .. /proofpunk:implement plugin arm: no session (harness error) — pin not applicable
+== /proofpunk:implement --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-implement-control-0pnul974)
+== /proofpunk:forge-prompt plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-forge-prompt-plugin-9q4xl94q)
+== /proofpunk:forge-prompt --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-forge-prompt-control-4kekt7ga)
+== /proofpunk:rate-prompt plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-rate-prompt-plugin-d43w5aae)
+   .. /proofpunk:rate-prompt plugin arm: no session (harness error) — pin not applicable
+== /proofpunk:rate-prompt --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-rate-prompt-control-qrcsf5t2)
+== /proofpunk:truth-audit plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3)
+== /proofpunk:truth-audit --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-control-479eqtq0)
+== /proofpunk:verify plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-plugin-858cvo9w)
+== /proofpunk:verify --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-control-e_58q5no)
+== /proofpunk:verify EFFECT arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-effect-s1irrry2)
+== /proofpunk:install plugin arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e)
+== /proofpunk:install --no-plugin control (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-control-77ri7m7_)
+== /proofpunk:install EFFECT arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-effect-47uuiod2)
+== /proofpunk:install COUNTERFACTUAL arm (attempt 1/3, sandbox=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-counterfactual-adomkx4x)
+ARTIFACT e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/command-surface-proof.json sha256:5e0b4836b965d4227968ec9c98595b586dc62af5ac38aa2b9b78ddceda307fa4
+full_chain=3/6 plugin_pass=3/6 control_fail=6/6 honest_max=3/6
+HARNESS ERRORS (2): [('implement', 'plugin'), ('rate-prompt', 'plugin')]

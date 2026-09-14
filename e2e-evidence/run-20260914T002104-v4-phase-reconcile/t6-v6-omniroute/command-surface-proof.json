@@ -1,0 +1,1946 @@
+{
+  "measured_at": "2026-09-14T15:07:10Z",
+  "harness": "tools/sdk_probe.py + tools/verify-command-surface.py",
+  "levels": {
+    "a": "script-level (not this harness)",
+    "b": "skill-load via Skill tool by name (cmd_truth_audit_flags / cmd_rate_prompt_flag)",
+    "c": "slash typed -> registered -> mapped skill ran -> marker observed",
+    "playbook-recognition": "slash registered + command-doc marker; no skill/script",
+    "d": "effect-proven \u2014 playbook-recognition + an OBSERVED real effect on disk/execution (never narration); install additionally requires a counterfactual proving the effect is attributable to the command doc, not ambient host behavior"
+  },
+  "full_chain": "3/6",
+  "plugin_pass": "3/6",
+  "control_fail": "6/6",
+  "honest_max_reached": "3/6",
+  "harness_errors": [
+    {
+      "command": "implement",
+      "arm": "plugin",
+      "rc": 2,
+      "attempts": 1,
+      "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_implement.plugin.log"
+    },
+    {
+      "command": "rate-prompt",
+      "arm": "plugin",
+      "rc": 2,
+      "attempts": 1,
+      "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_rate_prompt.plugin.log"
+    }
+  ],
+  "install_verify_honest_max_is_d": true,
+  "install_reason": "in-session playbook, NO backing skill or script \u2014 distinct from tools/proofpunk-install.sh; the earlier 'SDK has no Write tool' premise was disproven 2026-09-09 (Write was merely disallowed by _SLASH_PLAYBOOK_TOOLS); the effect probe grants first-party Write/Edit explicitly with strict_mcp_config=True excluding ambient MCP servers. Honest max is (d) effect-proven: CLAUDE.md must actually exist with markers, under 200 lines, placeholders substituted, PLUS a counterfactual against a neutered install.md must show the effect gone \u2014 proving the command doc itself is the cause, not ambient host behavior.",
+  "verify_reason": "playbook: no Activate-skill line, no flags; marker UNVERIFIED. Honest max is (d) effect-proven: a harness-seeded sentinel must surface in a genuinely-executed Bash tool_result, never the model's narration.",
+  "commands": [
+    {
+      "command": "implement",
+      "slash": "/proofpunk:implement",
+      "probe": "cmd_slash_implement",
+      "max_honest_level": "c",
+      "reached_level": "FAIL",
+      "note": "command doc activates implement; flags --parallel --auto --mine --fast",
+      "plugin": {
+        "rc": 2,
+        "pass": false,
+        "checks": null,
+        "elapsed_s": null,
+        "cost_usd": null,
+        "reply": null,
+        "init_slash_proofpunk": null,
+        "local_plugin_loaded": null,
+        "tool_calls": null,
+        "transcript": null,
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_implement.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 0.8,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:implement",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:implement"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_implement.control.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "classify": {
+        "level": "FAIL",
+        "plugin_pass": false,
+        "control_failed": true,
+        "reason": "plugin arm recorded a harness error (auth/API failure) \u2014 init-level fields are not execution proof"
+      }
+    },
+    {
+      "command": "forge-prompt",
+      "slash": "/proofpunk:forge-prompt",
+      "probe": "cmd_slash_forge_prompt",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates prompt-forge AUTHOR; flag --depth",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 20.5,
+        "cost_usd": 2.370375,
+        "reply": "**Step 1 \u2014 Skill evaluation**\n\n- `proofpunk:prompt-forge` \u2014 **YES** \u2014 the command explicitly activates it; surface probe targets its AUTHOR mode and `--depth` flag.\n- `taches-cc-resources:create-prompt` / `prompt-improver` \u2014 NO \u2014 the command names a specific skill; substituting another would defeat the probe.\n- All other skills (research, debug, cook, git, test, code-review, etc.) \u2014 NO \u2014 no code, ",
+        "init_slash_proofpunk": [
+          "proofpunk:acquire",
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:completion-summary",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:prompt-forge\"}",
+            "input_len": 35,
+            "input_truncated": false,
+            "input_sha256": "106c4ae52bb46909"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:acquire",
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:completion-summary",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "**Step 1 \u2014 Skill evaluation**\n\n- `proofpunk:prompt-forge` \u2014 **YES** \u2014 the command explicitly activates it; surface probe targets its AUTHOR mode and `--depth` flag.\n- `taches-cc-resources:create-prompt` / `prompt-improver` \u2014 NO \u2014 the command names a specific skill; substituting another would defeat the probe.\n- All other skills (research, debug, cook, git, test, code-review, etc.) \u2014 NO \u2014 no code, research, or VCS work in scope.\n\n**Step 2 \u2014 Activate**"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:prompt-forge\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Launching skill: proofpunk:prompt-forge"
+          },
+          {
+            "kind": "text",
+            "text": "**Step 3 \u2014 Surface probe (stop here; no prompt file authored, no Workflow call)**\n\n`proofpunk:prompt-forge` loaded from `/Users/nick/proofpunk/plugins/proofpunk/skills/prompt-forge`.\n\n**AUTHOR mode \u2014 quoted from the skill**\n\nMode routing table:\n\n> | \"Write a prompt that...\" | AUTHOR | Section 1 |\n\nCommand surface:\n\n> ```\n> prompt-forge author \"<goal>\" [--out PATH] [--depth core|advanced]\n> ```\n\nFile-output contract (0.4):\n\n> | AUTHOR | `NAME.prompt.md` (or the path the user gave) | \u2014 |\n\nSection "
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_forge_prompt.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:forge-prompt",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:forge-prompt"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_forge_prompt.control.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "rate-prompt",
+      "slash": "/proofpunk:rate-prompt",
+      "probe": "cmd_slash_rate_prompt",
+      "max_honest_level": "c",
+      "reached_level": "FAIL",
+      "note": "command doc activates prompt-forge RATE; flag --ship-below-threshold",
+      "plugin": {
+        "rc": 2,
+        "pass": false,
+        "checks": null,
+        "elapsed_s": null,
+        "cost_usd": null,
+        "reply": null,
+        "init_slash_proofpunk": null,
+        "local_plugin_loaded": null,
+        "tool_calls": null,
+        "transcript": null,
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_rate_prompt.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:rate-prompt",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:rate-prompt"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_rate_prompt.control.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "classify": {
+        "level": "FAIL",
+        "plugin_pass": false,
+        "control_failed": true,
+        "reason": "plugin arm recorded a harness error (auth/API failure) \u2014 init-level fields are not execution proof"
+      }
+    },
+    {
+      "command": "truth-audit",
+      "slash": "/proofpunk:truth-audit",
+      "probe": "cmd_slash_truth_audit",
+      "max_honest_level": "c",
+      "reached_level": "c",
+      "note": "command doc activates codebase-truth-audit; flags --start/--end",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "tool_invoked": true,
+          "tool_arg_matches": true,
+          "tool_succeeded": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "forbid_absent": true,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 115.6,
+        "cost_usd": 4.7425774999999994,
+        "reply": "I'll start by evaluating skills, then activate the audit skill.\n\n**Step 1 \u2014 Skill evaluation:**\n- `proofpunk:codebase-truth-audit` \u2014 **YES** \u2014 explicitly requested by the command\n- `proofpunk:session-intent` \u2014 **YES** \u2014 command args include `--start`/`--end` window for session-intent alignment\n- `superpowers:using-superpowers` \u2014 already loaded\n- All others (seo-*, resume-*, expo, etc.) \u2014 NO \u2014 unre",
+        "init_slash_proofpunk": [
+          "proofpunk:acquire",
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:completion-summary",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:codebase-truth-audit\", \"args\": \". --start 2026-01-01 --end 2026-08-13 --label cmdsurface\"}",
+            "input_len": 111,
+            "input_truncated": false,
+            "input_sha256": "27a38021683ab74c"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/proofpunk/plugins/proofpunk/skills/codebase-truth-audit/references/output-contract.md\"}",
+            "input_len": 114,
+            "input_truncated": false,
+            "input_sha256": "f53049d11ff73311"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/proofpunk/plugins/proofpunk/skills/codebase-truth-audit/scripts/init_audit_workspace.py\"}",
+            "input_len": 116,
+            "input_truncated": false,
+            "input_sha256": "7c0f5bfa122577b5"
+          },
+          {
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}",
+            "input_len": 110,
+            "input_truncated": false,
+            "input_sha256": "d44e018ad66ce73a"
+          },
+          {
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}",
+            "input_len": 110,
+            "input_truncated": false,
+            "input_sha256": "d44e018ad66ce73a"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}",
+            "input_len": 129,
+            "input_truncated": false,
+            "input_sha256": "3fdf929923a97a80"
+          },
+          {
+            "name": "mcp__filesystem__directory_tree",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}",
+            "input_len": 110,
+            "input_truncated": false,
+            "input_sha256": "d44e018ad66ce73a"
+          },
+          {
+            "name": "mcp__filesystem__search_files",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\", \"pattern\": \"*\"}",
+            "input_len": 126,
+            "input_truncated": false,
+            "input_sha256": "fcb49ef41a0c075c"
+          },
+          {
+            "name": "mcp__filesystem__list_allowed_directories",
+            "input": "{}",
+            "input_len": 2,
+            "input_truncated": false,
+            "input_sha256": "44136fa355b3678a"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \".git/HEAD\", \"path\": \"/Users/nick/proofpunk\"}",
+            "input_len": 57,
+            "input_truncated": false,
+            "input_sha256": "60f1b548a1e2f55b"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"*\", \"path\": \"/Users/nick/proofpunk\"}",
+            "input_len": 49,
+            "input_truncated": false,
+            "input_sha256": "f34296d24ad7abdd"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"plugins/proofpunk/commands/*\", \"path\": \"/Users/nick/proofpunk\"}",
+            "input_len": 76,
+            "input_truncated": false,
+            "input_sha256": "5566e8dadbb866ad"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:acquire",
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:completion-summary",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "I'll start by evaluating skills, then activate the audit skill.\n\n**Step 1 \u2014 Skill evaluation:**\n- `proofpunk:codebase-truth-audit` \u2014 **YES** \u2014 explicitly requested by the command\n- `proofpunk:session-intent` \u2014 **YES** \u2014 command args include `--start`/`--end` window for session-intent alignment\n- `superpowers:using-superpowers` \u2014 already loaded\n- All others (seo-*, resume-*, expo, etc.) \u2014 NO \u2014 unrelated domains\n\n**Step 2 \u2014 Activate:**"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Skill",
+            "input": "{\"skill\": \"proofpunk:codebase-truth-audit\", \"args\": \". --start 2026-01-01 --end 2026-08-13 --label cmdsurface\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "Launching skill: proofpunk:codebase-truth-audit"
+          },
+          {
+            "kind": "text",
+            "text": "I'll begin with read-only discovery. First, resolving the repository and reading the output contract."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/proofpunk/plugins/proofpunk/skills/codebase-truth-audit/references/output-contract.md\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/proofpunk/plugins/proofpunk/skills/codebase-truth-audit/scripts/init_audit_workspace.py\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1\t# Output Contract\n2\t\n3\t## Contents\n4\t\n5\t- [Workspace layout](#workspace-layout)\n6\t- [Plan checklist](#plan-checklist)\n7\t- [Repository baseline record](#repository-baseline-record)\n8\t- [Scope and subsystem inventory](#scope-and-subsystem-inventory)\n9\t- [Intent-versus-implementation matrix](#intent-"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1\t#!/usr/bin/env python3\n2\t\"\"\"Initialize a generic codebase truth-audit workspace.\"\"\"\n3\t\n4\tfrom __future__ import annotations\n5\t\n6\timport argparse\n7\timport datetime as dt\n8\timport json\n9\timport re\n10\timport subprocess\n11\timport sys\n12\tfrom pathlib import Path\n13\tfrom typing import Iterable\n14\t\n15\t\n1"
+          },
+          {
+            "kind": "text",
+            "text": "Now resolving the repository and baseline state."
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"\"}"
+          },
+          {
+            "kind": "text",
+            "text": "The working directory appears empty. Let me verify carefully before concluding anything."
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"size: 64\\ncreated: Mon Sep 14 2026 11:00:56 GMT-0400 (Eastern Daylight Time)\\nmodified: Mon Sep 14 2026 11:00:56 GMT-0400 (Eastern Daylight Time)\\naccessed: Mon Sep 14 2026 11:00:56 GMT-0400 (Eastern Daylight Time)\\nisDirectory: true\\nisFile: false\\npermissions: 700\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/*\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "No files found"
+          },
+          {
+            "kind": "text",
+            "text": "Directory exists but appears empty. Checking for hidden files (`.git`, dotfiles) which Glob may skip:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__directory_tree",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"[]\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__search_files",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\", \"pattern\": \"*\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_allowed_directories",
+            "input": "{}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"No matches found\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"Allowed directories:\\n/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3\\n/Users/nick/Desktop/anneal\\n/Users/nick/Desktop/crucible\\n/Users/nick/Desktop/multi-agent-consensus\\n/Users/nick/Desktop/orbit\\n/Users/nick/Desktop/shannon-framework/"
+          },
+          {
+            "kind": "text",
+            "text": "Confirmed empty by four independent methods. Before reporting, let me locate the likely intended target (read-only discovery, no substitution without approval):"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \".git/HEAD\", \"path\": \"/Users/nick/proofpunk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "/Users/nick/proofpunk/.git/HEAD"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"*\", \"path\": \"/Users/nick/proofpunk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "/Users/nick/proofpunk/.git/info/exclude\n/Users/nick/proofpunk/.git/description\n/Users/nick/proofpunk/.git/hooks/commit-msg.sample\n/Users/nick/proofpunk/.git/hooks/pre-rebase.sample\n/Users/nick/proofpunk/.git/hooks/sendemail-validate.sample\n/Users/nick/proofpunk/.git/hooks/pre-commit.sample\n/Users/ni"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"plugins/proofpunk/commands/*\", \"path\": \"/Users/nick/proofpunk\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "/Users/nick/proofpunk/plugins/proofpunk/commands/forge-prompt.md\n/Users/nick/proofpunk/plugins/proofpunk/commands/implement.md\n/Users/nick/proofpunk/plugins/proofpunk/commands/install.md\n/Users/nick/proofpunk/plugins/proofpunk/commands/verify.md\n/Users/nick/proofpunk/plugins/proofpunk/commands/truth"
+          },
+          {
+            "kind": "text",
+            "text": "## Truth Audit \u2014 HALTED at Stage 0 (repository resolution)\n\nI cannot run this audit. The target resolves to an **empty directory**. Reporting the blocker rather than fabricating findings.\n\n### Blocker 1 \u2014 no repository at `.`\n\n`.` \u2192 `/private/var/folders/x9/.../T/pp-cmdsurface-truth-audit-plugin-6hdw2pz3`\n\nFour independent checks, all agree:\n\n| Check | Result |\n|---|---|\n| `list_directory` | empty |\n| `directory_tree` | `[]` |\n| `search_files` pattern `*` | No matches found |\n| `Glob **/*` | No "
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_truth_audit.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": false,
+          "tool_invoked": false,
+          "tool_arg_matches": false,
+          "tool_succeeded": false,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "forbid_absent": true,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:truth-audit",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:truth-audit"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_truth_audit.control.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "classify": {
+        "level": "c",
+        "plugin_pass": true,
+        "control_failed": true,
+        "reason": "slash typed+expanded, local plugin, Skill succeeded, marker observed"
+      }
+    },
+    {
+      "command": "verify",
+      "slash": "/proofpunk:verify",
+      "probe": "cmd_slash_verify",
+      "max_honest_level": "d",
+      "reached_level": "d",
+      "note": "playbook: no Activate-skill line, no flags; marker UNVERIFIED. Honest max is (d) effect-proven: a harness-seeded sentinel must surface in a genuinely-executed Bash tool_result, never the model's narration.",
+      "plugin": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 31.8,
+        "cost_usd": 1.12507,
+        "reply": "**Skill check:** none apply \u2014 this isn't a validation run, it's a malformed invocation. No skill invoked.\n\n## Verdict: UNVERIFIED (no verification performed)\n\nThe positional slot for `/proofpunk:verify` is a **scope** \u2014 a flow to drive as the end user (`\"password reset flow, from email link to dashboard\"`, `src/checkout`). What arrived instead was a set of instructions:\n\n> `STOP. Quote: Unexecuted",
+        "init_slash_proofpunk": [
+          "proofpunk:acquire",
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:completion-summary",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:acquire",
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:completion-summary",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "**Skill check:** none apply \u2014 this isn't a validation run, it's a malformed invocation. No skill invoked.\n\n## Verdict: UNVERIFIED (no verification performed)\n\nThe positional slot for `/proofpunk:verify` is a **scope** \u2014 a flow to drive as the end user (`\"password reset flow, from email link to dashboard\"`, `src/checkout`). What arrived instead was a set of instructions:\n\n> `STOP. Quote: Unexecuted checks are UNVERIFIED. There are no flags. Do not start a runtime. Do not call tools.`\n\nTwo things "
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_verify.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 0.7,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:verify",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:verify"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_verify.control.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "classify": {
+        "level": "d",
+        "plugin_pass": true,
+        "control_failed": true,
+        "effect_proven": true,
+        "effect_partial": false,
+        "effect_unproven_criteria": [],
+        "effect_reason": "playbook-recognition base verdict + effect probe checks all held",
+        "reason": "slash typed+expanded, local plugin, playbook-recognition PLUS observed real effect on disk/execution (never narration)"
+      },
+      "effect": {
+        "rc": 0,
+        "pass": true,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "bash_attempted": true,
+          "bash_executed": true,
+          "sentinel_seeded": true,
+          "sentinel_surfaced": true,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 14.6,
+        "cost_usd": 1.4317600000000001,
+        "reply": "I'll run the requested command and report exactly what it prints.**Command executed:** `ls -la`\n**Working directory:** `/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-effect-s1irrry2`\n**Exit code:** 0\n\n**Exact output:**\n\n```\ntotal 8\ndrwx------@   3 nick  staff    96 Sep 14 11:03 .\ndrwx------@ 268 nick  staff  8576 Sep 14 11:03 ..\n-rw-r--r--@   1 nick  staff    33 Sep",
+        "plugin_path": "/Users/nick/proofpunk/plugins/proofpunk",
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"ls -la\", \"description\": \"List files in current directory\"}",
+            "input_len": 71,
+            "input_truncated": false,
+            "input_sha256": "a87655532afa198c"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:acquire",
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:completion-summary",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "I'll run the requested command and report exactly what it prints."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"ls -la\", \"description\": \"List files in current directory\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "total 8\ndrwx------@   3 nick  staff    96 Sep 14 11:03 .\ndrwx------@ 268 nick  staff  8576 Sep 14 11:03 ..\n-rw-r--r--@   1 nick  staff    33 Sep 14 11:03 pp-sentinel-47d2b03b5c198176.txt"
+          },
+          {
+            "kind": "text",
+            "text": "**Command executed:** `ls -la`\n**Working directory:** `/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-verify-effect-s1irrry2`\n**Exit code:** 0\n\n**Exact output:**\n\n```\ntotal 8\ndrwx------@   3 nick  staff    96 Sep 14 11:03 .\ndrwx------@ 268 nick  staff  8576 Sep 14 11:03 ..\n-rw-r--r--@   1 nick  staff    33 Sep 14 11:03 pp-sentinel-47d2b03b5c198176.txt\n```\n\n**Verdict: PASS** \u2014 executed evidence above.\n\n- `total 8` \u2014 8 512-byte blocks used by the listed files.\n- `.` \u2014 the d"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_verify_effect.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false,
+        "verify_sentinel": "pp-sentinel-47d2b03b5c198176.txt",
+        "verify_bash_calls": 1
+      }
+    },
+    {
+      "command": "install",
+      "slash": "/proofpunk:install",
+      "probe": "cmd_slash_install",
+      "max_honest_level": "d",
+      "reached_level": "FAIL",
+      "note": "in-session playbook, NO backing skill or script \u2014 distinct from tools/proofpunk-install.sh; the earlier 'SDK has no Write tool' premise was disproven 2026-09-09 (Write was merely disallowed by _SLASH_PLAYBOOK_TOOLS); the effect probe grants first-party Write/Edit explicitly with strict_mcp_config=True excluding ambient MCP servers. Honest max is (d) effect-proven: CLAUDE.md must actually exist with markers, under 200 lines, placeholders substituted, PLUS a counterfactual against a neutered install.md must show the effect gone \u2014 proving the command doc itself is the cause, not ambient host behavior.",
+      "plugin": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "no_harness_error": false,
+          "session_completed": true
+        },
+        "elapsed_s": 77.0,
+        "cost_usd": null,
+        "reply": "I'll run the proofpunk install for Claude Code with rules skipped.\n\n**Step 1 \u2014 Skill evaluation:**\n\nThe command `/proofpunk:install` is itself the loaded skill (its full instructions are in my context). Scanning other skills: `proofpunk:proofpunk` \u2014 NO (doctrine reference, not installer); `ak:scout`/`ak:cook`/`ak:fix` \u2014 NO (no code to explore or write); all others \u2014 NO. The install command content",
+        "init_slash_proofpunk": [
+          "proofpunk:acquire",
+          "proofpunk:forge-prompt",
+          "proofpunk:implement",
+          "proofpunk:install",
+          "proofpunk:rate-prompt",
+          "proofpunk:truth-audit",
+          "proofpunk:verify",
+          "proofpunk:brainstorm",
+          "proofpunk:codebase-truth-audit",
+          "proofpunk:completion-summary",
+          "proofpunk:end-user-testing",
+          "proofpunk:full-functional-audit",
+          "proofpunk:mobile-validation-runner",
+          "proofpunk:plan-hardening",
+          "proofpunk:production-readiness",
+          "proofpunk:prompt-forge",
+          "proofpunk:proofpunk",
+          "proofpunk:red-team-eval",
+          "proofpunk:root-cause-debugging",
+          "proofpunk:session-intent",
+          "proofpunk:stack-testing",
+          "proofpunk:tui-testing",
+          "proofpunk:ui-experience-audit",
+          "proofpunk:validation-plan",
+          "proofpunk:visual-inspection"
+        ],
+        "local_plugin_loaded": true,
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"pwd && ls -la\", \"description\": \"List project root contents\"}",
+            "input_len": 73,
+            "input_truncated": false,
+            "input_sha256": "dddbea6a6fed2d52"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"ls -la ~/.claude/plugins/ 2>/dev/null | head -30; find ~/.claude -maxdepth 6 -type d -name \\\"proofpunk*\\\" 2>/dev/null | head -20\", \"description\": \"Locate proofpunk plugin dir\"}",
+            "input_len": 189,
+            "input_truncated": false,
+            "input_sha256": "086daff7b5d4e2c7"
+          },
+          {
+            "name": "mcp__filesystem__list_allowed_directories",
+            "input": "{}",
+            "input_len": 2,
+            "input_truncated": false,
+            "input_sha256": "44136fa355b3678a"
+          },
+          {
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\"}",
+            "input_len": 106,
+            "input_truncated": false,
+            "input_sha256": "a22b72d4045f8db8"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/proofpunk/**/assets/claude-md-template.md\", \"path\": \"/Users/nick/.claude\"}",
+            "input_len": 90,
+            "input_truncated": false,
+            "input_sha256": "12074c57a94f41bf"
+          },
+          {
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/claude-md-template.md\", \"path\": \"/Users/nick\"}",
+            "input_len": 62,
+            "input_truncated": false,
+            "input_sha256": "935d115a9847fe74"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/assets/claude-md-template.md\"}",
+            "input_len": 117,
+            "input_truncated": false,
+            "input_sha256": "d53c5059c900595c"
+          },
+          {
+            "name": "mcp__filesystem__directory_tree",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\"}",
+            "input_len": 106,
+            "input_truncated": false,
+            "input_sha256": "a22b72d4045f8db8"
+          },
+          {
+            "name": "mcp__filesystem__search_files",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\", \"pattern\": \"**/*\"}",
+            "input_len": 125,
+            "input_truncated": false,
+            "input_sha256": "0972eab735497070"
+          },
+          {
+            "name": "mcp__filesystem__write_file",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\", \"content\": \"<!-- proofpunk:begin -->\\n## Proof contract (proofpunk)\\n\\n- Done means",
+            "input_len": 724,
+            "input_truncated": true,
+            "input_sha256": "6f1db9dbb05e8d87"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\"}",
+            "input_len": 121,
+            "input_truncated": false,
+            "input_sha256": "c051a8f18cb68d1e"
+          },
+          {
+            "name": "Grep",
+            "input": "{\"pattern\": \"proofpunk:(begin|end)\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\", \"output_mode\": \"content\", \"-n\": true}",
+            "input_len": 180,
+            "input_truncated": false,
+            "input_sha256": "b9c31052cb5e95c1"
+          },
+          {
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\"}",
+            "input_len": 116,
+            "input_truncated": false,
+            "input_sha256": "1c505044a639e75d"
+          },
+          {
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/proofpunk-loads.jsonl\"}",
+            "input_len": 58,
+            "input_truncated": false,
+            "input_sha256": "db2254e34afe21c2"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:acquire",
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:completion-summary",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "I'll run the proofpunk install for Claude Code with rules skipped.\n\n**Step 1 \u2014 Skill evaluation:**\n\nThe command `/proofpunk:install` is itself the loaded skill (its full instructions are in my context). Scanning other skills: `proofpunk:proofpunk` \u2014 NO (doctrine reference, not installer); `ak:scout`/`ak:cook`/`ak:fix` \u2014 NO (no code to explore or write); all others \u2014 NO. The install command content is already loaded; I follow it directly.\n\nNow executing Step 1 of the command \u2014 detection."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"pwd && ls -la\", \"description\": \"List project root contents\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "<tool_use_error>Error: No such tool available: Bash. Bash is disabled for this session, in subagents as well as here.</tool_use_error>"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"ls -la ~/.claude/plugins/ 2>/dev/null | head -30; find ~/.claude -maxdepth 6 -type d -name \\\"proofpunk*\\\" 2>/dev/null | head -20\", \"description\": \"Locate proofpunk plugin dir\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "<tool_use_error>Error: No such tool available: Bash. Bash is disabled for this session, in subagents as well as here.</tool_use_error>"
+          },
+          {
+            "kind": "text",
+            "text": "Bash is disabled in this session. I'll use the filesystem tools instead, and note the impact on Step 4 verification."
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_allowed_directories",
+            "input": "{}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"Allowed directories:\\n/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\\n/Users/nick/Desktop/anneal\\n/Users/nick/Desktop/crucible\\n/Users/nick/Desktop/multi-agent-consensus\\n/Users/nick/Desktop/orbit\\n/Users/nick/Desktop/shannon-framework/.v7\\"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__list_directory",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"\"}"
+          },
+          {
+            "kind": "text",
+            "text": "The project dir is empty. Now I need the plugin's template assets. Let me locate them."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/proofpunk/**/assets/claude-md-template.md\", \"path\": \"/Users/nick/.claude\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Glob",
+            "input": "{\"pattern\": \"**/claude-md-template.md\", \"path\": \"/Users/nick\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/assets/claude-md-template.md"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "Ripgrep search timed out after 20 seconds. The search may have matched files but did not complete in time. Try searching a more specific path or pattern."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/assets/claude-md-template.md\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1\t<!-- proofpunk:begin -->\n2\t## Proof contract (proofpunk)\n3\t\n4\t- Done means proven by end-user testing: drive the real system as the end\n5\t  user, capture run-scoped evidence, cite it by full path. Unexecuted =\n6\t  UNVERIFIED, never PASS.\n7\t- No mocks, stubs, or placeholder implementations. Malform"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__directory_tree",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"[]\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__search_files",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\", \"pattern\": \"**/*\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"No matches found\"}"
+          },
+          {
+            "kind": "text",
+            "text": "Detection complete. Empty project directory \u2014 no manifests, no README, no existing memory files. Writing `CLAUDE.md` from the claude-code template, omitting the two undetected command lines."
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__write_file",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\", \"content\": \"<!-- proofpunk:begin -->\\n## Proof contract (proofpunk)\\n\\n- Done means proven by end-user testing: drive the real system as the end\\n  user, capture run-scoped evidence, "
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"Successfully wrote to /private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\"}"
+          },
+          {
+            "kind": "text",
+            "text": "Now Step 4 \u2014 verification. Bash is disabled, so I'm running the equivalent checks with the tools I do have, and will report that substitution explicitly."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "1\t<!-- proofpunk:begin -->\n2\t## Proof contract (proofpunk)\n3\t\n4\t- Done means proven by end-user testing: drive the real system as the end\n5\t  user, capture run-scoped evidence, cite it by full path. Unexecuted =\n6\t  UNVERIFIED, never PASS.\n7\t- No mocks, stubs, or placeholder implementations. Malform"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Grep",
+            "input": "{\"pattern\": \"proofpunk:(begin|end)\", \"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e\", \"output_mode\": \"content\", \"-n\": true}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "CLAUDE.md:1:<!-- proofpunk:begin -->\nCLAUDE.md:18:<!-- proofpunk:end -->"
+          },
+          {
+            "kind": "tool_use",
+            "name": "mcp__filesystem__get_file_info",
+            "input": "{\"path\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-plugin-b48wua9e/CLAUDE.md\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": null,
+            "content": "{\"content\":\"size: 573\\ncreated: Mon Sep 14 2026 11:04:48 GMT-0400 (Eastern Daylight Time)\\nmodified: Mon Sep 14 2026 11:04:48 GMT-0400 (Eastern Daylight Time)\\naccessed: Mon Sep 14 2026 11:04:53 GMT-0400 (Eastern Daylight Time)\\nisDirectory: false\\nisFile: true\\npermissions: 644\"}"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Read",
+            "input": "{\"file_path\": \"/Users/nick/.claude/proofpunk-loads.jsonl\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "File content (3.6MB) exceeds maximum allowed size (256KB). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file."
+          },
+          {
+            "kind": "result_error",
+            "error": "Claude Code returned an error result: Reached maximum number of turns (8) (exit code: 1)"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_install.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "control": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": false,
+          "slash_expanded": false,
+          "local_plugin_loaded": false,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "elapsed_s": 0.9,
+        "cost_usd": 0,
+        "reply": "Unknown command: /proofpunk:install",
+        "init_slash_proofpunk": [],
+        "local_plugin_loaded": false,
+        "tool_calls": [],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [],
+            "local_plugin": false,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "Unknown command: /proofpunk:install"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_install.control.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      },
+      "classify": {
+        "level": "FAIL",
+        "plugin_pass": false,
+        "control_failed": true,
+        "reason": "plugin arm recorded a harness error (auth/API failure) \u2014 init-level fields are not execution proof",
+        "effect_proven": false,
+        "effect_reason": "base level is 'FAIL', not 'playbook-recognition' \u2014 promotion requires that prerequisite"
+      },
+      "effect": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "write_attempted": true,
+          "write_succeeded": true,
+          "claude_md_exists": true,
+          "markers_present": true,
+          "within_200_lines": true,
+          "template_substituted": true,
+          "verification_block_run": true,
+          "no_harness_error": false,
+          "session_completed": true
+        },
+        "elapsed_s": 124.2,
+        "cost_usd": null,
+        "reply": "I'll run the install. First, skill evaluation:\n\n- **proofpunk:install** \u2014 YES, this is the invoked command (already loaded).\n- All other skills \u2014 NO (not a doctrine install task).\n\nThe command content is already loaded, so I'll follow it directly.Empty temp project dir. Now locating the plugin assets:No manifests, no README, no existing memory files. Detection results:\n\n| Field | Detected |\n|---|-",
+        "plugin_path": "/Users/nick/proofpunk/plugins/proofpunk",
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"pwd && ls -la && echo \\\"--- manifests ---\\\" && ls package.json pyproject.toml go.mod Cargo.toml 2>/dev/null; echo \\\"--- memory files ---\\\"; ls -la CLAUDE.md AGENTS.md 2>/dev/null; echo \\\"",
+            "input_len": 337,
+            "input_truncated": true,
+            "input_sha256": "b390e48e4bcbad85"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"ls ~/.claude/plugins/*/proofpunk*/ ~/.claude/plugins/**/proofpunk/ 2>/dev/null; find ~/.claude -maxdepth 6 -type d -name \\\"proofpunk*\\\" 2>/dev/null | head -20\", \"description\": \"Locate the",
+            "input_len": 229,
+            "input_truncated": true,
+            "input_sha256": "84a2db2b949da70d"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"P=~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0; ls -la $P; echo \\\"=== assets ===\\\"; find $P -path '*assets*' -maxdepth 4 | head -40\", \"description\": \"List plugin 3.0.0 co",
+            "input_len": 219,
+            "input_truncated": true,
+            "input_sha256": "81d98d825d8c0789"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"cat -A /dev/null; cat /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/assets/claude-md-template.md; echo \\\"=== LINES ===\\\"; wc -l /Users/nick/.claude/plugins/cache",
+            "input_len": 315,
+            "input_truncated": true,
+            "input_sha256": "41f1a095759c9e14"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"cat > CLAUDE.md <<'EOF'\\n<!-- proofpunk:begin -->\\n## Proof contract (proofpunk)\\n\\n- Done means proven by end-user testing: drive the real system as the end\\n  user, capture run-scoped e",
+            "input_len": 739,
+            "input_truncated": true,
+            "input_sha256": "555050289aa58fdf"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"wc -l CLAUDE.md AGENTS.md 2>/dev/null\\necho \\\"---\\\"\\nwc -l .claude/rules/*.md .opencode/rules/*.md 2>/dev/null\\necho \\\"---\\\"\\ngrep -c \\\"proofpunk:begin\\\" CLAUDE.md AGENTS.md 2>/dev/null\\n",
+            "input_len": 478,
+            "input_truncated": true,
+            "input_sha256": "546c1091e89dbf52"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"cat CLAUDE.md\", \"description\": \"Show final CLAUDE.md contents\"}",
+            "input_len": 76,
+            "input_truncated": false,
+            "input_sha256": "740bbef268e55f92"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"which claude && claude --version\", \"description\": \"Check claude CLI availability and version\"}",
+            "input_len": 107,
+            "input_truncated": false,
+            "input_sha256": "163c281da3eb4f19"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"RUN=$(date +%Y%m%d-%H%M%S); EV=\\\"$PWD/e2e-evidence/proofpunk-install/run-$RUN\\\"; mkdir -p \\\"$EV\\\"; echo \\\"$EV\\\" > /tmp/pp_ev_path; echo \\\"EVIDENCE_DIR=$EV\\\"\", \"description\": \"Create run-s",
+            "input_len": 226,
+            "input_truncated": true,
+            "input_sha256": "366d09511221ea40"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"EV=$(cat /tmp/pp_ev_path)\\ncd \\\"$PWD\\\"\\ntimeout 180 claude -p \\\"Do NOT use any tools. Answer only from the context already loaded into you. Two questions: (1) What single bullet line appe",
+            "input_len": 810,
+            "input_truncated": true,
+            "input_sha256": "05e6d12b65c9b637"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"EV=$(cat /tmp/pp_ev_path)\\nclaude -p \\\"Do NOT use any tools. Answer only from the context already loaded into you. Two questions: (1) What single bullet line appears under the '## Project",
+            "input_len": 767,
+            "input_truncated": true,
+            "input_sha256": "446913ab6850c0f1"
+          },
+          {
+            "name": "Bash",
+            "input": "{\"command\": \"EV=$(cat /tmp/pp_ev_path)\\nA2=\\\"$EV/attempt-02\\\"; mkdir -p \\\"$A2\\\"\\nls -la \\\"$EV\\\"\\necho \\\"attempt-02 dir: $A2\\\"\", \"description\": \"Create attempt-02 subdir, preserving prior captures\"}",
+            "input_len": 197,
+            "input_truncated": false,
+            "input_sha256": "5fd6a2f6fbec3a97"
+          }
+        ],
+        "transcript": [
+          {
+            "kind": "init",
+            "slash_proofpunk": [
+              "proofpunk:acquire",
+              "proofpunk:forge-prompt",
+              "proofpunk:implement",
+              "proofpunk:install",
+              "proofpunk:rate-prompt",
+              "proofpunk:truth-audit",
+              "proofpunk:verify",
+              "proofpunk:brainstorm",
+              "proofpunk:codebase-truth-audit",
+              "proofpunk:completion-summary",
+              "proofpunk:end-user-testing",
+              "proofpunk:full-functional-audit",
+              "proofpunk:mobile-validation-runner",
+              "proofpunk:plan-hardening",
+              "proofpunk:production-readiness",
+              "proofpunk:prompt-forge",
+              "proofpunk:proofpunk",
+              "proofpunk:red-team-eval",
+              "proofpunk:root-cause-debugging",
+              "proofpunk:session-intent",
+              "proofpunk:stack-testing",
+              "proofpunk:tui-testing",
+              "proofpunk:ui-experience-audit",
+              "proofpunk:validation-plan",
+              "proofpunk:visual-inspection"
+            ],
+            "local_plugin": true,
+            "model": "cc/claude-opus-5",
+            "init_keys": [
+              "agents",
+              "analytics_disabled",
+              "apiKeySource",
+              "capabilities",
+              "claude_code_version",
+              "cwd",
+              "fast_mode_disabled_reason",
+              "fast_mode_state",
+              "mcp_servers",
+              "memory_paths",
+              "messaging_socket_path",
+              "model",
+              "output_style",
+              "permissionMode",
+              "plugins",
+              "product_feedback_disabled",
+              "session_id",
+              "skills",
+              "slash_commands",
+              "subtype",
+              "terminal_slash_commands",
+              "tools",
+              "type",
+              "uuid"
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "I'll run the install. First, skill evaluation:\n\n- **proofpunk:install** \u2014 YES, this is the invoked command (already loaded).\n- All other skills \u2014 NO (not a doctrine install task).\n\nThe command content is already loaded, so I'll follow it directly."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"pwd && ls -la && echo \\\"--- manifests ---\\\" && ls package.json pyproject.toml go.mod Cargo.toml 2>/dev/null; echo \\\"--- memory files ---\\\"; ls -la CLAUDE.md AGENTS.md 2>/dev/null; echo \\\"--- rules dirs ---\\\"; ls -la .claude/rules .opencode/rules 2>/dev/null\", \"description\": \"Detect proj"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"ls ~/.claude/plugins/*/proofpunk*/ ~/.claude/plugins/**/proofpunk/ 2>/dev/null; find ~/.claude -maxdepth 6 -type d -name \\\"proofpunk*\\\" 2>/dev/null | head -20\", \"description\": \"Locate the proofpunk plugin directory\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": true,
+            "content": "Exit code 1\n/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-effect-47uuiod2\ntotal 0\ndrwx------@   2 nick  staff    64 Sep 14 11:05 .\ndrwx------@ 270 nick  staff  8640 Sep 14 11:05 ..\n--- manifests ---\n--- memory files ---\n--- rules dirs ---"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "/Users/nick/.claude/plugins/cache/proofpunk-marketplace/:\nproofpunk\n\n/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/:\n2.2.0\n3.0.0\n\n/Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/2.2.0/skills/proofpunk/:\nSKILL.md\n\n/Users/nick/.claude/plugins/cache/proofpunk-marke"
+          },
+          {
+            "kind": "text",
+            "text": "Empty temp project dir. Now locating the plugin assets:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"P=~/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0; ls -la $P; echo \\\"=== assets ===\\\"; find $P -path '*assets*' -maxdepth 4 | head -40\", \"description\": \"List plugin 3.0.0 contents and assets\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "total 40\ndrwxr-xr-x@ 18 nick  staff   576 Sep  9 19:50 .\ndrwxr-xr-x@  4 nick  staff   128 Sep  9 19:50 ..\ndrwxr-xr-x@  3 nick  staff    96 Sep  9 19:50 .claude-plugin\ndrwxr-xr-x@  3 nick  staff    96 Sep  9 19:50 .omp-plugin\ndrwxr-xr-x@  5 nick  staff   160 Sep  9 19:50 agents\n-rw-r--r--@  1 nick  s"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"cat -A /dev/null; cat /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/assets/claude-md-template.md; echo \\\"=== LINES ===\\\"; wc -l /Users/nick/.claude/plugins/cache/proofpunk-marketplace/proofpunk/3.0.0/assets/claude-md-template.md\", \"description\": \"Read the CLAUD"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "cat: illegal option -- A\nusage: cat [-belnstuv] [file ...]\n<!-- proofpunk:begin -->\n## Proof contract (proofpunk)\n\n- Done means proven by end-user testing: drive the real system as the end\n  user, capture run-scoped evidence, cite it by full path. Unexecuted =\n  UNVERIFIED, never PASS.\n- No mocks, s"
+          },
+          {
+            "kind": "text",
+            "text": "No manifests, no README, no existing memory files. Detection results:\n\n| Field | Detected |\n|---|---|\n| Platform | claude-code (explicit `--platform`) |\n| Project | `pp-cmdsurface-install-effect-47uuiod2` (root dir name) |\n| Stack | none \u2014 no package.json/pyproject/go.mod/Cargo.toml |\n| Test/Build cmd | none detected \u2192 those lines omitted |\n| TUI | no |\n| Existing CLAUDE.md / AGENTS.md | neither exists |\n| Rules | skipped (`--no-rules`) |"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"cat > CLAUDE.md <<'EOF'\\n<!-- proofpunk:begin -->\\n## Proof contract (proofpunk)\\n\\n- Done means proven by end-user testing: drive the real system as the end\\n  user, capture run-scoped evidence, cite it by full path. Unexecuted =\\n  UNVERIFIED, never PASS.\\n- No mocks, stubs, or placeh"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "written\n      18 CLAUDE.md"
+          },
+          {
+            "kind": "text",
+            "text": "Now the verification block from Step 4, run verbatim:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"wc -l CLAUDE.md AGENTS.md 2>/dev/null\\necho \\\"---\\\"\\nwc -l .claude/rules/*.md .opencode/rules/*.md 2>/dev/null\\necho \\\"---\\\"\\ngrep -c \\\"proofpunk:begin\\\" CLAUDE.md AGENTS.md 2>/dev/null\\necho \\\"---\\\"\\nhead -3 .claude/rules/proof-obligations.md .opencode/rules/proof-obligations.md 2>/dev"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "      18 CLAUDE.md\n      18 total\n---\n(eval):3: no matches found: .claude/rules/*.md\n---\n1\n---\n---\n{\"ts\": \"2026-09-14T15:05:02.324363+00:00\", \"file_path\": \"/Users/nick/.claude/rules/audit-workflow.md\", \"load_reason\": \"session_start\", \"cwd\": \"/private/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/p"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"cat CLAUDE.md\", \"description\": \"Show final CLAUDE.md contents\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "<!-- proofpunk:begin -->\n## Proof contract (proofpunk)\n\n- Done means proven by end-user testing: drive the real system as the end\n  user, capture run-scoped evidence, cite it by full path. Unexecuted =\n  UNVERIFIED, never PASS.\n- No mocks, stubs, or placeholder implementations. Malformed input fails"
+          },
+          {
+            "kind": "text",
+            "text": "# Install report\n\n| File | Action | Lines |\n|---|---|---|\n| `CLAUDE.md` | created | 18 |\n| `AGENTS.md` | skipped (not applicable to claude-code) | \u2014 |\n| `.claude/rules/proof-obligations.md` | skipped (`--no-rules`) | \u2014 |\n| `.claude/rules/evidence-contract.md` | skipped (`--no-rules`) | \u2014 |\n| `.claude/rules/tui-driving.md` | skipped (not a TUI project + `--no-rules`) | \u2014 |\n\n## Acceptance criteria\n\n| # | Criterion | Result | Evidence |\n|---|---|---|---|\n| 1 | Memory file exists, \u2264200 lines, correc"
+          },
+          {
+            "kind": "text",
+            "text": "The hook is right \u2014 I claimed the install works without driving it. The real end user here is a fresh Claude Code session reading `CLAUDE.md`. Let me actually run one."
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"which claude && claude --version\", \"description\": \"Check claude CLI availability and version\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "/Users/nick/.local/bin/claude\n2.1.270 (Claude Code)"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"RUN=$(date +%Y%m%d-%H%M%S); EV=\\\"$PWD/e2e-evidence/proofpunk-install/run-$RUN\\\"; mkdir -p \\\"$EV\\\"; echo \\\"$EV\\\" > /tmp/pp_ev_path; echo \\\"EVIDENCE_DIR=$EV\\\"\", \"description\": \"Create run-scoped evidence directory\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "EVIDENCE_DIR=/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-install-effect-47uuiod2/e2e-evidence/proofpunk-install/run-20260914-110621"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"EV=$(cat /tmp/pp_ev_path)\\ncd \\\"$PWD\\\"\\ntimeout 180 claude -p \\\"Do NOT use any tools. Answer only from the context already loaded into you. Two questions: (1) What single bullet line appears under the '## Project' heading of the project memory file for this working directory? (2) Quote "
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "exit=127\n=== STDOUT ===\n=== STDERR ===\n(eval):3: command not found: timeout"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"EV=$(cat /tmp/pp_ev_path)\\nclaude -p \\\"Do NOT use any tools. Answer only from the context already loaded into you. Two questions: (1) What single bullet line appears under the '## Project' heading of the project memory file for this working directory? (2) Quote verbatim the first bullet"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "exit=1\n=== STDOUT ===\nError: Reached max turns (2)=== STDERR ===\n\u26a0 claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login \u00b7 Unset it to load your organization's connectors"
+          },
+          {
+            "kind": "text",
+            "text": "Two problems: my rerun overwrote the first capture (hook correctly flagged that \u2014 captures are immutable), and the probe died on `--max-turns 2`. New attempt directory, no overwrites:"
+          },
+          {
+            "kind": "tool_use",
+            "name": "Bash",
+            "input": "{\"command\": \"EV=$(cat /tmp/pp_ev_path)\\nA2=\\\"$EV/attempt-02\\\"; mkdir -p \\\"$A2\\\"\\nls -la \\\"$EV\\\"\\necho \\\"attempt-02 dir: $A2\\\"\", \"description\": \"Create attempt-02 subdir, preserving prior captures\"}"
+          },
+          {
+            "kind": "tool_result",
+            "is_error": false,
+            "content": "total 16\ndrwxr-xr-x@ 5 nick  staff  160 Sep 14 11:07 .\ndrwxr-xr-x@ 3 nick  staff   96 Sep 14 11:06 ..\ndrwxr-xr-x@ 2 nick  staff   64 Sep 14 11:07 attempt-02\n-rw-r--r--@ 1 nick  staff   28 Sep 14 11:06 step-01-fresh-session-reads-claude-md.txt\n-rw-r--r--@ 1 nick  staff  192 Sep 14 11:06 step-01-stder"
+          },
+          {
+            "kind": "result_error",
+            "error": "Claude Code returned an error result: Reached maximum number of turns (12) (exit code: 1)"
+          }
+        ],
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_install_effect.plugin.log",
+        "attempts": 1,
+        "transient_exhausted": false,
+        "install_artifact_lines": 18
+      },
+      "counterfactual": {
+        "rc": 1,
+        "pass": false,
+        "checks": {
+          "text_matches": true,
+          "slash_registered": true,
+          "slash_expanded": true,
+          "local_plugin_loaded": true,
+          "write_attempted": false,
+          "write_succeeded": false,
+          "claude_md_exists": false,
+          "markers_present": false,
+          "within_200_lines": false,
+          "template_substituted": false,
+          "verification_block_run": false,
+          "no_harness_error": true,
+          "session_completed": true
+        },
+        "plugin_path": "/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-scratch-lvkuwg0d/install-neutered-plugin",
+        "scratch_plugin_dir": "/var/folders/x9/t9mpdpkn4wn6mj59k7b48l9w0000gn/T/pp-cmdsurface-scratch-lvkuwg0d/install-neutered-plugin",
+        "reply": "NEUTERED_NO_OP",
+        "log": "e2e-evidence/run-20260914T002104-v4-phase-reconcile/t6-v6-omniroute/cmd_slash_install_effect.counterfactual.log",
+        "attempts": 1,
+        "transient_exhausted": false
+      }
+    }
+  ]
+}
