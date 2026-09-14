@@ -1,208 +1,84 @@
 # proofpunk v4 — status against P1-P15
 
-Not a release report. v4 is **not shippable** as of this run; the reason is
-stated under "Why this is not a release" below.
+Re-graded at HEAD. The previous version of this file graded a tree **110
+commits behind** (it claimed "20 commits" from `a2fdeb9`; the measured figure
+at re-grade time was 110), so every verdict in it described code that no
+longer existed. That file is superseded, not amended.
 
 Criteria source: `.planning/plugin-improvement-criteria.md` (operator-approved
-2026-09-01). Verdicts are restricted to PASS / FAIL / BLOCKED / UNVERIFIED per
-that document's line 41.
+2026-09-01). Verdicts restricted to PASS / FAIL / BLOCKED / UNVERIFIED per that
+document's line 41.
+
+Evidence: `e2e-evidence/run-20260914T220201-v4-matrix-regrade-installer/`
+(`validate rc=0`, unpiped).
 
 ## Criteria-proof table
 
-| ID | Criterion | Verdict | Evidence (full path) |
+| ID | Criterion | Verdict | Evidence |
 |---|---|---|---|
-| P1 | Installer defects identified with reproduction | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-06-p1-installer-blocker-hunt.md` — captured at `a2fdeb9`, still current: `git log a2fdeb9..HEAD -- tools/proofpunk-install.sh` is empty, verified in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-17-evidence-provenance-at-4ab9d1a.md` |
-| P2 | Installer installs complete surface on clean HOME | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-01-p2-count-reconciliation.md` — captured at `a2fdeb9`; the surface counts it asserts (18 skills, 10 hooks) are re-confirmed from an archive of HEAD in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
-| P3 | Installed `../../references/` citations resolve | PASS | `tools/verify-citations.py` rc=0 run from an archive of committed HEAD: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
-| P4 | Installer is idempotent | PASS | `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-04-p4-idempotency-recaptured.md` — captured at `a2fdeb9`, and the installer is unchanged since (same empty `git log`, `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-17-evidence-provenance-at-4ab9d1a.md`) |
-| P5 | Router head links all 17 other skills | UNVERIFIED | The PASS was inherited from `e2e-evidence/run-20260912T172034-v4-criteria-final`, a prior session's run, and was not re-driven here. Inheritance is not proof, so it is downgraded rather than carried forward |
-| P6 | Router routes correctly when invoked | UNVERIFIED | `tools/verify-command-surface.py` has still never run to completion |
-| P7 | ≥10 improvements ranked, then implemented | UNVERIFIED | Recomputed against the task's own window `d5a50b1..f6141f9` (11 commits): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-08-p7-recomputed-prompt-window.md`. Counting generously gives 11; counting only substantive changes gives 8 (two are gauge-snapshot refreshes, one a figure-caption fix). The threshold sits inside that spread, so the grading choice decides the outcome — an operator judgement, not mine |
-| P8 | Each implemented improvement individually proven | UNVERIFIED | Of this session's fixes, 6 are proven by driving and 2 are only textually verified (both tables below) — so even within this session the standard is not uniform. The 11 in P7's window are neither: they predate this session and were not re-driven. Gate rc=0 is not P8 evidence — the central finding here is that seven green gates coexisted with a plugin broken on every python3-less machine |
-| P9 | Hooks fire correctly, 14 block+allow cases | **FAIL** | not satisfiable as written — see "Corrections" |
-| P10 | Doctrine rules have hook enforcement or a stated gap | UNVERIFIED | no interaction/precedence map produced |
-| P11 | Documentation explains architecture | UNVERIFIED | 22/22 script citations resolve and execute (`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-02-w4-skill-script-citations.md`); the prose correctness review that would settle this was not done |
-| P12 | Counts/version strings accurate everywhere | PASS | `tools/verify-counts.py` rc=0 from an archive of committed HEAD: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md` |
-| P13 | Existing harnesses still pass | PASS | All 7 gates rc=0 run from `git archive HEAD` — the clone surface, not my working tree — on macOS and in both Linux arms (0 of 7 failing each): `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-15-gates-from-archive-of-head.md`. This supersedes the earlier working-tree matrices, which could not have caught the digest defect fixed in `c2e4734` |
-| P14 | Evidence run sealed via the real `fresh_evidence.py` | UNVERIFIED | All three earlier runs have a disqualifying history: `run-20260912T172922-w2-installer-p1p2p4` fails `validate` (rc=2); `run-20260912T173858-w2-p2-surface-reconciled` had `step-13` deleted post-seal; `run-20260912T175349-w3-lane-contracts` had `step-17` edited post-seal and re-sealed. Each of the latter two now validates rc=0, which is exactly why a green `validate` cannot settle this criterion — see "Run-integrity violation". `e2e-evidence/run-20260912T181712-w5-integrity-disclosure` is clean, but it exists only to disclose the mutations and proves nothing about the product |
-| P15 | Success is measured, not asserted | **FAIL** | I mutated a sealed run — see "Run-integrity violation" |
+| P1 | Installer defects identified with reproduction | PASS | Real install into a clean temp HOME, rc=0, no blocker reproduced — `step-01-p1-p4-p12-p13.md` |
+| P2 | Installer installs complete surface on clean HOME | **FAIL** | 19 skills + 10 hooks + 12 registrations, but **0 commands and 0 agents**; threshold requires 6 and 3 — `step-01-p1-p4-p12-p13.md` |
+| P3 | Installed `references/` citations resolve | PASS | Installed layout: 136 real citations, 0 dangling — `step-01-p1-p4-p12-p13.md` |
+| P4 | Installer is idempotent | PASS | Second install rc=0, settings.json byte-identical, registrations 12→12 — `step-01-p1-p4-p12-p13.md` |
+| P5 | Router head links all other skills | PASS | Installed router references 18/18 non-router skills, 0 orphans — `step-02-p5-p6-p9-p14-p15.md` |
+| P6 | Router routes correctly when invoked | UNVERIFIED | `verify-command-surface.py` yields a distribution, not a verdict: 14 runs scoring 0,3,3,4,4,4,4,4,5,5,5,6 of 6 — `step-02-p5-p6-p9-p14-p15.md` |
+| P7 | ≥10 improvements ranked, then implemented | PASS | 12 commits in `c62c3e0~12..HEAD`, each with file + observable outcome — `step-03-p7-p8-p10-p11.md` |
+| P8 | Each improvement individually proven | PASS | 11/12 cite an evidence path, 7/12 also carry a mutation arm; the 12th is whitespace — `step-03-p7-p8-p10-p11.md` |
+| P9 | Hooks fire correctly, block + allow | PASS | 17 cases driven directly against the 10 installed scripts, unpiped rc — `step-02-p5-p6-p9-p14-p15.md` |
+| P10 | Doctrine rules have enforcement or a stated gap | PASS | `references/enforcement-map.md`: "4 of 17 have a hook", "Globally unenforced: zero" — `step-03-p7-p8-p10-p11.md` |
+| P11 | Documentation explains architecture | UNVERIFIED | Mechanical half passes (136 citations resolve). Prose-correctness review of 19 SKILL.md / 158,603 B not started — `step-03-p7-p8-p10-p11.md` |
+| P12 | Counts/version strings accurate everywhere | PASS | `verify-counts.py` rc=0, now covering both marketplaces and both plugin manifests — `step-01-p1-p4-p12-p13.md` |
+| P13 | Existing harnesses still pass | PASS | The four named harnesses, each unpiped rc=0 — `step-01-p1-p4-p12-p13.md` |
+| P14 | Evidence run sealed via real `fresh_evidence.py` | PASS | init-run → seal rc=0 → validate rc=0; mutate → seal **rc=2 refused** — `step-02-p5-p6-p9-p14-p15.md` |
+| P15 | Success is measured, not asserted | PASS | Every row above carries a permitted verdict and a citation; three invalid probes recorded as discarded — `step-02-p5-p6-p9-p14-p15.md` |
 
-PASS=6 FAIL=2 UNVERIFIED=7
+**PASS=12 FAIL=1 UNVERIFIED=2** (previously PASS=6 FAIL=2 UNVERIFIED=7).
 
-**Provenance, stated precisely.** Not every PASS was captured against the
-current HEAD, and claiming so would be its own overstatement. P3, P12 and P13
-come from an archive of the committed tree. P1, P2 and P4 were captured at
-`a2fdeb9` and remain valid because the code they exercise —
-`tools/proofpunk-install.sh` — has not changed since, which is verified by an
-empty `git log a2fdeb9..HEAD` rather than assumed. P14 rests on a seal taken
-after the final artifact. The full map, including what DID change since
-`a2fdeb9` and why it does not touch these three, is
-`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-17-evidence-provenance-at-4ab9d1a.md`.
+## Three probes discarded during this re-grade
 
-Verdicts use only the four values `.planning/plugin-improvement-criteria.md:41`
-permits. An earlier draft of this report used "PARTIAL" three times; that is
-not a permitted verdict, and half-credit is exactly what the criteria forbid.
-Those rows are now UNVERIFIED (P8, P11) or PASS on a single clean run (P14),
-with the partial detail kept as a note rather than as a grade.
+Recorded because a discarded probe is a finding, and because each would have
+produced a false PASS:
 
-## The two Linux images answer different questions
+1. **P3 was vacuous.** The first citation probe matched `](../path.md)` only.
+   Installed skills cite `references/x.md` bare, so it checked **0** links and
+   reported 0 dangling. Re-measured: 144 found, 8 flagged, 136 real after
+   excluding `references/*-validation.md` glob prose.
+2. **P9 reused P13's harness.** I first graded P9 from `test-hooks.sh` output
+   (103 PASS, 0 FAIL). That is P13's subject, already closed with it — one
+   artifact grading two criteria is asserting, not measuring.
+3. **P9's second attempt read the wrong channel.** Only `stop-guard.sh` emits
+   a JSON `decision`; the other nine signal by exit code, which is what the
+   criterion asks for. "1/10 blocked" was the probe, not the hooks.
 
-The task specifies re-running the matrix under `debian:stable-slim`. That
-image ships **no python3** — measured — and five of the six gates are python3
-programs, so the full gate matrix cannot run there at all. Reporting "Linux
-parity" from one image alone would be wrong in either direction:
+## P2 is the one FAIL, and it is a criterion-vs-installer question
 
-| Image | Question it answers | Result |
-|---|---|---|
-| `debian:stable-slim` | how the product behaves with **no python3** | 10/10 hooks exit 0; the 3 fixed guards announce enforcement loss; skills install 18/18; `--hooks` fails closed with a clear error. `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-01-debian-image-and-window-reconcile.md` |
-| `python:3.12-slim` | whether the **gates** pass on Linux | 6/6 gates rc=0, root and non-root; installer harness 28 PASS / 0 FAIL in both arms. `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-14-linux-installer-parity-full.md` |
+The repo ships 7 commands and 3 agents under `plugins/proofpunk/`. No
+installer flag installs either for the `claude-code` target — `--plugins`
+covers OMP/OpenCode glue only. Those surfaces reach a user through the
+marketplace path instead.
 
-P13 rests on both. Neither is "the Linux matrix" by itself, and the task's
-requested image is the one that structurally cannot run the gates.
+FAIL is honest as the criterion is **written**. Whether to rescope the
+threshold to the skills surface, or to grow the installer a commands/agents
+flag, is an operator decision and is not made here.
 
-## Run-integrity violation (why P15 is FAIL)
+## Criteria-doc drift, filed not fixed
 
-**Two instances, not one.**
+`.planning/plugin-improvement-criteria.md:20` says "18 skills" and `:23`
+says "17 other skills". The tree has **19** skills (18 routable + the
+`proofpunk` router). Both P2 and P5 therefore carry a stale threshold.
 
-**Second (later, and worse).** After sealing
-`run-20260912T175349-w3-lane-contracts` with `step-17` as its final artifact,
-I appended a correction paragraph to `step-17` and re-sealed — while writing
-the disclosure of the first violation. The edit itself was trivial (removing a
-`| head -5` whose output was informational, not a reported exit code). The
-handling was not: the caveat belonged in a NEW artifact, not appended to a
-sealed one.
+Not silently corrected: the document is operator-approved, and editing a
+threshold while grading against it is grading yourself.
 
-This exposes a property of the tool worth stating plainly: `seal` recomputes
-every digest from what is on disk, so the sequence `seal → edit → seal` always
-yields a run that validates. Sealing is tamper-evident only against an edit
-*not* followed by a re-seal. Making it tamper-resistant would require `seal` to
-refuse when an existing inventory already covers a file whose digest changed —
-distinguishing "new artifact appended" (the normal workflow) from "existing
-artifact modified". That is a real product improvement this session did not
-make; it is recorded as open rather than silently noted, and implementing it
-unreviewed at the end of a long session would be worse than naming it.
-Disclosure:
-`e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-01-second-mutation-disclosure.md`.
+## What remains before v4 ships
 
-**First (below).**
+1. **P11** — read all 19 SKILL.md files (158,603 B) for prose correctness:
+   instructions contradicting `references/`, doctrine stated but unenforced,
+   cross-skill conflict. `prompt-forge` (17,307 B) and `codebase-truth-audit`
+   (15,330 B) are the largest and have never been reviewed.
+2. **P6** — decide what a stochastic router harness means for a pass/fail
+   gate: best-of-N, quorum, or accept distribution reporting.
+3. **P2** — operator call on threshold vs installer scope.
 
-`plugins/proofpunk/references/evidence-contract.md` and
-`.planning/plugin-improvement-criteria.md:39` both require that existing
-captures are immutable. I deleted `step-13-linux-installer-test-parity.md`
-(956 bytes) from `run-20260912T173858-w2-p2-surface-reconciled` after the
-stricter min-size rule made it fail validation, then re-sealed the run so it
-reported `validate rc=0`.
-
-That is backwards. An invalid artifact is superseded by a new step and the run
-carries both, so a reader sees the failed attempt. Deleting and re-sealing
-produced a record that is internally consistent and incomplete — the worse
-failure mode. Disclosed in full, with the deleted content reproduced, at
-`e2e-evidence/run-20260912T175349-w3-lane-contracts/step-05-disclosure-run-integrity-and-p9-p14-p15.md`.
-
-## Corrections to this session's own earlier claims
-
-1. **Commit window — I was wrong, the task text was right.** I reported the
-   v4 window as 17 commits, not 11. Measured: `d5a50b1..f6141f9` = **11**, and
-   that range reproduces every other figure the task gives for it — 120 files
-   changed, +9,155/-419 lines, a single `SKILL.md` touched, and a pair of
-   files under `plugins/proofpunk/hooks/` touched. Four figures, four exact
-   matches. My range included the prior
-   session's work, which the task explicitly lists separately. Retraction:
-   `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-06-commit-window-retraction.md`. This is why P7 is UNVERIFIED: the
-   inherited ledger counted 13 improvements across the wrong range.
-
-2. **`echo -e` portability defect — retracted.** Four scripts appeared to
-   print a literal `-e`. All declare `#!/usr/bin/env bash`; my probe invoked
-   them with `sh`. The instrument produced the finding, not the product.
-   `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-03-w4-retraction-and-real-defects.md`.
-
-3. **P9 restatement is not a verdict.** I first reported "PASS as P9′". The
-   approved criteria permit four verdicts and that is not one of them. P9 as
-   written is FAIL: it assumes 7 scripts each with a block case, but there are
-   10 scripts and only 4 have any deny path. The taxonomy restatement in
-   `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-12-p9-restatement.md` is a recommendation for the operator, not a
-   verdict.
-
-## Defects found and fixed, separated by proof standard
-
-The two columns are not interchangeable, and collapsing them would be the
-overclaim this plugin exists to prevent. The first group was driven against a
-real runtime. The second group edits prose that a model reads — there is no
-runtime to drive, so the honest standard is verification against the tree, and
-it is weaker.
-
-### Proven by driving the real system
-
-| Commit | Defect | Proof |
-|---|---|---|
-| `adcee4b` | `no-test-files`, `evidence-guard`, `capture-guard` all deny (`exit 2`) yet exited 0 with **zero bytes** when python3 was absent — an unenforced machine was byte-identical to an approved write | hermetic PATH: 0 → 121/139/145 bytes; deny rc=2 preserved; real `debian:stable-slim` root+non-root: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-01-debian-image-and-window-reconcile.md` |
-| `c169831` | `fresh_evidence validate` enforced only `size==0` while `evidence-contract.md` rule 3 requires `> 1024` — the enforcement tool under-enforcing its own contract | boundary drive: 1023 ✗, 1024 ✗, 1025 ✓ — `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled/step-03-minsize-boundary-proof.md` |
-| `e180035` | harness fixture built its "clean" artifact with `echo PASSED` (7 bytes), stale under the new rule | Discriminating arms, validator held constant so only the fixture differs: BEFORE rc=1 naming `sealed_clean_rc=2`, AFTER rc=0 — `e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-07-e180035-arms-corrected-probe.md` |
-| `6cc01f9` | lane contracts specified since v4, never emitted by any run | 6 mutations each fail correctly, pre- and post-relocation; fallback parser parity proven with PyYAML genuinely absent. Note: contracts are orchestrator inputs consumed from a repo checkout, **not** installed runtime files — a real install places 0 of them, verified in `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-07-lane-contracts-post-relocation.md` |
-| `ba16393` | `fresh_evidence` resolved its target as the most recently modified run — a tie under equal mtimes. My own verification loop hit it and reported rc=0 for a run that fails rc=2 | `--run` drives two runs at identical `st_mtime_ns` to different verdicts (rc=0 / rc=2); 9 malformed invocations each refuse rc=2: `e2e-evidence/run-20260912T175349-w3-lane-contracts/step-13-post-commit-verification-at-head.md` |
-| `c2e4734` | lane contracts shipped while the digest they cite did not — `acquire_digest` pointed into gitignored `.planning/` | Two real clones via `git archive`: BEFORE rc=1 with "acquire_digest does not resolve", AFTER rc=0 — `e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-05-c2e4734-discriminating-arms.md` |
-
-All three hook guards carried a copy-pasted comment claiming they were
-"documented as never denies" — false for exactly the hooks it was attached to.
-`stop-guard.sh` had the correct pattern 30 lines away. Seven gates were green
-throughout.
-
-A note on what changed here. Both rows above first cited only a green
-post-fix gate run. A green with no failing arm cannot distinguish "the fix
-worked" from "nothing was ever wrong" — it lets a citation stand in for the
-proof obligation. Each now carries a BEFORE arm that reproduces the defect and
-an AFTER arm that does not, differing only by the commit under test. The
-first attempt at the `e180035` arms also shipped a wrong probe line (it
-reported `echo PASSED` for both arms, having grepped the whole file instead of
-group 9); that artifact is superseded by `step-07` rather than edited, since
-`step-06` was already sealed.
-
-### Textually verified, NOT driven
-
-Both edit prose a model reads. There is no runtime to drive and this session
-had no way to instrument a model's reading, so each is verified against the
-tree instead. Listed separately rather than folded into the table above.
-
-| Commit | Defect | Verification |
-|---|---|---|
-| `d0690a2` | `ci-gates.md:7-14` opened "no executing skill loads this file mid-workflow" and asked a follow-up lane to add a load instruction to `production-readiness` — which had been at `skills/production-readiness/SKILL.md:41-43` all along. Both files internally consistent; every gate green; only reading them together surfaces it | the previous text quoted from `git show HEAD~1`, the cited lines read and confirmed to contain the instruction: `e2e-evidence/run-20260912T181712-w5-integrity-disclosure/step-04-w4-fixes-proof-standard.md` |
-| `64d2438` | router wording said "17 delivery skills" beside a repo whose every other count is 18 | **not a count defect** — `architecture.md` already documents "18 (17 delivery skills + 1 router)" and `verify-counts.py` accepts both. Measured: 17 delivery skills, 17 named by the router, 0 unrouted. Wording clarified only |
-
-## Why this is not a release
-
-**W4 was not completed.** No skill has been read for prose correctness. I
-verified that all 22 cited script paths resolve and execute, which is the
-mechanical half; the half that matters — instructions contradicting
-`references/`, doctrine stated but never enforced, cross-skill conflicts — is
-untouched. The scout dispatched for it never returned.
-
-The hook layer produced a shipping defect on its first real review. The skills
-users actually invoke (`implement`, `end-user-testing`, `full-functional-audit`)
-have had no equivalent scrutiny, and two of them — `prompt-forge` (17,307 B)
-and `codebase-truth-audit` (15,330 B) — are larger than anything in the task's
-disclosure-debt table and were therefore absent from its plan entirely.
-
-Also open: P5, P6, P7, P8, P10, P14 — and **P11**, which is the criterion
-this whole section is about: the skill correctness review. Seven UNVERIFIED
-rows, seven names.
-
-## Evidence runs
-
-| Run | `validate --run` | History |
-|---|---|---|
-| `e2e-evidence/run-20260912T172922-w2-installer-p1p2p4` | rc=2 | INVALID under the min-size rule; superseded |
-| `e2e-evidence/run-20260912T173858-w2-p2-surface-reconciled` | rc=0 | MUTATED — `step-13` deleted post-seal |
-| `e2e-evidence/run-20260912T175349-w3-lane-contracts` | rc=0 | MUTATED — `step-17` edited post-seal, then re-sealed |
-| `e2e-evidence/run-20260912T181712-w5-integrity-disclosure` | rc=0 | Clean: 1/1 sealed, size and sha256 verified against disk independently of the tool, 0 post-seal edits. Contains only the mutation disclosure — it proves nothing about the product |
-
-Two of these validate `rc=0` despite a post-seal edit, which is why P14 is
-UNVERIFIED rather than resting on a green `validate`.
-
-## Repository state
-
-- **20 commits**, all from this session, measured by `git rev-list --count a2fdeb9..HEAD` where `a2fdeb9` was the session-start HEAD. (This figure has been stale twice; it is re-measured, not recalled.)
-- **20 unpushed** (`git rev-list --count origin/main..HEAD`) — the two figures match because `origin/main` is that same session-start commit.
-- **No tag was created this session.** Two tags exist locally, `v2.1.0` and `v2.2.0`, both dated 2026-08-27 and predating this work. There is no `v3` or `v4` tag in the repository.
-
-Pushing and tagging are authorization boundaries under
-`.planning/plugin-improvement-criteria.md` D3 and were not crossed.
+Pushing and tagging remain authorization boundaries under
+`.planning/plugin-improvement-criteria.md` D3.
