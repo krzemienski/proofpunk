@@ -6,7 +6,7 @@ An execution-first delivery **plugin for Claude Code, oh-my-pi (OMP), and OpenCo
 typing, submitting via MCP/automation tools — and any claim it did not actually execute
 is reported **UNVERIFIED**, never PASS. No mocks, no stubs, no test-mode bypasses.
 
-The `proofpunk` entry router hands off to 17 of them; `references/` holds 17 shared
+The `proofpunk` entry router hands off to 18 of them; `references/` holds 18 shared
 doctrine files cited across the set; `--themes` ships 20 flat-black cyberpunk
 variations. Every skill has a Claude Code command (7 command files) mirrored by an
 OpenCode command (7 files); 10 hook scripts register 12 hooks across

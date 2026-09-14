@@ -13,10 +13,18 @@
 # `mv -f`, `touch -c` and `sed -i -e`.
 #
 # Detection is by EFFECT - bash-write-snapshot.sh records a stat signature
-# (size+mtime+ctime+inode) for protected paths at PreToolUse, this re-reads it after. A command that changes nothing emits
-# nothing, whatever it looked like, so no false positive can interfere with a
-# working command. Content hashing (not mtime+size) means `cp -p` and
-# equal-size substitution are still caught.
+# (size+mtime_ns+ctime_ns+inode) for protected paths at PreToolUse, this
+# re-reads it after. A command that changes nothing emits nothing, whatever it
+# looked like, so no false positive can interfere with a working command.
+#
+# The load-bearing field is st_ctime_ns, NOT a content hash. This comment used
+# to claim "Content hashing (not mtime+size)"; the implementation has never
+# hashed capture bytes -- sha256 appears in bash-write-snapshot.sh only to hash
+# the baseline LOOKUP KEY (session:tool_use_id:cwd). Corrected 2026-09-14 after
+# an audit read the comment and the code side by side. ctime_ns is set by the
+# kernel on any inode or content change and cannot be forged from userspace, so
+# `cp -p` and equal-size substitution -- the exact cases content hashing existed
+# for -- are still caught, at ~400x lower cost. See bash-write-snapshot.sh:103.
 set -eu
 
 input=$(cat)
@@ -222,9 +230,9 @@ if not findings:
 
 msg = (
     "proofpunk: a Bash command changed protected files without passing the PreToolUse "
-    "guards, which are registered on Write|Edit only. Detected by comparing a "
-    "size+mtime+ctime+inode signature before and after the call - not by parsing "
-    "the command. "
+    "guards, which are registered on Write, Edit and MCP mutation tools - not on Bash. "
+    "Detected by comparing a size+mtime_ns+ctime_ns+inode signature before and after "
+    "the call - not by parsing the command, and not by hashing contents. "
     + " | ".join(findings[:5])
     + ". This is a NOTICE, not a block: the write already happened and nothing was "
     "undone. Remediate now if it broke a rule you meant to honor."

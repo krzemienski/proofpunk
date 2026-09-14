@@ -144,6 +144,28 @@ SLASH_AGENTS_RE = re.compile(
     re.I,
 )
 
+# Markdown table rows put the count and its noun in DIFFERENT COLUMNS, so no
+# amount of number-adjacent-to-noun matching can see them. Measured 2026-09-14:
+# architecture.md carried `| Commands | commands/*.md | 6 (+6 OpenCode) |` and
+# `| Shared references | references/*.md | 15 |` against a live 7+7 and 18, and
+# this gate returned rc=0 on both. The noun sits in column 1; CLAIM_RE looks
+# beside the digits in column 3 and finds prose.
+#
+# A row is checked only when its FIRST cell names exactly one known count noun,
+# which keeps the rule narrow: a row about something else cannot be dragged in
+# by a stray number.
+TABLE_ROW_RE = re.compile(r"^\s*\|([^|]+)\|(.*)\|\s*$")
+TABLE_NOUN = {
+    "skills": "skill",
+    "commands": "command",
+    "shared references": "reference",
+    "references": "reference",
+    "hooks": "hook",
+    "agents": "agent",
+}
+# First integer in a cell, ignoring one inside a path/version like `2.2.0`.
+CELL_INT_RE = re.compile(r"(?<![A-Za-z0-9./-])(\d+)(?![.\d])")
+
 
 def canon() -> dict:
     """Derive every count from the live tree. Never a literal."""
@@ -326,6 +348,32 @@ def check_file(path: str, counts: dict) -> list[str]:
                     f"{rel}:{i}: {n} {noun} "
                     f"(live accepts {sorted(ok)})"
                 )
+        # Table row whose first cell IS a count noun: check the first integer
+        # found in the remaining cells against that noun's live values.
+        trow = TABLE_ROW_RE.match(line)
+        if trow:
+            head = trow.group(1).strip().strip("*` ").lower()
+            noun = TABLE_NOUN.get(head)
+            if noun:
+                ok = expected_for(noun, counts)
+                rest = trow.group(2)
+                # `6 (+6 OpenCode)` is a commands pair, already reported by
+                # PLUS_RE's sibling shape; check both halves explicitly.
+                pair = re.search(r"(?<![A-Za-z0-9./-])(\d+)\s*\(\+\s*(\d+)", rest)
+                if pair and noun == "command":
+                    a, b = int(pair.group(1)), int(pair.group(2))
+                    if a != counts["commands"] or b != counts["opencode_commands"]:
+                        fails.append(
+                            f"{rel}:{i}: table row '{head}' says {a} (+{b}) "
+                            f"(live {counts['commands']} (+{counts['opencode_commands']}))"
+                        )
+                elif ok:
+                    cell = CELL_INT_RE.search(rest)
+                    if cell and int(cell.group(1)) not in ok:
+                        fails.append(
+                            f"{rel}:{i}: table row '{head}' says "
+                            f"{cell.group(1)} (live accepts {sorted(ok)})"
+                        )
     return fails
 
 

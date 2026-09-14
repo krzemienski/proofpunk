@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-delegation-unblocked-and-fourth-defect.md 7129 387e0a63324f3b7ed838d60f21e39527d59c7873a19540b2506fa48d35e0cfac
+sealed=2026-09-14T17:55:18Z count=1 total_bytes=7129
