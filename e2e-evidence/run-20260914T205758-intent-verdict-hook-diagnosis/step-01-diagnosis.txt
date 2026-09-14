@@ -1,0 +1,84 @@
+# "intent_verdict.py is not installed" — REFUTED by measurement
+cwd  : /Users/nick/proofpunk
+HEAD : 89d9b7d
+utc  : 2026-09-14T20:57:32.468657Z
+----------------------------------------------------------------------
+THE REPORTED BUG (from a yt-transition-shorts-detector session)
+  "no intent_verdict.py exists in any installed proofpunk version (checked
+   3.0.0 and 2.2.0) ... The hook names a tool absent from this machine, so its
+   exact command cannot be run"
+  That session refused to run the command and stayed blocked on every turn.
+
+WHAT IS ACTUALLY TRUE
+  1. The helper EXISTS and is TRACKED at HEAD:
+       plugins/proofpunk/skills/end-user-testing/scripts/intent_verdict.py
+       added in 0af5ec0 "Add the intent-verification contract and helper"
+       `python3 intent_verdict.py --help` -> rc=0, subcommands include `record`
+
+  2. The marketplace source is a DIRECTORY, not a pinned cache:
+       settings.json: proofpunk-marketplace -> source: directory
+                      path: /Users/nick/proofpunk     (this repo, v4.0.0)
+     So the LIVE plugin is HEAD, where the helper is present.
+
+  3. The two caches (2.2.0, 3.0.0) predate the helper — and critically,
+     NEITHER of their stop-guard.sh files references `intent_verdict` at all
+     (grep: no matches). They could not have produced the blocking text.
+     Probing them was measuring the wrong artifact.
+
+  4. The hook's resolver, from the live plugin dir, RESOLVES:
+       hooks/../skills/end-user-testing/scripts/intent_verdict.py -> YES
+
+END-USER TEST OF THE GATE (real hook, real helper, real evidence path)
+  Fixture: transcript with a completion claim + scout record + a citation to
+  a REAL artifact (e2e-evidence/run-tooling-surface/VERDICT.md).
+
+    A) no verdict recorded   -> decision=block
+         "no intent verdict recorded for this session. Before stopping, read
+          the session's ORIGINAL request (first user message, verbatim)..."
+    B) after `intent_verdict.py --session-id S --cwd R record --verdict MET`
+         record rc=0          -> (allow)
+
+  The gate blocks when it should and releases to the documented command.
+  It is NOT a wedge: it is fail-closed with a published escape.
+
+VERDICT: NOT A PROOFPUNK BUG. No code change made; none warranted.
+  The yt session was blocked because it never ran the command, having
+  concluded from a probe of the WRONG install path that the tool did not
+  exist. Same instrument-failure shape recorded twice already this session
+  (glob not traversing hidden dirs; extraction mistaken for main()):
+  a probe that cannot see its subject reports absence as defect.
+
+ONE REAL WEAKNESS, RECORDED NOT FIXED
+  The block text names the helper by bare filename. An agent that cannot
+  locate it has no path to resolve, and its recovery is to guess. Emitting
+  the ABSOLUTE resolved path in the block reason would have prevented this
+  entire failure. That is a genuine ergonomic defect, filed here, unfixed —
+  the fix belongs to whoever owns the message contract, and it is not
+  urgent enough to justify an unreviewed edit to a fail-closed guard.
+
+PROOF LEVEL: end-user for the gate (real hook driven both states).
+
+----------------------------------------------------------------------
+APPENDED IN-RUN (the first copy tripped the staleness check, correctly)
+
+A reviewer caught two real process defects in my own evidence handling, and
+both are the same class this session keeps finding:
+
+  1. `init-run` takes a SLUG, not a path. I passed a full path, it was
+     rejected, and .run-meta was never written — so the dir was unsealed
+     while I believed it sealed.
+
+  2. I read `validate rc=0` from a SHELL PIPELINE. That was the rc of the
+     last stage (`head`), not the validator's. Run directly, the validator
+     returns rc=2 and prints its refusal. This is precisely the pipe-masked
+     exit code trap — and it caught me while I was auditing for it.
+
+  3. Then `copy2` preserved the original mtime, and the validator flagged
+     the file STALE (mtime < run-start). Also correct: evidence must be
+     produced inside the run it is cited for.
+
+All three were the tooling working as designed against a careless operator.
+Recorded rather than quietly corrected, because the failure is the finding.
+
+utc: 2026-09-14T20:58:27.443485Z
+HEAD: 89d9b7d

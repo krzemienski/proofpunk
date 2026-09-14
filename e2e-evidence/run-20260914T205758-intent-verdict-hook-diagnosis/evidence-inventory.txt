@@ -1,0 +1,3 @@
+# fresh-evidence-inventory v2 (name size sha256)
+step-01-diagnosis.txt 4302 e670a0e77430ebcbb853e2567d55e51af2fbdd1e4f87e3b4ef7ad1f6db8dd8fe
+sealed=2026-09-14T20:58:27Z count=1 total_bytes=4302
