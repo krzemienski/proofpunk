@@ -93,6 +93,12 @@ set +e
 # The helper path is resolved HERE, where $0 is the real script path, and
 # passed in. Inside a heredoc-piped script __file__ does not exist, so the
 # block cannot locate its own directory.
+# shellcheck disable=SC1007  # `CDPATH= cd` is the intended one-command env
+# prefix, not a botched assignment. Verified by reproduction 2026-09-14:
+# with CDPATH set, `cd -- sub` resolves through it into the WRONG directory
+# (and echoes the path), which would point $helper at the wrong
+# intent_verdict.py. `CDPATH= cd -- sub` resolves correctly. Removing the
+# prefix introduces a bug; see step-10 for the driven before/after.
 _hookdir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 helper="$_hookdir/../skills/end-user-testing/scripts/intent_verdict.py"
 python3 - "$transcript" "$cwd" "$event" "$session_id" "$helper" <<'PYEOF' 2>/dev/null

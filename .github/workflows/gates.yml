@@ -53,6 +53,32 @@ jobs:
             bash -n "$f"
           done
 
+      # bash -n proves syntax, never semantics. Measured 2026-09-14: the
+      # installer's `run()` used `eval "$@"` with every call site passing
+      # `"mkdir -p '$DIR'"`, so a single quote in a user-supplied --dir
+      # closed the quoting and executed the rest. Reproduced: a crafted
+      # --dir ran `touch /tmp/PWNED_PROOFPUNK`. bash -n passed on that code
+      # every run for releases, because the syntax was valid. shellcheck
+      # flagged it (SC2294) the first time it was ever run here.
+      #
+      # Ubuntu runners ship shellcheck preinstalled. Scoped to the hook
+      # scripts, which are the security-relevant surface and are clean at
+      # 10/10; tools/ carries known style-level findings that are not
+      # security issues and would make this gate noisy rather than useful.
+      #
+      # No blanket --exclude: the one false positive (SC1007 on
+      # `CDPATH= cd` in stop-guard.sh) is suppressed by an inline directive
+      # at that exact line, with its reproduction recorded beside it. A
+      # global exclusion would also hide a genuine SC1007 elsewhere.
+      - name: "Gate: shellcheck (hook scripts, semantic shell analysis)"
+        run: |
+          set -euo pipefail
+          shellcheck --version
+          for f in plugins/proofpunk/hooks/*.sh; do
+            echo "shellcheck $f"
+            shellcheck "$f"
+          done
+
       - name: "Gate 1/7: verify-orchestration.py (skill graph DAG)"
         run: python3 tools/verify-orchestration.py
 
